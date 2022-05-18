@@ -2,7 +2,7 @@
   "name": "keroku",
   "version": "1.0.0",
   "description": "Heroku clone on Kubernetes",
-  "main": "index.js",
+  "main": "dist/index.js",
   "author": "Gianni Carafa",
   "license": "MIT",
   "scripts": {
