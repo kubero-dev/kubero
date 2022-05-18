@@ -1,0 +1,7 @@
+apiVersion: "alpha.keroku.com/v1alpha"
+kind: Application
+metadata:
+  name: my-new-app-object
+spec:
+  cronSpec: "* * * * */5"
+  image: my-awesome-cron-image
