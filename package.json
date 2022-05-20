@@ -6,19 +6,25 @@
   "author": "Gianni Carafa",
   "license": "MIT",
   "scripts": {
+    "install": "npx tsc",
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
+    "debug": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "dependencies": {
+    "axios": "^0.27.2",
+    "connect-history-api-fallback": "^1.6.0",
+    "debug": "^4.3.4",
     "dotenv": "^16.0.1",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "kubernetes-client": "^9.0.0",
+    "typescript": "^4.6.4"
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^17.0.34",
     "concurrently": "^7.2.0",
-    "nodemon": "^2.0.16",
-    "typescript": "^4.6.4"
+    "nodemon": "^2.0.16"
   }
 }
