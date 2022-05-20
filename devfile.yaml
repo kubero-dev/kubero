@@ -1,0 +1,178 @@
+# Add the following variables code anywhere in devfile.yaml
+# This MUST be a container registry you are able to access
+variables:
+  CONTAINER_IMAGE: quay.io/test/nodejs-odo-example
+  RESOURCE_NAME: my-nodejs-app
+  CONTAINER_PORT: "3000"
+  DOMAIN_NAME: nodejs.example.com
+
+commands:
+# This is the main "composite" command that will run all below commands
+- id: deploy
+  composite:
+    commands:
+    - build-image
+    - k8s-deployment
+    - k8s-service
+    - k8s-ingress
+    group:
+      isDefault: true
+      kind: deploy
+
+# Below are the commands and their respective components that they are "linked" to deploy
+- id: build-image
+  apply:
+    component: outerloop-build
+- id: k8s-deployment
+  apply:
+    component: outerloop-deployment
+- id: k8s-service
+  apply:
+    component: outerloop-service
+- id: k8s-ingress
+  apply:
+    component: outerloop-ingress
+
+
+- exec:
+    commandLine: npm install
+    component: runtime
+    group:
+      isDefault: true
+      kind: build
+    workingDir: ${PROJECT_SOURCE}
+  id: install
+- exec:
+    commandLine: npm start
+    component: runtime
+    group:
+      isDefault: true
+      kind: run
+    workingDir: ${PROJECT_SOURCE}
+  id: run
+- exec:
+    commandLine: npm run debug
+    component: runtime
+    group:
+      isDefault: true
+      kind: debug
+    workingDir: ${PROJECT_SOURCE}
+  id: debug
+- exec:
+    commandLine: npm test
+    component: runtime
+    group:
+      isDefault: true
+      kind: test
+    workingDir: ${PROJECT_SOURCE}
+  id: test
+components:
+- container:
+    endpoints:
+    - name: http-3000
+      targetPort: 3000
+    image: registry.access.redhat.com/ubi8/nodejs-14:latest
+    memoryLimit: 1024Mi
+    mountSources: true
+  name: runtime
+
+# This will build the container image before deployment
+- name: outerloop-build
+  image:
+    dockerfile:
+      buildContext: ${PROJECT_SOURCE}
+      rootRequired: false
+      uri: ./Dockerfile
+    imageName: "{{CONTAINER_IMAGE}}"
+
+# This will create a Deployment in order to run your container image across
+# the cluster.
+- name: outerloop-deployment
+  kubernetes:
+    inlined: |
+      kind: Deployment
+      apiVersion: apps/v1
+      metadata:
+        name: {{RESOURCE_NAME}}
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: {{RESOURCE_NAME}}
+        template:
+          metadata:
+            labels:
+              app: {{RESOURCE_NAME}}
+          spec:
+            containers:
+              - name: nodejs
+                image: {{CONTAINER_IMAGE}}
+                ports:
+                  - name: http
+                    containerPort: {{CONTAINER_PORT}}
+                    protocol: TCP
+                resources:
+                  limits:
+                    memory: "1024Mi"
+                    cpu: "500m"
+
+# This will create a Service so your Deployment is accessible.
+# Depending on your cluster, you may modify this code so it's a
+# NodePort, ClusterIP or a LoadBalancer service.
+- name: outerloop-service
+  kubernetes:
+    inlined: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: {{RESOURCE_NAME}}
+      spec:
+        ports:
+        - name: "{{CONTAINER_PORT}}"
+          port: {{CONTAINER_PORT}}
+          protocol: TCP
+          targetPort: {{CONTAINER_PORT}}
+        selector:
+          app: {{RESOURCE_NAME}}
+        type: ClusterIP
+
+# Let's create an Ingress so we can access the application via a domain name
+- name: outerloop-ingress
+  kubernetes:
+    inlined: |
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: {{RESOURCE_NAME}}
+      spec:
+        rules:
+          - host: "{{DOMAIN_NAME}}"
+            http:
+              paths:
+                - path: "/"
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: {{RESOURCE_NAME}} 
+                      port:
+                        number: {{CONTAINER_PORT}}
+
+
+metadata:
+  description: Stack with Node.js 14
+  displayName: Node.js Runtime
+  icon: https://nodejs.org/static/images/logos/nodejs-new-pantone-black.svg
+  language: javascript
+  name: my-nodejs-app
+  projectType: nodejs
+  tags:
+  - NodeJS
+  - Express
+  - ubi8
+  version: 1.0.1
+schemaVersion: 2.2.0
+starterProjects:
+- git:
+    remotes:
+      origin: https://github.com/odo-devfiles/nodejs-ex.git
+  name: nodejs-starter
