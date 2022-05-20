@@ -1,8 +1,12 @@
 # Keroku
-We al love Heroku. But we also love Kubernetes. So we want to deploy on kubernetes like onk Heroku.
+We all love Heroku. But we also love Kubernetes. So we want to deploy on kubernetes like on Heroku.
 
 ## Development
 
+### local development
+```bash
+yarn run dev
+```
 ### start a local kind cluster
 ```
 kind create cluster --config kind.yaml
