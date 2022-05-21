@@ -1,0 +1,57 @@
+{
+  "name": "client",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "DOCKER_BUILD=true vue-cli-service build",
+    "watch": "DOCKER_BUILD=true vue-cli-service build --watch",
+    "lint": "DOCKER_BUILD=true vue-cli-service lint"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "core-js": "^3.18.3",
+    "lodash-es": "^4.17.20",
+    "moment": "^2.29.1",
+    "socket.io-client": "^3.1.1",
+    "vue": "^2.6.11",
+    "vue-socket.io-extended": "^4.0.6",
+    "vuetify": "^2.5.10",
+
+    "ansi-regex": ">=5.0.1",
+    "set-value": ">=4.0.1",
+    "nth-check": ">=2.0.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.5.14",
+    "@vue/cli-plugin-eslint": "^4.5.14",
+    "@vue/cli-service": "^4.5.14",
+    "babel-eslint": "^10.1.0",
+    "eslint-plugin-vue": "^6.2.2",
+    "sass": "1.32.13",
+    "sass-loader": "^10.0.0",
+    "vue-cli-plugin-vuetify": "~2.1.0",
+    "vue-router": "^3.5.2",
+    "vue-template-compiler": "^2.6.11",
+    "vuetify-loader": "^1.7.0"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}
