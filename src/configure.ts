@@ -3,6 +3,7 @@ import cors from 'cors';
 import { Server } from 'http';
 import bodyParser from 'body-parser';
 import { Router } from "./routes";
+import {init} from './socket'
 
 //const socket = require('./socket');
 //let locust = require('./locust');
@@ -22,5 +23,6 @@ export const before = (app: Express) => {
 export const after = (app: Express, server: Server) => {
     // Attach socket.io to server
     //socket.init(server);
+    init(server);
     console.log("after");
 }
