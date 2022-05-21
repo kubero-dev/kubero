@@ -14,7 +14,7 @@ export default {
 
   props: [
     'kubeversion',
-    'swarmversion',
+    'kerokuversion',
   ],
 }
 </script>

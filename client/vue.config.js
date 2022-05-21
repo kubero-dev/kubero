@@ -1,9 +1,7 @@
-//const configureAPI = require('../app/configure');
-
 module.exports = {
   chainWebpack: config => {
     config.plugin('html').tap(args => {
-      args[0].title = "Locust Swarm Dashboard"
+      args[0].title = "Keroku"
       return args;
     })
   },

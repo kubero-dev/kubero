@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import debug from 'debug';
 import http from 'http';
 import {before, after} from './configure';
-import './socket'
 
 debug('app:server')
 
