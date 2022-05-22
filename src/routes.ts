@@ -5,3 +5,7 @@ export const Router = express.Router();
 Router.get('/config', async function (req: Request, res: Response) {
     res.send("config");
 });
+
+Router.post('/apps/new', async function (req: Request, res: Response) {
+    res.send("new");
+});

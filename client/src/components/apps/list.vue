@@ -10,6 +10,7 @@
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                         <v-btn
                         elevation="2"
+                        :to="{ name: 'New app'}"
                         >New App</v-btn>
                     </v-col>
                 </v-row>

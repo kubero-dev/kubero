@@ -2,6 +2,16 @@
   <v-form v-model="valid">
     <v-container>
       <v-row>
+        <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+            <div class="subtitle-1">
+                Create a new App
+            </div>
+            <p class="text-justify">
+                A app may have severel addons and stages
+            </p>
+        </v-col>
+      </v-row>
+      <v-row>
         <v-col
           cols="12"
           md="4"
@@ -25,6 +35,8 @@
             <v-btn
                 color="primary"
                 elevation="2"
+                @click="saveForm()"
+                :disabled="!valid"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -33,6 +45,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     data: () => ({
       valid: false,
@@ -43,9 +56,20 @@ export default {
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
     }),
-    components: {
-    },
     methods: {
+      saveForm() {
+        axios.post(`/api/apps/new`, {
+          appname: this.appname
+        })
+        .then(response => {
+          this.appname = '';
+          console.log(response);
+          this.$router.push({path: '/'});
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      }
     },
 }
 </script>
