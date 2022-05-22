@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from 'express';
-import { resolve } from 'path'
+import path, { resolve } from 'path'
 import history from 'connect-history-api-fallback';
 import dotenv from 'dotenv';
 import debug from 'debug';
@@ -19,13 +19,13 @@ before(app);
 after(app, server);
 
 const publicPath = resolve(__dirname, '../client/dist');
-const staticConf = { maxAge: '1y', etag: false };
+const staticConf = { maxAge: '1s', etag: false };
 
 app.use(history());
 app.use(express.static(publicPath, staticConf));
 
 app.get('/', (req: Request, res: Response) => {
-  res.send('Express + TypeScript Server');
+  res.render(path.join(__dirname + '/client/dist/index.html'))
 });
 
 
