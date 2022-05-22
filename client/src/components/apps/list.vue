@@ -8,7 +8,9 @@
                         Show a List of Apps
                     </v-col>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                        
+                        <v-btn
+                        elevation="2"
+                        >New App</v-btn>
                     </v-col>
                 </v-row>
 
