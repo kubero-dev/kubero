@@ -1,7 +1,9 @@
 apiVersion: "alpha.keroku.com/v1alpha"
 kind: Application
 metadata:
-  name: my-new-app-object
+  name: my-new-app-example
 spec:
-  cronSpec: "* * * * */5"
-  image: my-awesome-cron-image
+  appName: my-awesome-app
+  stack: alpine-latest
+  framework: nodejs
+  gitrepo: example-org/my-awesome-app

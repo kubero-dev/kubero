@@ -20,12 +20,14 @@ spec:
             spec:
               type: object
               properties:
-                cronSpec:
+                appName:
                   type: string
-                image:
+                stack:
                   type: string
-                replicas:
-                  type: integer
+                framework:
+                  type: string
+                gitrepo:
+                  type: string
   scope: Cluster
   names:
     # plural name to be used in the URL: /apis/<group>/<version>/<plural>
