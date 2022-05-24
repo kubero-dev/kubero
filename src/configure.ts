@@ -5,11 +5,6 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 
-import { Kubectl } from './kubectl';
-
-const k = new Kubectl();
-k.list();
-
 //const watcher = require('./watcher');
 
 if (process.env.DOCKER_BUILD != 'true') {

@@ -4,21 +4,22 @@ debug('app:kubectl')
 import {KubeConfig} from '@kubernetes/client-node'
 
 export class Kubectl {
+    kc: KubeConfig;
    
     constructor() {
-        const kc = new KubeConfig();
+        this.kc = new KubeConfig();
 
         if (process.env.KUBECONFIG_BASE64) {
-            debug.log("load from base64");
+            debug.debug("load kubectl config from base64");
             let buff = Buffer.from(process.env.KUBECONFIG_BASE64, 'base64');
             const kubeconfig = buff.toString('ascii');
-            kc.loadFromString(kubeconfig);
+            this.kc.loadFromString(kubeconfig);
         } else if(process.env.KUBECONFIG_PATH) { 
-            debug.log("load from file");
-            kc.loadFromFile(process.env.KUBECONFIG_PATH);
+            debug.debug("load kubectl config from file");
+            this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
         } else if (process.env.KUBERNETES_SERVICE_TOKEN){
-            debug.log("load from options");
-            kc.loadFromOptions({
+            debug.debug("load kubectl config from options");
+            this.kc.loadFromOptions({
                 token: process.env.KUBERNETES_SERVICE_TOKEN,
                 username: process.env.KUBERNETES_USER,
                 password: process.env.KUBERNETES_PASSWORD,
@@ -28,15 +29,15 @@ export class Kubectl {
         } else{
             debug.log("load from cluster");
             try {
-                kc.loadFromCluster();
+                this.kc.loadFromCluster();
             } catch (error) {
                 console.log("error loading from cluster");
                 console.log(error);
             }
         }
     }
-   
-    list() {
-        console.log("list");
+
+    createNamespace(name: string) {
+        console.log("create namespace");
     }
 }
