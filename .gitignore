@@ -5,3 +5,4 @@ node_modules
 .odo/odo-file-index.json
 
 notes.txt
+kubeconfig

@@ -1,0 +1,11 @@
+apiVersion: "keroku.dev/v1alpha1"
+kind: Pipeline
+metadata:
+  name: my-new-app-example
+spec:
+  appName: my-awesome-app
+  gitrepo: example-org/my-awesome-app
+  reviewapps: true
+  phases:
+    - name: production
+      branch: master

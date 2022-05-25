@@ -9,6 +9,6 @@ Router.get('/config', async function (req: Request, res: Response) {
 });
 
 Router.post('/apps/new', async function (req: Request, res: Response) {
-    keroku.newApp('test');
+    keroku.newApp(req.body.appname);
     res.send("new");
 });

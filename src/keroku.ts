@@ -13,6 +13,8 @@ export class Keroku {
 
     newApp(name: string) {
         debug.debug('create newApp: '+name);
-        this.kubectl.createNamespace(name);
+        //this.kubectl.getKubeVersion();
+        this.kubectl.createPipeline(name);
+        this.kubectl.createNamespace(name+"-production");
     }
 }

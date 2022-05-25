@@ -29,4 +29,4 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 
-server.listen(port, () => debug.log(`⚡️[server]: Server is running at http://localhost:${port}`));
+server.listen(port, () => debug.log(`⚡️[server]: Server is running at http://127.0.0.1:${port}`));
