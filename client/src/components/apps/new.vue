@@ -24,7 +24,32 @@
             required
           ></v-text-field>
         </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-text-field
+            v-model="gitrepo"
+            :rules="repositoryRules"
+            :counter="60"
+            label="Repository"
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
         
+          <v-switch
+            v-model="reviewapps"
+            :label="`Review Apps: ${reviewapps.toString()}`"
+          ></v-switch>
+        </v-col>
       </v-row>
       <v-row>
 
@@ -50,16 +75,25 @@ export default {
     data: () => ({
       valid: false,
       appname: '',
+      gitrepo: '',
+      reviewapps: true,
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 10 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
+      repositoryRules: [
+        v => !!v || 'Repository is required',
+        v => v.length <= 60 || 'Repository must be less than 10 characters',
+        v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]+$/.test(v) || 'Format "owner/repository"',
+      ],
     }),
     methods: {
       saveForm() {
         axios.post(`/api/apps/new`, {
-          appname: this.appname
+          appname: this.appname,
+          gitrepo: this.gitrepo,
+          reviewapps: this.reviewapps
         })
         .then(response => {
           this.appname = '';

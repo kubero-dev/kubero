@@ -42,8 +42,10 @@ export class Kubectl {
         
     }
 
-    async createPipeline(pipeline_name: string) {
-        pipeline_chart.metadata.name = pipeline_name;
+    async createPipeline(appname: string, gitrepo: string, reviewapps: boolean) {
+        pipeline_chart.metadata.name = appname;
+        pipeline_chart.spec.appName = appname;
+        pipeline_chart.spec.gitrepo = gitrepo;
         
         this.customObjectsApi.createNamespacedCustomObject(
             "keroku.dev",

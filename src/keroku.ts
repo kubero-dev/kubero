@@ -11,10 +11,15 @@ export class Keroku {
         this.kubectl = new Kubectl();
     }
 
-    newApp(name: string) {
-        debug.debug('create newApp: '+name);
+    newApp(appname: string, gitrepo: string, reviewapps: boolean) {
+        debug.debug('create newApp: '+appname);
         //this.kubectl.getKubeVersion();
-        this.kubectl.createPipeline(name);
-        this.kubectl.createNamespace(name+"-production");
+        this.kubectl.createPipeline(appname, gitrepo, reviewapps);
+
+        this.kubectl.createNamespace(appname+"-production");
+        if (reviewapps) {
+            debug.debug('create reviewapp: '+appname);
+            this.kubectl.createNamespace(appname+"-review");
+        }
     }
 }
