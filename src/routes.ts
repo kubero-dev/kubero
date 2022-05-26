@@ -11,3 +11,9 @@ Router.post('/apps/new', async function (req: Request, res: Response) {
     keroku.newApp(req.body.appname, req.body.gitrepo, req.body.reviewapps);
     res.send("new");
 });
+
+
+Router.get('/apps', async function (req: Request, res: Response) {
+    let apps = await keroku.listApps();
+    res.send(apps);
+});

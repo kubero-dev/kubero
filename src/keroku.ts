@@ -22,4 +22,10 @@ export class Keroku {
             this.kubectl.createNamespace(appname+"-review");
         }
     }
+
+    async listApps() {
+        debug.debug('listApps');
+        let apps = await this.kubectl.getPipelines();
+        return apps;
+    }
 }

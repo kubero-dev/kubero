@@ -42,6 +42,13 @@ export class Kubectl {
         
     }
 
+    async getPipelines() {
+
+        let pipelines = await this.customObjectsApi.listNamespacedCustomObject('keroku.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
+        //console.log(pipelines.body);
+        return pipelines.body;
+    }
+
     async createPipeline(appname: string, gitrepo: string, reviewapps: boolean) {
         pipeline_chart.metadata.name = appname;
         pipeline_chart.spec.appName = appname;
