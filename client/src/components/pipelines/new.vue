@@ -4,10 +4,10 @@
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
             <div class="subtitle-1">
-                Create a new App
+                Create a new Pipeline
             </div>
             <p class="text-justify">
-                A app may have severel addons and stages
+                A Pipeline may have several stages with apps
             </p>
         </v-col>
       </v-row>
@@ -20,7 +20,7 @@
             v-model="appname"
             :rules="nameRules"
             :counter="60"
-            label="App name"
+            label="Pipeline name"
             required
           ></v-text-field>
         </v-col>

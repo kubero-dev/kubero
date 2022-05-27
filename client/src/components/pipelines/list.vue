@@ -5,13 +5,13 @@
 
                 <v-row>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                        Show a List of Apps
+                        Show a List of Pipelines
                     </v-col>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                         <v-btn
                         elevation="2"
-                        :to="{ name: 'New app'}"
-                        >New App</v-btn>
+                        :to="{ name: 'New Pipeline'}"
+                        >New Pipeline</v-btn>
                     </v-col>
                 </v-row>
 

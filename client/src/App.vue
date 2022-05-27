@@ -12,7 +12,7 @@
                     <v-list-item-icon>
                     <v-icon>mdi-server</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Apps</v-list-item-title>
+                    <v-list-item-title>Pipelines</v-list-item-title>
                 </v-list-item>
                 
                 <v-list-item link to="/settings">
@@ -49,7 +49,7 @@
 
 
 <script>
-import axios from "axios";
+//import axios from "axios";
 import Appfooter from "./components/appfooter.vue";
 
 export default {
@@ -58,6 +58,7 @@ export default {
         Appfooter
     },
     mounted() {
+        /*
         axios
             .get("/api/status")
             .then((result) => {
@@ -66,6 +67,7 @@ export default {
             .catch((err) => {
                 console.error(err);
             });
+        */
     },
     data: () => ({
       status: {
