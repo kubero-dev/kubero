@@ -11,9 +11,9 @@ export function init(httpServer: HttpServer) {
     console.log('socket.io started')
     io.on('connection', client => {
         console.log('socket.io connected')
-        //_client = client;
-        //_io = io;
+        //return {client: client, io: io};
     });
+    return io;
 }
 
 

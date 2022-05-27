@@ -7,11 +7,11 @@ import { pipeline as pipeline_chart} from './charts/pipeline';
 
 
 export class Kubectl {
-    kc: KubeConfig;
-    versionApi: VersionApi;
-    coreV1Api: CoreV1Api;
-    appsV1Api: AppsV1Api;
-    customObjectsApi: CustomObjectsApi;
+    private kc: KubeConfig;
+    private versionApi: VersionApi;
+    private coreV1Api: CoreV1Api;
+    private appsV1Api: AppsV1Api;
+    private customObjectsApi: CustomObjectsApi;
 
     constructor() {
         this.kc = new KubeConfig();
@@ -42,19 +42,19 @@ export class Kubectl {
         
     }
 
-    async getPipelines() {
+    public async getPipelinesList() {
 
         let pipelines = await this.customObjectsApi.listNamespacedCustomObject('keroku.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
         //console.log(pipelines.body);
         return pipelines.body;
     }
 
-    async createPipeline(appname: string, gitrepo: string, reviewapps: boolean) {
+    public async createPipeline(appname: string, gitrepo: string, reviewapps: boolean) {
         pipeline_chart.metadata.name = appname;
         pipeline_chart.spec.appName = appname;
         pipeline_chart.spec.gitrepo = gitrepo;
         
-        this.customObjectsApi.createNamespacedCustomObject(
+        await this.customObjectsApi.createNamespacedCustomObject(
             "keroku.dev",
             "v1alpha1",
             "keroku",
@@ -65,7 +65,36 @@ export class Kubectl {
         });
     }
 
-    async createNamespace(ns_name: string) {
+    public async deletePipeline(appname: string) {
+        await this.customObjectsApi.deleteNamespacedCustomObject(
+            "keroku.dev",
+            "v1alpha1",
+            "keroku",
+            "pipelines",
+            appname
+        ).catch(error => {
+            console.log(error);
+        });
+    }
+
+    public async getPipeline(appname: string) {
+        let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
+            "keroku.dev",
+            "v1alpha1",
+            "keroku",
+            "pipelines",
+            appname
+        ).catch(error => {
+            console.log(error);
+        });
+        if (pipeline) {
+            return pipeline.body;
+        } else {
+            return null;
+        }
+    }
+
+    public async createNamespace(ns_name: string) {
 
         console.log("create namespace ");
 
@@ -79,7 +108,19 @@ export class Kubectl {
         }
     }
 
-    async getKubeVersion() {
+    public async deleteNamespace(ns_name: string) {
+
+        console.log("delete namespace ");
+
+        try {
+            const ret = await this.coreV1Api.deleteNamespace(ns_name);
+            //debug.debug(ret);
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+    public async getKubeVersion() {
         let versionInfo = await this.versionApi.getCode()
         let kubeVersion = versionInfo.body;
         console.log(kubeVersion);

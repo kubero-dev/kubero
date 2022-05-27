@@ -15,7 +15,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-for="item in appsList.items" v-bind:key="item.spec.appName">
+                <v-row v-for="item in apps" :key="item.spec.appName">
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
                         {{ item.spec.appName }}
                     </v-col>
@@ -30,6 +30,7 @@
                         elevation="2"
                         fab
                         x-small
+                        @click="deleteApp(item.spec.appName)"
                         >
                             <v-icon dark>
                                 mdi-delete
@@ -47,31 +48,49 @@
 import axios from "axios";
 export default {
     sockets: {
-        updatedApps(instances) {
+        async updatedApps(instances) {
             console.log("updatedApps", instances);
+            let _apps = await this.loadAppsList();
+            this.apps = _apps;
         },
     },
     mounted() {
         this.loadAppsList();
     },
     data: () => ({
+        apps: [],
+        /*
         appsList: {
             items: [],
         },
+        */
     }),
     components: {
     },
     methods: {
-      loadAppsList() {
+      async loadAppsList() {
+        const self = this;
         axios.get(`/api/apps`)
         .then(response => {
             console.log(response);
-            this.appsList = response.data;
+            //self.appsList = response.data;
+            self.apps = response.data.items;
+            return response.data.items;
         })
         .catch(error => {
             console.log(error);
         });
-      }
+      },
+      deleteApp(app) {
+        axios.delete(`/api/apps/${app}`)
+        .then(response => {
+            console.log(response);
+            this.loadAppsList();
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
     },
 }
 </script>
