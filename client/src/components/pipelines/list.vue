@@ -5,7 +5,7 @@
 
                 <v-row>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                        Show a List of Pipelines
+                        Pipelines
                     </v-col>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                         <v-btn
@@ -17,7 +17,7 @@
 
                 <v-row v-for="item in apps" :key="item.spec.appName">
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        {{ item.spec.appName }}
+                        <a :href="'/#/pipeline/details/'+item.spec.appName">{{ item.spec.appName }}</a>
                     </v-col>
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
                         {{ item.spec.gitrepo }}
@@ -25,6 +25,8 @@
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
                         {{ item.spec.reviewapps }}
                     </v-col>
+
+                    <!-- Actions -->
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
                         <v-btn
                         elevation="2"
