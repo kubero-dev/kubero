@@ -1,7 +1,5 @@
 <template>
-    <v-container :fluid="true">
-        <v-layout row wrap>
-            <v-flex xs12 md12>
+    <v-container>
 
                 <v-row>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
@@ -40,9 +38,6 @@
                         </v-btn>
                     </v-col>
                 </v-row>
-
-            </v-flex>
-        </v-layout>
     </v-container>
 </template>
 

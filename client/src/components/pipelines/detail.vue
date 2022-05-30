@@ -46,7 +46,6 @@
                                 <v-btn
                                     color="deep-purple lighten-2"
                                     text
-                                    @click="reserve"
                                     outlined
                                 >
                                     Promote to Production
@@ -54,7 +53,6 @@
                                 <v-btn
                                     color="deep-purple lighten-2"
                                     text
-                                    @click="reserve"
                                 >
                                     Open app
                                 </v-btn>
@@ -92,7 +90,6 @@
                                 <v-btn
                                     color="deep-purple lighten-2"
                                     text
-                                    @click="reserve"
                                     outlined
                                 >
                                     Promote to Production
@@ -100,7 +97,6 @@
                                 <v-btn
                                     color="deep-purple lighten-2"
                                     text
-                                    @click="reserve"
                                 >
                                     Open app
                                 </v-btn>
