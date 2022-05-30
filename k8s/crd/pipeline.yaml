@@ -33,8 +33,19 @@ spec:
                     properties:
                       name:
                         type: string
+                      domain:
+                        type: string
                       branch:
                         type: string
+                      autodeploy:
+                        type: boolean
+                      podsize:
+                        type: string
+                      webreplicas:
+                        type: integer
+                      workerreplicas:
+                        type: integer
+                      
   scope: Namespaced
   names:
     # plural name to be used in the URL: /apis/<group>/<version>/<plural>

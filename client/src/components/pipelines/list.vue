@@ -1,11 +1,12 @@
 <template>
     <v-container>
 
-                <v-row>
+                <v-row class="justify-space-between">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                         Pipelines
                     </v-col>
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+                    <v-spacer />
+                    <v-col>
                         <v-btn
                         elevation="2"
                         :to="{ name: 'New Pipeline'}"

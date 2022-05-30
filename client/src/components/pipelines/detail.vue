@@ -1,107 +1,75 @@
 <template>
     <v-container :fluid="true">
-        <v-layout wrap>
+        <v-layout>
                 <v-row>
                     
                     <v-col>
-                        <v-card
-                        class="pa-2"
-                        outlined
+                        <p class="text-uppercase">Review Apps</p>
+
+                        <Appcard></Appcard>
+                        <Appcard></Appcard>
+                        <Appcard></Appcard>
+                        <Appcard></Appcard>
+
+                        <v-btn
                         elevation="2"
+                        icon
+                        large
+                        :to="{ name: 'New App'}"
+                        class="mt-5"
                         >
-                        PR Apps
-                        </v-card>
+                            <v-icon dark>
+                                mdi-plus
+                            </v-icon>
+                        </v-btn>
                     </v-col>
+
+
+                    <!-- Testing -->
+                    <v-col>
+                        <p class="text-uppercase">Testing</p>
+
+                        <Appcard></Appcard>
+
+                        <v-btn
+                        elevation="2"
+                        icon
+                        large
+                        :to="{ name: 'New App'}"
+                        class="mt-5"
+                        >
+                            <v-icon dark>
+                                mdi-plus
+                            </v-icon>
+                        </v-btn>
+                    </v-col>
+
+
+                    <!-- Staging -->
+                    <v-col>
+                        <p class="text-uppercase">Stageing</p>
+
+                        <Appcard></Appcard>
+
+                        <v-btn
+                        elevation="2"
+                        icon
+                        large
+                        :to="{ name: 'New App'}"
+                        class="mt-5"
+                        >
+                            <v-icon dark>
+                                mdi-plus
+                            </v-icon>
+                        </v-btn>
+                    </v-col>
+
                     <!-- Production -->
                     <v-col>
                         <p class="text-uppercase">Production</p>
 
-                        <v-card
-                        class="pa-2"
-                        outlined
-                        elevation="2"
-                        >
+                        <Appcard></Appcard>
 
-                        <v-card-title>MyApp-production</v-card-title>
-
-                            <v-card-text>
-                                <v-row
-                                    class="mx-0"
-                                >
-                                    <v-icon left>mdi-github</v-icon>
-
-                                    <div class="grey--text text-subtitle-1">
-                                        myOrg/my-awesome-app
-                                    </div>
-                                </v-row>
-                                <p></p>
-                                <v-chip label class="mr-1">Autodeploy | master</v-chip>
-                                <v-chip label class="mr-1">c142824f</v-chip>
-
-                            </v-card-text>
-
-                            <v-divider></v-divider>
-
-                            <v-card-actions class="ml-2">
-                                <v-btn
-                                    color="deep-purple lighten-2"
-                                    text
-                                    outlined
-                                >
-                                    Promote to Production
-                                </v-btn>
-                                <v-btn
-                                    color="deep-purple lighten-2"
-                                    text
-                                >
-                                    Open app
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
-
-
-                        <v-card
-                        class="pa-2 mt-5"
-                        outlined
-                        elevation="2"
-                        >
-
-                        <v-card-title>MyApp-production</v-card-title>
-
-                            <v-card-text>
-                                <v-row
-                                    class="mx-0"
-                                >
-                                    <v-icon left>mdi-github</v-icon>
-
-                                    <div class="grey--text text-subtitle-1">
-                                        myOrg/my-awesome-app
-                                    </div>
-                                </v-row>
-                                <p></p>
-                                <v-chip label class="mr-1">Autodeploy | master</v-chip>
-                                <v-chip label class="mr-1">c142824f</v-chip>
-
-                            </v-card-text>
-
-                            <v-divider></v-divider>
-
-                            <v-card-actions class="ml-2">
-                                <v-btn
-                                    color="deep-purple lighten-2"
-                                    text
-                                    outlined
-                                >
-                                    Promote to Production
-                                </v-btn>
-                                <v-btn
-                                    color="deep-purple lighten-2"
-                                    text
-                                >
-                                    Open app
-                                </v-btn>
-                            </v-card-actions>
-                        </v-card>
                         <v-btn
                         elevation="2"
                         icon
@@ -118,3 +86,24 @@
         </v-layout>
     </v-container>
 </template>
+
+<script>
+import Appcard from "./appcard.vue";
+
+export default {
+    sockets: {
+    },
+    mounted() {
+    },
+    data: () => ({
+    }),
+    components: {
+        Appcard,
+    },
+    methods: {
+    },
+}
+</script>
+
+<style lang="scss">
+</style>
