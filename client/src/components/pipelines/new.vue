@@ -90,7 +90,7 @@ export default {
     }),
     methods: {
       saveForm() {
-        axios.post(`/api/apps`, {
+        axios.post(`/api/pipelines`, {
           appname: this.appname,
           gitrepo: this.gitrepo,
           reviewapps: this.reviewapps

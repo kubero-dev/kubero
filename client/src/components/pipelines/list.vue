@@ -72,7 +72,7 @@ export default {
     methods: {
       async loadAppsList() {
         const self = this;
-        axios.get(`/api/apps`)
+        axios.get(`/api/pipelines`)
         .then(response => {
             console.log(response);
             //self.appsList = response.data;
@@ -84,7 +84,7 @@ export default {
         });
       },
       deleteApp(app) {
-        axios.delete(`/api/apps/${app}`)
+        axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
             this.loadAppsList();

@@ -15,7 +15,7 @@
                     <!-- Production -->
                     <v-col>
                         <p class="text-uppercase">Production</p>
-                        
+
                         <v-card
                         class="pa-2"
                         outlined
@@ -110,6 +110,7 @@
                         elevation="2"
                         icon
                         large
+                        :to="{ name: 'New App'}"
                         class="mt-5"
                         >
                             <v-icon dark>

@@ -1,7 +1,8 @@
 import VueRouter from "vue-router"
-import AppsList from "@/components/pipelines/list"
-import AppsNew from "@/components/pipelines/new"
-import AppsDetails from "@/components/pipelines/detail"
+import PipelineList from "@/components/pipelines/list"
+import PipelineNew from "@/components/pipelines/new"
+import PipelineDetails from "@/components/pipelines/detail"
+import AppsNew from "@/components/apps/new"
 import Settingsform from "@/components/settings/form"
 import Addonslist from "@/components/addons/list"
 
@@ -10,17 +11,22 @@ export default new VueRouter({
     {
       path: "/",
       name: "Pipelines",
-      component: AppsList
+      component: PipelineList
     },
     {
       path: "/pipeline/new",
       name: "New Pipeline",
-      component: AppsNew
+      component: PipelineNew
     },
     {
       path: "/pipeline/details/:name",
       name: "PupeLine Details",
-      component: AppsDetails
+      component: PipelineDetails
+    },
+    {
+      path: "/apps/new",
+      name: "New App",
+      component: AppsNew
     },
     {
       path: "/settings",
