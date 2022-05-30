@@ -1,6 +1,6 @@
 <template>
 <v-card
-    class="pa-2 mt-5"
+    class="mt-5"
     outlined
     elevation="2"
     >
@@ -11,7 +11,7 @@
         <v-row
             class="mx-0"
         >
-            <v-icon left>mdi-github</v-icon>
+            <v-icon left small>mdi-github</v-icon>
 
             <div class="grey--text text-subtitle-1">
                 myOrg/my-awesome-app
@@ -42,3 +42,22 @@
     </v-card-actions>
 </v-card>
 </template>
+
+<style>
+.v-btn.v-size--default {
+    font-size: 0.675rem;
+}
+
+.mr-1.v-chip.v-size--default {
+    font-size: 12px;
+    height: 28px;
+}
+
+.v-application .text-subtitle-1 {
+    font-size: 0.825rem !important;
+}
+
+.v-application .v-card__title {
+    font-size: 1.1rem;
+}
+</style>
