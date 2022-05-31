@@ -20,9 +20,6 @@
 <script>
 export default {
     sockets: {
-        updatedApps(instances) {
-            console.log("updatedApps", instances);
-        },
     },
     mounted() {
     },

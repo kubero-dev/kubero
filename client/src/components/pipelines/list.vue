@@ -46,14 +46,14 @@
 import axios from "axios";
 export default {
     sockets: {
-        async updatedApps(instances) {
-            console.log("updatedApps", instances);
-            let _apps = await this.loadAppsList();
+        async updatedPipelines(instances) {
+            console.log("updatedPipelines", instances);
+            let _apps = await this.loadPipelinesList();
             this.apps = _apps;
         },
     },
     mounted() {
-        this.loadAppsList();
+        this.loadPipelinesList();
     },
     data: () => ({
         apps: [],
@@ -66,7 +66,7 @@ export default {
     components: {
     },
     methods: {
-      async loadAppsList() {
+      async loadPipelinesList() {
         const self = this;
         axios.get(`/api/pipelines`)
         .then(response => {

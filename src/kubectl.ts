@@ -4,6 +4,7 @@ debug('app:kubectl')
 import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { pipeline as pipeline_chart} from './charts/pipeline';
+import { IApp } from './types';
 
 
 export class Kubectl {
@@ -125,5 +126,9 @@ export class Kubectl {
         let kubeVersion = versionInfo.body;
         console.log(kubeVersion);
         return kubeVersion;
+    }
+
+    public async createApp(pipelineName: string, app: IApp){
+
     }
 }

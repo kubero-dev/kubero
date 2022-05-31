@@ -1,5 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
+import { IApp, IPipeline} from './types';
 debug('app:keroku')
 
 
@@ -14,39 +15,45 @@ export class Keroku {
         this._io = io;
     }
 
-    public async newApp(appname: string, gitrepo: string, reviewapps: boolean) {
-        debug.debug('create newApp: '+appname);
+    public async newPipeline(pipeline: IPipeline) {
+        debug.debug('create newPipeline: '+pipeline.name);
         //this.kubectl.getKubeVersion();
-        await this.kubectl.createPipeline(appname, gitrepo, reviewapps);
+        await this.kubectl.createPipeline(pipeline.name, pipeline.gitrepo, pipeline.reviewapps);
 
-        this.kubectl.createNamespace(appname+"-production");
-        if (reviewapps) {
-            debug.debug('create reviewapp: '+appname);
-            this.kubectl.createNamespace(appname+"-review");
+        this.kubectl.createNamespace(pipeline.name+"-production");
+        if (pipeline.reviewapps) {
+            debug.debug('create reviewapp: '+pipeline.name);
+            this.kubectl.createNamespace(pipeline.name+"-review");
         }
-        this._io.emit('updatedApps', "created");
+        this._io.emit('updatedPipelines', "created");
 
     }
 
-    public async listApps() {
-        debug.debug('listApps');
+    public async listPipelines() {
+        debug.debug('listPipeline');
         let apps = await this.kubectl.getPipelinesList();
         return apps;
     }
 
-    public deleteApp(appname: string) {
-        debug.debug('deleteApp: '+appname);
+    public deletePipeline(appname: string) {
+        debug.debug('deletePipeline: '+appname);
 
         this.kubectl.getPipeline(appname).then(async pipeline =>{
             if (pipeline) {
                 await this.kubectl.deletePipeline(appname);
                 this.kubectl.deleteNamespace(appname+"-production");
                 this.kubectl.deleteNamespace(appname+"-review");
-                this._io.emit('updatedApps', "deleted");
+                this._io.emit('updatedPipelines', "deleted");
             }
         })
         .catch(error => {
             debug.debug(error);
         });
+    }
+
+    public async newApp(app: IApp) {
+        debug.debug('create newApp: '+app.name+' in '+ app.phase);
+        await this.kubectl.createApp(app.phase, app);
+        this._io.emit('updatedApps', "created");
     }
 }
