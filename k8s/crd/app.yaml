@@ -2,7 +2,7 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   # name must match the spec fields below, and be in the form: <plural>.<group>
-  name: pipelines.kubero.dev
+  name: applications.kubero.dev
 spec:
   # group name to use for REST API: /apis/<group>/<version>
   group: kubero.dev
@@ -22,25 +22,32 @@ spec:
               properties:
                 name:
                   type: string
-                reviewapps:
+                pipline:
+                  type: string
+                phase:
+                  type: string
+                gitrepo:
+                  type: string
+                branch:
+                  type: string
+                autodeploy:
                   type: boolean
-                phases:
-                  type: array
-                  items:
-                      type: object
-                      properties:
-                        name:
-                          type: string
-                        enabled:
-                          type: boolean
+                domain:
+                  type: string
+                podsize:
+                  type: string
+                webreplicas:
+                  type: integer
+                workerreplicas:
+                  type: integer
   scope: Namespaced
   names:
     # plural name to be used in the URL: /apis/<group>/<version>/<plural>
-    plural: pipelines
+    plural: applications
     # singular name to be used as an alias on the CLI and for display
-    singular: pipeline
+    singular: application
     # kind is normally the CamelCased singular type. Your resource manifests use this.
-    kind: Pipeline
+    kind: Application
     # shortNames allow shorter string to match your resource on the CLI
     shortNames:
-    - pl
+    - app

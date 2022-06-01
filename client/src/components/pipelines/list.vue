@@ -16,10 +16,7 @@
 
                 <v-row v-for="item in apps" :key="item.spec.appName">
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        <a :href="'/#/pipeline/details/'+item.spec.appName">{{ item.spec.appName }}</a>
-                    </v-col>
-                    <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        {{ item.spec.gitrepo }}
+                        <a :href="'/#/pipeline/'+item.spec.name+'/apps'">{{ item.spec.name }}</a>
                     </v-col>
                     <v-col cols="12" sm="3" md="3" lg="3" xl="3">
                         {{ item.spec.reviewapps }}
@@ -31,7 +28,7 @@
                         elevation="2"
                         fab
                         x-small
-                        @click="deleteApp(item.spec.appName)"
+                        @click="deletePipeline(item.spec.name)"
                         >
                             <v-icon dark>
                                 mdi-delete
@@ -79,11 +76,11 @@ export default {
             console.log(error);
         });
       },
-      deleteApp(app) {
+      deletePipeline(app) {
         axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
-            this.loadAppsList();
+            this.loadPipelinesList();
         })
         .catch(error => {
             console.log(error);

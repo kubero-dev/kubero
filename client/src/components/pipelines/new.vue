@@ -30,20 +30,6 @@
           cols="12"
           md="4"
         >
-          <v-text-field
-            v-model="gitrepo"
-            :rules="repositoryRules"
-            :counter="60"
-            label="Repository"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          cols="12"
-          md="4"
-        >
         
           <v-switch
             v-model="reviewapps"
@@ -75,7 +61,6 @@ export default {
     data: () => ({
       valid: false,
       appname: '',
-      gitrepo: '',
       reviewapps: true,
       nameRules: [
         v => !!v || 'Name is required',
@@ -92,7 +77,6 @@ export default {
       saveForm() {
         axios.post(`/api/pipelines`, {
           appname: this.appname,
-          gitrepo: this.gitrepo,
           reviewapps: this.reviewapps
         })
         .then(response => {

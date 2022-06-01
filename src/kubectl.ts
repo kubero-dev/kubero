@@ -4,6 +4,7 @@ debug('app:kubectl')
 import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { pipeline as pipeline_chart} from './charts/pipeline';
+import { application as application_chart} from './charts/app';
 import { IApp } from './types';
 
 
@@ -45,18 +46,17 @@ export class Kubectl {
 
     public async getPipelinesList() {
 
-        let pipelines = await this.customObjectsApi.listNamespacedCustomObject('keroku.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
+        let pipelines = await this.customObjectsApi.listNamespacedCustomObject('kubero.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
         //console.log(pipelines.body);
         return pipelines.body;
     }
 
-    public async createPipeline(appname: string, gitrepo: string, reviewapps: boolean) {
+    public async createPipeline(appname: string, reviewapps: boolean) {
         pipeline_chart.metadata.name = appname;
-        pipeline_chart.spec.appName = appname;
-        pipeline_chart.spec.gitrepo = gitrepo;
+        pipeline_chart.spec.name = appname;
         
         await this.customObjectsApi.createNamespacedCustomObject(
-            "keroku.dev",
+            "kubero.dev",
             "v1alpha1",
             "keroku",
             "pipelines",
@@ -68,7 +68,7 @@ export class Kubectl {
 
     public async deletePipeline(appname: string) {
         await this.customObjectsApi.deleteNamespacedCustomObject(
-            "keroku.dev",
+            "kubero.dev",
             "v1alpha1",
             "keroku",
             "pipelines",
@@ -80,7 +80,7 @@ export class Kubectl {
 
     public async getPipeline(appname: string) {
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
-            "keroku.dev",
+            "kubero.dev",
             "v1alpha1",
             "keroku",
             "pipelines",
@@ -128,7 +128,22 @@ export class Kubectl {
         return kubeVersion;
     }
 
-    public async createApp(pipelineName: string, app: IApp){
+    public async createApp(app: IApp){
+
+        console.log(app)
+
+        application_chart.metadata.name = app.name;
+        application_chart.spec.name = app.name;
+        
+        await this.customObjectsApi.createNamespacedCustomObject(
+            "kubero.dev",
+            "v1alpha1",
+            app.pipeline+'-'+app.phase,
+            "applications",
+            application_chart
+        ).catch(error => {
+            console.log(error);
+        });
 
     }
 }

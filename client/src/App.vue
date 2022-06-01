@@ -79,3 +79,9 @@ export default {
     }),
 };
 </script>
+
+<style>
+.v-icon {
+  color: #8560A9!important;
+}
+</style>

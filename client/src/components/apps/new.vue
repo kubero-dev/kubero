@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
             <h2>
-                Create a new App
+                Create a new App in {{ this.pipeline }}
             </h2>
             <p class="text-justify">
                 A App
@@ -32,9 +32,9 @@
           md="6"
         >
           <v-select
+            v-model="phase"
             :items="phases"
             label="Phase"
-            value="production"
           ></v-select>
         </v-col>
       </v-row>
@@ -63,12 +63,12 @@
           md="6"
         >
           <v-text-field
+            v-model="gitrepo"
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
             readonly
             required
-            value="asdf/asdf"
           >asdf</v-text-field>
         </v-col>
       </v-row>
@@ -101,7 +101,7 @@
       <v-divider class="ma-5"></v-divider>
       <!-- ENV VARS-->
       <h4 class="text-uppercase">Environment vars</h4>
-      <v-row v-for="variable in envvars" v-bind:key="variable.value">
+      <v-row v-for="variable in envvars" v-bind:key="variable.id">
         <v-col
           cols="12"
           md="3"
@@ -150,9 +150,9 @@
           md="6"
         >
           <v-select
-            :items="podsize"
+            v-model="podsize"
+            :items="podsizes"
             label="Podsize"
-            value="medium"
           ></v-select>
         </v-col>
       </v-row>
@@ -162,7 +162,7 @@
           md="6"
         >
           <v-slider
-            v-model="webPodCount"
+            v-model="webreplicas"
             label="Web Pods"
             hint="Im a hint"
             max="10"
@@ -177,7 +177,7 @@
           md="6"
         >
           <v-slider
-            v-model="workerPodCount"
+            v-model="workerreplicas"
             label="Worker Pods"
             hint="Im a hint"
             max="10"
@@ -207,29 +207,40 @@
 <script>
 import axios from "axios";
 export default {
+    props: {
+      pipeline: {
+        type: String,
+        default: "MISSSING"
+      },
+      phase: {
+        type: String,
+        default: "MISSSING"
+      }
+    },
     data: () => ({
       valid: false,
       appname: '',
       phases: [
         { text: 'Production', value: 'production' },
-        { text: 'Staging', value: 'staging' },
-        { text: 'Testing', value: 'testing' },
+        { text: 'Staging', value: 'stage' },
+        { text: 'Testing', value: 'test' },
       ],
-      gitrepo: '',
+      gitrepo: 'asdf/asdf', //TODO: load it from somewhere
       branch: '',
       autodeploy: true,
       domain: '',
       envvars: [
         { key: '', value: '' },
       ],
-      podsize: [
+      podsize: '',
+      podsizes: [
         { text: 'Small (0.2m cpu, 0.5g ram)', value: 'small' },
         { text: 'Medium (0.5m cpu, 1g ram)', value: 'medium' },
         { text: 'Large (1m cpu, 1.5g ram)', value: 'large' },
         { text: 'XLarge (2m cpu, 2.5g ram)', value: 'xlarge' },
       ],
-      webPodCount: 0,
-      workerPodCount: 0,
+      webreplicas: 0,
+      workerreplicas: 0,
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -254,20 +265,22 @@ export default {
     methods: {
       saveForm() {
         axios.post(`/api/apps`, {
+          pipeline: this.pipeline,
+          phase: this.phase,
           appname: this.appname,
           gitrepo: this.gitrepo,
-          phases: this.phases,
           branch: this.branch,
           autodeploy: this.autodeploy,
           domain: this.domain,
           envvars: this.envvars,
           podsize: this.podsize,
-
+          webreplicas: this.webreplicas,
+          workerreplicas: this.workerreplicas,
         })
         .then(response => {
           this.appname = '';
           console.log(response);
-          this.$router.push({path: '/'});
+          this.$router.push({path: '/pipeline/' + this.pipeline + '/apps'});
         })
         .catch(error => {
           console.log(error);

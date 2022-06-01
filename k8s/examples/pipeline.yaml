@@ -1,28 +1,16 @@
-apiVersion: "keroku.dev/v1alpha1"
+apiVersion: "kubero.dev/v1alpha1"
 kind: Pipeline
 metadata:
-  name: my-new-app-example
+  name: my-new-pipeline-example
+  labels: 
+    manager: 'kubero'
 spec:
-  appName: my-awesome-app
-  gitrepo: example-org/my-awesome-app
+  name: my-awesome-app
   reviewapps: true
   phases:
+    - name: test
+      enabled: true
+    - name: stage
+      enabled: false
     - name: production
-      domain: www.example.org
-      podsize: medium
-      webreplicas: 3
-      workerreplicas: 1
-    - name: stageing
-      domain: stage.example.org
-      branch: master
-      autodeploy: true
-      podsize: medium
-      webreplicas: 1
-      workerreplicas: 1
-    - name: testing
-      domain: test.example.org
-      branch: master
-      autodeploy: true
-      podsize: medium
-      webreplicas: 1
-      workerreplicas: 1
+      enabled: false

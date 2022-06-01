@@ -1,9 +1,10 @@
 export interface IApp {
     name: string;
+    pipeline: string;
     phase: string;
     gitrepo: string;
     branch: string;
-    reviewapps: boolean;
+    autodeploy: boolean;
     domain?: string;
     podsize: string;
     webreplicas?: number;
@@ -12,6 +13,5 @@ export interface IApp {
 
 export interface IPipeline {
     name: string;
-    gitrepo: string; 
     reviewapps: boolean;
 }

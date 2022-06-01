@@ -5,7 +5,7 @@
     elevation="2"
     >
 
-    <v-card-title>MyApp-production</v-card-title>
+    <v-card-title>{{ this.name }}</v-card-title>
 
     <v-card-text>
         <v-row
@@ -14,12 +14,12 @@
             <v-icon left small>mdi-github</v-icon>
 
             <div class="grey--text text-subtitle-1">
-                myOrg/my-awesome-app
+                {{ this.gitrepo }}
             </div>
         </v-row>
         <p></p>
-        <v-chip label class="mr-1">Autodeploy | master</v-chip>
-        <v-chip label class="mr-1">c142824f</v-chip>
+        <v-chip label class="mr-1">Autodeploy | {{ this.branch }}</v-chip>
+        <v-chip label class="mr-1">{{ this.commithash }}</v-chip>
 
     </v-card-text>
 
@@ -34,6 +34,7 @@
             Promote to Production
         </v-btn>
         <v-btn
+            v-if="this.domain"
             color="deep-purple lighten-2"
             text
         >
@@ -42,6 +43,32 @@
     </v-card-actions>
 </v-card>
 </template>
+
+<script>
+export default {
+    props: {
+      name: {
+        type: String,
+        default: "AppName"
+      },
+      gitrepo: {
+        type: String,
+        default: "myOrg/my-awesome-app"
+      },
+      branch: {
+        type: String,
+        default: "master"
+      },
+      commithash: {
+        type: String,
+        default: "c142824f"
+      },
+      domain: {
+        type: String,
+      }
+    }
+    }
+</script>
 
 <style>
 .v-btn.v-size--default {

@@ -1,20 +1,27 @@
 export let pipeline = {
-    apiVersion: "keroku.dev/v1alpha1",
+    apiVersion: "kubero.dev/v1alpha1",
     kind: "Pipeline",
     metadata: {
         name: 'REPLACED_BY_PIPELINE_NAME',
         labels: {
-            manager: 'keroku'
+            manager: 'kubero'
         }
     },
     spec: {
-        appName: "my-awesome-app",
-        gitrepo: "example-org/my-awesome-app",
+        name: "REPLACED_BY_PIPELINE_NAME",
         reviewapps: true,
         phases: [
             { 
+                name: "test",
+                enabled: false
+            },
+            { 
+                name: "stage",
+                enabled: false
+            },
+            { 
                 name: "production",
-                branch: "master"
+                enabled: true
             }
         ]
     }

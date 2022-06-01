@@ -18,7 +18,7 @@ export class Keroku {
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create newPipeline: '+pipeline.name);
         //this.kubectl.getKubeVersion();
-        await this.kubectl.createPipeline(pipeline.name, pipeline.gitrepo, pipeline.reviewapps);
+        await this.kubectl.createPipeline(pipeline.name, pipeline.reviewapps);
 
         this.kubectl.createNamespace(pipeline.name+"-production");
         if (pipeline.reviewapps) {
@@ -52,8 +52,8 @@ export class Keroku {
     }
 
     public async newApp(app: IApp) {
-        debug.debug('create newApp: '+app.name+' in '+ app.phase);
-        await this.kubectl.createApp(app.phase, app);
+        debug.debug('create newApp: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        await this.kubectl.createApp(app);
         this._io.emit('updatedApps', "created");
     }
 }

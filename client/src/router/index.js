@@ -19,14 +19,15 @@ export default new VueRouter({
       component: PipelineNew
     },
     {
-      path: "/pipeline/details/:name",
+      path: "/pipeline/:pipeline/apps",
       name: "PupeLine Details",
       component: PipelineDetails
     },
     {
-      path: "/apps/new",
+      path: "/pipeline/:pipeline/:phase/apps/new",
       name: "New App",
-      component: AppsNew
+      component: AppsNew,
+      props: true
     },
     {
       path: "/settings",
