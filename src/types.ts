@@ -14,4 +14,5 @@ export interface IApp {
 export interface IPipeline {
     name: string;
     reviewapps: boolean;
+    phases: Object[];
 }

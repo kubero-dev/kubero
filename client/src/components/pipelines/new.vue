@@ -30,10 +30,43 @@
           cols="12"
           md="4"
         >
-        
           <v-switch
             v-model="reviewapps"
             :label="`Review Apps: ${reviewapps.toString()}`"
+          ></v-switch>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-switch
+            v-model="phases.test"
+            :label="`Test: ${phases.test.toString()}`"
+          ></v-switch>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-switch
+            v-model="phases.stage"
+            :label="`Stage: ${phases.stage.toString()}`"
+          ></v-switch>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-switch
+            v-model="phases.production"
+            :label="`Production: ${phases.production.toString()}`"
+            readonly
           ></v-switch>
         </v-col>
       </v-row>
@@ -62,6 +95,11 @@ export default {
       valid: false,
       appname: '',
       reviewapps: true,
+      phases: {
+        test: true,
+        stage: true,
+        production: true
+      },
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 10 characters',
@@ -77,6 +115,7 @@ export default {
       saveForm() {
         axios.post(`/api/pipelines`, {
           appname: this.appname,
+          phases: this.phases,
           reviewapps: this.reviewapps
         })
         .then(response => {

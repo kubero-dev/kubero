@@ -5,7 +5,7 @@ import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@k
 import { namespace as namespace_chart} from './charts/namespace';
 import { pipeline as pipeline_chart} from './charts/pipeline';
 import { application as application_chart} from './charts/app';
-import { IApp } from './types';
+import { IApp, IPipeline } from './types';
 
 
 export class Kubectl {
@@ -51,10 +51,22 @@ export class Kubectl {
         return pipelines.body;
     }
 
-    public async createPipeline(appname: string, reviewapps: boolean) {
-        pipeline_chart.metadata.name = appname;
-        pipeline_chart.spec.name = appname;
+    public async createPipeline(pipeline: IPipeline) {
+        pipeline_chart.metadata.name = pipeline.name;
+        pipeline_chart.spec.name = pipeline.name;
         
+
+
+        // create namespace for each phase
+        pipeline_chart.spec.phases.length = 0; // clear phases
+        for (const [phase, enabled] of Object.entries(pipeline.phases)) {
+
+            pipeline_chart.spec.phases.push({
+                name: phase,
+                enabled: !!enabled
+            });
+        }
+
         await this.customObjectsApi.createNamespacedCustomObject(
             "kubero.dev",
             "v1alpha1",

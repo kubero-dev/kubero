@@ -10,6 +10,7 @@ Router.get('/config', async function (req: Request, res: Response) {
 Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
         name: req.body.appname, 
+        phases: req.body.phases,
         reviewapps: req.body.reviewapps
     }; 
     req.app.locals.keroku.newPipeline(pipeline);

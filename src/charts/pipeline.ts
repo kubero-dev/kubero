@@ -10,19 +10,7 @@ export let pipeline = {
     spec: {
         name: "REPLACED_BY_PIPELINE_NAME",
         reviewapps: true,
-        phases: [
-            { 
-                name: "test",
-                enabled: false
-            },
-            { 
-                name: "stage",
-                enabled: false
-            },
-            { 
-                name: "production",
-                enabled: true
-            }
+        phases: [{}
         ]
     }
 }

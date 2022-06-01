@@ -17,14 +17,26 @@ export class Keroku {
 
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create newPipeline: '+pipeline.name);
-        //this.kubectl.getKubeVersion();
-        await this.kubectl.createPipeline(pipeline.name, pipeline.reviewapps);
 
-        this.kubectl.createNamespace(pipeline.name+"-production");
+        console.log(pipeline.phases);
+
+        // Create the Pipeline CRD
+        await this.kubectl.createPipeline(pipeline);
+
+        // create namespace for each phase
+        for (const [phase, enabled] of Object.entries(pipeline.phases)) {
+            if (enabled == "true") {
+                await this.kubectl.createNamespace(pipeline.name+"-"+phase);
+            }
+        }
+
+        // create pipeline if enabled
         if (pipeline.reviewapps) {
             debug.debug('create reviewapp: '+pipeline.name);
             this.kubectl.createNamespace(pipeline.name+"-review");
         }
+
+        // update agents
         this._io.emit('updatedPipelines', "created");
 
     }

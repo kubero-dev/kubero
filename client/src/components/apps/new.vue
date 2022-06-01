@@ -7,7 +7,7 @@
                 Create a new App in {{ this.pipeline }}
             </h2>
             <p class="text-justify">
-                A App
+                in phase {{ this.phase }}
             </p>
         </v-col>
       </v-row>
@@ -26,18 +26,6 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-select
-            v-model="phase"
-            :items="phases"
-            label="Phase"
-          ></v-select>
-        </v-col>
-      </v-row>
       <v-row>
         <v-col
           cols="12"
@@ -267,11 +255,11 @@ export default {
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
           phase: this.phase,
-          appname: this.appname,
+          appname: this.appname.toLowerCase(),
           gitrepo: this.gitrepo,
           branch: this.branch,
           autodeploy: this.autodeploy,
-          domain: this.domain,
+          domain: this.domain.toLowerCase(),
           envvars: this.envvars,
           podsize: this.podsize,
           webreplicas: this.webreplicas,
