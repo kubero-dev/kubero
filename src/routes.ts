@@ -18,13 +18,13 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
 });
 
 Router.get('/pipelines', async function (req: Request, res: Response) {
-    let apps = await req.app.locals.keroku.listPipelines();
-    res.send(apps);
+    let pipelines = await req.app.locals.keroku.listPipelines();
+    res.send(pipelines);
 });
 
 Router.delete('/pipelines/:name', async function (req: Request, res: Response) {
-    let apps = await req.app.locals.keroku.deletePipeline(req.params.name);
-    res.send(apps);
+    let pipelines = await req.app.locals.keroku.deletePipeline(req.params.name);
+    res.send(pipelines);
 });
 
 Router.post('/apps', async function (req: Request, res: Response) {
@@ -42,4 +42,9 @@ Router.post('/apps', async function (req: Request, res: Response) {
     };
     req.app.locals.keroku.newApp(app);
     res.send("new");
+});
+
+Router.get('/pipelines/:name/apps', async function (req: Request, res: Response) {
+    let apps = await req.app.locals.keroku.listApps(req.params.name);
+    res.send(apps);
 });

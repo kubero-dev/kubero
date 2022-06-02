@@ -1,8 +1,7 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline} from './types';
+import { IApp, IPipeline, IKubectlPipeline} from './types';
 debug('app:keroku')
-
 
 import { Kubectl } from './kubectl';
 
@@ -15,18 +14,20 @@ export class Keroku {
         this._io = io;
     }
 
+    // creates a new pipeline in the same namespace as the kubero app
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create newPipeline: '+pipeline.name);
 
-        console.log(pipeline.phases);
+        //console.log(pipeline.phases);
 
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
 
+        //console.log(pipeline.phases);
         // create namespace for each phase
-        for (const [phase, enabled] of Object.entries(pipeline.phases)) {
-            if (enabled == "true") {
-                await this.kubectl.createNamespace(pipeline.name+"-"+phase);
+        for (const phase of pipeline.phases) {
+            if (phase.enabled == true) {
+                await this.kubectl.createNamespace(pipeline.name+"-"+phase.name);
             }
         }
 
@@ -38,15 +39,15 @@ export class Keroku {
 
         // update agents
         this._io.emit('updatedPipelines', "created");
-
     }
 
     public async listPipelines() {
         debug.debug('listPipeline');
-        let apps = await this.kubectl.getPipelinesList();
-        return apps;
+        let pipelines = await this.kubectl.getPipelinesList();
+        return pipelines;
     }
 
+    // delete a pipeline and all its namespaces/phases
     public deletePipeline(appname: string) {
         debug.debug('deletePipeline: '+appname);
 
@@ -63,9 +64,32 @@ export class Keroku {
         });
     }
 
+    // create a new app in a specified pipeline and phase
     public async newApp(app: IApp) {
         debug.debug('create newApp: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.createApp(app);
         this._io.emit('updatedApps', "created");
+    }
+
+    // list all apps in a pipeline
+    public async listApps(pipelineName: string) {
+        debug.debug('listApps in '+pipelineName);
+        let kpipeline = await this.kubectl.getPipeline(pipelineName);
+
+        let pipeline = kpipeline.spec
+        //await pipeline.phases.forEach(async (phase, key) => { // does not work, wait for all iterations to finish
+        await Promise.all(pipeline.phases.map(async (phase, key) => {
+
+            console.log(phase.name)
+            let apps = await this.kubectl.getAppsList(pipelineName+"-"+phase.name);
+            
+            pipeline.phases[key].apps = [];
+            for (const app of apps.items) {
+                pipeline.phases[key].apps.push(app.spec);
+            }
+            
+        }));
+
+        return pipeline;
     }
 }

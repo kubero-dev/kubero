@@ -5,7 +5,7 @@ import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@k
 import { namespace as namespace_chart} from './charts/namespace';
 import { pipeline as pipeline_chart} from './charts/pipeline';
 import { application as application_chart} from './charts/app';
-import { IApp, IPipeline } from './types';
+import { IApp, IPipeline, IKubectlPipeline, IKubectlApp, IKubectlAppList} from './types';
 
 
 export class Kubectl {
@@ -17,7 +17,7 @@ export class Kubectl {
 
     constructor() {
         this.kc = new KubeConfig();
-        //this.kc.loadFromDefault();
+        //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
         if (process.env.KUBECONFIG_BASE64) {
             debug.log("load kubectl config from base64");
@@ -45,7 +45,6 @@ export class Kubectl {
     }
 
     public async getPipelinesList() {
-
         let pipelines = await this.customObjectsApi.listNamespacedCustomObject('kubero.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
         //console.log(pipelines.body);
         return pipelines.body;
@@ -54,16 +53,13 @@ export class Kubectl {
     public async createPipeline(pipeline: IPipeline) {
         pipeline_chart.metadata.name = pipeline.name;
         pipeline_chart.spec.name = pipeline.name;
-        
 
-
-        // create namespace for each phase
+        // create a entrie for each phase
         pipeline_chart.spec.phases.length = 0; // clear phases
-        for (const [phase, enabled] of Object.entries(pipeline.phases)) {
-
+        for (const phase of pipeline.phases) {
             pipeline_chart.spec.phases.push({
-                name: phase,
-                enabled: !!enabled
+                name: phase.name,
+                enabled: !!phase.enabled
             });
         }
 
@@ -90,7 +86,7 @@ export class Kubectl {
         });
     }
 
-    public async getPipeline(appname: string) {
+    public async getPipeline(appname: string): Promise<IKubectlPipeline> {
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
             "kubero.dev",
             "v1alpha1",
@@ -101,9 +97,9 @@ export class Kubectl {
             console.log(error);
         });
         if (pipeline) {
-            return pipeline.body;
+            return pipeline.body as IKubectlPipeline;
         } else {
-            return null;
+            return {} as IKubectlPipeline;
         }
     }
 
@@ -122,7 +118,6 @@ export class Kubectl {
     }
 
     public async deleteNamespace(ns_name: string) {
-
         console.log("delete namespace ");
 
         try {
@@ -141,11 +136,11 @@ export class Kubectl {
     }
 
     public async createApp(app: IApp){
-
         console.log(app)
 
-        application_chart.metadata.name = app.name;
-        application_chart.spec.name = app.name;
+        let appl:IKubectlApp = application_chart;
+        appl.metadata.name = app.name;
+        appl.spec = app
         
         await this.customObjectsApi.createNamespacedCustomObject(
             "kubero.dev",
@@ -155,7 +150,12 @@ export class Kubectl {
             application_chart
         ).catch(error => {
             console.log(error);
-        });
+        })
+    }
 
+    public async getAppsList(namespace: string) {
+        let appslist = await this.customObjectsApi.listNamespacedCustomObject('kubero.dev', 'v1alpha1', namespace, 'applications');
+        //console.log(apps.body);
+        return appslist.body as IKubectlAppList;
     }
 }

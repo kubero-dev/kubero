@@ -113,9 +113,14 @@ export default {
     }),
     methods: {
       saveForm() {
+        let phasesList = [];
+        for (let key in this.phases) {
+          phasesList.push({name: key, enabled: this.phases[key]});
+        }
+        console.log(phasesList);
         axios.post(`/api/pipelines`, {
           appname: this.appname,
-          phases: this.phases,
+          phases: phasesList,
           reviewapps: this.reviewapps
         })
         .then(response => {

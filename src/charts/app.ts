@@ -9,7 +9,7 @@ export let application = {
     },
     spec: {
         name: 'REPLACED_BY_APP_NAME',
-        pipline: 'my-new-pipeline-example',
+        pipeline: 'my-new-pipeline-example',
         phase: 'production',
         gitrepo: 'example-org/my-awesome-app',
         branch: 'master',
