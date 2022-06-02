@@ -54,14 +54,7 @@ export default {
     },
     data: () => ({
         apps: [],
-        /*
-        appsList: {
-            items: [],
-        },
-        */
     }),
-    components: {
-    },
     methods: {
       async loadPipelinesList() {
         const self = this;

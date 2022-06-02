@@ -41,19 +41,7 @@ export interface IKubectlApp
 {
   apiVersion: string;
   kind: string;
-  metadata: {
-    creationTimestamp?: string;
-    generation?: number;
-    //labels?: [Object];
-    labels?: {
-        manager?: string;
-    }
-    managedFields?: [Array: Object]; 
-    name?: string;
-    namespace?: string;
-    resourceVersion?: string;
-    uid?: string;
-  },
+  metadata: IKubectlMetadata
   spec: IApp
 }
 

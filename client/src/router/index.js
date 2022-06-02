@@ -21,7 +21,8 @@ export default new VueRouter({
     {
       path: "/pipeline/:pipeline/apps",
       name: "PupeLine Details",
-      component: PipelineDetails
+      component: PipelineDetails,
+      props: true
     },
     {
       path: "/pipeline/:pipeline/:phase/apps/new",
