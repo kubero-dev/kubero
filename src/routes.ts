@@ -40,7 +40,7 @@ Router.post('/apps', async function (req: Request, res: Response) {
         webreplicas: req.body.webreplicas,
         workerreplicas: req.body.workerreplicas
     };
-    req.app.locals.keroku.newApp(app);
+    req.app.locals.keroku.newApp(app, req.body.envvars);
     res.send("new");
 });
 

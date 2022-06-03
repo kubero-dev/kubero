@@ -3,6 +3,7 @@ debug('app:kubectl')
 
 import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
+import { deployment as deployment_chart} from './charts/deployment';
 import { pipeline as pipeline_chart} from './charts/pipeline';
 import { application as application_chart} from './charts/app';
 import { IApp, IPipeline, IKubectlPipeline, IKubectlApp, IKubectlAppList} from './types';
@@ -53,6 +54,7 @@ export class Kubectl {
     public async createPipeline(pipeline: IPipeline) {
         pipeline_chart.metadata.name = pipeline.name;
         pipeline_chart.spec.name = pipeline.name;
+        pipeline_chart.spec.reviewapps = pipeline.reviewapps;
 
         // create a entrie for each phase
         pipeline_chart.spec.phases.length = 0; // clear phases
@@ -135,22 +137,55 @@ export class Kubectl {
         return kubeVersion;
     }
 
-    public async createApp(app: IApp){
+    public async createApp(app: IApp, envvars: { name: string; value: string; }[]) {
         console.log(app)
 
         let appl:IKubectlApp = application_chart;
         appl.metadata.name = app.name;
         appl.spec = app
+
+        let namespace = app.pipeline+'-'+app.phase;
         
         await this.customObjectsApi.createNamespacedCustomObject(
             "kubero.dev",
             "v1alpha1",
-            app.pipeline+'-'+app.phase,
+            namespace,
             "applications",
             application_chart
         ).catch(error => {
             console.log(error);
         })
+
+        if (app.webreplicas && app.webreplicas > 0 ) {
+            await this.createDeployment('web', namespace, app, envvars);
+        }
+
+        if (app.workerreplicas && app.workerreplicas > 0 ) {
+            await this.createDeployment('worker', namespace, app, envvars);
+        }
+    }
+
+    private async createDeployment(type: string, namespace: string, app: IApp, envvars: { name: string; value: string; }[]) {
+        deployment_chart.metadata.name = app.name+'-'+type;
+        deployment_chart.metadata.labels.component = type;
+        deployment_chart.spec.selector.matchLabels.component = type;
+        deployment_chart.spec.template.metadata.labels.component = type;
+
+        if (type == 'web' && app.webreplicas && app.webreplicas > 0) {
+            deployment_chart.spec.replicas = app.webreplicas;
+        } 
+
+        if (type == 'worker' && app.workerreplicas && app.workerreplicas > 0) {
+            deployment_chart.spec.replicas = app.workerreplicas;
+        }
+
+        //deployment_chart.spec.containers[0].image = app.image;
+        deployment_chart.spec.template.spec.containers[0].env = envvars;
+        try {
+            await this.appsV1Api.createNamespacedDeployment(namespace, deployment_chart);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     public async getAppsList(namespace: string) {

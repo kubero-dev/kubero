@@ -16,7 +16,7 @@ export let application = {
         autodeploy: true,
         domain: 'example.com',
         podsize: 'large',
-        webreplicas: 3,
-        workerreplicas: 3,
+        webreplicas: 1,
+        workerreplicas: 1,
     }
 }

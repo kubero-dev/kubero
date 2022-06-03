@@ -95,8 +95,8 @@
           md="3"
         >
           <v-text-field
-            v-model="variable.key"
-            label="key"
+            v-model="variable.name"
+            label="name"
             :counter="60"
           ></v-text-field>
         </v-col>
@@ -218,7 +218,7 @@ export default {
       autodeploy: true,
       domain: '',
       envvars: [
-        { key: '', value: '' },
+        { name: '', value: '' },
       ],
       podsize: '',
       podsizes: [
@@ -276,7 +276,7 @@ export default {
       },
       addEnvLine() {
         this.envvars.push({
-          key: '',
+          name: '',
           value: '',
         });
       },

@@ -50,6 +50,11 @@ import Appcard from "./appcard.vue";
 
 export default {
     sockets: {
+        async updatedApps(instances) {
+            console.log("updatedApps", instances);
+            let _phases = await this.loadPipeline();
+            this.phases = _phases;
+        },
     },
     mounted() {
         this.loadPipeline();
