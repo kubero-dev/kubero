@@ -18,7 +18,7 @@
             </div>
         </v-row>
         <p></p>
-        <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy |</span>{{ this.branch }}</v-chip>
+        <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.branch }}</v-chip>
         <v-chip label class="mr-1">{{ this.commithash }}</v-chip>
 
     </v-card-text>
@@ -67,7 +67,8 @@ export default {
         type: String,
       },
       autodeploy: {
-        type: String,
+        type: Boolean,
+        default: false
       }
     }
     }
