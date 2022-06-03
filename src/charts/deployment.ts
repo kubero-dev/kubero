@@ -6,9 +6,10 @@ export let deployment = {
             "app.kubernetes.io/name": "keroku-deployment",
             "app.kubernetes.io/part-of": "keroku",
             "app.kubernetes.io/managed-by": "keroku",
-            "component": "worker",
+            "component": "REPLACED_BY_TYPE",
+            "instance": "REPLACED_BY_INSTANCE_NAME"
         },
-        "name": "my-locust-worker",
+        "name": "REPLACED_BY_DEPLOYMENT_NAME",
     },
     "spec": {
         "progressDeadlineSeconds": 600,
@@ -41,44 +42,13 @@ export let deployment = {
             "spec": {
                 "containers": [
                     {
-                        "args": [
-                            "--worker"
-                        ],
-                        "command": [
-                            "sh",
-                            "/config/docker-entrypoint.sh"
-                        ],
                         "env": [
                             {
-                                "name": "LOCUST_HOST",
-                                "value": "https://www.google.com"
+                                "name": "TYPE",
+                                "value": "NODE"
                             },
-                            {
-                                "name": "LOCUST_USERS",
-                                "value": "1"
-                            },
-                            {
-                                "name": "LOCUST_SPAWN_RATE",
-                                "value": "1"
-                            },
-                            {
-                                "name": "LOCUST_MASTER_NODE_HOST",
-                                "value": "my-locust"
-                            },
-                            {
-                                "name": "LOCUST_MASTER_NODE_PORT",
-                                "value": "5557"
-                            },
-                            {
-                                "name": "LOCUST_LOGLEVEL",
-                                "value": "INFO"
-                            },
-                            {
-                                "name": "LOCUST_LOCUSTFILE",
-                                "value": "/mnt/locust/main.py"
-                            }
                         ],
-                        "image": "helo-world:latest",
+                        "image": "nginxdemos/hello:latest",
                         "imagePullPolicy": "IfNotPresent",
                         "name": "keroku",
                         "resources": {},

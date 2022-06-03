@@ -4,6 +4,7 @@ debug('app:kubectl')
 import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { deployment as deployment_chart} from './charts/deployment';
+import { service as service_chart} from './charts/service';
 import { pipeline as pipeline_chart} from './charts/pipeline';
 import { application as application_chart} from './charts/app';
 import { IApp, IPipeline, IKubectlPipeline, IKubectlApp, IKubectlAppList} from './types';
@@ -158,16 +159,19 @@ export class Kubectl {
 
         if (app.webreplicas && app.webreplicas > 0 ) {
             await this.createDeployment('web', namespace, app, envvars);
+            await this.createService(namespace, app);
         }
 
         if (app.workerreplicas && app.workerreplicas > 0 ) {
             await this.createDeployment('worker', namespace, app, envvars);
         }
+
     }
 
     private async createDeployment(type: string, namespace: string, app: IApp, envvars: { name: string; value: string; }[]) {
         deployment_chart.metadata.name = app.name+'-'+type;
         deployment_chart.metadata.labels.component = type;
+        deployment_chart.metadata.labels.instance = app.name+'-'+type;
         deployment_chart.spec.selector.matchLabels.component = type;
         deployment_chart.spec.template.metadata.labels.component = type;
 
@@ -186,6 +190,13 @@ export class Kubectl {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    private async createService(namespace: string, app: IApp) {
+
+        service_chart.metadata.name = app.name;
+        service_chart.spec.selector.instance = app.name+'-web';
+        await this.coreV1Api.createNamespacedService(namespace, service_chart);
     }
 
     public async getAppsList(namespace: string) {
