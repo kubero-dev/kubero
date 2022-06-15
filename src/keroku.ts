@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlPipeline} from './types';
+import { App } from './types/application';
 debug('app:keroku')
 
 import { Kubectl } from './kubectl';
@@ -65,7 +66,7 @@ export class Keroku {
     }
 
     // create a new app in a specified pipeline and phase
-    public async newApp(app: IApp, envvars: { name: string; value: string; }[]) {
+    public async newApp(app: App, envvars: { name: string; value: string; }[]) {
         debug.debug('create newApp: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.createApp(app, envvars);
         this._io.emit('updatedApps', "created");

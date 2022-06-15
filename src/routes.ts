@@ -1,5 +1,7 @@
 import express, { Express, Request, Response } from 'express';
+import { pipeline } from 'stream';
 import { IApp, IPipeline } from './types';
+import { App } from './types/application';
 
 export const Router = express.Router();
 
@@ -28,7 +30,8 @@ Router.delete('/pipelines/:name', async function (req: Request, res: Response) {
 });
 
 Router.post('/apps', async function (req: Request, res: Response) {
-    let app: IApp = {
+    
+    let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
@@ -40,6 +43,9 @@ Router.post('/apps', async function (req: Request, res: Response) {
         webreplicas: req.body.webreplicas,
         workerreplicas: req.body.workerreplicas
     };
+
+    let app = new App(appconfig);
+    
     req.app.locals.keroku.newApp(app, req.body.envvars);
     res.send("new");
 });

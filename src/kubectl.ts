@@ -1,13 +1,11 @@
 import debug from 'debug';
 debug('app:kubectl')
 
-import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi} from '@kubernetes/client-node'
+import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi, VersionInfo} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
-import { deployment as deployment_chart} from './charts/deployment';
-import { service as service_chart} from './charts/service';
 import { pipeline as pipeline_chart} from './charts/pipeline';
-import { application as application_chart} from './charts/app';
-import { IApp, IPipeline, IKubectlPipeline, IKubectlApp, IKubectlAppList} from './types';
+import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
+import { App, KubectlApp } from './types/application';
 
 
 export class Kubectl {
@@ -16,6 +14,7 @@ export class Kubectl {
     private coreV1Api: CoreV1Api;
     private appsV1Api: AppsV1Api;
     private customObjectsApi: CustomObjectsApi;
+    private kubeVersion: VersionInfo;
 
     constructor() {
         this.kc = new KubeConfig();
@@ -43,6 +42,11 @@ export class Kubectl {
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
+
+        this.kubeVersion = new VersionInfo();
+        this.getKubeVersion().then(v => {
+            this.kubeVersion = v;
+        })
         
     }
 
@@ -133,74 +137,37 @@ export class Kubectl {
 
     public async getKubeVersion() {
         let versionInfo = await this.versionApi.getCode()
-        let kubeVersion = versionInfo.body;
-        console.log(kubeVersion);
-        return kubeVersion;
+        this.kubeVersion= versionInfo.body;
+        console.log(this.kubeVersion);
+        return this.kubeVersion;
     }
 
-    public async createApp(app: IApp, envvars: { name: string; value: string; }[]) {
+    public async createApp(app: App, envvars: { name: string; value: string; }[]) {
         console.log(app)
 
-        let appl:IKubectlApp = application_chart;
-        appl.metadata.name = app.name;
+        let appl = new KubectlApp(app.name);
         appl.spec = app
 
         let namespace = app.pipeline+'-'+app.phase;
         
         await this.customObjectsApi.createNamespacedCustomObject(
-            "kubero.dev",
+            "application.kubero.dev",
             "v1alpha1",
             namespace,
-            "applications",
-            application_chart
+            "kuberoapps",
+            appl
         ).catch(error => {
             console.log(error);
         })
-
-        if (app.webreplicas && app.webreplicas > 0 ) {
-            await this.createDeployment('web', namespace, app, envvars);
-            await this.createService(namespace, app);
-        }
-
-        if (app.workerreplicas && app.workerreplicas > 0 ) {
-            await this.createDeployment('worker', namespace, app, envvars);
-        }
-
-    }
-
-    private async createDeployment(type: string, namespace: string, app: IApp, envvars: { name: string; value: string; }[]) {
-        deployment_chart.metadata.name = app.name+'-'+type;
-        deployment_chart.metadata.labels.component = type;
-        deployment_chart.metadata.labels.instance = app.name+'-'+type;
-        deployment_chart.spec.selector.matchLabels.component = type;
-        deployment_chart.spec.template.metadata.labels.component = type;
-
-        if (type == 'web' && app.webreplicas && app.webreplicas > 0) {
-            deployment_chart.spec.replicas = app.webreplicas;
-        } 
-
-        if (type == 'worker' && app.workerreplicas && app.workerreplicas > 0) {
-            deployment_chart.spec.replicas = app.workerreplicas;
-        }
-
-        //deployment_chart.spec.containers[0].image = app.image;
-        deployment_chart.spec.template.spec.containers[0].env = envvars;
-        try {
-            await this.appsV1Api.createNamespacedDeployment(namespace, deployment_chart);
-        } catch (error) {
-            console.log(error);
-        }
-    }
-
-    private async createService(namespace: string, app: IApp) {
-
-        service_chart.metadata.name = app.name;
-        service_chart.spec.selector.instance = app.name+'-web';
-        await this.coreV1Api.createNamespacedService(namespace, service_chart);
     }
 
     public async getAppsList(namespace: string) {
-        let appslist = await this.customObjectsApi.listNamespacedCustomObject('kubero.dev', 'v1alpha1', namespace, 'applications');
+        let appslist = await this.customObjectsApi.listNamespacedCustomObject(
+            'application.kubero.dev', 
+            'v1alpha1', 
+            namespace, 
+            'kuberoapps'
+        );
         //console.log(apps.body);
         return appslist.body as IKubectlAppList;
     }
