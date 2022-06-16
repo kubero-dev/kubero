@@ -230,7 +230,18 @@
                 elevation="2"
                 @click="saveForm()"
                 :disabled="!valid"
-                >Sumbit</v-btn>
+                >Create</v-btn>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+            <v-btn
+                color="error"
+                v-if="app!='new'"
+                elevation="2"
+                @click="deleteApp()"
+                >Delete</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -248,6 +259,10 @@ export default {
       phase: {
         type: String,
         default: "MISSSING"
+      },
+      app: {
+        type: String,
+        default: "new"
       }
     },
     data: () => ({
@@ -298,7 +313,38 @@ export default {
         v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
       ],
     }),
+    mounted() {
+        this.loadApp();
+    },
     methods: {
+      deleteApp() {
+        axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
+          .then(response => {
+            this.$router.push(`/pipeline/${this.pipeline}/apps`);
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      },
+      loadApp() {
+        if (this.app !== 'new') {
+          axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
+            this.appname = response.data.name;
+            this.gitrepo = response.data.gitrepo;
+            this.branch = response.data.branch;
+            this.autodeploy = response.data.autodeploy;
+            this.domain = response.data.domain;
+            this.envvars = response.data.envvars;
+            this.podsize = response.data.podsize;
+            this.autoscale = response.data.autoscale;
+            this.webreplicas = response.data.webreplicas;
+            this.workerreplicas = response.data.workerreplicas;
+            this.webreplicasrange = response.data.webreplicasrange;
+            this.workerreplicasrange = response.data.workerreplicasrange;
+          });
+        }
+      },
       saveForm() {
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
@@ -315,7 +361,7 @@ export default {
           workerreplicas: this.workerreplicas,
           webreplicasrange: this.webreplicasrange,
           workerreplicasrange: this.workerreplicasrange,
-          
+
         })
         .then(response => {
           this.appname = '';

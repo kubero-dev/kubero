@@ -161,6 +161,38 @@ export class Kubectl {
         })
     }
 
+    public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
+
+        let namespace = pipelineName+'-'+phaseName;
+        
+        await this.customObjectsApi.deleteNamespacedCustomObject(
+            "application.kubero.dev",
+            "v1alpha1",
+            namespace,
+            "kuberoapps",
+            appName
+        ).catch(error => {
+            console.log(error);
+        })
+    }
+
+    public async getApp(pipelineName: string, phaseName: string, appName: string) {
+
+        let namespace = pipelineName+'-'+phaseName;
+        
+        let app = await this.customObjectsApi.getNamespacedCustomObject(
+            "application.kubero.dev",
+            "v1alpha1",
+            namespace,
+            "kuberoapps",
+            appName
+        ).catch(error => {
+            console.log(error);
+        })
+
+        return app;
+    }
+
     public async getAppsList(namespace: string) {
         let appslist = await this.customObjectsApi.listNamespacedCustomObject(
             'application.kubero.dev', 

@@ -24,8 +24,8 @@ Router.get('/pipelines', async function (req: Request, res: Response) {
     res.send(pipelines);
 });
 
-Router.delete('/pipelines/:name', async function (req: Request, res: Response) {
-    let pipelines = await req.app.locals.keroku.deletePipeline(req.params.name);
+Router.delete('/pipelines/:pipeline', async function (req: Request, res: Response) {
+    let pipelines = await req.app.locals.keroku.deletePipeline(req.params.pipeline);
     res.send(pipelines);
 });
 
@@ -53,7 +53,18 @@ Router.post('/apps', async function (req: Request, res: Response) {
     res.send("new");
 });
 
-Router.get('/pipelines/:name/apps', async function (req: Request, res: Response) {
-    let apps = await req.app.locals.keroku.listApps(req.params.name);
+Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+    await req.app.locals.keroku.deleteApp(req.params.pipeline,req.params.phase, req.params.app);
+    res.send("deleted");
+});
+
+
+Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+    let app = await req.app.locals.keroku.getApp(req.params.pipeline,req.params.phase, req.params.app);
+    res.send(app.body.spec); 
+});
+
+Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
+    let apps = await req.app.locals.keroku.listApps(req.params.pipeline);
     res.send(apps);
 });

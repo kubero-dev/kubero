@@ -31,6 +31,12 @@ export default new VueRouter({
       props: true
     },
     {
+      path: "/pipeline/:pipeline/:phase/:app",
+      name: "Edit App",
+      component: AppsNew,
+      props: true
+    },
+    {
       path: "/settings",
       name: "Settigns",
       component: Settingsform

@@ -72,6 +72,20 @@ export class Keroku {
         this._io.emit('updatedApps', "created");
     }
 
+    // delete a app in a pipeline and phase
+    public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
+        debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        await this.kubectl.deleteApp(pipelineName, phaseName, appName);
+        this._io.emit('updatedApps', "deleted");
+    }
+
+    // delete a app in a pipeline and phase
+    public async getApp(pipelineName: string, phaseName: string, appName: string) {
+        debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        let app = await this.kubectl.getApp(pipelineName, phaseName, appName);
+        return app;
+    }
+
     // list all apps in a pipeline
     public async listApps(pipelineName: string) {
         debug.debug('listApps in '+pipelineName);

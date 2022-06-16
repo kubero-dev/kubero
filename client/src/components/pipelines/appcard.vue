@@ -5,7 +5,7 @@
     elevation="2"
     >
 
-    <v-card-title>{{ this.name }}</v-card-title>
+    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app">{{ this.app }}</a></v-card-title>
 
     <v-card-text>
         <v-row
@@ -37,6 +37,7 @@
             v-if="this.domain"
             color="deep-purple lighten-2"
             text
+            :href="'https:/'+domain" target="_blank"
         >
             Open app
         </v-btn>
@@ -47,7 +48,15 @@
 <script>
 export default {
     props: {
-      name: {
+      pipeline: {
+        type: String,
+        default: "pipelineName"
+      },
+      phase: {
+        type: String,
+        default: "phaseName"
+      },
+      app: {
         type: String,
         default: "AppName"
       },

@@ -19,7 +19,9 @@
                         <p class="text-uppercase">{{phase.name}}</p>
 
                         <Appcard v-for="app in phase.apps" :key="app.name" 
-                            :name="app.name" 
+                            :pipeline="pipeline"
+                            :phase="phase.name"
+                            :app="app.name" 
                             :domain="app.domain" 
                             :gitrepo="app.gitrepo"
                             :branch="app.branch"
