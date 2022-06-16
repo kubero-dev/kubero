@@ -21,26 +21,29 @@ export class KubectlApp implements IKubectlApp{
 }
 
 export class App implements IApp{
-    public name: string;
-    public pipeline: string;
-    public phase: string;
-    public gitrepo: string;
-    public branch: string;
-    public autodeploy: boolean;
-    public domain?: string;
-    public podsize: string;
-    public webreplicas?: number;
-    public workerreplicas?: number;
+    public name: string
+    public pipeline: string
+    public phase: string
+    public gitrepo: string
+    public branch: string
+    public autodeploy: boolean
+    public domain?: string
+    public podsize: string
+    public autoscale: boolean
+    public webreplicas?: number
+    public workerreplicas?: number
+    public webreplicasrange?: [number, number]
+    public workerreplicasrange?: [number, number]
 
     private affinity: {};
     private autoscaling: {
         enabled: boolean,
-        maxReplicas: 100,
-        minReplicas: 1,
+        maxReplicas: number,
+        minReplicas: number,
         targetCPUUtilizationPercentage: 80
     };
     private fullnameOverride: "";
-    imageBuilder: {
+    private imageBuilder: {
         pullPolicy: 'IfNotPresent',
         repository: 'ghcr.io/kubero-dev/docker-images/node-builder',
         tag: 'main',
@@ -48,7 +51,7 @@ export class App implements IApp{
             readOnlyRootFilesystem: boolean
         },
     };
-    imageWeb: {
+    private imageWeb: {
         pullPolicy: 'IfNotPresent',
         repository: 'ghcr.io/kubero-dev/docker-images/node-web',
         tag: 'main',
@@ -56,8 +59,8 @@ export class App implements IApp{
             readOnlyRootFilesystem: boolean
         },
     };
-    imagePullSecrets: [];
-    ingress?: {
+    private imagePullSecrets: [];
+    private ingress?: {
         annotations: {},
         className: "",
         enabled: true,
@@ -71,22 +74,22 @@ export class App implements IApp{
         ],
         tls: [],
     };
-    nameOverride: "";
-    nodeSelector: {};
-    podAnnotations: {};
-    podSecurityContext: {};
-    replicaCount: 1;
-    resources: {};
-    service: {
+    private nameOverride: "";
+    private nodeSelector: {};
+    private podAnnotations: {};
+    private podSecurityContext: {};
+    private replicaCount: 1;
+    private resources: {};
+    private service: {
         port: 80,
         type: 'ClusterIP'
     };
-    serviceAccount: {
+    private serviceAccount: {
         annotations: {},
         create: true,
         name: "",
     };
-    tolerations: [];
+    private tolerations: [];
     
     constructor(
         app: IApp
@@ -99,14 +102,17 @@ export class App implements IApp{
         this.autodeploy = app.autodeploy
         this.podsize = app.podsize
         this.domain = app.domain
+        this.autoscale = app.autoscale
         this.webreplicas = app.webreplicas
         this.workerreplicas = app.workerreplicas
+        this.webreplicasrange = app.webreplicasrange || [1, 1]
+        this.workerreplicasrange = app.workerreplicasrange || [1, 1]
 
         this.affinity = {};
         this.autoscaling = {
-            enabled: false,
-            maxReplicas: 100,
-            minReplicas: 1,
+            enabled: this.autoscale,
+            minReplicas: this.webreplicasrange[0],
+            maxReplicas: this.webreplicasrange[1],
             targetCPUUtilizationPercentage: 80
         }
         this.fullnameOverride = "",

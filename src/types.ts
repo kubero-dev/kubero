@@ -7,8 +7,11 @@ export interface IApp {
     autodeploy: boolean,
     domain?: string,
     podsize: string,
+    autoscale: boolean,
     webreplicas?: number,
     workerreplicas?: number,
+    webreplicasrange?: [number, number],
+    workerreplicasrange?: [number, number],
 /*
     affinity: {},
     autoscaling: {

@@ -144,7 +144,20 @@
           ></v-select>
         </v-col>
       </v-row>
+
       <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="autoscale"
+            :label="`Autoscale: ${autoscale.toString()}`"
+          ></v-switch>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="!autoscale">
         <v-col
           cols="12"
           md="6"
@@ -159,7 +172,7 @@
           ></v-slider>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-if="!autoscale">
         <v-col
           cols="12"
           md="6"
@@ -174,6 +187,38 @@
           ></v-slider>
         </v-col>
       </v-row>
+
+      <v-row v-if="autoscale">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-range-slider
+            v-model="webreplicasrange"
+            label="Web Pods"
+            max="10"
+            min="0"
+            thumb-label="always"
+          ></v-range-slider>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="autoscale">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-range-slider
+            v-model="workerreplicasrange"
+            label="Worker Pods"
+            max="10"
+            min="0"
+            thumb-label="always"
+          ></v-range-slider>
+        </v-col>
+      </v-row>
+
+
       <!-- SUBMIT -->
       <v-row>
         <v-col
@@ -227,8 +272,11 @@ export default {
         { text: 'Large (1m cpu, 1.5g ram)', value: 'large' },
         { text: 'XLarge (2m cpu, 2.5g ram)', value: 'xlarge' },
       ],
-      webreplicas: 0,
+      autoscale: false,
+      webreplicas: 1,
       workerreplicas: 0,
+      webreplicasrange: [1,3],
+      workerreplicasrange: [0,0],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -262,8 +310,12 @@ export default {
           domain: this.domain.toLowerCase(),
           envvars: this.envvars,
           podsize: this.podsize,
+          autoscale: this.autoscale,
           webreplicas: this.webreplicas,
           workerreplicas: this.workerreplicas,
+          webreplicasrange: this.webreplicasrange,
+          workerreplicasrange: this.workerreplicasrange,
+          
         })
         .then(response => {
           this.appname = '';

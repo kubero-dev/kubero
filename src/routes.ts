@@ -40,8 +40,11 @@ Router.post('/apps', async function (req: Request, res: Response) {
         autodeploy: req.body.autodeploy,
         domain: req.body.domain,
         podsize: req.body.podsize,
+        autoscale: req.body.autoscale,
         webreplicas: req.body.webreplicas,
-        workerreplicas: req.body.workerreplicas
+        workerreplicas: req.body.workerreplicas,
+        webreplicasrange: req.body.webreplicasrange,
+        workerreplicasrange: req.body.workerreplicasrange
     };
 
     let app = new App(appconfig);
