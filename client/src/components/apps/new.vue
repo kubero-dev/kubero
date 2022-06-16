@@ -20,6 +20,7 @@
             v-model="appname"
             :rules="nameRules"
             :counter="60"
+            :readonly="app!='new'"
             label="App name"
             required
           ></v-text-field>
@@ -227,10 +228,18 @@
         >
             <v-btn
                 color="primary"
+                v-if="app=='new'"
                 elevation="2"
-                @click="saveForm()"
+                @click="createApp()"
                 :disabled="!valid"
                 >Create</v-btn>
+            <v-btn
+                color="primary"
+                v-if="app!='new'"
+                elevation="2"
+                @click="updateApp()"
+                :disabled="!valid"
+                >Update</v-btn>
         </v-col>
         <v-col
           cols="12"
@@ -268,6 +277,7 @@ export default {
     data: () => ({
       valid: false,
       appname: '',
+      resourceVersion: undefined,
       phases: [
         { text: 'Production', value: 'production' },
         { text: 'Staging', value: 'stage' },
@@ -330,22 +340,46 @@ export default {
       loadApp() {
         if (this.app !== 'new') {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
-            this.appname = response.data.name;
-            this.gitrepo = response.data.gitrepo;
-            this.branch = response.data.branch;
-            this.autodeploy = response.data.autodeploy;
-            this.domain = response.data.domain;
-            this.envvars = response.data.envvars;
-            this.podsize = response.data.podsize;
-            this.autoscale = response.data.autoscale;
-            this.webreplicas = response.data.webreplicas;
-            this.workerreplicas = response.data.workerreplicas;
-            this.webreplicasrange = response.data.webreplicasrange;
-            this.workerreplicasrange = response.data.workerreplicasrange;
+            this.resourceVersion = response.data.metadata.resourceVersion;
+
+            this.appname = response.data.spec.name;
+            this.gitrepo = response.data.spec.gitrepo;
+            this.branch = response.data.spec.branch;
+            this.autodeploy = response.data.spec.autodeploy;
+            this.domain = response.data.spec.domain;
+            this.envvars = response.data.spec.envvars;
+            this.podsize = response.data.spec.podsize;
+            this.autoscale = response.data.spec.autoscale;
+            this.webreplicas = response.data.spec.webreplicas;
+            this.workerreplicas = response.data.spec.workerreplicas;
+            this.webreplicasrange = response.data.spec.webreplicasrange;
+            this.workerreplicasrange = response.data.spec.workerreplicasrange;
           });
         }
       },
-      saveForm() {
+      updateApp() {
+        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, {
+          resourceVersion: this.resourceVersion,
+          name: this.appname,
+          gitrepo: this.gitrepo,
+          branch: this.branch,
+          autodeploy: this.autodeploy,
+          domain: this.domain,
+          envvars: this.envvars,
+          podsize: this.podsize,
+          autoscale: this.autoscale,
+          webreplicas: this.webreplicas,
+          workerreplicas: this.workerreplicas,
+          webreplicasrange: this.webreplicasrange,
+          workerreplicasrange: this.workerreplicasrange,
+        }).then(response => {
+          this.$router.push(`/pipeline/${this.pipeline}/apps`);
+          console.log(response);
+        }).catch(error => {
+          console.log(error);
+        });
+      },
+      createApp() {
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
           phase: this.phase,

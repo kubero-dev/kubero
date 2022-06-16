@@ -67,9 +67,16 @@ export class Keroku {
 
     // create a new app in a specified pipeline and phase
     public async newApp(app: App, envvars: { name: string; value: string; }[]) {
-        debug.debug('create newApp: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.createApp(app, envvars);
         this._io.emit('updatedApps', "created");
+    }
+
+    // update an app in a pipeline and phase
+    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) {
+        debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        await this.kubectl.updateApp(app, envvars, resourceVersion);
+        this._io.emit('updatedApps', "updated");
     }
 
     // delete a app in a pipeline and phase

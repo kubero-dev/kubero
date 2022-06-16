@@ -161,6 +161,30 @@ export class Kubectl {
         })
     }
 
+    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) {
+        console.log(app)
+
+        let appl = new KubectlApp(app.name);
+        appl.metadata.resourceVersion = resourceVersion;
+        appl.spec = app
+
+        let namespace = app.pipeline+'-'+app.phase;
+        
+        await this.customObjectsApi.replaceNamespacedCustomObject(
+        //await this.customObjectsApi.patchNamespacedCustomObject( 
+        // patch : https://stackoverflow.com/questions/67520468/patch-k8s-custom-resource-with-kubernetes-client-node
+        // https://github.com/kubernetes-client/javascript/blob/master/examples/patch-example.js
+            "application.kubero.dev",
+            "v1alpha1",
+            namespace,
+            "kuberoapps",
+            app.name,
+            appl
+        ).catch(error => {
+            console.log(error);
+        })
+    }
+
     public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
 
         let namespace = pipelineName+'-'+phaseName;

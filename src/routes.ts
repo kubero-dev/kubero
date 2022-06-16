@@ -58,10 +58,35 @@ Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, 
     res.send("deleted");
 });
 
+Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+
+    let appconfig: IApp = {
+        name: req.params.app,
+        pipeline: req.params.pipeline,
+        phase: req.params.phase,
+
+        gitrepo: req.body.gitrepo,
+        branch: req.body.branch,
+        autodeploy: req.body.autodeploy,
+        domain: req.body.domain,
+        podsize: req.body.podsize,
+        autoscale: req.body.autoscale,
+        webreplicas: req.body.webreplicas,
+        workerreplicas: req.body.workerreplicas,
+        webreplicasrange: req.body.webreplicasrange,
+        workerreplicasrange: req.body.workerreplicasrange
+    };
+
+    let app = new App(appconfig);
+    
+    req.app.locals.keroku.updateApp(app, req.body.envvars, req.body.resourceVersion);
+
+    res.send("updated");
+});
 
 Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
     let app = await req.app.locals.keroku.getApp(req.params.pipeline,req.params.phase, req.params.app);
-    res.send(app.body.spec); 
+    res.send(app.body); 
 });
 
 Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
