@@ -56,7 +56,6 @@
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
-            readonly
             required
           >asdf</v-text-field>
         </v-col>
@@ -283,12 +282,12 @@ export default {
         { text: 'Staging', value: 'stage' },
         { text: 'Testing', value: 'test' },
       ],
-      gitrepo: 'asdf/asdf', //TODO: load it from somewhere
-      branch: '',
+      gitrepo: 'https://github.com/kubero-dev/template-nodeapp.git', 
+      branch: 'master',
       autodeploy: true,
       domain: '',
       envvars: [
-        { name: '', value: '' },
+        //{ name: '', value: '' },
       ],
       podsize: '',
       podsizes: [
@@ -307,10 +306,11 @@ export default {
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
-      repositoryRules: [
+      repositoryRules: [ 
         v => !!v || 'Repository is required',
         v => v.length <= 60 || 'Repository must be less than 10 characters',
-        v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]+$/.test(v) || 'Format "owner/repository"',
+        //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
+        v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
       branchRules: [
         v => !!v || 'Branch is required',
