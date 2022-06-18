@@ -114,4 +114,23 @@ export class Keroku {
 
         return pipeline;
     }
+
+    public restartApp(pipelineName: string, phaseName: string, appName: string) {
+        debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        this.kubectl.restartApp(pipelineName, phaseName, appName);
+        let message = {
+            'action': 'restarted', 
+            'pipeline':pipelineName, 
+            'phase':phaseName, 
+            'app': appName
+        }
+        this._io.emit('updatedApps', message);
+    }
+/*
+    public deployApp(pipelineName: string, phaseName: string, appName: string) {
+        debug.debug('deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        this.kubectl.deployApp(pipelineName, phaseName, appName);
+        this._io.emit('updatedApps', "deployed");
+    }
+*/
 }

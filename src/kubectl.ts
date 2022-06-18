@@ -1,7 +1,7 @@
 import debug from 'debug';
 debug('app:kubectl')
 
-import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi, VersionInfo} from '@kubernetes/client-node'
+import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi, VersionInfo, PatchUtils} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { pipeline as pipeline_chart} from './charts/pipeline';
 import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
@@ -15,6 +15,7 @@ export class Kubectl {
     private appsV1Api: AppsV1Api;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo;
+    private patchUtils: PatchUtils;
 
     constructor() {
         this.kc = new KubeConfig();
@@ -41,6 +42,7 @@ export class Kubectl {
         this.versionApi = this.kc.makeApiClient(VersionApi);
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
+        this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
 
         this.kubeVersion = new VersionInfo();
@@ -227,4 +229,36 @@ export class Kubectl {
         //console.log(apps.body);
         return appslist.body as IKubectlAppList;
     }
+
+    public async restartApp(pipelineName: string, phaseName: string, appName: string) {
+            
+        let namespace = pipelineName+'-'+phaseName;
+        let deploymentName = appName+'-kuberoapp';
+        const date = new Date();
+        const patch = [
+            {
+              op: 'add',
+              path: '/spec/template/metadata/annotations',
+              value: {
+                  'kubectl.kubero.dev/restartedAt': date.toISOString()
+              }
+            },
+          ];
+        
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        this.appsV1Api.patchNamespacedDeployment(
+            deploymentName,
+            namespace,
+            patch, 
+            undefined, 
+            undefined, 
+            undefined, 
+            undefined, 
+            options 
+        ).then(() => {
+            console.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
+        }).catch(error => {
+            console.log(error);
+        });
+    };
 }

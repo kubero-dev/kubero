@@ -53,11 +53,13 @@ Router.post('/apps', async function (req: Request, res: Response) {
     res.send("new");
 });
 
+// delete an app
 Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
-    await req.app.locals.keroku.deleteApp(req.params.pipeline,req.params.phase, req.params.app);
+    await req.app.locals.keroku.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("deleted");
 });
 
+// create a new app in a specific pipeline
 Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
 
     let appconfig: IApp = {
@@ -84,12 +86,20 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
     res.send("updated");
 });
 
+// get app details
 Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
-    let app = await req.app.locals.keroku.getApp(req.params.pipeline,req.params.phase, req.params.app);
+    let app = await req.app.locals.keroku.getApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send(app.body); 
 });
 
+// get all apps in a pipeline
 Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
     let apps = await req.app.locals.keroku.listApps(req.params.pipeline);
     res.send(apps);
+});
+
+//restart app
+Router.get('/pipelines/:pipeline/:phase/:app/restart', async function (req: Request, res: Response) {
+    req.app.locals.keroku.restartApp(req.params.pipeline, req.params.phase, req.params.app);
+    res.send("restarted"); 
 });
