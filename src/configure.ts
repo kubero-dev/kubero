@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 import { Keroku } from './keroku';
+import { GithubWebhooksMiddleware } from './github';
 
 //const watcher = require('./watcher');
 
@@ -15,10 +16,11 @@ if (process.env.DOCKER_BUILD != 'true') {
 export const before = (app: Express) => {
     app.use(cors())
     app.use(bodyParser.json());
+    app.use(GithubWebhooksMiddleware);
 }
 
 export const after = (app: Express, server: Server) => {
-    // Attach socket.io to server
+    // Attache socket.io to server
     let sockets = init(server);
     const keroku = new Keroku(sockets);
     app.locals.keroku = keroku;
