@@ -30,6 +30,20 @@
           cols="12"
           md="4"
         >
+          <v-text-field
+            v-model="gitrepo"
+            :rules="repositoryRules"
+            :counter="60"
+            label="Repository"
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
           <v-switch
             v-model="reviewapps"
             :label="`Review Apps: ${reviewapps.toString()}`"
@@ -95,6 +109,7 @@ export default {
       valid: false,
       appname: '',
       reviewapps: true,
+      gitrepo: 'https://github.com/kubero-dev/template-nodeapp.git', 
       phases: {
         test: true,
         stage: true,
@@ -105,10 +120,11 @@ export default {
         v => v.length <= 60 || 'Name must be less than 10 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
-      repositoryRules: [
+      repositoryRules: [ 
         v => !!v || 'Repository is required',
         v => v.length <= 60 || 'Repository must be less than 10 characters',
-        v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*\/[a-zA-Z0-9_-]+$/.test(v) || 'Format "owner/repository"',
+        //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
+        v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
     }),
     methods: {
@@ -120,6 +136,7 @@ export default {
         console.log(phasesList);
         axios.post(`/api/pipelines`, {
           appname: this.appname,
+          gitrepo: this.gitrepo,
           phases: phasesList,
           reviewapps: this.reviewapps
         })

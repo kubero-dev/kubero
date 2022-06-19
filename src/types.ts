@@ -67,69 +67,10 @@ export interface IApp {
 */
 }
 
-/*
-export interface IKuberoApp{
-    name: string;
-    pipeline: string;
-    phase: string;
-    autodeploy: boolean;
-
-    affinity: {},
-    autoscaling: {
-        enabled: boolean,
-        maxReplicas: 100,
-        minReplicas: 1,
-        targetCPUUtilizationPercentage: 80
-    },
-    fullnameOverride: "",
-    imageBuilder: {
-        pullPolicy: 'IfNotPresent',
-        repository: 'ghcr.io/kubero-dev/docker-images/node-builder',
-        tag: 'main',
-        securityContext?: string,
-        readOnlyRootFilesystem: false
-    },
-    imageWeb: {
-        pullPolicy: 'IfNotPresent',
-        repository: 'ghcr.io/kubero-dev/docker-images/node-web',
-        tag: 'main',
-        securityContext: '',
-        readOnlyRootFilesystem: true
-    },
-    imagePullSecrets: [],
-    ingress: {
-        annotations: {},
-        className: "",
-        enabled: true,
-        hosts: [
-            {host: 'kubero.lacolhost.com'} 
-        ],
-        paths: [
-            {path: '/', pathType: 'ImplementationSpecific'}
-        ],
-        tls: [],
-    },
-    nameOverride: "",
-    nodeSelector: {},
-    podAnnotations: {},
-    podSecurityContext: {},
-    replicaCount: 1,
-    resources: {},
-    service: {
-        port: 80,
-        type: 'ClusterIP'
-    },
-    serviceAccount: {
-        annotations: {},
-        create: true,
-        name: "",
-    },
-    tolerations: [],
-}
-*/
 
 export interface IPipeline {
     name: string;
+    gitrepo: string;
     reviewapps: boolean;
     phases: [Array: {name: string, enabled: boolean, apps: IApp[]}]; 
 }

@@ -6,3 +6,5 @@ node_modules
 
 notes.txt
 kubeconfig
+
+example-*.json

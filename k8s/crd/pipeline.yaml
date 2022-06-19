@@ -31,6 +31,8 @@ spec:
                       properties:
                         name:
                           type: string
+                        gitrepo:
+                          type: string
                         enabled:
                           type: boolean
   scope: Namespaced

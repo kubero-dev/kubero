@@ -9,6 +9,7 @@ export let pipeline = {
     },
     spec: {
         name: "REPLACED_BY_PIPELINE_NAME",
+        gitrepo: "REPLACED_BY_GITREPO",
         reviewapps: true,
         phases: [{}
         ]

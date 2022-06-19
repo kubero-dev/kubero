@@ -61,6 +61,7 @@ export class Kubectl {
     public async createPipeline(pipeline: IPipeline) {
         pipeline_chart.metadata.name = pipeline.name;
         pipeline_chart.spec.name = pipeline.name;
+        pipeline_chart.spec.gitrepo = pipeline.gitrepo;
         pipeline_chart.spec.reviewapps = pipeline.reviewapps;
 
         // create a entrie for each phase

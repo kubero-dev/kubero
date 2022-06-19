@@ -57,7 +57,7 @@
             :counter="60"
             label="Repository"
             required
-          >asdf</v-text-field>
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-row>
