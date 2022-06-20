@@ -282,7 +282,7 @@ export default {
         { text: 'Staging', value: 'stage' },
         { text: 'Testing', value: 'test' },
       ],
-      gitrepo: 'https://github.com/kubero-dev/template-nodeapp.git', 
+      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
       branch: 'master',
       autodeploy: true,
       domain: '',
