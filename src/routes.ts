@@ -11,7 +11,7 @@ Router.get('/config', async function (req: Request, res: Response) {
 
 Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
-        name: req.body.appname, 
+        name: req.body.pipelineName, 
         gitrepo: req.body.gitrepo,
         phases: req.body.phases,
         reviewapps: req.body.reviewapps
@@ -103,4 +103,10 @@ Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Respo
 Router.get('/pipelines/:pipeline/:phase/:app/restart', async function (req: Request, res: Response) {
     req.app.locals.keroku.restartApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("restarted"); 
+});
+
+// connect pipeline with github
+Router.post('/github/connect', async function (req: Request, res: Response) {
+    let con = await req.app.locals.keroku.connectPipeline(req.body.gitrepo);
+    res.send(con);
 });

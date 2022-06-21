@@ -2,6 +2,7 @@ import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlPipeline} from './types';
 import { App } from './types/application';
+import { GithubApi } from './github/api';
 debug('app:keroku')
 
 import { Kubectl } from './kubectl';
@@ -9,10 +10,14 @@ import { Kubectl } from './kubectl';
 export class Keroku {
     public kubectl: Kubectl;
     private _io: Server;
+    private githubApi: GithubApi;
+
     constructor(io: Server) {
         console.log("keroku");
         this.kubectl = new Kubectl();
         this._io = io;
+
+        this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
     }
 
     // creates a new pipeline in the same namespace as the kubero app
@@ -133,4 +138,33 @@ export class Keroku {
         this._io.emit('updatedApps', "deployed");
     }
 */
+    public async connectPipeline(gitrepo: string) {
+        debug.log('connectPipeline: '+gitrepo);
+
+        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE == undefined) {
+            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
+        }
+        if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
+            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
+        }
+        if (process.env.GITHUB_WEBHOOK_SECRET == undefined) {
+            throw new Error("GITHUB_WEBHOOK_SECRET is not defined");
+        }
+        if (process.env.GITHUB_WEBHOOK_URL == undefined) {
+            throw new Error("GITHUB_WEBHOOK_URL is not defined");
+        }
+
+        let repository = await this.githubApi.getRepository(gitrepo);
+
+        let webhhok = await this.githubApi.addWebhook(
+            repository.data.owner,
+            repository.data.name,
+            process.env.GITHUB_WEBHOOK_URL,
+            process.env.GITHUB_WEBHOOK_SECRET,
+        );
+
+        let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
+
+        return {keys: keys, repository: repository, webhook: webhhok};
+    }
 }

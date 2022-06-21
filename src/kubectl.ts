@@ -236,6 +236,8 @@ export class Kubectl {
         let namespace = pipelineName+'-'+phaseName;
         let deploymentName = appName+'-kuberoapp';
         const date = new Date();
+
+        // format : https://jsonpatch.com/
         const patch = [
             {
               op: 'add',

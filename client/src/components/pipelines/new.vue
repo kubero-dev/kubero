@@ -17,7 +17,7 @@
           md="4"
         >
           <v-text-field
-            v-model="appname"
+            v-model="pipelineName"
             :rules="nameRules"
             :counter="60"
             label="Pipeline name"
@@ -37,6 +37,18 @@
             label="Repository"
             required
           ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="4"
+        >
+            <v-btn
+                color="primary"
+                elevation="2"
+                @click="connectGithub()"
+                >Connect</v-btn>
         </v-col>
       </v-row>
       <v-row>
@@ -107,9 +119,9 @@ import axios from "axios";
 export default {
     data: () => ({
       valid: false,
-      appname: '',
+      pipelineName: '',
       reviewapps: true,
-      gitrepo: 'https://github.com/kubero-dev/template-nodeapp.git', 
+      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
       phases: {
         test: true,
         stage: true,
@@ -128,6 +140,15 @@ export default {
       ],
     }),
     methods: {
+      connectGithub() {
+        axios.post('/api/github/connect', {
+          gitrepo: this.gitrepo
+        }).then(response => {
+          console.log(response.data);
+        }).catch(error => {
+          console.log(error);
+        });
+      },
       saveForm() {
         let phasesList = [];
         for (let key in this.phases) {
@@ -135,13 +156,13 @@ export default {
         }
         console.log(phasesList);
         axios.post(`/api/pipelines`, {
-          appname: this.appname,
+          pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
           phases: phasesList,
           reviewapps: this.reviewapps
         })
         .then(response => {
-          this.appname = '';
+          this.pipelineName = '';
           console.log(response);
           this.$router.push({path: '/'});
         })
