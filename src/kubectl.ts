@@ -3,9 +3,9 @@ debug('app:kubectl')
 
 import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi, VersionInfo, PatchUtils} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
-import { pipeline as pipeline_chart} from './charts/pipeline';
 import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
 import { App, KubectlApp } from './types/application';
+import { KubectlPipeline } from './types/pipeline';
 
 
 export class Kubectl {
@@ -53,32 +53,28 @@ export class Kubectl {
     }
 
     public async getPipelinesList() {
-        let pipelines = await this.customObjectsApi.listNamespacedCustomObject('kubero.dev', 'v1alpha1', 'keroku', 'pipelines', 'default');
+        let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
+            'application.kubero.dev', 
+            'v1alpha1', 
+            'keroku', 
+            'kuberopipelines', 
+            'default'
+        );
         //console.log(pipelines.body);
         return pipelines.body;
     }
 
-    public async createPipeline(pipeline: IPipeline) {
-        pipeline_chart.metadata.name = pipeline.name;
-        pipeline_chart.spec.name = pipeline.name;
-        pipeline_chart.spec.gitrepo = pipeline.gitrepo;
-        pipeline_chart.spec.reviewapps = pipeline.reviewapps;
 
-        // create a entrie for each phase
-        pipeline_chart.spec.phases.length = 0; // clear phases
-        for (const phase of pipeline.phases) {
-            pipeline_chart.spec.phases.push({
-                name: phase.name,
-                enabled: !!phase.enabled
-            });
-        }
+    public async createPipeline(pl: IPipeline) {
+        console.log(pl)
+        let pipeline = new KubectlPipeline(pl);
 
         await this.customObjectsApi.createNamespacedCustomObject(
-            "kubero.dev",
+            "application.kubero.dev",
             "v1alpha1",
             "keroku",
-            "pipelines",
-            pipeline_chart
+            "kuberopipelines",
+            pipeline
         ).catch(error => {
             console.log(error);
         });
@@ -86,10 +82,10 @@ export class Kubectl {
 
     public async deletePipeline(appname: string) {
         await this.customObjectsApi.deleteNamespacedCustomObject(
-            "kubero.dev",
+            "application.kubero.dev",
             "v1alpha1",
             "keroku",
-            "pipelines",
+            "kuberopipelines",
             appname
         ).catch(error => {
             console.log(error);
@@ -98,10 +94,10 @@ export class Kubectl {
 
     public async getPipeline(appname: string): Promise<IKubectlPipeline> {
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
-            "kubero.dev",
+            "application.kubero.dev",
             "v1alpha1",
             "keroku",
-            "pipelines",
+            "kuberopipelines",
             appname
         ).catch(error => {
             console.log(error);

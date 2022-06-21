@@ -14,7 +14,8 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
         name: req.body.pipelineName, 
         gitrepo: req.body.gitrepo,
         phases: req.body.phases,
-        reviewapps: req.body.reviewapps
+        reviewapps: req.body.reviewapps,
+        github: req.body.github
     }; 
     req.app.locals.keroku.newPipeline(pipeline);
     res.send("new");

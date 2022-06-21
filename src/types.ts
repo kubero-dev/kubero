@@ -72,7 +72,17 @@ export interface IPipeline {
     name: string;
     gitrepo: string;
     reviewapps: boolean;
-    phases: [Array: {name: string, enabled: boolean, apps: IApp[]}]; 
+    phases: IPipelinePhase[]; 
+    github: {
+        repository: object;
+        webhook: object;
+    };
+}
+
+export interface IPipelinePhase {
+    name: string;
+    enabled: boolean;
+    apps: IApp[];
 }
 
 export interface IKubectlMetadata {

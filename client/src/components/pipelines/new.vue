@@ -176,10 +176,11 @@ export default {
           gitrepo: this.gitrepo
         }).then(response => {
           console.log(response.data);
-          this.github.repository = response.data.repository;
-          this.github.webhook = response.data.webhook;
-
+          
           //TODO check if connectiondata is valid
+          this.github.repository = response.data.repository.data;
+          this.github.webhook = response.data.webhook.data;
+
           this.gitrepo_connected = true;
         }).catch(error => {
           console.log(error);
