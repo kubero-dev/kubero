@@ -35,11 +35,14 @@
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
+            :disabled="gitrepo_connected"
             required
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row
+        v-if="!gitrepo_connected"
+      >
         <v-col
           cols="12"
           md="4"
@@ -49,6 +52,29 @@
                 elevation="2"
                 @click="connectGithub()"
                 >Connect</v-btn>
+        </v-col>
+      </v-row>
+
+
+      <v-row
+        v-if="gitrepo_connected"
+      >
+        <v-col
+          cols="12"
+          md="4"
+        >
+              <v-alert class="alert"
+                type="success"
+                elevation="6"
+                transition="scale-transition"
+              >Webhook created
+              </v-alert>
+              <v-alert class="alert"
+                type="success"
+                elevation="6"
+                transition="scale-transition"
+              >Deploy keys added
+              </v-alert>
         </v-col>
       </v-row>
       <v-row>
@@ -106,7 +132,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid"
+                :disabled="!valid || !gitrepo_connected"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -122,6 +148,11 @@ export default {
       pipelineName: '',
       reviewapps: true,
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
+      gitrepo_connected: false,
+      github: {
+        repository: {},
+        webhook: {},
+      },
       phases: {
         test: true,
         stage: true,
@@ -145,8 +176,14 @@ export default {
           gitrepo: this.gitrepo
         }).then(response => {
           console.log(response.data);
+          this.github.repository = response.data.repository;
+          this.github.webhook = response.data.webhook;
+
+          //TODO check if connectiondata is valid
+          this.gitrepo_connected = true;
         }).catch(error => {
           console.log(error);
+          //TODO show error message
         });
       },
       saveForm() {
@@ -159,7 +196,8 @@ export default {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
           phases: phasesList,
-          reviewapps: this.reviewapps
+          reviewapps: this.reviewapps,
+          github: this.github
         })
         .then(response => {
           this.pipelineName = '';
@@ -175,4 +213,7 @@ export default {
 </script>
 
 <style lang="scss">
+.alert i.v-icon.v-icon {
+  color: white !important;
+} 
 </style>

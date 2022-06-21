@@ -28,7 +28,7 @@ export class GithubApi {
                 ssh_url: "",
             }
         }
-
+        // TODO : Improve matching here
         let owner = gitrepo.match(/^git@github.com:(.*)\/.*$/)?.[1] as string;
         let repo = gitrepo.match(/^git@github.com:.*\/(.*).git$/)?.[1] as string;
 
