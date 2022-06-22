@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlPipeline} from './types';
+import { IApp, IPipeline, IKubectlPipeline, IKubectlPipelineList} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
 debug('app:keroku')
@@ -11,6 +11,7 @@ export class Keroku {
     public kubectl: Kubectl;
     private _io: Server;
     private githubApi: GithubApi;
+    private appStateList: IApp[] = [];
 
     constructor(io: Server) {
         console.log("keroku");
@@ -18,6 +19,38 @@ export class Keroku {
         this._io = io;
 
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
+    }
+
+    public init() {
+        this.listPipelines().then(pipelinesList => {
+            let pl  = pipelinesList as IKubectlPipelineList;
+            for (const pipeline of pl.items) {
+                
+                for (const phase of pipeline.spec.phases) {
+
+                    if (phase.enabled == true) {
+                        debug.log("Checking Namespace: "+pipeline.spec.name+"-"+phase.name);
+                        this.listAppsInNamespace(pipeline.spec.name+"-"+phase.name).then(appsList => {
+                            
+                            for (const app of appsList.items) {
+                                debug.log("added App to state: "+app.spec.name);
+                                this.appStateList.push(app.spec);
+                            }
+                        })
+                    }
+                }
+
+            }
+        }
+        ).catch(error => {
+            console.log(error);
+        });
+    }
+
+    public async listAppsInNamespace(namespace: string) {
+        debug.debug('listAppsInNamespace: '+namespace);
+        let apps = await this.kubectl.getAppsList(namespace);
+        return apps;
     }
 
     // creates a new pipeline in the same namespace as the kubero app

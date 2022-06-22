@@ -1,18 +1,18 @@
-import { IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata} from '../types';
+import { IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IGithubRepository} from '../types';
 
 export class Pipeline implements IPipeline {
     public name: string;
-    public gitrepo: string;
+    //public gitrepo: string;
     public reviewapps: boolean;
     public phases: IPipelinePhase[];
     public github: {
-        repository: object;
+        repository: IGithubRepository
         webhook: object;
     };
 
     constructor(name: string, gitrepo: string, reviewapps: boolean, phases: IPipelinePhase[]) {
         this.name = name;
-        this.gitrepo = gitrepo;
+        //this.gitrepo = gitrepo;
         this.reviewapps = reviewapps;
         this.phases = phases;
         this.github = {

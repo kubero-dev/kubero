@@ -148,6 +148,9 @@ export class Kubectl {
         appl.spec = app
 
         let namespace = app.pipeline+'-'+app.phase;
+
+        let pipeline = await this.getPipeline(app.pipeline)
+        appl.spec.gitrepo = pipeline.spec.github.repository
         
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",

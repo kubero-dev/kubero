@@ -1,5 +1,5 @@
 
-import { IApp, IKubectlMetadata, IKubectlApp} from '../types';
+import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository} from '../types';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;
@@ -24,7 +24,7 @@ export class App implements IApp{
     public name: string
     public pipeline: string
     public phase: string
-    public gitrepo: string
+    public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean
     public domain?: string

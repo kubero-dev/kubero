@@ -23,6 +23,7 @@ export const after = (app: Express, server: Server) => {
     // Attache socket.io to server
     let sockets = init(server);
     const keroku = new Keroku(sockets);
+    keroku.init();
     app.locals.keroku = keroku;
     app.use('/api', Router);
 }

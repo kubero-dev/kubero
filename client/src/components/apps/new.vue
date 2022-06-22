@@ -52,7 +52,7 @@
           md="6"
         >
           <v-text-field
-            v-model="gitrepo"
+            v-model="gitrepo.ssh_url"
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
@@ -282,7 +282,9 @@ export default {
         { text: 'Staging', value: 'stage' },
         { text: 'Testing', value: 'test' },
       ],
-      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
+      gitrepo: {
+        ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git', 
+      },
       branch: 'master',
       autodeploy: true,
       domain: '',

@@ -14,7 +14,7 @@
             <v-icon left small>mdi-github</v-icon>
 
             <div class="grey--text text-subtitle-1">
-                {{ this.gitrepo }}
+                {{ this.gitrepo.ssh_url }}
             </div>
         </v-row>
         <p></p>

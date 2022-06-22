@@ -2,7 +2,7 @@ export interface IApp {
     name: string,
     pipeline: string,
     phase: string,
-    gitrepo: string,
+    gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
     domain?: string,
@@ -70,13 +70,23 @@ export interface IApp {
 
 export interface IPipeline {
     name: string;
-    gitrepo: string;
+    //gitrepo: string;
     reviewapps: boolean;
     phases: IPipelinePhase[]; 
     github: {
-        repository: object;
+        repository?: IGithubRepository
         webhook: object;
     };
+}
+
+export interface IGithubRepository {
+    description?: string,
+    id?: number,
+    name?: string,
+    node_id?: string,
+    owner?: string,
+    private?: boolean,
+    ssh_url?: string
 }
 
 export interface IPipelinePhase {
@@ -103,6 +113,12 @@ export interface IKubectlPipeline {
     kind: string;
     metadata: IKubectlMetadata,
     spec: IPipeline
+}
+export interface IKubectlPipelineList {
+    apiVersion: string;
+    kind: string;
+    metadata: IKubectlMetadata,
+    items: IKubectlPipeline[]
 }
 
 export interface IKubectlApp
