@@ -67,6 +67,12 @@ export class Keroku {
         for (const phase of pipeline.phases) {
             if (phase.enabled == true) {
                 await this.kubectl.createNamespace(pipeline.name+"-"+phase.name);
+
+                let secretData = {
+                    'github.pub': Buffer.from(process.env.GIT_DEPLOYMENTKEY_PUBLIC as string).toString('base64'),
+                    'github': process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 as string,
+                }
+                await this.kubectl.createSecret(pipeline.name+"-"+phase.name, "deployment-keys", secretData);
             }
         }
 
@@ -174,8 +180,8 @@ export class Keroku {
     public async connectPipeline(gitrepo: string) {
         debug.log('connectPipeline: '+gitrepo);
 
-        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE == undefined) {
-            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
+        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 == undefined) {
+            throw new Error("GIT_DEPLOYMENTKEY_PRIVATE_B64 is not defined");
         }
         if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
             throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");

@@ -109,6 +109,23 @@ export class Kubectl {
         }
     }
 
+    public async createSecret(namespace: string, secretName: string, secretData: any) {
+        let secret = {
+            apiVersion: "v1",
+            kind: "Secret",
+            metadata: {
+                name: secretName,
+                namespace: namespace
+            },
+            type: "Opaque",
+            data: secretData
+        }
+        await this.coreV1Api.createNamespacedSecret(namespace, secret).catch(error => {
+            console.log(error);
+        }
+        );
+    }
+
     public async createNamespace(ns_name: string) {
 
         console.log("create namespace ");
