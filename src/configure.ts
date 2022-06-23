@@ -5,13 +5,7 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 import { Keroku } from './keroku';
-import { GithubWebhooksMiddleware } from './github';
-
-//const watcher = require('./watcher');
-
-if (process.env.DOCKER_BUILD != 'true') {
-    //setInterval(watcher, 3000, locust.locust);
-}
+import { GithubWebhooksMiddleware } from './github/webhooks';
 
 export const before = (app: Express) => {
     app.use(cors())

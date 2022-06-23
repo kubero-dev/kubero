@@ -1,5 +1,4 @@
 import express, { Express, Request, Response } from 'express';
-import { pipeline } from 'stream';
 import { IApp, IPipeline } from './types';
 import { App } from './types/application';
 
@@ -12,7 +11,6 @@ Router.get('/config', async function (req: Request, res: Response) {
 Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
         name: req.body.pipelineName, 
-        //gitrepo: req.body.gitrepo,
         phases: req.body.phases,
         reviewapps: req.body.reviewapps,
         github: req.body.github
