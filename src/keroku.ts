@@ -47,6 +47,10 @@ export class Keroku {
         });
     }
 
+    public async getAppStateList() {
+        return this.appStateList;
+    }
+
     public async listAppsInNamespace(namespace: string) {
         debug.debug('listAppsInNamespace: '+namespace);
         let apps = await this.kubectl.getAppsList(namespace);
@@ -113,6 +117,7 @@ export class Keroku {
     public async newApp(app: App, envvars: { name: string; value: string; }[]) {
         debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.createApp(app, envvars);
+        this.appStateList.push(app);
         this._io.emit('updatedApps', "created");
     }
 
@@ -127,7 +132,18 @@ export class Keroku {
     public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         await this.kubectl.deleteApp(pipelineName, phaseName, appName);
+        this.removeAppFromState(pipelineName, phaseName, appName);
         this._io.emit('updatedApps', "deleted");
+    }
+    
+    private removeAppFromState(pipelineName: string, phaseName: string, appName: string) {
+        for (let i = 0; i < this.appStateList.length; i++) {
+            if (this.appStateList[i].name == appName && 
+                this.appStateList[i].pipeline == pipelineName && 
+                this.appStateList[i].phase == phaseName) {
+                this.appStateList.splice(i, 1);
+            }
+        }
     }
 
     // delete a app in a pipeline and phase

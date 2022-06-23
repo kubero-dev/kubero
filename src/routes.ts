@@ -111,3 +111,8 @@ Router.post('/github/connect', async function (req: Request, res: Response) {
     let con = await req.app.locals.keroku.connectPipeline(req.body.gitrepo);
     res.send(con);
 });
+
+// connect pipeline with github
+Router.get('/apps', async function (req: Request, res: Response) {
+    res.send(await req.app.locals.keroku.getAppStateList());
+});
