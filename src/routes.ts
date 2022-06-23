@@ -114,3 +114,15 @@ Router.post('/github/connect', async function (req: Request, res: Response) {
 Router.get('/apps', async function (req: Request, res: Response) {
     res.send(await req.app.locals.keroku.getAppStateList());
 });
+
+// get github webhook events
+Router.post('/webhooks/github', async function (req: Request, res: Response) {
+    let event = req.headers['x-github-event']
+    let delivery = req.headers['x-github-delivery']
+    //let hookId = req.headers['x-github-hook-id']
+    let signature = req.headers['x-hub-signature-256']
+    let body = req.body
+
+    req.app.locals.keroku.handleGithubWebhook(event, delivery, signature, body);
+    res.send("ok");
+});

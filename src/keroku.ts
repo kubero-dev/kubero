@@ -3,6 +3,9 @@ import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlPipeline, IKubectlPipelineList} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
+
+import * as crypto from "crypto"
+
 debug('app:keroku')
 
 import { Kubectl } from './kubectl';
@@ -221,5 +224,34 @@ export class Keroku {
         let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
 
         return {keys: keys, repository: repository, webhook: webhhok};
+    }
+
+    public async handleGithubWebhook(event: string, delivery: string, signature: string, body: any) {
+        console.log('handleGithubWebhook');
+
+
+        
+        //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
+        let secret = process.env.GITHUB_WEBHOOK_SECRET as string;
+        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
+        if (hash === signature) {
+            console.log('Github webhook signature is valid for event: '+delivery);
+            /* TODO handle event 
+            if (event === 'push') {
+                let ref = req.body.ref
+                let refs = ref.split('/')
+                let branch = refs[refs.length - 1]
+                let app = await req.app.locals.keroku.getAppByBranch(branch)
+                if (app) {
+                    req.app.locals.keroku.restartApp(app.pipeline, app.phase, app.name)
+                }
+            }
+            */
+            console.log(body);
+        } else {
+            debug.log('ERROR: invalid signature for event: '+delivery);
+            console.log(hash);
+            console.log(signature);
+        }
     }
 }

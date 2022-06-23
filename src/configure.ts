@@ -5,12 +5,10 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 import { Keroku } from './keroku';
-import { GithubWebhooksMiddleware } from './github/webhooks';
 
 export const before = (app: Express) => {
     app.use(cors())
     app.use(bodyParser.json());
-    app.use(GithubWebhooksMiddleware);
 }
 
 export const after = (app: Express, server: Server) => {
