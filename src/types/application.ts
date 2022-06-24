@@ -110,9 +110,7 @@ export class App implements IApp{
         this.webreplicasrange = app.webreplicasrange || [1, 1]
         this.workerreplicasrange = app.workerreplicasrange || [1, 1]
 
-        this.envVars = [
-            {'name': 'KUBERO_APP_NAME', 'value': this.name}
-        ]
+        this.envVars =  app.envVars
 
         this.affinity = {};
         this.autoscaling = {

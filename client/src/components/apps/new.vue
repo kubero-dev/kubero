@@ -349,7 +349,7 @@ export default {
             this.branch = response.data.spec.branch;
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
-            this.envvars = response.data.spec.envvars;
+            this.envvars = response.data.spec.envVars;
             this.podsize = response.data.spec.podsize;
             this.autoscale = response.data.spec.autoscale;
             this.webreplicas = response.data.spec.webreplicas;
