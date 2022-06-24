@@ -43,6 +43,15 @@ export class Keroku {
                     }
                 }
 
+                if (pipeline.spec.reviewapps) {
+                    debug.log("Checking Namespace: "+pipeline.spec.name+"-review");
+                    this.listAppsInNamespace(pipeline.spec.name+"-review").then(appsList => {
+                        for (const app of appsList.items) {
+                            debug.log("added App to state: "+app.spec.name);
+                            this.appStateList.push(app.spec);
+                        }
+                    })
+                }
             }
         }
         ).catch(error => {
@@ -71,14 +80,13 @@ export class Keroku {
 
         //console.log(pipeline.phases);
         // create namespace for each phase
+        let secretData = {
+            'github.pub': Buffer.from(process.env.GIT_DEPLOYMENTKEY_PUBLIC as string).toString('base64'),
+            'github': process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 as string,
+        }
         for (const phase of pipeline.phases) {
             if (phase.enabled == true) {
                 await this.kubectl.createNamespace(pipeline.name+"-"+phase.name);
-
-                let secretData = {
-                    'github.pub': Buffer.from(process.env.GIT_DEPLOYMENTKEY_PUBLIC as string).toString('base64'),
-                    'github': process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 as string,
-                }
                 await this.kubectl.createSecret(pipeline.name+"-"+phase.name, "deployment-keys", secretData);
             }
         }
@@ -86,7 +94,8 @@ export class Keroku {
         // create pipeline if enabled
         if (pipeline.reviewapps) {
             debug.debug('create reviewapp: '+pipeline.name);
-            this.kubectl.createNamespace(pipeline.name+"-review");
+            await this.kubectl.createNamespace(pipeline.name+"-review");
+            await this.kubectl.createSecret(pipeline.name+"-review", "deployment-keys", secretData);
         }
 
         // update agents
@@ -117,9 +126,9 @@ export class Keroku {
     }
 
     // create a new app in a specified pipeline and phase
-    public async newApp(app: App, envvars: { name: string; value: string; }[]) {
+    public async newApp(app: App) {
         debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-        await this.kubectl.createApp(app, envvars);
+        await this.kubectl.createApp(app);
         this.appStateList.push(app);
         this._io.emit('updatedApps', "created");
     }
@@ -229,29 +238,125 @@ export class Keroku {
     public async handleGithubWebhook(event: string, delivery: string, signature: string, body: any) {
         console.log('handleGithubWebhook');
 
-
-        
         //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
         let secret = process.env.GITHUB_WEBHOOK_SECRET as string;
         let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
         if (hash === signature) {
             console.log('Github webhook signature is valid for event: '+delivery);
-            /* TODO handle event 
-            if (event === 'push') {
-                let ref = req.body.ref
-                let refs = ref.split('/')
-                let branch = refs[refs.length - 1]
-                let app = await req.app.locals.keroku.getAppByBranch(branch)
-                if (app) {
-                    req.app.locals.keroku.restartApp(app.pipeline, app.phase, app.name)
-                }
+
+            switch (event) {
+                case 'push':
+                    this.handleGithubPush(body);
+                    break;
+                case 'pull_request':
+                    this.handleGithubPullRequest(body);
+                    break;
+                default:
+                    console.log('Github webhook event not handled: '+event);
+                    break;
             }
-            */
-            console.log(body);
+            //console.log(body);
         } else {
             debug.log('ERROR: invalid signature for event: '+delivery);
             console.log(hash);
             console.log(signature);
+        }
+    }
+
+    private async handleGithubPush(body: any) {
+        console.log('handleGithubPush');
+        let ref = body.ref
+        let refs = ref.split('/')
+        let branch = refs[refs.length - 1]
+        let apps = await this.getAppsByBranch(branch);
+
+        for (const app of apps) {
+            this.restartApp(app.pipeline, app.phase, app.name);
+        }
+    }
+
+    private async getAppsByBranch(branch: string) {
+        console.log('getAppsByBranch: '+branch);
+        let apps: IApp[] = [];
+        for (const app of this.appStateList) {
+            if (app.branch === branch) {
+                apps.push(app);
+            }
+        }
+        return apps;
+    }
+
+    private async handleGithubPullRequest(body: any) {
+        console.log('handleGithubPullRequest');
+        let pullRequest = body.pull_request;
+        console.log(body.action);
+
+        switch (body.action) {
+            case 'opened':
+            case 'reopened':
+                this.createPRApp(pullRequest.head.ref, pullRequest.head.ref, pullRequest.head.repo.ssh_url)
+                break;
+            case 'closed':
+                this.deletePRApp(pullRequest.head.ref, pullRequest.head.ref, pullRequest.head.repo.ssh_url)
+                break;
+            default:
+                break;
+        }
+    }
+
+    // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
+    private async createPRApp(branch: string, title: string, ssh_url: string) {
+        let pipelines = await this.listPipelines() as IKubectlPipelineList;
+        //console.log(pipelines.items);
+
+        for (const pipeline of pipelines.items) {
+
+            if (pipeline.spec.reviewapps && 
+                pipeline.spec.github.repository && 
+                pipeline.spec.github.repository.ssh_url === ssh_url) {
+                
+                console.log('found pipeline: '+pipeline.spec.name);
+                let pipelaneName = pipeline.spec.name
+                let phaseName = 'review';
+                let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
+                
+                let appOptions:IApp = {
+                    name: websaveTitle,
+                    pipeline: pipelaneName,
+                    gitrepo: pipeline.spec.github.repository,
+                    phase: phaseName,
+                    branch: branch,
+                    autodeploy: true,
+                    domain: websaveTitle+'.lacolhost.com', //TODO use a default domain, defined somewhere
+                    podsize: "small",
+                    autoscale: false,
+                    webreplicas: 1,
+                    workerreplicas: 0,
+                    webreplicasrange: [1, 1],
+                    workerreplicasrange: [0, 0],
+
+                }
+                let app = new App(appOptions);
+    
+                this.newApp(app);
+            }
+        }
+    }
+
+    // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
+    private async deletePRApp(branch: string, title: string, ssh_url: string) {
+        console.log('destroyPRApp');
+        let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
+
+        for (const app of this.appStateList) {
+            
+            if (app.phase === 'review' && 
+                app.gitrepo && 
+                app.gitrepo.ssh_url === ssh_url && 
+                app.branch === branch) {
+                
+                    this.deleteApp(app.pipeline, app.phase, websaveTitle);
+            }
         }
     }
 }

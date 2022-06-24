@@ -49,7 +49,7 @@ Router.post('/apps', async function (req: Request, res: Response) {
 
     let app = new App(appconfig);
     
-    req.app.locals.keroku.newApp(app, req.body.envvars);
+    req.app.locals.keroku.newApp(app);
     res.send("new");
 });
 

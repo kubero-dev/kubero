@@ -158,7 +158,7 @@ export class Kubectl {
         return this.kubeVersion;
     }
 
-    public async createApp(app: App, envvars: { name: string; value: string; }[]) {
+    public async createApp(app: App) {
         console.log(app)
 
         let appl = new KubectlApp(app.name);
