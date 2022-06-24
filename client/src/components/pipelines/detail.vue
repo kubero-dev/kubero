@@ -3,18 +3,6 @@
         <h1>{{ this.pipeline }}</h1>
         <v-layout>
                 <v-row>
-                    
-                    <v-col v-if="this.reviewapps">
-                        <p class="text-uppercase">Review Apps</p>
-
-                        <Appcard></Appcard>
-                        <Appcard></Appcard>
-                        <Appcard></Appcard>
-                        <Appcard></Appcard>
-                    </v-col>
-
-
-                    <!-- Testing -->
                     <v-col v-for="phase in activePhases" :key="phase.name">
                         <p class="text-uppercase">{{phase.name}}</p>
 

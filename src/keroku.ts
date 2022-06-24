@@ -184,6 +184,23 @@ export class Keroku {
             
         }));
 
+        if (pipeline.reviewapps) {
+
+            let review = {
+                "enabled": true,
+                "name": "review",
+                "apps": Array()
+            }
+
+            let apps = await this.kubectl.getAppsList(pipelineName+"-review");
+            for (const app of apps.items) {
+                review.apps.push(app.spec);
+            }
+
+            pipeline.phases.unshift(review);
+
+        }
+
         return pipeline;
     }
 
