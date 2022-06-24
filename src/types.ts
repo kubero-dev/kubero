@@ -12,6 +12,7 @@ export interface IApp {
     workerreplicas?: number,
     webreplicasrange?: [number, number],
     workerreplicasrange?: [number, number],
+    envVars: {}[],
 /*
     affinity: {},
     autoscaling: {

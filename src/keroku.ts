@@ -351,6 +351,7 @@ export class Keroku {
                     workerreplicas: 0,
                     webreplicasrange: [1, 1],
                     workerreplicasrange: [0, 0],
+                    envVars: [], //TODO use custom env vars
 
                 }
                 let app = new App(appOptions);

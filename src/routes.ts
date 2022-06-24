@@ -44,7 +44,8 @@ Router.post('/apps', async function (req: Request, res: Response) {
         webreplicas: req.body.webreplicas,
         workerreplicas: req.body.workerreplicas,
         webreplicasrange: req.body.webreplicasrange,
-        workerreplicasrange: req.body.workerreplicasrange
+        workerreplicasrange: req.body.workerreplicasrange,
+        envVars: req.body.envvars
     };
 
     let app = new App(appconfig);
@@ -76,7 +77,8 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
         webreplicas: req.body.webreplicas,
         workerreplicas: req.body.workerreplicas,
         webreplicasrange: req.body.webreplicasrange,
-        workerreplicasrange: req.body.workerreplicasrange
+        workerreplicasrange: req.body.workerreplicasrange,
+        envVars: req.body.envvars
     };
 
     let app = new App(appconfig);
