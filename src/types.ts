@@ -8,11 +8,27 @@ export interface IApp {
     domain?: string,
     podsize: string,
     autoscale: boolean,
-    webreplicas?: number,
-    workerreplicas?: number,
-    webreplicasrange?: [number, number],
-    workerreplicasrange?: [number, number],
     envVars: {}[],
+
+    web: {
+        replicaCount: number
+        autoscaling: {
+            minReplicas: number
+            maxReplicas: number
+            targetCPUUtilizationPercentage?: number
+            targetMemoryUtilizationPercentage?: number
+        }
+    }
+
+    worker: {
+        replicaCount: number
+        autoscaling: {
+            minReplicas: number
+            maxReplicas: number
+            targetCPUUtilizationPercentage?: number
+            targetMemoryUtilizationPercentage?: number
+        }
+    }
 /*
     affinity: {},
     autoscaling: {

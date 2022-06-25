@@ -30,19 +30,32 @@ export class App implements IApp{
     public domain?: string
     public podsize: string
     public autoscale: boolean
-    public webreplicas?: number
-    public workerreplicas?: number
-    public webreplicasrange?: [number, number]
-    public workerreplicasrange?: [number, number]
     //public envVars: {[key: string]: string} = {}
     public envVars: {}[] = []
+
+    public web: {
+        replicaCount: number
+        autoscaling: {
+            minReplicas: number
+            maxReplicas: number
+            targetCPUUtilizationPercentage?: number
+            targetMemoryUtilizationPercentage?: number
+        }
+    }
+
+    public worker: {
+        replicaCount: number
+        autoscaling: {
+            minReplicas: number
+            maxReplicas: number
+            targetCPUUtilizationPercentage?: number
+            targetMemoryUtilizationPercentage?: number
+        }
+    }
 
     private affinity: {};
     private autoscaling: {
         enabled: boolean,
-        maxReplicas: number,
-        minReplicas: number,
-        targetCPUUtilizationPercentage: 80
     };
     private fullnameOverride: "";
     private imageBuilder: {
@@ -105,19 +118,15 @@ export class App implements IApp{
         this.podsize = app.podsize
         this.domain = app.domain
         this.autoscale = app.autoscale
-        this.webreplicas = app.webreplicas
-        this.workerreplicas = app.workerreplicas
-        this.webreplicasrange = app.webreplicasrange || [1, 1]
-        this.workerreplicasrange = app.workerreplicasrange || [1, 1]
 
         this.envVars =  app.envVars
 
+        this.web =  app.web
+        this.worker =  app.worker
+
         this.affinity = {};
         this.autoscaling = {
-            enabled: this.autoscale,
-            minReplicas: this.webreplicasrange[0],
-            maxReplicas: this.webreplicasrange[1],
-            targetCPUUtilizationPercentage: 80
+            enabled: this.autoscale
         }
         this.fullnameOverride = "",
         this.imageBuilder = {

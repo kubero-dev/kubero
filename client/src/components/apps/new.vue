@@ -352,10 +352,10 @@ export default {
             this.envvars = response.data.spec.envVars;
             this.podsize = response.data.spec.podsize;
             this.autoscale = response.data.spec.autoscale;
-            this.webreplicas = response.data.spec.webreplicas;
-            this.workerreplicas = response.data.spec.workerreplicas;
-            this.webreplicasrange = response.data.spec.webreplicasrange;
-            this.workerreplicasrange = response.data.spec.workerreplicasrange;
+            this.webreplicas = response.data.spec.web.replicaCount;
+            this.workerreplicas = response.data.spec.worker.replicaCount;
+            this.webreplicasrange = [response.data.spec.web.autoscaling.minReplicas, response.data.spec.web.autoscaling.maxReplicas];
+            this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
           });
         }
       },

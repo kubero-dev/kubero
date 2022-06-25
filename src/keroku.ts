@@ -347,11 +347,25 @@ export class Keroku {
                     domain: websaveTitle+'.lacolhost.com', //TODO use a default domain, defined somewhere
                     podsize: "small",
                     autoscale: false,
-                    webreplicas: 1,
-                    workerreplicas: 0,
-                    webreplicasrange: [1, 1],
-                    workerreplicasrange: [0, 0],
-                    envVars: [], //TODO use custom env vars
+                    envVars: [], //TODO use custom env vars,
+                    web: {
+                        replicaCount: 1,
+                        autoscaling: {
+                            minReplicas: 0,
+                            maxReplicas: 0,
+                            targetCPUUtilizationPercentage: 0,
+                            targetMemoryUtilizationPercentage: 0
+                        }
+                    },
+                    worker: {
+                        replicaCount: 0, // TODO my be dynamic
+                        autoscaling: {
+                            minReplicas: 0,
+                            maxReplicas: 0,
+                            targetCPUUtilizationPercentage: 0,
+                            targetMemoryUtilizationPercentage: 0
+                        }
+                    }
 
                 }
                 let app = new App(appOptions);
