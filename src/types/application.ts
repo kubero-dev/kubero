@@ -1,5 +1,5 @@
 
-import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository} from '../types';
+import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob} from '../types';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;
@@ -32,6 +32,7 @@ export class App implements IApp{
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
     public envVars: {}[] = []
+    public cronjobs: ICronjob[] = []
 
     public web: {
         replicaCount: number
@@ -120,6 +121,8 @@ export class App implements IApp{
         this.autoscale = app.autoscale
 
         this.envVars =  app.envVars
+
+        this.cronjobs = app.cronjobs
 
         this.web =  app.web
         this.worker =  app.worker

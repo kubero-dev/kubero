@@ -365,7 +365,8 @@ export class Keroku {
                             targetCPUUtilizationPercentage: 0,
                             targetMemoryUtilizationPercentage: 0
                         }
-                    }
+                    },
+                    cronjobs: [],
 
                 }
                 let app = new App(appOptions);

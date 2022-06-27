@@ -59,7 +59,8 @@ Router.post('/apps', async function (req: Request, res: Response) {
                 targetCPUUtilizationPercentage: req.body.workertargetCPUUtilizationPercentage || 80,
                 targetMemoryUtilizationPercentage: req.body.workertargetMemoryUtilizationPercentage || 0
             }
-        }
+        },
+        cronjobs: req.body.cronjobs,
     };
 
     let app = new App(appconfig);
@@ -106,7 +107,8 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
                 targetCPUUtilizationPercentage: req.body.workertargetCPUUtilizationPercentage || 80,
                 targetMemoryUtilizationPercentage: req.body.workertargetMemoryUtilizationPercentage || 0
             }
-        }
+        },
+        cronjobs: req.body.cronjobs,
     };
 
     let app = new App(appconfig);

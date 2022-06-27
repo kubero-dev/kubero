@@ -61,8 +61,18 @@ export default {
         default: "AppName"
       },
       gitrepo: {
-        type: String,
-        default: "myOrg/my-awesome-app"
+        type: Object,
+        default: () => ({}),
+        /*
+        default: {
+          repository: {
+            ssh_url: ""
+          },
+          webhook: {
+            url: ""
+          }
+        }
+        */
       },
       branch: {
         type: String,

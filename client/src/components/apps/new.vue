@@ -92,7 +92,7 @@
       <v-row v-for="variable in envvars" v-bind:key="variable.id">
         <v-col
           cols="12"
-          md="3"
+          md="2"
         >
           <v-text-field
             v-model="variable.name"
@@ -107,8 +107,22 @@
           <v-text-field
             v-model="variable.value"
             label="value"
-            :counter="60"
           ></v-text-field>
+        </v-col>
+        <v-col
+          cols="12"
+          md="1"
+        >
+          <v-btn
+          elevation="2"
+          icon
+          small
+           @click="removeEnvLine(variable.name)"
+          >
+              <v-icon dark >
+                  mdi-minus
+              </v-icon>
+          </v-btn>
         </v-col>
       </v-row>
 
@@ -218,6 +232,87 @@
         </v-col>
       </v-row>
 
+      <v-divider class="ma-5"></v-divider>
+      <!-- CRONJOBS -->
+      <h4 class="text-uppercase">Cronjobs</h4>
+      <div v-for="variable in cronjobs" v-bind:key="variable.id">
+        <v-row>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-text-field
+              v-model="variable.name"
+              label="name"
+              :readonly="app!='new'"
+            ></v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="2"
+          >
+            <v-text-field
+              v-model="variable.schedule"
+              label="schedule"
+              :rules="cronjobScheduleRules"
+            ></v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="1"
+          >
+            <v-btn
+            elevation="2"
+            icon
+            small
+            @click="removeCronjobLine(variable.name)"
+            >
+                <v-icon dark >
+                    mdi-minus
+                </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-text-field
+              v-model="variable.image"
+              label="image"
+            ></v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-text-field
+              v-model="variable.command"
+              label="command"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </div>
+
+      <v-row>
+        <v-col
+          cols="12"
+        >
+          <v-btn
+          elevation="2"
+          icon
+          small
+           @click="addCronjobLine()"
+          >
+              <v-icon dark >
+                  mdi-plus
+              </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+
 
       <!-- SUBMIT -->
       <v-row>
@@ -303,6 +398,17 @@ export default {
       workerreplicas: 0,
       webreplicasrange: [1,3],
       workerreplicasrange: [0,0],
+      cronjobs: [
+        /*
+        { 
+          name: '', 
+          schedule: '',
+          image: '',
+          command: '',
+          restartPolicy: 'OnFailure',
+        },
+        */
+      ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -323,6 +429,10 @@ export default {
         v => !!v || 'Branch is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
+      ],
+      cronjobScheduleRules: [
+        v => !!v || 'Schedule is required',
+        v => /(((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}/.test(v) || 'Not a valid crontab format',
       ],
     }),
     mounted() {
@@ -356,6 +466,7 @@ export default {
             this.workerreplicas = response.data.spec.worker.replicaCount;
             this.webreplicasrange = [response.data.spec.web.autoscaling.minReplicas, response.data.spec.web.autoscaling.maxReplicas];
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
+            this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || []; 
           });
         }
       },
@@ -374,6 +485,7 @@ export default {
           workerreplicas: this.workerreplicas,
           webreplicasrange: this.webreplicasrange,
           workerreplicasrange: this.workerreplicasrange,
+          cronjobs: this.cronjobFormat(this.cronjobs),
         }).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
           console.log(response);
@@ -397,7 +509,7 @@ export default {
           workerreplicas: this.workerreplicas,
           webreplicasrange: this.webreplicasrange,
           workerreplicasrange: this.workerreplicasrange,
-
+          cronjobs: this.cronjobFormat(this.cronjobs),
         })
         .then(response => {
           this.appname = '';
@@ -413,6 +525,49 @@ export default {
           name: '',
           value: '',
         });
+      },
+      removeEnvLine(index) {
+        for (let i = 0; i < this.envvars.length; i++) {
+          if (this.envvars[i].name === index) {
+            this.envvars.splice(i, 1);
+          }
+        }
+      },
+      addCronjobLine() {
+        this.cronjobs.push({
+          name: 'hello world',
+          schedule: '* * * * *',
+          image: 'busybox:1.28',
+          command: '/bin/sh -c "echo hello world"',
+          restartPolicy: 'OnFailure',
+        });
+      },
+      removeCronjobLine(index) {
+        for (let i = 0; i < this.cronjobs.length; i++) {
+          if (this.cronjobs[i].name === index) {
+            this.cronjobs.splice(i, 1);
+          }
+        }
+      },
+      cronjobFormat(cronjobs) {
+        cronjobs.map(cronjob => {
+          // TODO make sure cronjob has a valid structure 
+          cronjob.name = cronjob.name.replace(/\s/g, '-');
+          cronjob.restartPolicy = 'OnFailure';
+
+          //cronjob.command = cronjob.command.replace(/\s/g, '');
+          //cronjob.command = cronjob.command.replace(/\//g, '-');
+          //cronjob.command = cronjob.command.replace(/\*/g, '*');
+          //cronjob.command = cronjob.command.split(" ");
+          cronjob.command = cronjob.command.match(/(?:[^\s"]+|"[^"]*")+/g) 
+        });
+        return cronjobs;
+      },
+      cronjobUnformat(cronjobs) {
+        cronjobs.map(cronjob => {
+          cronjob.command = cronjob.command.join(" ");
+        });
+        return cronjobs;
       },
     },
 }

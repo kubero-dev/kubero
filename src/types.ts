@@ -29,6 +29,8 @@ export interface IApp {
             targetMemoryUtilizationPercentage?: number
         }
     }
+
+    cronjobs: ICronjob[]
 /*
     affinity: {},
     autoscaling: {
@@ -82,6 +84,14 @@ export interface IApp {
     },
     tolerations: [],
 */
+}
+
+export interface ICronjob {
+    name: string,
+    schedule: string,
+    command: [string],
+    image: string,
+    imagePullPolicy: string,
 }
 
 
