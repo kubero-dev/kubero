@@ -314,6 +314,68 @@
       </v-row>
 
 
+      <v-divider class="ma-5"></v-divider>
+      <!-- ADDONS -->
+      <h4 class="text-uppercase">Addons</h4>
+      <v-row>
+        <v-col v-for="addon in addons" v-bind:key="addon.id"
+          cols="12"
+          md="2"
+        >
+        
+          <v-card>
+            <v-list-item-content class="justify-center">
+              <div class="mx-auto text-center">
+                <v-avatar
+                  size="57"
+                  rounded
+                ><img
+                :src="'/img/addons/'+addon.name+'.png'"
+                :alt="addon.name"
+                >
+                </v-avatar>
+                <h3>{{ addon.name }}</h3>
+                <p class="text-caption mt-1">
+                  {{ addon.version }}
+                </p>
+                <v-divider class="my-3"></v-divider>
+                <v-btn
+                  depressed
+                  rounded
+                  text
+                >
+                  remove Addon
+                </v-btn>
+              </div>
+            </v-list-item-content>
+          </v-card>
+
+
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col
+          cols="12"
+        >
+          <v-btn
+          elevation="2"
+          icon
+          small
+           @click="addAddon()"
+          >
+              <v-icon dark >
+                  mdi-plus
+              </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-row>
+
+        <Addons :addons="addons"/>
+      </v-row>
+
       <!-- SUBMIT -->
       <v-row>
         <v-col
@@ -353,6 +415,7 @@
 
 <script>
 import axios from "axios";
+import Addons from "./addons.vue";
 export default {
     props: {
       pipeline: {
@@ -409,6 +472,15 @@ export default {
         },
         */
       ],
+      addons: [
+        
+        { 
+          id: "myFirstRedis", 
+          name: 'Redis', 
+          version: 'v0.0.1'
+        },
+        
+      ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -437,6 +509,9 @@ export default {
     }),
     mounted() {
         this.loadApp();
+    },
+    components: {
+        Addons,
     },
     methods: {
       deleteApp() {
