@@ -1,9 +1,9 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlPipeline, IKubectlPipelineList} from './types';
+import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
-
+import { IAddon } from './addons';
 import * as crypto from "crypto"
 
 debug('app:keroku')
@@ -59,11 +59,11 @@ export class Keroku {
         });
     }
 
-    public async getAppStateList() {
+    public async getAppStateList(): Promise<IApp[]> {
         return this.appStateList;
     }
 
-    public async listAppsInNamespace(namespace: string) {
+    public async listAppsInNamespace(namespace: string): Promise<IKubectlAppList> {
         debug.debug('listAppsInNamespace: '+namespace);
         let apps = await this.kubectl.getAppsList(namespace);
         return apps;
@@ -130,6 +130,9 @@ export class Keroku {
         debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.createApp(app);
         this.appStateList.push(app);
+        
+        let namespace = app.pipeline+'-'+app.phase;
+        this.createAddons(app.addons, namespace);
         this._io.emit('updatedApps', "created");
     }
 
@@ -137,6 +140,10 @@ export class Keroku {
     public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.kubectl.updateApp(app, envvars, resourceVersion);
+        // IMPORTANT TODO : Update this.appStateList !!
+
+        let namespace = app.pipeline+'-'+app.phase;
+        this.createAddons(app.addons, namespace);
         this._io.emit('updatedApps', "updated");
     }
 
@@ -367,6 +374,7 @@ export class Keroku {
                         }
                     },
                     cronjobs: [],
+                    addons: [],
 
                 }
                 let app = new App(appOptions);
@@ -392,4 +400,13 @@ export class Keroku {
             }
         }
     }
+
+    private async createAddons(addons: IAddon[], namespace: string) {
+        for (const addon of addons) {
+            //console.log(addon);
+            //console.log('createAddon: '+addon.name);
+            this.kubectl.createAddon(addon, namespace);
+        }
+    }
+
 }

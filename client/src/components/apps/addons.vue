@@ -39,7 +39,7 @@
                 ></v-text-field>
               </v-col>
 
-              <v-col cols="12" v-for="field in formfields" v-bind:key="field.name">
+              <v-col cols="12" v-for="field in selectedAddon.formfields" v-bind:key="field.name">
                 <v-text-field
                     v-if="field.type === 'text'"
                     v-model="field.default"
@@ -84,6 +84,7 @@
 
 
 <script>
+import axios from "axios";
 export default {
     props: {
         addons: {
@@ -95,27 +96,27 @@ export default {
         dialog: false,
         availableAddons: [
             { text: 'Redis', value: { 
-                id: '',
+                id: 'redis',
                 name: 'Redis', 
                 version: 'v0.0.1'
             }},
             { text: 'Percona MongoDB', value: { 
-                id: '',
+                id: 'mongodb',
                 name: 'Mongodb', 
                 version: 'v0.0.2'
             }},
             { text: 'PostgreSQL', value: { 
-                id: '',
+                id: 'postgresql',
                 name: 'Postgresql', 
                 version: 'v0.0.3'
             } },
             { text: 'Memcached', value: { 
-                id: '',
+                id: 'memcached',
                 name: 'Memcached', 
                 version: 'v0.0.4'
             } },
             { text: 'MariaDB', value: { 
-                id: '',
+                id: 'mariadb',
                 name: 'Mariadb', 
                 version: 'v0.0.5'
             } },
@@ -123,7 +124,8 @@ export default {
         selectedAddon: { 
             id: '',
             name: '',
-            version: ''
+            version: '',
+            formfields: []
         },
         formfields: [
             {
@@ -177,7 +179,25 @@ export default {
             }
         ]
     }),
+    mounted() {
+        this.loadAddons();
+    },
     methods: {
+        loadAddons() {
+            axios.get(`/api/addons`)
+            .then(response => {
+                console.log(response.data);
+                for (let addon of response.data) {
+                    this.availableAddons.push({
+                        text: addon.name,
+                        value: addon
+                    });
+                }
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         addonChange(event) {
             console.log(event);
             this.selectedAddon = event;

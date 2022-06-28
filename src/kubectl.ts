@@ -1,11 +1,22 @@
 import debug from 'debug';
 debug('app:kubectl')
 
-import {KubeConfig, VersionApi, CoreV1Api, AppsV1Api, CustomObjectsApi, VersionInfo, PatchUtils} from '@kubernetes/client-node'
+import {
+    KubeConfig, 
+    VersionApi, 
+    CoreV1Api, 
+    AppsV1Api, 
+    CustomObjectsApi, 
+    KubernetesListObject, 
+    KubernetesObject,
+    VersionInfo, 
+    PatchUtils
+} from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
 import { App, KubectlApp } from './types/application';
 import { KubectlPipeline } from './types/pipeline';
+import { IAddon } from './addons';
 
 
 export class Kubectl {
@@ -242,7 +253,7 @@ export class Kubectl {
             'v1alpha1', 
             namespace, 
             'kuberoapps'
-        );
+        )
         //console.log(apps.body);
         return appslist.body as IKubectlAppList;
     }
@@ -277,7 +288,36 @@ export class Kubectl {
         ).then(() => {
             console.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
         }).catch(error => {
-            console.log(error);
+            debug.log('ERROR: '+error.body.message);
         });
     };
+
+    public async getAddons() {
+        /*
+        apiVersion: operators.coreos.com/v1alpha1
+        kind: ClusterServiceVersion*/
+        let response = await this.customObjectsApi.listClusterCustomObject(
+            'operators.coreos.com', 
+            'v1alpha1', 
+            'clusterserviceversions', 
+            'default'
+        );
+
+        //let operators = response.body as KubernetesListObject<KubernetesObject>;
+        let operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work
+        return operators.items;
+    }
+
+    public async createAddon(addon: IAddon, namespace: string) {
+        let apiVersion = addon.crd.apiVersion as string;
+        await this.customObjectsApi.createNamespacedCustomObject(
+            apiVersion.split('/')[0],
+            apiVersion.split('/')[1],
+            namespace,
+            addon.plural,
+            addon.crd
+        ).catch(error => {
+            debug.log('ERROR: '+error.body.message);
+        })
+    }
 }

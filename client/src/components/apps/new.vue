@@ -330,7 +330,7 @@
                   size="57"
                   rounded
                 ><img
-                :src="'/img/addons/'+addon.name+'.png'"
+                :src="'/img/addons/'+addon.id+'.png'"
                 :alt="addon.name"
                 >
                 </v-avatar>
@@ -473,12 +473,13 @@ export default {
         */
       ],
       addons: [
-        
+        /*
         { 
-          id: "myFirstRedis", 
+          id: "redis", 
           name: 'Redis', 
           version: 'v0.0.1'
         },
+        */
         
       ],
       nameRules: [
@@ -542,6 +543,7 @@ export default {
             this.webreplicasrange = [response.data.spec.web.autoscaling.minReplicas, response.data.spec.web.autoscaling.maxReplicas];
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || []; 
+            this.addons= response.data.spec.addons || []; 
           });
         }
       },
@@ -561,6 +563,8 @@ export default {
           webreplicasrange: this.webreplicasrange,
           workerreplicasrange: this.workerreplicasrange,
           cronjobs: this.cronjobFormat(this.cronjobs),
+          addons: this.addons,
+
         }).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
           console.log(response);
@@ -585,6 +589,7 @@ export default {
           webreplicasrange: this.webreplicasrange,
           workerreplicasrange: this.workerreplicasrange,
           cronjobs: this.cronjobFormat(this.cronjobs),
+          addons: this.addons,
         })
         .then(response => {
           this.appname = '';

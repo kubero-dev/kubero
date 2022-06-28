@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 import { Keroku } from './keroku';
+import { Addons } from './addons';
 
 export const before = (app: Express) => {
     app.use(cors())
@@ -17,5 +18,9 @@ export const after = (app: Express, server: Server) => {
     const keroku = new Keroku(sockets);
     keroku.init();
     app.locals.keroku = keroku;
+    const addons = new Addons({
+        kubectl: keroku.kubectl
+    });
+    app.locals.addons = addons;
     app.use('/api', Router);
 }

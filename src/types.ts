@@ -1,3 +1,4 @@
+import { IAddon } from './addons';
 export interface IApp {
     name: string,
     pipeline: string,
@@ -31,6 +32,7 @@ export interface IApp {
     }
 
     cronjobs: ICronjob[]
+    addons: IAddon[]
 /*
     affinity: {},
     autoscaling: {

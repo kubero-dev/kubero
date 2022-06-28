@@ -1,5 +1,6 @@
 
 import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob} from '../types';
+import { IAddon } from '../addons';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;
@@ -33,6 +34,7 @@ export class App implements IApp{
     //public envVars: {[key: string]: string} = {}
     public envVars: {}[] = []
     public cronjobs: ICronjob[] = []
+    public addons: IAddon[] = []
 
     public web: {
         replicaCount: number
@@ -123,6 +125,8 @@ export class App implements IApp{
         this.envVars =  app.envVars
 
         this.cronjobs = app.cronjobs
+
+        this.addons = app.addons
 
         this.web =  app.web
         this.worker =  app.worker

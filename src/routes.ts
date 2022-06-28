@@ -61,6 +61,7 @@ Router.post('/apps', async function (req: Request, res: Response) {
             }
         },
         cronjobs: req.body.cronjobs,
+        addons: req.body.addons,
     };
 
     let app = new App(appconfig);
@@ -109,6 +110,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
             }
         },
         cronjobs: req.body.cronjobs,
+        addons: req.body.addons,
     };
 
     let app = new App(appconfig);
@@ -157,4 +159,10 @@ Router.post('/webhooks/github', async function (req: Request, res: Response) {
 
     req.app.locals.keroku.handleGithubWebhook(event, delivery, signature, body);
     res.send("ok");
+});
+
+// get a list of addons
+Router.get('/addons', async function (req: Request, res: Response) {
+    //res.send('ok');
+    res.send(await req.app.locals.addons.getAddonsList())
 });
