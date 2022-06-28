@@ -1,19 +1,25 @@
 <template>
-  <v-row justify="center">
+  <v-row>
     <v-dialog
       v-model="dialog"
       persistent
       max-width="600px"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
-        >
-          Open Dialog
-        </v-btn>
+
+        <v-col cols="12">
+            <v-btn
+            elevation="2"
+            icon
+            small
+            v-bind="attrs"
+            v-on="on"
+            >
+                <v-icon dark >
+                    mdi-plus
+                </v-icon>
+            </v-btn>
+        </v-col>
       </template>
       <v-card>
         <v-card-title>
