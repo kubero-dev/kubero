@@ -343,8 +343,10 @@
                   depressed
                   rounded
                   text
+                  color="red"
+                  @click="deleteAddon(addon)"
                 >
-                  remove Addon
+                  delete
                 </v-btn>
               </div>
             </v-list-item-content>
@@ -353,24 +355,7 @@
 
         </v-col>
       </v-row>
-<!--
-      <v-row>
-        <v-col
-          cols="12"
-        >
-          <v-btn
-          elevation="2"
-          icon
-          small
-           @click="addAddon()"
-          >
-              <v-icon dark >
-                  mdi-plus
-              </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
--->
+
       <Addons :addons="addons"/>
 
       <!-- SUBMIT -->
@@ -512,6 +497,29 @@ export default {
         Addons,
     },
     methods: {
+      deleteAddon(addon) {
+          //console.log(addon);
+          
+          // remove addon in kubernetes cluster
+          axios.delete(`/api/addons/${this.pipeline}/${this.phase}/${addon.id}`, {
+            data: {
+              apiVersion: addon.crd.apiVersion,
+              plural: addon.plural
+            }}).then(response => {
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+          // remove addon from local view and kuberoapp yaml
+          for (let i = 0; i < this.addons.length; i++) {
+            if (this.addons[i].id == addon.id) {
+              this.addons.splice(i, 1);
+              break;
+            }
+          }
+      },
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
           .then(response => {

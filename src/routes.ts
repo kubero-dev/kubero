@@ -1,6 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import { IApp, IPipeline } from './types';
 import { App } from './types/application';
+import { IAddonMinimal } from './addons';
 
 export const Router = express.Router();
 
@@ -165,4 +166,17 @@ Router.post('/webhooks/github', async function (req: Request, res: Response) {
 Router.get('/addons', async function (req: Request, res: Response) {
     //res.send('ok');
     res.send(await req.app.locals.addons.getAddonsList())
+});
+
+// delete an addon
+Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request, res: Response) {
+    let addon = {
+        group: req.body.apiVersion.split('/')[0],
+        version: req.body.apiVersion.split('/')[1],
+        namespace: req.params.pipeline + "-" + req.params.phase,
+        plural: req.body.plural,
+        id: req.params.addonID
+    } as IAddonMinimal;
+    await req.app.locals.addons.deleteAddon(addon);
+    res.send('ok');
 });

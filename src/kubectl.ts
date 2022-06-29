@@ -16,7 +16,7 @@ import { namespace as namespace_chart} from './charts/namespace';
 import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
 import { App, KubectlApp } from './types/application';
 import { KubectlPipeline } from './types/pipeline';
-import { IAddon } from './addons';
+import { IAddon, IAddonMinimal } from './addons';
 
 
 export class Kubectl {
@@ -318,6 +318,19 @@ export class Kubectl {
             addon.crd
         ).catch(error => {
             debug.log('ERROR: '+error.body.message);
+        })
+    }
+
+    public async deleteAddon(addon: IAddonMinimal) {
+        await this.customObjectsApi.deleteNamespacedCustomObject(
+            addon.group,
+            addon.version,
+            addon.namespace,
+            addon.plural,
+            addon.id
+        ).catch(error => {
+            console.log(addon)
+            debug.log('ERROR: '+error);
         })
     }
 }

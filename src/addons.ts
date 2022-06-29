@@ -7,6 +7,13 @@ import { RedisCluster } from './addons/redis';
 export interface AddonOptions {
     kubectl: Kubectl;
 }
+export interface IAddonMinimal {
+    group: string;
+    version: string;
+    namespace: string;
+    plural: string;
+    id: string;
+}
 
 export interface IAddonFormFields {
     type: string,
@@ -80,5 +87,11 @@ export class Addons {
 
     public async getAddonsList(): Promise<IAddon[]> {
         return this.addonsList
+    }
+
+    // delete a addon in a namespace
+    public async deleteAddon(addon: IAddonMinimal): Promise<void> {
+        console.log(`Deleting addon ${addon.id}`)
+        await this.kubectl.deleteAddon(addon)
     }
 }
