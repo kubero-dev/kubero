@@ -165,7 +165,8 @@ Router.post('/webhooks/github', async function (req: Request, res: Response) {
 // get a list of addons
 Router.get('/addons', async function (req: Request, res: Response) {
     //res.send('ok');
-    res.send(await req.app.locals.addons.getAddonsList())
+    let addonslist = await req.app.locals.addons.getAddonsList();
+    res.send(addonslist)
 });
 
 // delete an addon

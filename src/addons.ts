@@ -2,7 +2,7 @@ import debug from 'debug';
 debug('app:addons')
 import { Kubectl } from './kubectl';
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
-import { RedisCluster } from './addons/redis';
+import { RedisCluster, Redis} from './addons/redis';
 
 export interface AddonOptions {
     kubectl: Kubectl;
@@ -16,22 +16,25 @@ export interface IAddonMinimal {
 }
 
 export interface IAddonFormFields {
-    type: string,
+    type: 'text' | 'number' |'switch',
     label: string,
     name: string,
     required: boolean,
     default: string | number | boolean,
     description?: string,
-    value?: string | number | boolean,
+    //value?: string | number | boolean,
 }
 
 export interface IAddon {
     id: string
+    operator: string,
+    enabled: boolean,
     name: string, 
+    icon: string,
     version: string
     plural: string;
     description?: string,
-    formfields: IAddonFormFields[],
+    formfields: {},
     crd: KubernetesObject
 }
 
@@ -41,48 +44,44 @@ interface IUniqueAddons {
 
 export class Addons {
     private kubectl: Kubectl;
-    public addonsList: Promise<IAddon[]>;
-
-    private addonsWhitelist = [
-        'redis-operator',
-        'mariadb-operator-app',
-        'postgres-operator',
-        //'mongodb-atlas-kubernetes',
-        'percona-server-mongodb-operator',
-        'percona-xtradb-cluster-operator',
-    ]
+    private operatorsAvailable: string[] = [];
+    public addonsList: IAddon[] = []
 
     constructor(
         options: AddonOptions
     ) {
         this.kubectl = options.kubectl
-        this.addonsList = this.loadAvailableAddons()
+        this.loadOperators()
     }
 
-    private async loadAvailableAddons(): Promise<IAddon[]> {
-        const addons = await this.kubectl.getAddons()
-        
-        //console.log(addons)
+    private loadAddons(operatorsAvailable: string[]): void {
 
-        let uniqueAddons:IUniqueAddons = {};
-        for (const addon of addons) {
-            let name = addon.metadata.name.split(".")[0]
-
-            if (this.addonsWhitelist.includes(name)) {
-
-                switch (name) {
-                    case 'redis-operator':
-                        uniqueAddons['redis-cluster'] = new RedisCluster(addon.spec.version, addon.spec.description)
-                        break;
-                    default:
-                        break;
-                }
-    
-            }
+        let rediscluster = new RedisCluster()
+        if (operatorsAvailable.includes(rediscluster.operator)) {
+            rediscluster.enabled = true
         }
-        //console.log(Object.values(uniqueAddons))
+        this.addonsList.push(rediscluster)
 
-        return Object.values(uniqueAddons)
+        let redis = new Redis()
+        if (operatorsAvailable.includes(rediscluster.operator)) {
+            redis.enabled = true
+        }
+        this.addonsList.push(redis)
+
+    }
+
+    private loadOperators(): void {
+        this.kubectl.getOperators().then(operators => {
+
+            let operatorsList:string[] = [];
+            for (const operator of operators) {
+                let name = operator.metadata.name.split(".")[0]
+                operatorsList.push(name)
+            }
+            this.operatorsAvailable = [...new Set(operatorsList)]
+
+            this.loadAddons(this.operatorsAvailable)
+        })
     }
 
     public async getAddonsList(): Promise<IAddon[]> {

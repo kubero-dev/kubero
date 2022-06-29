@@ -31,7 +31,7 @@
               <v-col cols="12">
                 <v-select
                 :items="availableAddons"
-                label="Outlined style"
+                label="Addon"
                 outlined
                 @change="addonChange($event)"
                 ></v-select>
@@ -39,7 +39,7 @@
 
               <v-col cols="12">
                 <v-text-field
-                label="Addon Name"
+                label="Instance Name"
                 v-model="selectedAddon.id"
                 outlined
                 ></v-text-field>
@@ -101,6 +101,7 @@ export default {
     data: () => ({
         dialog: false,
         availableAddons: [
+          /*
             { text: 'Redis', value: { 
                 id: 'redis',
                 name: 'Redis', 
@@ -126,6 +127,7 @@ export default {
                 name: 'Mariadb', 
                 version: 'v0.0.5'
             } },
+          */
         ],
         selectedAddon: { 
             id: '',
@@ -134,6 +136,7 @@ export default {
             formfields: []
         },
         formfields: [
+          /*
             {
                 type: 'text',
                 label: 'Clustersize',
@@ -183,6 +186,7 @@ export default {
                 default: '1Gi',
                 required: true
             }
+            */
         ]
     }),
     mounted() {

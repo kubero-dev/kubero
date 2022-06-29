@@ -27,12 +27,13 @@ export class Keroku {
     public init() {
         this.listPipelines().then(pl => {
             for (const pipeline of pl.items) {
+                //console.log(pipeline)
                 
-                for (const phase of pipeline.spec.phases) {
+                for (const phase of pipeline.phases) {
 
                     if (phase.enabled == true) {
-                        debug.log("Checking Namespace: "+pipeline.spec.name+"-"+phase.name);
-                        this.listAppsInNamespace(pipeline.spec.name+"-"+phase.name).then(appsList => {
+                        debug.log("Checking Namespace: "+pipeline.name+"-"+phase.name);
+                        this.listAppsInNamespace(pipeline.name+"-"+phase.name).then(appsList => {
                             
                             for (const app of appsList.items) {
                                 debug.log("added App to state: "+app.spec.name);
@@ -42,9 +43,9 @@ export class Keroku {
                     }
                 }
 
-                if (pipeline.spec.reviewapps) {
-                    debug.log("Checking Namespace: "+pipeline.spec.name+"-review");
-                    this.listAppsInNamespace(pipeline.spec.name+"-review").then(appsList => {
+                if (pipeline.reviewapps) {
+                    debug.log("Checking Namespace: "+pipeline.name+"-review");
+                    this.listAppsInNamespace(pipeline.name+"-review").then(appsList => {
                         for (const app of appsList.items) {
                             debug.log("added App to state: "+app.spec.name);
                             this.appStateList.push(app.spec);
@@ -149,6 +150,7 @@ export class Keroku {
         // IMPORTANT TODO : Update this.appStateList !!
 
         let namespace = app.pipeline+'-'+app.phase;
+        //TODO: the addons are created even when they exist. This should be handled in a better way
         this.createAddons(app.addons, namespace);
         this._io.emit('updatedApps', "updated");
     }

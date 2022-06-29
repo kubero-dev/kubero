@@ -292,7 +292,7 @@ export class Kubectl {
         });
     };
 
-    public async getAddons() {
+    public async getOperators() {
         /*
         apiVersion: operators.coreos.com/v1alpha1
         kind: ClusterServiceVersion*/
@@ -317,6 +317,7 @@ export class Kubectl {
             addon.plural,
             addon.crd
         ).catch(error => {
+            debug.log(addon.crd);
             debug.log('ERROR: '+error.body.message);
         })
     }
