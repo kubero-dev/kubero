@@ -3,6 +3,7 @@ debug('app:addons')
 import { Kubectl } from './kubectl';
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { RedisCluster, Redis} from './addons/redis';
+import { CrunchyPostgresqlCluster} from './addons/postgresql-crunchy';
 
 export interface AddonOptions {
     kubectl: Kubectl;
@@ -67,6 +68,12 @@ export class Addons {
             redis.enabled = true
         }
         this.addonsList.push(redis)
+
+        let crunchyPostgresCluster = new CrunchyPostgresqlCluster()
+        if (operatorsAvailable.includes(crunchyPostgresCluster.operator)) {
+            crunchyPostgresCluster.enabled = true
+        }
+        this.addonsList.push(crunchyPostgresCluster)
 
     }
 
