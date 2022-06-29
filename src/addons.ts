@@ -34,7 +34,7 @@ export interface IAddon {
     version: string
     plural: string;
     description?: string,
-    formfields: {},
+    formfields: {[key: string]: IAddonFormFields},
     crd: KubernetesObject
 }
 

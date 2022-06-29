@@ -53,6 +53,14 @@
                     :required="field.required"
                     dense
                 ></v-text-field>
+                <v-text-field
+                    v-if="field.type === 'number'"
+                    v-model="field.default"
+                    :label="field.label"
+                    :required="field.required"
+                    dense
+                    type="number"
+                ></v-text-field>
                 <v-switch
                     v-model="field.default"
                     v-if="field.type === 'switch'"
@@ -135,59 +143,6 @@ export default {
             version: '',
             formfields: []
         },
-        formfields: [
-          /*
-            {
-                type: 'text',
-                label: 'Clustersize',
-                name: 'clusterSize',
-                default: '3',
-                required: true
-            },
-            {
-                type: 'switch',
-                label: 'Exporter enabled',
-                name: 'redisExporter.enabled',
-                default: true,
-                required: true
-            },
-            {
-                type: 'text',
-                label: 'CPU Limit',
-                name: 'kubernetesConfig.resources.limits.cpu',
-                default: '101m',
-                required: true
-            },
-            {
-                type: 'text',
-                label:'Memory Limit',
-                name: 'kubernetesConfig.resources.limits.memory',
-                default: '128Mi',
-                required: true
-            },
-            {
-                type: 'text',
-                label: 'CPU Requests',
-                name: 'kubernetesConfig.resources.requests.cpu',
-                default: '101m',
-                required: true
-            },
-            {
-                type: 'text',
-                label: 'Memory Requests',
-                name: 'kubernetesConfig.resources.requests.memory',
-                default: '128Mi',
-                required: true
-            },
-            {
-                type: 'text',
-                label: 'Storage Size',
-                name: 'storage.volumeClaimTemplate.sepc.resources.requests.storage',
-                default: '1Gi',
-                required: true
-            }
-            */
-        ]
     }),
     mounted() {
         this.loadAddons();
@@ -214,7 +169,6 @@ export default {
         },
         submitForm() {
             this.dialog = false;
-            this.formfields = [];
             this.addons.push(this.selectedAddon);
             console.log(this.addons);
         }

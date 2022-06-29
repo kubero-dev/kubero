@@ -5,6 +5,7 @@ import { App } from './types/application';
 import { GithubApi } from './github/api';
 import { IAddon } from './addons';
 import * as crypto from "crypto"
+var set = require('lodash.set'); //TODO : use typescript import here
 
 debug('app:keroku')
 
@@ -413,6 +414,19 @@ export class Keroku {
         for (const addon of addons) {
             //console.log(addon);
             //console.log('createAddon: '+addon.name);
+            for (const field in addon.formfields) {
+                console.log(addon.formfields[field]);
+
+                let val = addon.formfields[field].default;
+                
+                if (addon.formfields[field].type === 'number') {
+                    val = Number(val);
+                }
+
+                set(addon.crd, field, val);
+            }
+
+            console.log(addon.crd);
             this.kubectl.createAddon(addon, namespace);
         }
     }
