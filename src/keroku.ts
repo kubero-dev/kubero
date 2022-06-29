@@ -25,8 +25,7 @@ export class Keroku {
     }
 
     public init() {
-        this.listPipelines().then(pipelinesList => {
-            let pl  = pipelinesList as IKubectlPipelineList;
+        this.listPipelines().then(pl => {
             for (const pipeline of pl.items) {
                 
                 for (const phase of pipeline.spec.phases) {
@@ -105,7 +104,14 @@ export class Keroku {
     public async listPipelines() {
         debug.debug('listPipeline');
         let pipelines = await this.kubectl.getPipelinesList();
-        return pipelines;
+        const ret = {
+            items: new Array()
+        }
+        for (const pipeline of pipelines.items) {
+            debug.log('pipeline: '+pipeline.spec.name);
+            ret.items.push(pipeline.spec);
+        }
+        return ret;
     }
 
     // delete a pipeline and all its namespaces/phases

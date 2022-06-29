@@ -3,37 +3,71 @@
 
                 <v-row class="justify-space-between">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                        Pipelines
+                        <h1>Pipelines</h1>
                     </v-col>
                     <v-spacer />
-                    <v-col>
-                        <v-btn
+                    <v-col class="text-right">
+                        <v-btn 
                         elevation="2"
                         :to="{ name: 'New Pipeline'}"
                         >New Pipeline</v-btn>
                     </v-col>
                 </v-row>
 
-                <v-row v-for="item in apps" :key="item.spec.appName">
-                    <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        <a :href="'/#/pipeline/'+item.spec.name+'/apps'">{{ item.spec.name }}</a>
-                    </v-col>
-                    <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        {{ item.spec.reviewapps }}
-                    </v-col>
+                <v-row v-for="item in apps" :key="item.name">
+                    <v-col cols="12">
+                        <v-card elevation="2">
+                            
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12" sm="12" md="6">
+                                        <a :href="'/#/pipeline/'+item.name+'/apps'">
+                                            <v-card-title>
+                                                <span class="text-h5">{{ item.name }}</span>
+                                            </v-card-title>
+                                            <v-card-text>
+                                                <span>{{ item.github.repository.description }}</span>
+                                            </v-card-text>
+                                        </a>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="5" style="padding: 26px;">
+                                            <v-chip
+                                                small
+                                                label
+                                                class="ma-1"
+                                                :color="item.reviewapps ? 'green' : ''"
+                                                :text-color="item.reviewapps ? 'white' : ''"
+                                                >
+                                                PR-Apps
+                                            </v-chip>
+                                            <v-chip
+                                                v-for="phase in item.phases" :key="phase.name"
+                                                small
+                                                label
+                                                class="ma-1"
+                                                :color="phase.enabled ? 'green' : ''"
+                                                :text-color="phase.enabled  ? 'white' : ''"
+                                                >
+                                                {{ phase.name }}
+                                            </v-chip>
+                                    </v-col>
 
-                    <!-- Actions -->
-                    <v-col cols="12" sm="3" md="3" lg="3" xl="3">
-                        <v-btn
-                        elevation="2"
-                        fab
-                        x-small
-                        @click="deletePipeline(item.spec.name)"
-                        >
-                            <v-icon dark>
-                                mdi-delete
-                            </v-icon>
-                        </v-btn>
+                                    <v-col cols="12" sm="12" md="1">
+                                        <v-btn
+                                        elevation="2"
+                                        fab
+                                        @click="deletePipeline(item.name)"
+                                        >
+                                            <v-icon dark>
+                                                mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                    </v-col>
+
+                                </v-row>
+                            </v-card-text>
+
+                        </v-card>
                     </v-col>
                 </v-row>
     </v-container>
@@ -63,7 +97,6 @@ export default {
             console.log(response);
             //self.appsList = response.data;
             self.apps = response.data.items;
-            return response.data.items;
         })
         .catch(error => {
             console.log(error);
@@ -84,4 +117,8 @@ export default {
 </script>
 
 <style lang="scss">
+.v-card a{
+    text-decoration: none;
+    color: #8560A9 !important;
+}
 </style>

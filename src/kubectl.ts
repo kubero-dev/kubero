@@ -13,7 +13,7 @@ import {
     PatchUtils
 } from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
-import { IPipeline, IKubectlPipeline, IKubectlAppList} from './types';
+import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList} from './types';
 import { App, KubectlApp } from './types/application';
 import { KubectlPipeline } from './types/pipeline';
 import { IAddon, IAddonMinimal } from './addons';
@@ -72,7 +72,7 @@ export class Kubectl {
             'default'
         );
         //console.log(pipelines.body);
-        return pipelines.body;
+        return pipelines.body as IKubectlPipelineList;
     }
 
 
