@@ -1,11 +1,13 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize} from './types';
+import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize, IKuberoConfig} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
 import { IAddon } from './addons';
 import * as crypto from "crypto"
 import set from 'lodash.set';
+import YAML from 'yaml';
+import * as fs from 'fs';
 
 debug('app:keroku')
 
@@ -17,7 +19,7 @@ export class Keroku {
     private _io: Server;
     private githubApi: GithubApi;
     private appStateList: IApp[] = [];
-    public podSizeList: IPodSize[] = [];
+    public config: IKuberoConfig;
 
     constructor(io: Server) {
         console.log("keroku");
@@ -25,6 +27,8 @@ export class Keroku {
         this._io = io;
 
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
+        this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
+        console.log(this.config);
     }
 
     public init() {
@@ -363,7 +367,7 @@ export class Keroku {
                     branch: branch,
                     autodeploy: true,
                     domain: websaveTitle+'.lacolhost.com', //TODO use a default domain, defined somewhere
-                    podsize: this.podSizeList[0], //TODO select from podsizelist
+                    podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     web: {
@@ -434,51 +438,21 @@ export class Keroku {
         }
     }
 
-    public getPodSizeList(){
-        this.podSizeList = [
-            {
-                name: 'small',
-                description: 'Small (CPU: 0.25, Memory: 0.5Gi)',
-                default: true,
-                resources: {
-                    requests: {
-                      memory: '0.5Gi',
-                      cpu: '250m'
-                    },
-                    limits: {
-                      memory: '1Gi',
-                      cpu: '500m'
-                    }
-                }
-            },
-            {
-                name: 'medium',
-                description: 'Medium (CPU: 1, Memory: 2Gi)',
-                resources: {
-                    requests: {
-                      memory: '2Gi',
-                      cpu: '1000m'
-                    },
-                    limits: {
-                      memory: '4Gi',
-                      cpu: '2000m'
-                    }
-                }
-            },
-            {
-                name: 'large',
-                description: 'Large (CPU: 2, Memory: 4Gi)',
-                active: false,
-                resources: {
-                    requests: {
-                      memory: '4Gi',
-                      cpu: '2000m'
-                    }
-                },
-            },
-        ]
+    private loadConfig(path:string): IKuberoConfig {
+        try {
+            //let config = JSON.parse(fs.readFileSync(path, 'utf8'));
+            //let config: IKuberoConfig = require(path);
+            let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
+            return config;
+        } catch (error) {
+            debug.log('FATAL ERROR: could not load config file: '+path);
+            console.log(error);
+            process.exit(1);
+        }
+    }
 
-        return this.podSizeList;
+    public getPodSizeList(){
+        return this.config.podSizeList;
     }
 
 }

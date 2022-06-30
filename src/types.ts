@@ -183,3 +183,9 @@ export interface IPodSize {
       }
     }
 }
+
+export interface IKuberoConfig {
+    name: string;
+    version: string;
+    podSizeList: IPodSize[];
+}
