@@ -14,14 +14,14 @@
                     </v-list-item-icon>
                     <v-list-item-title>Pipelines</v-list-item-title>
                 </v-list-item>
-                
+                <!--
                 <v-list-item link to="/settings">
                     <v-list-item-icon>
                     <v-icon>mdi-file-cog-outline</v-icon>
                     </v-list-item-icon>
                     <v-list-item-title>Settings</v-list-item-title>
                 </v-list-item>
-                
+                -->
                 <v-list-item link to="/addons">
                     <v-list-item-icon>
                     <v-icon>mdi-bookshelf</v-icon>

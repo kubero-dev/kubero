@@ -2,20 +2,21 @@ import { IAddon, IAddonFormFields } from '../addons';
 
 export class CrunchyPostgresqlCluster implements IAddon {
     public id: string = 'postgresql-cluster';
-    public operator = 'postgresql';
+    public operator = 'postgresoperator';
     public enabled = false;
     public name: string = 'PostgreSQL';
     public icon: string = 'postgresql.png';
     public plural: string = 'postgresclusters';
     public version: string = 'v5.1.1';
     public description: string = 'TBD';
+    public install: string = 'kubectl create -f https://operatorhub.io/install/v5/postgresql.yaml';
     public formfields: {[key: string]: IAddonFormFields} = {
       'metadata.name':{
           type: 'text',
           label: 'Redis Cluster Name',
           name: 'metadata.name',
           required: true,
-          default: 'redis-cluster',
+          default: 'pg-cluster',
           description: 'The name of the Redis cluster'
       },
       'spec.postgresVersion':{
@@ -77,7 +78,28 @@ export class CrunchyPostgresqlCluster implements IAddon {
             }
           }
         ],
-        backups: {},
+        backups: {
+          pgbackrest: {
+            image: "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.38-1",
+            repos: [
+              {
+                name: "repo1",
+                volume: {
+                  volumeClaimSpec: {
+                    accessModes: [
+                      "ReadWriteOnce"
+                    ],
+                    resources: {
+                      requests: {
+                        storage: "1Gi"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
         proxy: {
           pgBouncer: {
             image: "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.16-4",
