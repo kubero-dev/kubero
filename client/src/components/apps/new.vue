@@ -155,6 +155,7 @@
             v-model="podsize"
             :items="podsizes"
             label="Podsize"
+            @change="updatePodsize"
           ></v-select>
         </v-col>
       </v-row>
@@ -433,10 +434,12 @@ export default {
       ],
       podsize: '',
       podsizes: [
+        /*
         { text: 'Small (0.2m cpu, 0.5g ram)', value: 'small' },
         { text: 'Medium (0.5m cpu, 1g ram)', value: 'medium' },
         { text: 'Large (1m cpu, 1.5g ram)', value: 'large' },
         { text: 'XLarge (2m cpu, 2.5g ram)', value: 'xlarge' },
+        */
       ],
       autoscale: false,
       webreplicas: 1,
@@ -492,11 +495,27 @@ export default {
     }),
     mounted() {
         this.loadApp();
+        this.loadPodsizeList();
     },
     components: {
         Addons,
     },
     methods: {
+      loadPodsizeList() {
+        axios.get('/api/config/podsize').then(response => {
+          //this.podsizesList = response.data;
+          for (let i = 0; i < response.data.length; i++) {
+            this.podsizes.push({
+              text: response.data[i].description,
+              value: response.data[i],
+            });
+          }
+        });
+      },
+      updatePodsize(podsize) {
+        console.log(podsize);
+        //this.podsize = podsize;
+      },
       deleteAddon(addon) {
           //console.log(addon);
           

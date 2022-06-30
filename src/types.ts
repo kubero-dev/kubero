@@ -7,7 +7,7 @@ export interface IApp {
     branch: string,
     autodeploy: boolean,
     domain?: string,
-    podsize: string,
+    podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
 
@@ -74,7 +74,9 @@ export interface IApp {
     podAnnotations: {},
     podSecurityContext: {},
     replicaCount: number,
+*/
     resources: {},
+/*
     service: {
         port: number,
         type: string
@@ -163,4 +165,21 @@ export interface IKubectlAppList {
     items: IKubectlApp [];
     kind: string;
     metadata: { continue:  string; resourceVersion: string; }
+}
+
+export interface IPodSize {
+    name: string;
+    description: string,
+    default?: boolean,
+    active?: boolean,
+    resources: {
+      requests?: {
+        memory: string,
+        cpu: string
+      },
+      limits?: {
+        memory: string,
+        cpu: string
+      }
+    }
 }

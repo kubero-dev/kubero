@@ -1,5 +1,5 @@
 
-import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob} from '../types';
+import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize} from '../types';
 import { IAddon } from '../addons';
 
 export class KubectlApp implements IKubectlApp{
@@ -29,7 +29,7 @@ export class App implements IApp{
     public branch: string
     public autodeploy: boolean
     public domain?: string
-    public podsize: string
+    public podsize: IPodSize
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
     public envVars: {}[] = []
@@ -97,7 +97,7 @@ export class App implements IApp{
     private podAnnotations: {};
     private podSecurityContext: {};
     private replicaCount: 1;
-    private resources: {};
+    public resources: {};
     private service: {
         port: 80,
         type: 'ClusterIP'
@@ -175,7 +175,7 @@ export class App implements IApp{
         this.podAnnotations= {},
         this.podSecurityContext= {},
         this.replicaCount= 1,
-        this.resources= {},
+        this.resources= app.podsize.resources,
         this.service= {
             port: 80,
             type: 'ClusterIP'

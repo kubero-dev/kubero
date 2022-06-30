@@ -63,6 +63,7 @@ Router.post('/apps', async function (req: Request, res: Response) {
         },
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
+        resources: req.body.podsize.resources,
     };
 
     let app = new App(appconfig);
@@ -112,6 +113,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
         },
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
+        resources: req.body.podsize.resources,
     };
 
     let app = new App(appconfig);
@@ -180,4 +182,8 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
     } as IAddonMinimal;
     await req.app.locals.addons.deleteAddon(addon);
     res.send('ok');
+});
+
+Router.get('/config/podsize', async function (req: Request, res: Response) {
+    res.send(await req.app.locals.keroku.getPodSizeList());
 });

@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList} from './types';
+import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
 import { IAddon } from './addons';
@@ -10,12 +10,14 @@ import set from 'lodash.set';
 debug('app:keroku')
 
 import { Kubectl } from './kubectl';
+import { throws } from 'assert';
 
 export class Keroku {
     public kubectl: Kubectl;
     private _io: Server;
     private githubApi: GithubApi;
     private appStateList: IApp[] = [];
+    public podSizeList: IPodSize[] = [];
 
     constructor(io: Server) {
         console.log("keroku");
@@ -361,7 +363,7 @@ export class Keroku {
                     branch: branch,
                     autodeploy: true,
                     domain: websaveTitle+'.lacolhost.com', //TODO use a default domain, defined somewhere
-                    podsize: "small",
+                    podsize: this.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     web: {
@@ -384,6 +386,7 @@ export class Keroku {
                     },
                     cronjobs: [],
                     addons: [],
+                    resources: {},
 
                 }
                 let app = new App(appOptions);
@@ -429,6 +432,53 @@ export class Keroku {
             console.log(addon.crd);
             this.kubectl.createAddon(addon, namespace);
         }
+    }
+
+    public getPodSizeList(){
+        this.podSizeList = [
+            {
+                name: 'small',
+                description: 'Small (CPU: 0.25, Memory: 0.5Gi)',
+                default: true,
+                resources: {
+                    requests: {
+                      memory: '0.5Gi',
+                      cpu: '250m'
+                    },
+                    limits: {
+                      memory: '1Gi',
+                      cpu: '500m'
+                    }
+                }
+            },
+            {
+                name: 'medium',
+                description: 'Medium (CPU: 1, Memory: 2Gi)',
+                resources: {
+                    requests: {
+                      memory: '2Gi',
+                      cpu: '1000m'
+                    },
+                    limits: {
+                      memory: '4Gi',
+                      cpu: '2000m'
+                    }
+                }
+            },
+            {
+                name: 'large',
+                description: 'Large (CPU: 2, Memory: 4Gi)',
+                active: false,
+                resources: {
+                    requests: {
+                      memory: '4Gi',
+                      cpu: '2000m'
+                    }
+                },
+            },
+        ]
+
+        return this.podSizeList;
     }
 
 }
