@@ -5,7 +5,7 @@ import { App } from './types/application';
 import { GithubApi } from './github/api';
 import { IAddon } from './addons';
 import * as crypto from "crypto"
-var set = require('lodash.set'); //TODO : use typescript import here
+import set from 'lodash.set';
 
 debug('app:keroku')
 
