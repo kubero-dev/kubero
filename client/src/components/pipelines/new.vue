@@ -14,7 +14,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="6"
         >
           <v-text-field
             v-model="pipelineName"
@@ -28,7 +28,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="6"
         >
           <v-text-field
             v-model="gitrepo"
@@ -45,7 +45,7 @@
       >
         <v-col
           cols="12"
-          md="4"
+          md="6"
         >
             <v-btn
                 color="primary"
@@ -80,46 +80,90 @@
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="2"
         >
           <v-switch
-            v-model="reviewapps"
-            :label="`Review Apps: ${reviewapps.toString()}`"
+            v-model="phases.reviewapps.enabled"
+            label="Review Apps"
           ></v-switch>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-select
+            v-model="phases.reviewapps.context"
+            :items="contextList"
+            label="Cluster"
+            v-if="phases.reviewapps.enabled"
+          ></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="2"
         >
           <v-switch
-            v-model="phases.test"
-            :label="`Test: ${phases.test.toString()}`"
+            v-model="phases.test.enabled"
+            label="Test"
           ></v-switch>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-select
+            v-model="phases.test.context"
+            :items="contextList"
+            label="Cluster"
+            v-if="phases.test.enabled"
+          ></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="2"
         >
           <v-switch
-            v-model="phases.stage"
-            :label="`Stage: ${phases.stage.toString()}`"
+            v-model="phases.stage.enabled"
+            label="Stage"
           ></v-switch>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-select
+            v-model="phases.stage.context"
+            :items="contextList"
+            label="Cluster"
+            v-if="phases.stage.enabled"
+          ></v-select>
         </v-col>
       </v-row>
       <v-row>
         <v-col
           cols="12"
-          md="4"
+          md="2"
         >
           <v-switch
-            v-model="phases.production"
-            :label="`Production: ${phases.production.toString()}`"
+            v-model="phases.production.enabled"
+            label="Production"
             readonly
           ></v-switch>
+        </v-col>
+        <v-col
+          cols="12"
+          md="4"
+        >
+          <v-select
+            v-model="phases.production.context"
+            :items="contextList"
+            label="Cluster"
+            v-if="phases.production.enabled"
+          ></v-select>
         </v-col>
       </v-row>
       <v-row>
@@ -149,14 +193,28 @@ export default {
       reviewapps: true,
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
       gitrepo_connected: false,
+      contextList: [],
       github: {
         repository: {},
         webhook: {},
       },
       phases: {
-        test: true,
-        stage: true,
-        production: true
+        reviewapps: {
+          enabled: false,
+          context: '',
+        },
+        test: {
+          enabled: false,
+          context: '',
+        },
+        stage: {
+          enabled: false,
+          context: '',
+        },
+        production: {
+          enabled: true,
+          context: '',
+        },
       },
       nameRules: [
         v => !!v || 'Name is required',
@@ -170,7 +228,20 @@ export default {
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
     }),
+    mounted() {
+      this.getContextList();
+    },
     methods: {
+      getContextList() {
+        axios.get('/api/config/k8s/context').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.contextList.push({
+              text: response.data[i].name,
+              value: response.data[i],
+            });
+          }
+        });
+      },
       connectGithub() {
         axios.post('/api/github/connect', {
           gitrepo: this.gitrepo

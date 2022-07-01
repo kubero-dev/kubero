@@ -32,6 +32,8 @@ export class Kubectl {
         this.kc = new KubeConfig();
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
+        //this.kc.setCurrentContext('asdf')
+
         if (process.env.KUBECONFIG_BASE64) {
             debug.log("load kubectl config from base64");
             let buff = Buffer.from(process.env.KUBECONFIG_BASE64, 'base64');
@@ -61,6 +63,15 @@ export class Kubectl {
             this.kubeVersion = v;
         })
         
+    }
+
+    public getContexts() {
+        return this.kc.getContexts()
+        //return this.kc.getCurrentContext();
+    }
+
+    public async setCurrentContext(context: string) {
+        this.kc.setCurrentContext(context)
     }
 
     public async getPipelinesList() {

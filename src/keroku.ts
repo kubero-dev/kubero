@@ -66,6 +66,10 @@ export class Keroku {
         });
     }
 
+    public getContexts() {
+        return this.kubectl.getContexts()
+    }
+
     public async getAppStateList(): Promise<IApp[]> {
         return this.appStateList;
     }

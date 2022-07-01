@@ -187,3 +187,7 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
 Router.get('/config/podsize', async function (req: Request, res: Response) {
     res.send(await req.app.locals.keroku.getPodSizeList());
 });
+
+Router.get('/config/k8s/context',  async function (req: Request, res: Response) {
+    res.send(req.app.locals.keroku.getContexts());
+});
