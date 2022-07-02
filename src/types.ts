@@ -123,6 +123,7 @@ export interface IGithubRepository {
 export interface IPipelinePhase {
     name: string;
     enabled: boolean;
+    context: string;
     apps: IApp[];
 }
 

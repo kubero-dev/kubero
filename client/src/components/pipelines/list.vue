@@ -32,15 +32,6 @@
                                     </v-col>
                                     <v-col cols="12" sm="12" md="5" style="padding: 26px;">
                                             <v-chip
-                                                small
-                                                label
-                                                class="ma-1"
-                                                :color="item.reviewapps ? 'green' : ''"
-                                                :text-color="item.reviewapps ? 'white' : ''"
-                                                >
-                                                PR-Apps
-                                            </v-chip>
-                                            <v-chip
                                                 v-for="phase in item.phases" :key="phase.name"
                                                 small
                                                 label
@@ -48,6 +39,9 @@
                                                 :color="phase.enabled ? 'green' : ''"
                                                 :text-color="phase.enabled  ? 'white' : ''"
                                                 >
+                                                <v-icon left color="white" v-if="phase.name.includes('review')">
+                                                    mdi-eye-refresh-outline
+                                                </v-icon>
                                                 {{ phase.name }}
                                             </v-chip>
                                     </v-col>

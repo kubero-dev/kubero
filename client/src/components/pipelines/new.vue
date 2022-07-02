@@ -77,14 +77,14 @@
               </v-alert>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row v-for="phase in phases" :key="phase.name">
         <v-col
           cols="12"
           md="2"
         >
           <v-switch
-            v-model="phases.reviewapps.enabled"
-            label="Review Apps"
+            v-model="phase.enabled"
+            :label="phase.name"
           ></v-switch>
         </v-col>
         <v-col
@@ -92,82 +92,15 @@
           md="4"
         >
           <v-select
-            v-model="phases.reviewapps.context"
+            v-model="phase.context"
             :items="contextList"
             label="Cluster"
-            v-if="phases.reviewapps.enabled"
+            v-if="phase.enabled"
           ></v-select>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col
-          cols="12"
-          md="2"
-        >
-          <v-switch
-            v-model="phases.test.enabled"
-            label="Test"
-          ></v-switch>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-select
-            v-model="phases.test.context"
-            :items="contextList"
-            label="Cluster"
-            v-if="phases.test.enabled"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          cols="12"
-          md="2"
-        >
-          <v-switch
-            v-model="phases.stage.enabled"
-            label="Stage"
-          ></v-switch>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-select
-            v-model="phases.stage.context"
-            :items="contextList"
-            label="Cluster"
-            v-if="phases.stage.enabled"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col
-          cols="12"
-          md="2"
-        >
-          <v-switch
-            v-model="phases.production.enabled"
-            label="Production"
-            readonly
-          ></v-switch>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-select
-            v-model="phases.production.context"
-            :items="contextList"
-            label="Cluster"
-            v-if="phases.production.enabled"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row>
 
+      <v-row>
         <v-col
           cols="12"
           md="4"
@@ -198,24 +131,28 @@ export default {
         repository: {},
         webhook: {},
       },
-      phases: {
-        reviewapps: {
+      phases: [
+        {
+          name: 'review',
           enabled: false,
           context: '',
         },
-        test: {
+        {
+          name: 'test',
           enabled: false,
           context: '',
         },
-        stage: {
+        {
+          name: 'stage',
           enabled: false,
           context: '',
         },
-        production: {
+        {
+          name: 'production',
           enabled: true,
           context: '',
         },
-      },
+      ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 10 characters',
@@ -237,7 +174,7 @@ export default {
           for (let i = 0; i < response.data.length; i++) {
             this.contextList.push({
               text: response.data[i].name,
-              value: response.data[i],
+              value: response.data[i].name,
             });
           }
         });
@@ -259,15 +196,17 @@ export default {
         });
       },
       saveForm() {
+        /*
         let phasesList = [];
         for (let key in this.phases) {
           phasesList.push({name: key, enabled: this.phases[key]});
         }
         console.log(phasesList);
+        */
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
-          phases: phasesList,
+          phases: this.phases,
           reviewapps: this.reviewapps,
           github: this.github
         })

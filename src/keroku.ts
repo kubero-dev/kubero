@@ -49,16 +49,6 @@ export class Keroku {
                         })
                     }
                 }
-
-                if (pipeline.reviewapps) {
-                    debug.log("Checking Namespace: "+pipeline.name+"-review");
-                    this.listAppsInNamespace(pipeline.name+"-review").then(appsList => {
-                        for (const app of appsList.items) {
-                            debug.log("added App to state: "+app.spec.name);
-                            this.appStateList.push(app.spec);
-                        }
-                    })
-                }
             }
         }
         ).catch(error => {
@@ -97,18 +87,11 @@ export class Keroku {
         }
         for (const phase of pipeline.phases) {
             if (phase.enabled == true) {
+                this.kubectl.setCurrentContext(phase.context)
                 await this.kubectl.createNamespace(pipeline.name+"-"+phase.name);
                 await this.kubectl.createSecret(pipeline.name+"-"+phase.name, "deployment-keys", secretData);
             }
         }
-
-        // create pipeline if enabled
-        if (pipeline.reviewapps) {
-            debug.debug('create reviewapp: '+pipeline.name);
-            await this.kubectl.createNamespace(pipeline.name+"-review");
-            await this.kubectl.createSecret(pipeline.name+"-review", "deployment-keys", secretData);
-        }
-
         // update agents
         this._io.emit('updatedPipelines', "created");
     }
@@ -127,14 +110,17 @@ export class Keroku {
     }
 
     // delete a pipeline and all its namespaces/phases
-    public deletePipeline(appname: string) {
-        debug.debug('deletePipeline: '+appname);
+    public deletePipeline(pipelineName: string) {
+        debug.debug('deletePipeline: '+pipelineName);
 
-        this.kubectl.getPipeline(appname).then(async pipeline =>{
+        this.kubectl.getPipeline(pipelineName).then(async pipeline =>{
             if (pipeline) {
-                await this.kubectl.deletePipeline(appname);
-                this.kubectl.deleteNamespace(appname+"-production");
-                this.kubectl.deleteNamespace(appname+"-review");
+                await this.kubectl.deletePipeline(pipelineName);
+                for (const phase of pipeline.spec.phases) {
+                    if (phase.enabled == true) {
+                        await this.kubectl.deleteNamespace(pipelineName+"-"+phase.name);
+                    }
+                }
                 this._io.emit('updatedPipelines', "deleted");
             }
         })
@@ -209,12 +195,13 @@ export class Keroku {
             }
             
         }));
-
+/*
         if (pipeline.reviewapps) {
 
             let review = {
                 "enabled": true,
                 "name": "review",
+                "context": "", // Importand TODO: get the context from the pipeline
                 "apps": Array()
             }
 
@@ -226,6 +213,7 @@ export class Keroku {
             pipeline.phases.unshift(review);
 
         }
+*/
 
         return pipeline;
     }
