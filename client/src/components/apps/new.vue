@@ -403,11 +403,11 @@ export default {
     props: {
       pipeline: {
         type: String,
-        default: "MISSSING"
+        default: "MISSING"
       },
       phase: {
         type: String,
-        default: "MISSSING"
+        default: "MISSING"
       },
       app: {
         type: String,
@@ -418,11 +418,13 @@ export default {
       valid: false,
       appname: '',
       resourceVersion: undefined,
+      /*
       phases: [
         { text: 'Production', value: 'production' },
         { text: 'Staging', value: 'stage' },
         { text: 'Testing', value: 'test' },
       ],
+      */
       gitrepo: {
         ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git', 
       },
@@ -494,8 +496,8 @@ export default {
       ],
     }),
     mounted() {
-        this.loadApp();
-        this.loadPodsizeList();
+      this.loadApp();
+      this.loadPodsizeList();
     },
     components: {
         Addons,

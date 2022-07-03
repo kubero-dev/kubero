@@ -19,6 +19,7 @@ export class Keroku {
     private _io: Server;
     private githubApi: GithubApi;
     private appStateList: IApp[] = [];
+    private pipelineStateList: IPipeline[] = [];
     public config: IKuberoConfig;
 
     constructor(io: Server) {
@@ -33,8 +34,9 @@ export class Keroku {
 
     public init() {
         this.listPipelines().then(pl => {
-            for (const pipeline of pl.items) {
+            for (const pipeline of pl.items as IPipeline[]) {
                 //console.log(pipeline)
+                this.pipelineStateList.push(pipeline);
                 
                 for (const phase of pipeline.phases) {
 
@@ -118,6 +120,7 @@ export class Keroku {
                 await this.kubectl.deletePipeline(pipelineName);
                 for (const phase of pipeline.spec.phases) {
                     if (phase.enabled == true) {
+                        this.kubectl.setCurrentContext(phase.context)
                         await this.kubectl.deleteNamespace(pipelineName+"-"+phase.name);
                     }
                 }

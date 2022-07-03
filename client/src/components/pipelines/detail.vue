@@ -4,7 +4,8 @@
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
-                        <p class="text-uppercase">{{phase.name}}</p>
+                        <p><span class="text-uppercase">{{phase.name}}</span><br /><span class="caption">[{{phase.context}}]</span></p>
+                        
 
                         <Appcard v-for="app in phase.apps" :key="app.name" 
                             :pipeline="pipeline"
