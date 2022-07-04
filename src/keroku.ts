@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize, IKuberoConfig} from './types';
 import { App } from './types/application';
 import { GithubApi } from './github/api';
-import { IAddon } from './addons';
+import { IAddon, IAddonMinimal } from './addons';
 import * as crypto from "crypto"
 import set from 'lodash.set';
 import YAML from 'yaml';
@@ -42,11 +42,12 @@ export class Keroku {
 
                     if (phase.enabled == true) {
                         debug.log("Checking Namespace: "+pipeline.name+"-"+phase.name);
-                        this.listAppsInNamespace(pipeline.name+"-"+phase.name).then(appsList => {
-                            
-                            for (const app of appsList.items) {
-                                debug.log("added App to state: "+app.spec.name);
-                                this.appStateList.push(app.spec);
+                        this.listAppsInNamespace(pipeline.name, phase.name).then(appsList => {
+                            if (appsList) {
+                                for (const app of appsList.items) {
+                                    debug.log("added App to state: "+app.spec.name);
+                                    this.appStateList.push(app.spec);
+                                }
                             }
                         })
                     }
@@ -62,14 +63,41 @@ export class Keroku {
         return this.kubectl.getContexts()
     }
 
+    public getContext(pipelineName: string, phaseName: string): string | undefined {
+        for (const pipeline of this.pipelineStateList) {
+            if (pipeline.name == pipelineName) {
+                for (const phase of pipeline.phases) {
+                    if (phase.name == phaseName) {
+                        //this.kubectl.setCurrentContext(phase.context);
+                        return phase.context;
+                    }
+                }
+            }
+        }
+    }
+
+    public async setContext(pipelineName: string, phaseName: string): Promise<boolean> {
+        const context = this.getContext(pipelineName, phaseName)
+        if (context) {
+            await this.kubectl.setCurrentContext(context);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public async getAppStateList(): Promise<IApp[]> {
         return this.appStateList;
     }
 
-    public async listAppsInNamespace(namespace: string): Promise<IKubectlAppList> {
-        debug.debug('listAppsInNamespace: '+namespace);
-        let apps = await this.kubectl.getAppsList(namespace);
-        return apps;
+    public async listAppsInNamespace(pipelineName: string, phaseName: string): Promise<IKubectlAppList | undefined> {
+        const namespace = pipelineName+'-'+phaseName;
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            debug.debug('listAppsInNamespace: '+namespace);
+            let apps = await this.kubectl.getAppsList(namespace, contextName);
+            return apps;
+        }
     }
 
     // creates a new pipeline in the same namespace as the kubero app
@@ -89,9 +117,9 @@ export class Keroku {
         }
         for (const phase of pipeline.phases) {
             if (phase.enabled == true) {
-                this.kubectl.setCurrentContext(phase.context)
-                await this.kubectl.createNamespace(pipeline.name+"-"+phase.name);
-                await this.kubectl.createSecret(pipeline.name+"-"+phase.name, "deployment-keys", secretData);
+                const namespace = pipeline.name+'-'+phase.name;
+                await this.kubectl.createNamespace(namespace, phase.context);
+                await this.kubectl.createSecret(namespace, "deployment-keys", secretData, phase.context);
             }
         }
         // update agents
@@ -120,8 +148,8 @@ export class Keroku {
                 await this.kubectl.deletePipeline(pipelineName);
                 for (const phase of pipeline.spec.phases) {
                     if (phase.enabled == true) {
-                        this.kubectl.setCurrentContext(phase.context)
-                        await this.kubectl.deleteNamespace(pipelineName+"-"+phase.name);
+                        const namespace = pipeline.spec.name+"-"+phase.name;
+                        await this.kubectl.deleteNamespace(namespace, phase.context);
                     }
                 }
                 this._io.emit('updatedPipelines', "deleted");
@@ -135,32 +163,43 @@ export class Keroku {
     // create a new app in a specified pipeline and phase
     public async newApp(app: App) {
         debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-        await this.kubectl.createApp(app);
-        this.appStateList.push(app);
-        
-        let namespace = app.pipeline+'-'+app.phase;
-        this.createAddons(app.addons, namespace);
-        this._io.emit('updatedApps', "created");
+        const contextName = this.getContext(app.pipeline, app.phase);
+        if (contextName) {
+            await this.kubectl.createApp(app, contextName);
+            this.appStateList.push(app);
+            
+            let namespace = app.pipeline+'-'+app.phase;
+            this.createAddons(app.addons, namespace, contextName);
+            this._io.emit('updatedApps', "created");
+        }
     }
 
     // update an app in a pipeline and phase
-    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) {
+    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) { //TODO remove env vars
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-        await this.kubectl.updateApp(app, envvars, resourceVersion);
-        // IMPORTANT TODO : Update this.appStateList !!
+        await this.setContext(app.pipeline, app.phase);
+        
+        const contextName = this.getContext(app.pipeline, app.phase);
+        if (contextName) {
+            await this.kubectl.updateApp(app, resourceVersion, contextName);
+            // IMPORTANT TODO : Update this.appStateList !!
 
-        let namespace = app.pipeline+'-'+app.phase;
-        //TODO: the addons are created even when they exist. This should be handled in a better way
-        this.createAddons(app.addons, namespace);
-        this._io.emit('updatedApps', "updated");
+            let namespace = app.pipeline+'-'+app.phase;
+            //TODO: the addons are created even when they exist. This should be handled in a better way
+            this.createAddons(app.addons, namespace, contextName);
+            this._io.emit('updatedApps', "updated");
+        }
     }
 
     // delete a app in a pipeline and phase
     public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-        await this.kubectl.deleteApp(pipelineName, phaseName, appName);
-        this.removeAppFromState(pipelineName, phaseName, appName);
-        this._io.emit('updatedApps', "deleted");
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
+            this.removeAppFromState(pipelineName, phaseName, appName);
+            this._io.emit('updatedApps', "deleted");
+        }
     }
     
     private removeAppFromState(pipelineName: string, phaseName: string, appName: string) {
@@ -173,16 +212,20 @@ export class Keroku {
         }
     }
 
-    // delete a app in a pipeline and phase
+    // get a app in a pipeline and phase
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-        let app = await this.kubectl.getApp(pipelineName, phaseName, appName);
-        return app;
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
+            return app;
+        }
     }
 
     // list all apps in a pipeline
     public async listApps(pipelineName: string) {
         debug.debug('listApps in '+pipelineName);
+        await this.kubectl.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         let kpipeline = await this.kubectl.getPipeline(pipelineName);
 
         let pipeline = kpipeline.spec
@@ -190,7 +233,8 @@ export class Keroku {
         await Promise.all(pipeline.phases.map(async (phase, key) => {
 
             console.log(phase.name)
-            let apps = await this.kubectl.getAppsList(pipelineName+"-"+phase.name);
+            const namespace = pipeline.name+'-'+phase.name;
+            let apps = await this.kubectl.getAppsList(namespace, phase.context);
             
             pipeline.phases[key].apps = [];
             for (const app of apps.items) {
@@ -223,14 +267,17 @@ export class Keroku {
 
     public restartApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-        this.kubectl.restartApp(pipelineName, phaseName, appName);
-        let message = {
-            'action': 'restarted', 
-            'pipeline':pipelineName, 
-            'phase':phaseName, 
-            'app': appName
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            this.kubectl.restartApp(pipelineName, phaseName, appName, contextName);
+            let message = {
+                'action': 'restarted', 
+                'pipeline':pipelineName, 
+                'phase':phaseName, 
+                'app': appName
+            }
+            this._io.emit('updatedApps', message);
         }
-        this._io.emit('updatedApps', message);
     }
 /*
     public deployApp(pipelineName: string, phaseName: string, appName: string) {
@@ -412,7 +459,7 @@ export class Keroku {
         }
     }
 
-    private async createAddons(addons: IAddon[], namespace: string) {
+    private async createAddons(addons: IAddon[], namespace: string, context: string) {
         for (const addon of addons) {
             //console.log(addon);
             //console.log('createAddon: '+addon.name);
@@ -429,7 +476,16 @@ export class Keroku {
             }
 
             console.log(addon.crd);
-            this.kubectl.createAddon(addon, namespace);
+            this.kubectl.createAddon(addon, namespace, context);
+        }
+    }
+
+    // delete a addon in a namespace
+    public async deleteAddon(addon: IAddonMinimal): Promise<void> {
+        console.log(`Deleting addon ${addon.id}`)
+        const contextName = this.getContext(addon.pipeline, addon.phase);
+        if (contextName) {
+            this.kubectl.deleteAddon(addon, contextName);
         }
     }
 

@@ -12,6 +12,8 @@ export interface IAddonMinimal {
     group: string;
     version: string;
     namespace: string;
+    pipeline: string;
+    phase: string;
     plural: string;
     id: string;
 }
@@ -93,11 +95,5 @@ export class Addons {
 
     public async getAddonsList(): Promise<IAddon[]> {
         return this.addonsList
-    }
-
-    // delete a addon in a namespace
-    public async deleteAddon(addon: IAddonMinimal): Promise<void> {
-        console.log(`Deleting addon ${addon.id}`)
-        await this.kubectl.deleteAddon(addon)
     }
 }

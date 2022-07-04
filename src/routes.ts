@@ -177,6 +177,8 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
         group: req.body.apiVersion.split('/')[0],
         version: req.body.apiVersion.split('/')[1],
         namespace: req.params.pipeline + "-" + req.params.phase,
+        pipeline: req.params.pipeline,
+        phase: req.params.phase,
         plural: req.body.plural,
         id: req.params.addonID
     } as IAddonMinimal;

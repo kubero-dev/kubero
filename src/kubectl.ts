@@ -73,6 +73,7 @@ export class Kubectl {
     }
 
     public async getPipelinesList() {
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
             'application.kubero.dev', 
             'v1alpha1', 
@@ -89,6 +90,7 @@ export class Kubectl {
         console.log(pl)
         let pipeline = new KubectlPipeline(pl);
 
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -100,25 +102,28 @@ export class Kubectl {
         });
     }
 
-    public async deletePipeline(appname: string) {
+    public async deletePipeline(pipelineName: string) {
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
             "keroku",
             "kuberopipelines",
-            appname
+            pipelineName
         ).catch(error => {
             console.log(error);
         });
     }
 
-    public async getPipeline(appname: string): Promise<IKubectlPipeline> {
+    public async getPipeline(pipelineName: string): Promise<IKubectlPipeline> {
+
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
             "keroku",
             "kuberopipelines",
-            appname
+            pipelineName
         ).catch(error => {
             console.log(error);
         });
@@ -129,7 +134,7 @@ export class Kubectl {
         }
     }
 
-    public async createSecret(namespace: string, secretName: string, secretData: any) {
+    public async createSecret(namespace: string, secretName: string, secretData: any, context: string) {
         let secret = {
             apiVersion: "v1",
             kind: "Secret",
@@ -140,19 +145,21 @@ export class Kubectl {
             type: "Opaque",
             data: secretData
         }
+        this.kc.setCurrentContext(context);
         await this.coreV1Api.createNamespacedSecret(namespace, secret).catch(error => {
             console.log(error);
         }
         );
     }
 
-    public async createNamespace(ns_name: string) {
+    public async createNamespace(ns_name: string, context: string) {
 
         console.log("create namespace ");
 
         try {
             namespace_chart.metadata.name = ns_name;
             console.log(namespace_chart);
+            this.kc.setCurrentContext(context);
             const ret = await this.coreV1Api.createNamespace(namespace_chart);
             //debug.debug(ret);
         } catch (error) {
@@ -160,10 +167,11 @@ export class Kubectl {
         }
     }
 
-    public async deleteNamespace(ns_name: string) {
+    public async deleteNamespace(ns_name: string, context: string) {
         console.log("delete namespace ");
 
         try {
+            this.kc.setCurrentContext(context);
             const ret = await this.coreV1Api.deleteNamespace(ns_name);
             //debug.debug(ret);
         } catch (error) {
@@ -178,8 +186,9 @@ export class Kubectl {
         return this.kubeVersion;
     }
 
-    public async createApp(app: App) {
+    public async createApp(app: App, context: string) {
         console.log(app)
+        this.kc.setCurrentContext(context);
 
         let appl = new KubectlApp(app.name);
         appl.spec = app
@@ -200,8 +209,9 @@ export class Kubectl {
         })
     }
 
-    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) {
+    public async updateApp(app: App, resourceVersion: string, context: string) {
         console.log(app)
+        this.kc.setCurrentContext(context);
 
         let appl = new KubectlApp(app.name);
         appl.metadata.resourceVersion = resourceVersion;
@@ -224,9 +234,10 @@ export class Kubectl {
         })
     }
 
-    public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
+    public async deleteApp(pipelineName: string, phaseName: string, appName: string, context: string) {
 
         let namespace = pipelineName+'-'+phaseName;
+        this.kc.setCurrentContext(context);
         
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
@@ -239,9 +250,10 @@ export class Kubectl {
         })
     }
 
-    public async getApp(pipelineName: string, phaseName: string, appName: string) {
+    public async getApp(pipelineName: string, phaseName: string, appName: string, context: string) {
 
         let namespace = pipelineName+'-'+phaseName;
+        this.kc.setCurrentContext(context);
         
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
@@ -256,7 +268,8 @@ export class Kubectl {
         return app;
     }
 
-    public async getAppsList(namespace: string) {
+    public async getAppsList(namespace: string, context: string) {
+        this.kc.setCurrentContext(context);
         let appslist = await this.customObjectsApi.listNamespacedCustomObject(
             'application.kubero.dev', 
             'v1alpha1', 
@@ -267,7 +280,8 @@ export class Kubectl {
         return appslist.body as IKubectlAppList;
     }
 
-    public async restartApp(pipelineName: string, phaseName: string, appName: string) {
+    public async restartApp(pipelineName: string, phaseName: string, appName: string, context: string) {
+        this.kc.setCurrentContext(context);
             
         let namespace = pipelineName+'-'+phaseName;
         let deploymentName = appName+'-kuberoapp';
@@ -302,6 +316,8 @@ export class Kubectl {
     };
 
     public async getOperators() {
+        // TODO list operators from all clusters
+
         /*
         apiVersion: operators.coreos.com/v1alpha1
         kind: ClusterServiceVersion*/
@@ -317,8 +333,10 @@ export class Kubectl {
         return operators.items;
     }
 
-    public async createAddon(addon: IAddon, namespace: string) {
+    public async createAddon(addon: IAddon, namespace: string, context: string) {
         let apiVersion = addon.crd.apiVersion as string;
+        this.kc.setCurrentContext(context);
+
         await this.customObjectsApi.createNamespacedCustomObject(
             apiVersion.split('/')[0],
             apiVersion.split('/')[1],
@@ -331,7 +349,8 @@ export class Kubectl {
         })
     }
 
-    public async deleteAddon(addon: IAddonMinimal) {
+    public async deleteAddon(addon: IAddonMinimal, context: string) {
+        this.kc.setCurrentContext(context);
         await this.customObjectsApi.deleteNamespacedCustomObject(
             addon.group,
             addon.version,
