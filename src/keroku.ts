@@ -8,6 +8,10 @@ import * as crypto from "crypto"
 import set from 'lodash.set';
 import YAML from 'yaml';
 import * as fs from 'fs';
+import { v4 as uuidv4 } from 'uuid';
+
+import { Stream } from 'stream';
+//const stream = require('stream');
 
 debug('app:keroku')
 
@@ -20,6 +24,7 @@ export class Keroku {
     private githubApi: GithubApi;
     private appStateList: IApp[] = [];
     private pipelineStateList: IPipeline[] = [];
+    private podLogStreams: string[]= []
     public config: IKuberoConfig;
 
     constructor(io: Server) {
@@ -53,6 +58,7 @@ export class Keroku {
                     }
                 }
             }
+            //this.emitLogs('popo', 'production', 'ppppp', 'ppppp-kuberoapp-web-6ccb6795bb-48qtt', 'kuberoapp-web')
         }
         ).catch(error => {
             console.log(error);
@@ -506,4 +512,69 @@ export class Keroku {
         return this.config.podSizeList;
     }
 
+    public emitLogs(pipelineName: string, phaseName: string, appName: string, podName: string, container: string) {
+        
+        const logStream = new Stream.PassThrough();
+
+        logStream.on('data', (chunk: any) => {
+            // use write rather than console.log to prevent double line feed
+            process.stdout.write(chunk);
+            this._io.emit('log', {
+                id: uuidv4(),
+                time: new Date().getTime(),
+                pipeline: pipelineName,
+                phase: phaseName,
+                app: appName,
+                pod: podName,
+                podID: podName.split('-')[3]+'-'+podName.split('-')[4],
+                container: container,
+                log: chunk.toString()
+            });
+        });
+
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            console.log('logs: '+podName+' '+container);
+
+            if (!this.podLogStreams.includes(podName)) {
+
+                this.kubectl.log.log(namespace, podName, container, logStream, {follow: true, tailLines: 50, pretty: false, timestamps: false})
+                .then(res => {
+                    console.log('logs done');
+                    this.podLogStreams.push(podName);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+            } else {
+                console.log('logs already running '+podName+' '+container);
+            }
+        }else{
+            console.log('no context found for: '+pipelineName+' '+phaseName);
+        }
+    }
+
+    public startLogging(pipelineName: string, phaseName: string, appName: string) {
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        if (contextName) {
+            this.kubectl.getPods(namespace, contextName).then((pods: any[]) => {
+                for (const pod of pods) {
+                    //console.log(pod)
+
+                    if (pod.metadata.name.startsWith(appName)) {
+                        for (const container of pod.spec.containers) {
+                            this.emitLogs(pipelineName, phaseName, appName, pod.metadata.name, container.name);
+                        }
+                    }
+                }
+            });
+        }else{
+            console.log('no context found for: '+pipelineName+' '+phaseName);
+        }
+    }
 }

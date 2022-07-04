@@ -193,3 +193,12 @@ Router.get('/config/podsize', async function (req: Request, res: Response) {
 Router.get('/config/k8s/context',  async function (req: Request, res: Response) {
     res.send(req.app.locals.keroku.getContexts());
 });
+
+Router.get('/logs/:pipeline/:phase/:app',  async function (req: Request, res: Response) {
+    req.app.locals.keroku.startLogging(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app
+    );
+    res.send('ok');
+});

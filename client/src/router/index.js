@@ -3,6 +3,7 @@ import PipelineList from "@/components/pipelines/list"
 import PipelineNew from "@/components/pipelines/new"
 import PipelineDetails from "@/components/pipelines/detail"
 import AppsNew from "@/components/apps/new"
+import AppsLogs from "@/components/apps/logs"
 import Settingsform from "@/components/settings/form"
 import Addonslist from "@/components/addons/list"
 
@@ -34,6 +35,12 @@ export default new VueRouter({
       path: "/pipeline/:pipeline/:phase/:app",
       name: "Edit App",
       component: AppsNew,
+      props: true
+    },
+    {
+      path: "/pipeline/:pipeline/:phase/:app/logs",
+      name: "App Logs",
+      component: AppsLogs,
       props: true
     },
     {

@@ -29,9 +29,11 @@
         <v-btn
             color="deep-purple lighten-2"
             text
-            outlined
+            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app+'/logs'"
         >
-            Promote to Production
+            <v-icon
+                >mdi-console
+            </v-icon>
         </v-btn>
         <v-btn
             v-if="this.domain"

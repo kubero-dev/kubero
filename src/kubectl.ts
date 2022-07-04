@@ -10,7 +10,9 @@ import {
     KubernetesListObject, 
     KubernetesObject,
     VersionInfo, 
-    PatchUtils
+    PatchUtils,
+    Log as KubeLog,
+    V1Pod,
 } from '@kubernetes/client-node'
 import { namespace as namespace_chart} from './charts/namespace';
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList} from './types';
@@ -27,6 +29,7 @@ export class Kubectl {
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo;
     private patchUtils: PatchUtils;
+    public log: KubeLog;
 
     constructor() {
         this.kc = new KubeConfig();
@@ -61,6 +64,7 @@ export class Kubectl {
             this.kubeVersion = v;
         })
         
+        this.log = new KubeLog(this.kc);
     }
 
     public getContexts() {
@@ -361,5 +365,10 @@ export class Kubectl {
             console.log(addon)
             debug.log('ERROR: '+error);
         })
+    }
+
+    public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
+        const pods = await this.coreV1Api.listNamespacedPod(namespace);
+        return pods.body.items;
     }
 }

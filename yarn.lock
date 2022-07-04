@@ -389,6 +389,11 @@
   resolved "https://registry.yarnpkg.com/@types/underscore/-/underscore-1.11.4.tgz#62e393f8bc4bd8a06154d110c7d042a93751def3"
   integrity sha512-uO4CD2ELOjw8tasUrAhvnn2W4A0ZECOvMjCivJr4gA9pGgjv+qxKWY9GLTMVEK8ej85BxQOocUyE7hImmSQYcg==
 
+"@types/uuid@^8.3.4":
+  version "8.3.4"
+  resolved "https://registry.yarnpkg.com/@types/uuid/-/uuid-8.3.4.tgz#bd86a43617df0594787d38b735f55c805becf1bc"
+  integrity sha512-c/I8ZRb51j+pYGAu5CrFMRxqZ2ke4y2grEBO5AUjgSkSk+qT2Ea+OdWElz/OiMf5MNpn2b17kuVBwZLQJXzihw==
+
 "@types/ws@^6.0.1":
   version "6.0.4"
   resolved "https://registry.yarnpkg.com/@types/ws/-/ws-6.0.4.tgz#7797707c8acce8f76d8c34b370d4645b70421ff1"
@@ -2597,6 +2602,11 @@ uuid@^3.3.2:
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.4.0.tgz#b23e4358afa8a202fe7a100af1f5f883f02007ee"
   integrity sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+
+uuid@^8.3.2:
+  version "8.3.2"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
+  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 vary@^1, vary@~1.1.2:
   version "1.1.2"
