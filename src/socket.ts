@@ -14,9 +14,21 @@ export function init(httpServer: HttpServer) {
         //return {client: client, io: io};
 
         client.on('join', join => {
+            //leave all rooms before joining new one
+            client.rooms.forEach(room => {
+                if(client.id !== room && room !== join.room) {
+                    console.log('exiting room : ' +room)
+                    client.leave(room);
+                }
+            })
             console.log('joining room', join.room)
-            console.log(join)
             client.join(join.room);
+            //console.log(client.rooms.values())
+        });
+
+        client.on('leave', leave => {
+            console.log('leaving room', leave.room)
+            client.leave(leave.room);
         });
     });
     return io;

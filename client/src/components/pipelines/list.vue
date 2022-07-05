@@ -9,6 +9,7 @@
                     <v-col class="text-right">
                         <v-btn 
                         elevation="2"
+                        color="primary"
                         :to="{ name: 'New Pipeline'}"
                         >New Pipeline</v-btn>
                     </v-col>
@@ -16,7 +17,7 @@
 
                 <v-row v-for="item in apps" :key="item.name">
                     <v-col cols="12">
-                        <v-card elevation="2">
+                        <v-card elevation="2" outlined color="#fafafa">
                             
                             <v-card-text>
                                 <v-row>

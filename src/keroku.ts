@@ -519,7 +519,8 @@ export class Keroku {
         logStream.on('data', (chunk: any) => {
             // use write rather than console.log to prevent double line feed
             process.stdout.write(chunk);
-            this._io.emit('log', {
+            const roomname = `${pipelineName}-${phaseName}-${appName}`;
+            this._io.to(roomname).emit('log', {
                 id: uuidv4(),
                 time: new Date().getTime(),
                 pipeline: pipelineName,

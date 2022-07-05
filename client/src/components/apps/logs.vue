@@ -1,24 +1,19 @@
 <template>
-    <v-container>
+    <v-container style="height: 80%">
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Logs</h1>
+                <h1>Logs for {{ this.app }}</h1>
+                <p></p>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row style="height: 100%">
             <v-col cols="12" sm="12" md="10">
                 <div class="console">
-                    <div v-for="line in loglines" :key="line.id">{{ new Date(line.time).toISOString()}}[{{ line.podID }}/{{ line.container }}] {{ line.log }}</div>
+                    <div v-for="line in loglines" :key="line.id">{{ new Date(line.time).toISOString()}}[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}] {{ line.log }}</div>
                 </div>
             </v-col>
         </v-row>
-        <v-btn
-        elevation="2"
-        @click="socketJoin()"
-        >
-            Join
-        </v-btn>
 
     </v-container>
 </template>
@@ -31,18 +26,13 @@ export default {
             console.log(data);
             this.loglines.push(data);
         },
-        /*
-        loadLoags: function() {
-            this.$socket.on("logs", data => {
-                console.log(data);
-                this.loglines.push(data);
-            });
-        },
-        */
     },
     mounted() {
         this.socketJoin()
         this.startLogs()
+    },
+    unmounted() {
+        this.socketLeave()
     },
     props: {
       pipeline: {
@@ -60,15 +50,17 @@ export default {
     },
     data: () => ({
         loglines: [
-            /*
+            /* example
             {
-                app: "ppppp"
+                app: "bla"
                 container: "kuberoapp-web"
-                id: 1656940401032
-                log: "logtest: iasdfdfadafdaffs\n"
+                id: "049464b6-3f35-4b72-a885-6c263e64aec7"
+                log: "logtest: nana\n"
                 phase: "production"
-                pipeline: "popo"
-                pod: "ppppp-kuberoapp-web-6ccb6795bb-48qtt"
+                pipeline: "hoho"
+                pod: "bla-kuberoapp-web-6dfd5c4c9b-mxg9v"
+                podID: "6dfd5c4c9b-mxg9v"
+                time: 1656970421989
             },
             */
         ],
@@ -80,12 +72,19 @@ export default {
             console.log("socketJoin");
             
             this.$socket.client.emit("join", {
-                room: "logs",
+                room: `${this.pipeline}-${this.phase}-${this.app}`,
+                //user: this.$store.state.user.name,
+            });
+        },
+        socketLeave() {
+            console.log("socketLeave");
+            this.$socket.client.emit("leave", {
+                room: `${this.pipeline}-${this.phase}-${this.app}`,
                 //user: this.$store.state.user.name,
             });
         },
         startLogs() {
-            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
+            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}`).then(() => {
                 //this.podsizesList = response.data;
                 console.log("logs started");
             });
@@ -96,10 +95,11 @@ export default {
 
 <style lang="scss">
 .console {
-    height: 300px;
+    height: 100%;
     overflow-y: scroll;
     background-color: #333;
     color: #c0c0c0;
+    padding: 5px;
     font: 0.85rem Inconsolata, monospace;
 }
 </style>

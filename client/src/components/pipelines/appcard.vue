@@ -3,6 +3,7 @@
     class="mt-5"
     outlined
     elevation="2"
+    color="#fafafa"
     >
 
     <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app">{{ this.app }}</a></v-card-title>
@@ -27,6 +28,15 @@
 
     <v-card-actions class="ml-2">
         <v-btn
+            v-if="this.domain"
+            color="deep-purple lighten-2"
+            text
+        >
+            <v-icon
+                >mdi-reload-alert
+            </v-icon>
+        </v-btn>
+        <v-btn
             color="deep-purple lighten-2"
             text
             :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app+'/logs'"
@@ -41,7 +51,9 @@
             text
             :href="'https:/'+domain" target="_blank"
         >
-            Open app
+            <v-icon
+                >mdi-open-in-new
+            </v-icon>
         </v-btn>
     </v-card-actions>
 </v-card>
