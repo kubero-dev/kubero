@@ -1,4 +1,4 @@
-import { IAddon, IAddonFormFields } from '../addons';
+import { IAddon, IAddonFormFields } from '../modules/addons';
 
 export class CrunchyPostgresqlCluster implements IAddon {
     public id: string = 'postgresql-cluster';

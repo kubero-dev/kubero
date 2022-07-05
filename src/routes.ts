@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from 'express';
 import { IApp, IPipeline } from './types';
-import { App } from './types/application';
-import { IAddonMinimal } from './addons';
+import { App } from './modules/application';
+import { IAddonMinimal } from './modules/addons';
 
 export const Router = express.Router();
 

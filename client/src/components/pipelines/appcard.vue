@@ -1,10 +1,19 @@
 <template>
 <v-card
+    :loading="loadingState"
     class="mt-5"
     outlined
     elevation="2"
     color="#fafafa"
     >
+
+    <template slot="progress">
+      <v-progress-linear
+        color="primary"
+        height="2"
+        indeterminate
+      ></v-progress-linear>
+    </template>
 
     <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app">{{ this.app }}</a></v-card-title>
 
@@ -31,6 +40,7 @@
             v-if="this.domain"
             color="deep-purple lighten-2"
             text
+            @click="restartApp()"
         >
             <v-icon
                 >mdi-reload-alert
@@ -60,6 +70,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     props: {
       pipeline: {
@@ -103,8 +114,23 @@ export default {
         type: Boolean,
         default: false
       }
+    },
+    data: () => ({
+      loadingState: false,
+    }),
+    methods: {
+        restartApp() {
+            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}/restart`)
+            .then(response => {
+                console.log(response);
+                this.loadingState = true;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        }
     }
-    }
+}
 </script>
 
 <style>

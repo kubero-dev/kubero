@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { init } from './socket'
 import { Keroku } from './keroku';
-import { Addons } from './addons';
+import { Addons } from './modules/addons';
 
 export const before = (app: Express) => {
     app.use(cors())

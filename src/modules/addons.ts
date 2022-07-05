@@ -2,8 +2,8 @@ import debug from 'debug';
 debug('app:addons')
 import { Kubectl } from './kubectl';
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
-import { RedisCluster, Redis} from './addons/redis';
-import { CrunchyPostgresqlCluster} from './addons/postgresql-crunchy';
+import { RedisCluster, Redis} from '../addons/redis';
+import { CrunchyPostgresqlCluster} from '../addons/postgresql-crunchy';
 
 export interface AddonOptions {
     kubectl: Kubectl;

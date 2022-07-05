@@ -13,11 +13,11 @@ import {
     PatchUtils,
     Log as KubeLog,
     V1Pod,
+    V1Namespace,
 } from '@kubernetes/client-node'
-import { namespace as namespace_chart} from './charts/namespace';
-import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList} from './types';
-import { App, KubectlApp } from './types/application';
-import { KubectlPipeline } from './types/pipeline';
+import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList} from '../types';
+import { App, KubectlApp } from './application';
+import { KubectlPipeline } from './pipeline';
 import { IAddon, IAddonMinimal } from './addons';
 
 
@@ -161,10 +161,16 @@ export class Kubectl {
         console.log("create namespace ");
 
         try {
-            namespace_chart.metadata.name = ns_name;
-            console.log(namespace_chart);
+            let ns = new V1Namespace();
+            ns.metadata = {
+                name: ns_name,
+                labels: {
+                    "managed-by": "kubero"
+                }
+            }
+            console.log(ns);
             this.kc.setCurrentContext(context);
-            const ret = await this.coreV1Api.createNamespace(namespace_chart);
+            const ret = await this.coreV1Api.createNamespace(ns);
             //debug.debug(ret);
         } catch (error) {
             debug.log(error);
@@ -284,11 +290,11 @@ export class Kubectl {
         return appslist.body as IKubectlAppList;
     }
 
-    public async restartApp(pipelineName: string, phaseName: string, appName: string, context: string) {
+    public async restartApp(pipelineName: string, phaseName: string, appName: string, workloadType: string, context: string) {
         this.kc.setCurrentContext(context);
             
         let namespace = pipelineName+'-'+phaseName;
-        let deploymentName = appName+'-kuberoapp';
+        let deploymentName = appName+'-kuberoapp-'+workloadType;
         const date = new Date();
 
         // format : https://jsonpatch.com/
@@ -315,7 +321,10 @@ export class Kubectl {
         ).then(() => {
             console.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
         }).catch(error => {
-            debug.log('ERROR: '+error.body.message);
+            if (error.body.message) {
+                debug.log('ERROR: '+error.body.message);
+            }
+            debug.log('ERROR: '+error);
         });
     };
 

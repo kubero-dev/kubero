@@ -1,9 +1,9 @@
 import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize, IKuberoConfig} from './types';
-import { App } from './types/application';
+import { App } from './modules/application';
 import { GithubApi } from './github/api';
-import { IAddon, IAddonMinimal } from './addons';
+import { IAddon, IAddonMinimal } from './modules/addons';
 import * as crypto from "crypto"
 import set from 'lodash.set';
 import YAML from 'yaml';
@@ -15,7 +15,7 @@ import { Stream } from 'stream';
 
 debug('app:keroku')
 
-import { Kubectl } from './kubectl';
+import { Kubectl } from './modules/kubectl';
 import { throws } from 'assert';
 
 export class Keroku {
@@ -275,14 +275,16 @@ export class Keroku {
         debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
-            this.kubectl.restartApp(pipelineName, phaseName, appName, contextName);
+            this.kubectl.restartApp(pipelineName, phaseName, appName, 'web', contextName);
+            this.kubectl.restartApp(pipelineName, phaseName, appName, 'worker', contextName);
+
             let message = {
                 'action': 'restarted', 
                 'pipeline':pipelineName, 
                 'phase':phaseName, 
                 'app': appName
             }
-            this._io.emit('updatedApps', message);
+            //this._io.emit('restartedApp', message);
         }
     }
 /*

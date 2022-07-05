@@ -37,7 +37,7 @@
             <router-view></router-view>
         </v-main>
         
-        <Appfooter :swarmversion="status.swarmversion" :kubeversion="status.kubeVersion.gitVersion" />
+        <!--<Appfooter :swarmversion="status.swarmversion" :kubeversion="status.kubeVersion.gitVersion" />-->
     </v-app>
 </template>
 
@@ -50,13 +50,15 @@
 
 <script>
 //import axios from "axios";
-import Appfooter from "./components/appfooter.vue";
+//import Appfooter from "./components/appfooter.vue";
 
 export default {
     name: "App",
+    /*
     components: {
         Appfooter
     },
+    */
     mounted() {
         /*
         axios

@@ -1,6 +1,6 @@
 
 import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize} from '../types';
-import { IAddon } from '../addons';
+import { IAddon } from './addons';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;

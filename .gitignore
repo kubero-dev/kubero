@@ -8,3 +8,5 @@ notes.txt
 kubeconfig
 
 example-*.json
+
+*.log

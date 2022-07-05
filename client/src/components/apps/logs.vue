@@ -9,7 +9,7 @@
         </v-row>
         <v-row style="height: 100%">
             <v-col cols="12" sm="12" md="10">
-                <div class="console">
+                <div class="console" id="console">
                     <div v-for="line in loglines" :key="line.id">{{ new Date(line.time).toISOString()}}[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}] {{ line.log }}</div>
                 </div>
             </v-col>
@@ -24,7 +24,14 @@ export default {
     sockets: {
         log: function(data) {
             console.log(data);
+            this.loglines.unshift(data)
+/*
+    NOT Need
+    display: flex;
+    flex-direction: column-reverse;
+
             this.loglines.push(data);
+*/
         },
     },
     mounted() {
@@ -96,10 +103,14 @@ export default {
 <style lang="scss">
 .console {
     height: 100%;
-    overflow-y: scroll;
+    max-height: 1000px;
+    overflow-x: scroll;
     background-color: #333;
     color: #c0c0c0;
     padding: 5px;
     font: 0.85rem Inconsolata, monospace;
+
+    display: flex;
+    flex-direction: column-reverse;
 }
 </style>

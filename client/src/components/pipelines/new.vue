@@ -3,9 +3,9 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <div class="subtitle-1">
+            <h2>
                 Create a new Pipeline
-            </div>
+            </h2>
             <p class="text-justify">
                 A Pipeline may have several stages with apps
             </p>

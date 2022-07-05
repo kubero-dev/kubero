@@ -1,4 +1,4 @@
-import { IAddon } from './addons';
+import { IAddon } from './modules/addons';
 export interface IApp {
     name: string,
     pipeline: string,
@@ -127,11 +127,13 @@ export interface IPipelinePhase {
     apps: IApp[];
 }
 
+// TODO replace with default kubeclt Interface
 export interface IKubectlMetadata {
-    creationTimestamp?: string;
+    creationTimestamp?: Date;
     generation?: number;
     //labels?: [Object];
     labels?: {
+        'kubernetes.io/metadata.name'?: String,
         manager?: string;
     }
     managedFields?: [Array: Object]; 
