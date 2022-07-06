@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IPodSize, IKuberoConfig} from './types';
+import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
 import { GithubApi } from './github/api';
 import { IAddon, IAddonMinimal } from './modules/addons';
@@ -68,18 +68,23 @@ export class Keroku {
     public getContexts() {
         return this.kubectl.getContexts()
     }
+    public getPipelineStateList() {
+        return this.pipelineStateList;
+    }
 
-    public getContext(pipelineName: string, phaseName: string): string | undefined {
+    public getContext(pipelineName: string, phaseName: string): string {
+        let context: string = 'missing-'+pipelineName+'-'+phaseName;
         for (const pipeline of this.pipelineStateList) {
             if (pipeline.name == pipelineName) {
                 for (const phase of pipeline.phases) {
                     if (phase.name == phaseName) {
                         //this.kubectl.setCurrentContext(phase.context);
-                        return phase.context;
+                        context = phase.context;
                     }
                 }
             }
         }
+        return context
     }
 
     public async setContext(pipelineName: string, phaseName: string): Promise<boolean> {
@@ -168,7 +173,7 @@ export class Keroku {
 
     // create a new app in a specified pipeline and phase
     public async newApp(app: App) {
-        debug.debug('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
@@ -181,7 +186,7 @@ export class Keroku {
     }
 
     // update an app in a pipeline and phase
-    public async updateApp(app: App, envvars: { name: string; value: string; }[], resourceVersion: string) { //TODO remove env vars
+    public async updateApp(app: App, resourceVersion: string) {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.setContext(app.pipeline, app.phase);
         
@@ -229,45 +234,32 @@ export class Keroku {
     }
 
     // list all apps in a pipeline
-    public async listApps(pipelineName: string) {
+    public async getPipelineWithApps(pipelineName: string) {
         debug.debug('listApps in '+pipelineName);
         await this.kubectl.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
-        let kpipeline = await this.kubectl.getPipeline(pipelineName);
-
+        const kpipeline = await this.kubectl.getPipeline(pipelineName);
         let pipeline = kpipeline.spec
-        //await pipeline.phases.forEach(async (phase, key) => { // does not work, wait for all iterations to finish
-        await Promise.all(pipeline.phases.map(async (phase, key) => {
 
-            console.log(phase.name)
-            const namespace = pipeline.name+'-'+phase.name;
-            let apps = await this.kubectl.getAppsList(namespace, phase.context);
-            
-            pipeline.phases[key].apps = [];
-            for (const app of apps.items) {
-                pipeline.phases[key].apps.push(app.spec);
+        if (pipeline) {
+            for (const phase of pipeline.phases) {
+                if (phase.enabled == true) {
+
+                    const contextName = this.getContext(pipelineName, phase.name);
+                    if (contextName) {
+                        const namespace = pipelineName+'-'+phase.name;
+                        let apps = await this.kubectl.getAppsList(namespace, contextName);
+                        
+                        let appslist = new Array();
+                        for (const app of apps.items) {
+                            appslist.push(app.spec);
+                        }
+                        // @ts-expect-error ts(2532) FIXME: Object is possibly 'undefined'.
+                        pipeline.phases.find(p => p.name == phase.name).apps = appslist;
+                        
+                    }
+                }
             }
-            
-        }));
-/*
-        if (pipeline.reviewapps) {
-
-            let review = {
-                "enabled": true,
-                "name": "review",
-                "context": "", // Importand TODO: get the context from the pipeline
-                "apps": Array()
-            }
-
-            let apps = await this.kubectl.getAppsList(pipelineName+"-review");
-            for (const app of apps.items) {
-                review.apps.push(app.spec);
-            }
-
-            pipeline.phases.unshift(review);
-
         }
-*/
-
         return pipeline;
     }
 

@@ -3,8 +3,11 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h2>
+            <h2 v-if="app=='new'">
                 Create a new App in {{ this.pipeline }}
+            </h2>
+            <h2 v-if="app!='new'">
+                Edit {{ this.app }} in {{ this.pipeline }}
             </h2>
             <p class="text-justify">
                 in phase {{ this.phase }}

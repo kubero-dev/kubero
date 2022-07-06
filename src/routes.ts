@@ -6,7 +6,10 @@ import { IAddonMinimal } from './modules/addons';
 export const Router = express.Router();
 
 Router.get('/config', async function (req: Request, res: Response) {
-    res.send("config");
+    let debug: any = {};
+    debug['pipelineState'] = req.app.locals.keroku.getPipelineStateList();
+    debug['appStateList'] = await req.app.locals.keroku.getAppStateList();
+    res.send(debug);
 });
 
 Router.post('/pipelines', async function (req: Request, res: Response) {
@@ -118,7 +121,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
 
     let app = new App(appconfig);
     
-    req.app.locals.keroku.updateApp(app, req.body.envvars, req.body.resourceVersion);
+    req.app.locals.keroku.updateApp(app, req.body.resourceVersion);
 
     res.send("updated");
 });
@@ -131,7 +134,7 @@ Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
 
 // get all apps in a pipeline
 Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
-    let apps = await req.app.locals.keroku.listApps(req.params.pipeline);
+    let apps = await req.app.locals.keroku.getPipelineWithApps(req.params.pipeline);
     res.send(apps);
 });
 

@@ -17,7 +17,7 @@ export class KubectlApp implements IKubectlApp{
                 manager: 'kubero',
             }
         }
-        this.spec = {} as IApp; // TODO: create a real object to keep it tyope safe
+        this.spec = {} as IApp; 
     }
 }
 

@@ -59,7 +59,7 @@
             v-if="this.domain"
             color="deep-purple lighten-2"
             text
-            :href="'https:/'+domain" target="_blank"
+            :href="'//'+domain" target="_blank"
         >
             <v-icon
                 >mdi-open-in-new

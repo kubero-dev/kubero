@@ -26,6 +26,102 @@
         </v-col>
       </v-row>
       <v-row>
+
+
+        <v-col
+          cols="12"
+          md="6"
+        >
+        <v-tabs icons-and-text v-model="repotab" color="#8560A9">
+            <v-tab href="#tab-github">Github <v-icon>mdi-github</v-icon> </v-tab>
+            <v-tab href="#tab-gitlab">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
+            <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+        </v-tabs>
+
+        <v-tabs-items v-model="repotab">
+          <v-tab-item
+            key="1"
+            value="tab-github"
+          >
+
+            <v-card flat>
+              <v-card-text>
+                <v-text-field
+                  v-model="gitrepo"
+                  :rules="repositoryRules"
+                  :counter="60"
+                  label="Repository"
+                  :disabled="gitrepo_connected"
+                  required
+                ></v-text-field>
+                <v-container
+                  v-if="!gitrepo_connected"
+                >
+                  <v-btn
+                      color="primary"
+                      elevation="2"
+                      @click="connectGithub()"
+                      >Connect</v-btn>
+                </v-container>
+                <v-container
+                  v-if="gitrepo_connected"
+                >
+                  <v-alert class="alert"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Webhook created
+                  </v-alert>
+                  <v-alert class="alert"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Deploy keys added
+                  </v-alert>
+                </v-container>
+              </v-card-text>
+            </v-card>
+
+          </v-tab-item>
+        </v-tabs-items>
+
+
+
+
+        <v-tabs-items v-model="repotab">
+          <v-tab-item
+            key="2"
+            value="tab-gitlab"
+          >
+            <v-card flat>
+              <v-card-text>
+                <v-text-field
+                  v-model="gitrepo"
+                  :rules="repositoryRules"
+                  :counter="60"
+                  label="Repository"
+                  :disabled="gitrepo_connected"
+                  required
+                ></v-text-field>
+                
+                  <v-alert class="alert"
+                    type="warning"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Not implemented yet
+                  </v-alert>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs-items>
+    
+      
+      
+        </v-col>
+      </v-row>
+
+<!--
+      <v-row>
         <v-col
           cols="12"
           md="6"
@@ -77,6 +173,7 @@
               </v-alert>
         </v-col>
       </v-row>
+-->
       <v-row v-for="phase in phases" :key="phase.name">
         <v-col
           cols="12"
@@ -121,6 +218,7 @@
 import axios from "axios";
 export default {
     data: () => ({
+      repotab: null,
       valid: false,
       pipelineName: '',
       reviewapps: true,
@@ -227,4 +325,7 @@ export default {
 .alert i.v-icon.v-icon {
   color: white !important;
 } 
+//.v-card {
+//  height: 100px;
+//}
 </style>
