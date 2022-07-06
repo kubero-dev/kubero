@@ -81,7 +81,6 @@ export default {
         const self = this;
         axios.get('/api/pipelines/' + this.pipeline + '/apps')
         .then(response => {
-            console.log(response);
             self.phases = response.data.phases;
             self.reviewapps = response.data.reviewapps;
             return response.data.phases;

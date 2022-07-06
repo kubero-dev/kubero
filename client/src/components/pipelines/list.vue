@@ -89,8 +89,6 @@ export default {
         const self = this;
         axios.get(`/api/pipelines`)
         .then(response => {
-            console.log(response);
-            //self.appsList = response.data;
             self.apps = response.data.items;
         })
         .catch(error => {

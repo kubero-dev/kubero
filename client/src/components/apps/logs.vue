@@ -23,15 +23,7 @@ import axios from "axios";
 export default {
     sockets: {
         log: function(data) {
-            console.log(data);
             this.loglines.unshift(data)
-/*
-    NOT Need
-    display: flex;
-    flex-direction: column-reverse;
-
-            this.loglines.push(data);
-*/
         },
     },
     mounted() {
@@ -76,23 +68,17 @@ export default {
     },
     methods: {
         socketJoin() {
-            console.log("socketJoin");
-            
             this.$socket.client.emit("join", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
-                //user: this.$store.state.user.name,
             });
         },
         socketLeave() {
-            console.log("socketLeave");
             this.$socket.client.emit("leave", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
-                //user: this.$store.state.user.name,
             });
         },
         startLogs() {
             axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}`).then(() => {
-                //this.podsizesList = response.data;
                 console.log("logs started");
             });
         },

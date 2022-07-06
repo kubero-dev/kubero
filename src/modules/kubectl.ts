@@ -48,8 +48,8 @@ export class Kubectl {
             try {
                 this.kc.loadFromCluster();
             } catch (error) {
-                console.log("error loading from cluster");
-                console.log(error);
+                debug.log("error loading from cluster");
+                debug.log(error);
             }
         }
 
@@ -69,7 +69,6 @@ export class Kubectl {
 
     public getContexts() {
         return this.kc.getContexts()
-        //return this.kc.getCurrentContext();
     }
 
     public async setCurrentContext(context: string) {
@@ -85,13 +84,12 @@ export class Kubectl {
             'kuberopipelines', 
             'default'
         );
-        //console.log(pipelines.body);
         return pipelines.body as IKubectlPipelineList;
     }
 
 
     public async createPipeline(pl: IPipeline) {
-        console.log(pl)
+        debug.log("create pipeline: " + pl.name);
         let pipeline = new KubectlPipeline(pl);
 
         this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
@@ -102,11 +100,12 @@ export class Kubectl {
             "kuberopipelines",
             pipeline
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         });
     }
 
     public async deletePipeline(pipelineName: string) {
+        debug.log("delete pipeline: " + pipelineName);
         this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
@@ -115,7 +114,7 @@ export class Kubectl {
             "kuberopipelines",
             pipelineName
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         });
     }
 
@@ -129,7 +128,7 @@ export class Kubectl {
             "kuberopipelines",
             pipelineName
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         });
         if (pipeline) {
             return pipeline.body as IKubectlPipeline;
@@ -139,6 +138,7 @@ export class Kubectl {
     }
 
     public async createSecret(namespace: string, secretName: string, secretData: any, context: string) {
+        debug.log(`create secret ${secretName} in namespace ${namespace}`);
         let secret = {
             apiVersion: "v1",
             kind: "Secret",
@@ -151,14 +151,13 @@ export class Kubectl {
         }
         this.kc.setCurrentContext(context);
         await this.coreV1Api.createNamespacedSecret(namespace, secret).catch(error => {
-            console.log(error);
+            debug.log(error);
         }
         );
     }
 
     public async createNamespace(ns_name: string, context: string) {
-
-        console.log("create namespace ");
+        debug.log("create namespace "+ns_name);
 
         try {
             let ns = new V1Namespace();
@@ -168,17 +167,15 @@ export class Kubectl {
                     "managed-by": "kubero"
                 }
             }
-            console.log(ns);
             this.kc.setCurrentContext(context);
             const ret = await this.coreV1Api.createNamespace(ns);
-            //debug.debug(ret);
         } catch (error) {
             debug.log(error);
         }
     }
 
     public async deleteNamespace(ns_name: string, context: string) {
-        console.log("delete namespace ");
+        debug.log("delete namespace "+ns_name);
 
         try {
             this.kc.setCurrentContext(context);
@@ -192,7 +189,7 @@ export class Kubectl {
     public async getKubeVersion() {
         let versionInfo = await this.versionApi.getCode()
         this.kubeVersion= versionInfo.body;
-        console.log(this.kubeVersion);
+        debug.debug(JSON.stringify(this.kubeVersion));
         return this.kubeVersion;
     }
 
@@ -220,7 +217,7 @@ export class Kubectl {
     }
 
     public async updateApp(app: App, resourceVersion: string, context: string) {
-        console.log(app)
+        debug.log("update app: " + app.name);
         this.kc.setCurrentContext(context);
 
         let appl = new KubectlApp(app.name);
@@ -240,11 +237,12 @@ export class Kubectl {
             app.name,
             appl
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         })
     }
 
     public async deleteApp(pipelineName: string, phaseName: string, appName: string, context: string) {
+        debug.log("delete app: " + appName);
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
@@ -256,7 +254,7 @@ export class Kubectl {
             "kuberoapps",
             appName
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         })
     }
 
@@ -272,7 +270,7 @@ export class Kubectl {
             "kuberoapps",
             appName
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         })
 
         return app;
@@ -286,11 +284,11 @@ export class Kubectl {
             namespace, 
             'kuberoapps'
         )
-        //console.log(apps.body);
         return appslist.body as IKubectlAppList;
     }
 
     public async restartApp(pipelineName: string, phaseName: string, appName: string, workloadType: string, context: string) {
+        debug.log("restart app: " + appName);
         this.kc.setCurrentContext(context);
             
         let namespace = pipelineName+'-'+phaseName;
@@ -319,7 +317,7 @@ export class Kubectl {
             undefined, 
             options 
         ).then(() => {
-            console.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
+            debug.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
         }).catch(error => {
             if (error.body.message) {
                 debug.log('ERROR: '+error.body.message);
@@ -331,9 +329,6 @@ export class Kubectl {
     public async getOperators() {
         // TODO list operators from all clusters
 
-        /*
-        apiVersion: operators.coreos.com/v1alpha1
-        kind: ClusterServiceVersion*/
         let response = await this.customObjectsApi.listClusterCustomObject(
             'operators.coreos.com', 
             'v1alpha1', 
@@ -371,7 +366,7 @@ export class Kubectl {
             addon.plural,
             addon.id
         ).catch(error => {
-            console.log(addon)
+            debug.log(addon)
             debug.log('ERROR: '+error);
         })
     }

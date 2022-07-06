@@ -281,8 +281,6 @@ export default {
         axios.post('/api/github/connect', {
           gitrepo: this.gitrepo
         }).then(response => {
-          console.log(response.data);
-          
           //TODO check if connectiondata is valid
           this.github.repository = response.data.repository.data;
           this.github.webhook = response.data.webhook.data;
@@ -294,13 +292,6 @@ export default {
         });
       },
       saveForm() {
-        /*
-        let phasesList = [];
-        for (let key in this.phases) {
-          phasesList.push({name: key, enabled: this.phases[key]});
-        }
-        console.log(phasesList);
-        */
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,

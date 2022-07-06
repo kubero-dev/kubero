@@ -50,7 +50,6 @@ export default {
             const self = this;
             axios.get(`/api/addons`)
             .then(response => {
-                console.log(response);
                 self.addons = response.data;
             })
             .catch(error => {

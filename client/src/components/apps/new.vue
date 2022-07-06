@@ -508,7 +508,6 @@ export default {
     methods: {
       loadPodsizeList() {
         axios.get('/api/config/podsize').then(response => {
-          //this.podsizesList = response.data;
           for (let i = 0; i < response.data.length; i++) {
             this.podsizes.push({
               text: response.data[i].description,
@@ -522,7 +521,6 @@ export default {
         //this.podsize = podsize;
       },
       deleteAddon(addon) {
-          //console.log(addon);
           
           // remove addon in kubernetes cluster
           axios.delete(`/api/addons/${this.pipeline}/${this.phase}/${addon.id}`, {

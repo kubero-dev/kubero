@@ -36,7 +36,6 @@ export class GithubApi {
             owner: owner,
             repo: repo,
         })
-        //console.log(res)
 
         ret = {
             status: res.status,
@@ -127,7 +126,6 @@ export class GithubApi {
                     repo: repo,
                 })
                 for (let webhook of existingWebhooksRes.data) {
-                    console.log(webhook)
                     if (webhook.config.url === url) {
                         debug.log("Webhook already exists");
                         

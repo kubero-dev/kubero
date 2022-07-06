@@ -28,19 +28,17 @@ export class Keroku {
     public config: IKuberoConfig;
 
     constructor(io: Server) {
-        console.log("keroku");
         this.kubectl = new Kubectl();
         this._io = io;
 
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
-        console.log(this.config);
+        debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 
     public init() {
         this.listPipelines().then(pl => {
             for (const pipeline of pl.items as IPipeline[]) {
-                //console.log(pipeline)
                 this.pipelineStateList.push(pipeline);
                 
                 for (const phase of pipeline.phases) {
@@ -58,10 +56,9 @@ export class Keroku {
                     }
                 }
             }
-            //this.emitLogs('popo', 'production', 'ppppp', 'ppppp-kuberoapp-web-6ccb6795bb-48qtt', 'kuberoapp-web')
         }
         ).catch(error => {
-            console.log(error);
+            debug.log(error);
         });
     }
 
@@ -115,12 +112,9 @@ export class Keroku {
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create newPipeline: '+pipeline.name);
 
-        //console.log(pipeline.phases);
-
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
 
-        //console.log(pipeline.phases);
         // create namespace for each phase
         let secretData = {
             'github.pub': Buffer.from(process.env.GIT_DEPLOYMENTKEY_PUBLIC as string).toString('base64'),
@@ -317,13 +311,13 @@ export class Keroku {
     }
 
     public async handleGithubWebhook(event: string, delivery: string, signature: string, body: any) {
-        console.log('handleGithubWebhook');
+        debug.log('handleGithubWebhook');
 
         //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
         let secret = process.env.GITHUB_WEBHOOK_SECRET as string;
         let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
         if (hash === signature) {
-            console.log('Github webhook signature is valid for event: '+delivery);
+            debug.debug('Github webhook signature is valid for event: '+delivery);
 
             switch (event) {
                 case 'push':
@@ -333,19 +327,18 @@ export class Keroku {
                     this.handleGithubPullRequest(body);
                     break;
                 default:
-                    console.log('Github webhook event not handled: '+event);
+                    debug.log('Github webhook event not handled: '+event);
                     break;
             }
-            //console.log(body);
         } else {
             debug.log('ERROR: invalid signature for event: '+delivery);
-            console.log(hash);
-            console.log(signature);
+            debug.log(hash);
+            debug.log(signature);
         }
     }
 
     private async handleGithubPush(body: any) {
-        console.log('handleGithubPush');
+        debug.log('handleGithubPush');
         let ref = body.ref
         let refs = ref.split('/')
         let branch = refs[refs.length - 1]
@@ -357,7 +350,7 @@ export class Keroku {
     }
 
     private async getAppsByBranch(branch: string) {
-        console.log('getAppsByBranch: '+branch);
+        debug.log('getAppsByBranch: '+branch);
         let apps: IApp[] = [];
         for (const app of this.appStateList) {
             if (app.branch === branch) {
@@ -368,9 +361,9 @@ export class Keroku {
     }
 
     private async handleGithubPullRequest(body: any) {
-        console.log('handleGithubPullRequest');
+        debug.log('handleGithubPullRequest');
         let pullRequest = body.pull_request;
-        console.log(body.action);
+        debug.debug(body.action);
 
         switch (body.action) {
             case 'opened':
@@ -388,7 +381,6 @@ export class Keroku {
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string) {
         let pipelines = await this.listPipelines() as IKubectlPipelineList;
-        //console.log(pipelines.items);
 
         for (const pipeline of pipelines.items) {
 
@@ -396,7 +388,7 @@ export class Keroku {
                 pipeline.spec.github.repository && 
                 pipeline.spec.github.repository.ssh_url === ssh_url) {
                 
-                console.log('found pipeline: '+pipeline.spec.name);
+                debug.debug('found pipeline: '+pipeline.spec.name);
                 let pipelaneName = pipeline.spec.name
                 let phaseName = 'review';
                 let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
@@ -444,7 +436,7 @@ export class Keroku {
 
     // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
     private async deletePRApp(branch: string, title: string, ssh_url: string) {
-        console.log('destroyPRApp');
+        debug.log('destroyPRApp');
         let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
 
         for (const app of this.appStateList) {
@@ -461,11 +453,7 @@ export class Keroku {
 
     private async createAddons(addons: IAddon[], namespace: string, context: string) {
         for (const addon of addons) {
-            //console.log(addon);
-            //console.log('createAddon: '+addon.name);
             for (const field in addon.formfields) {
-                console.log(addon.formfields[field]);
-
                 let val = addon.formfields[field].default;
                 
                 if (addon.formfields[field].type === 'number') {
@@ -475,29 +463,27 @@ export class Keroku {
                 set(addon.crd, field, val);
             }
 
-            console.log(addon.crd);
             this.kubectl.createAddon(addon, namespace, context);
         }
     }
 
     // delete a addon in a namespace
     public async deleteAddon(addon: IAddonMinimal): Promise<void> {
-        console.log(`Deleting addon ${addon.id}`)
+        debug.log(`Deleting addon ${addon.id}`)
         const contextName = this.getContext(addon.pipeline, addon.phase);
         if (contextName) {
             this.kubectl.deleteAddon(addon, contextName);
         }
     }
 
+    // Loads the app config from the config file
     private loadConfig(path:string): IKuberoConfig {
         try {
-            //let config = JSON.parse(fs.readFileSync(path, 'utf8'));
-            //let config: IKuberoConfig = require(path);
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
             return config;
         } catch (error) {
             debug.log('FATAL ERROR: could not load config file: '+path);
-            console.log(error);
+            debug.log(error);
             process.exit(1);
         }
     }
@@ -532,23 +518,20 @@ export class Keroku {
 
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
-            console.log('logs: '+podName+' '+container);
 
             if (!this.podLogStreams.includes(podName)) {
 
                 this.kubectl.log.log(namespace, podName, container, logStream, {follow: true, tailLines: 50, pretty: false, timestamps: false})
                 .then(res => {
-                    console.log('logs done');
+                    debug.log('logs started for '+podName+' '+container);
                     this.podLogStreams.push(podName);
                 })
                 .catch(err => {
-                    console.log(err);
+                    debug.log(err);
                 });
             } else {
-                console.log('logs already running '+podName+' '+container);
+                debug.debug('logs already running '+podName+' '+container);
             }
-        }else{
-            console.log('no context found for: '+pipelineName+' '+phaseName);
         }
     }
 
@@ -559,7 +542,6 @@ export class Keroku {
         if (contextName) {
             this.kubectl.getPods(namespace, contextName).then((pods: any[]) => {
                 for (const pod of pods) {
-                    //console.log(pod)
 
                     if (pod.metadata.name.startsWith(appName)) {
                         for (const container of pod.spec.containers) {
@@ -568,8 +550,6 @@ export class Keroku {
                     }
                 }
             });
-        }else{
-            console.log('no context found for: '+pipelineName+' '+phaseName);
         }
     }
 }

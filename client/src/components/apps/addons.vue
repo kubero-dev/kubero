@@ -151,7 +151,6 @@ export default {
         loadAddons() {
             axios.get(`/api/addons`)
             .then(response => {
-                console.log(response.data);
                 for (let addon of response.data) {
                     this.availableAddons.push({
                         text: addon.name,
@@ -164,13 +163,11 @@ export default {
             });
         },
         addonChange(event) {
-            console.log(event);
             this.selectedAddon = event;
         },
         submitForm() {
             this.dialog = false;
             this.addons.push(this.selectedAddon);
-            console.log(this.addons);
         }
     }
 }
