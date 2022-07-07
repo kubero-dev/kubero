@@ -24,9 +24,4 @@ const staticConf = { maxAge: '1s', etag: false };
 app.use(history());
 app.use(express.static(publicPath, staticConf));
 
-app.get('/', (req: Request, res: Response) => {
-  res.render(path.join(__dirname + '/client/dist/index.html'))
-});
-
-
 server.listen(port, () => debug.log(`⚡️[server]: Server is running at http://127.0.0.1:${port}`));

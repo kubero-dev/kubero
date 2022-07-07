@@ -1,10 +1,9 @@
 {
-  "name": "keroku",
+  "name": "kubero",
   "version": "1.0.0",
   "description": "Heroku clone on Kubernetes",
   "main": "dist/index.js",
   "author": "Gianni Carafa",
-  "license": "MIT",
   "scripts": {
     "install": "npx tsc",
     "build": "npx tsc",

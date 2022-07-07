@@ -1,0 +1,16 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  kubero:
+    container_name: "kubero"
+    build: .
+    command: ["tail", "-f", "/dev/null"]
+    env_file:
+      - .env
+    ports:
+      - "8000:3000"
+    extra_hosts:
+      - "kubero-control-plane:192.168.65.2"
+    volumes:
+      #- .:/app
+      - ./kubeconfig-docker:/app/server/kubeconfig
+      - ./config.yaml:/app/server/config.yaml

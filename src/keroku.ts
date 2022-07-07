@@ -138,7 +138,7 @@ export class Keroku {
             items: new Array()
         }
         for (const pipeline of pipelines.items) {
-            debug.log('pipeline: '+pipeline.spec.name);
+            debug.debug('listed pipeline: '+pipeline.spec.name);
             ret.items.push(pipeline.spec);
         }
         return ret;
@@ -498,7 +498,7 @@ export class Keroku {
 
         logStream.on('data', (chunk: any) => {
             // use write rather than console.log to prevent double line feed
-            process.stdout.write(chunk);
+            //process.stdout.write(chunk);
             const roomname = `${pipelineName}-${phaseName}-${appName}`;
             this._io.to(roomname).emit('log', {
                 id: uuidv4(),
