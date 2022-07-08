@@ -17,13 +17,9 @@ We all love Heroku. But we also love Kubernetes. So we want to deploy on kuberne
 ## Which feature will be better than on Heroku?
 - Write to local disk (Will be added later)
 
-## How does 
-
-
-Requirements: 
+## Cluster Requirements: 
 - Kubernetes 1.19+
-- OLM 
-
+- OLM - Operator Lifecycle Manager
 
 ## configuration
 
@@ -40,9 +36,17 @@ $ export KUBECONFIG_BASE64=<path>
 ## Development
 
 ### local development
+from local source
 ```bash
-yarn run dev
+yarn dev
 ```
+
+or with docker compose
+```bash
+docker-compose build
+docker-compose up -d
+```
+
 ### start a local kind cluster
 ```
 kind create cluster --config kind.yaml
@@ -55,6 +59,14 @@ kubectl apply -f k8s/crd/pipeline.yaml
 //TODO: add kubero operator installation here
 ``` 
 
-````
+### Exporting the Kubernetes config file 
+
+Local development
+```bash
 kind export kubeconfig --name kubero --kubeconfig ./kubeconfig
+```
+
+To use in the docker-compose 
+```bash
+kind get kubeconfig --internal --name kubero > kubeconfig-docker
 ```

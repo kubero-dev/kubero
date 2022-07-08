@@ -3,7 +3,7 @@ services:
   kubero:
     container_name: "kubero"
     build: .
-    command: ["tail", "-f", "/dev/null"]
+    #command: ["tail", "-f", "/dev/null"]
     env_file:
       - .env
     ports:

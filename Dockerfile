@@ -8,4 +8,7 @@ COPY package.json ./server/package.json
 COPY node_modules ./server/node_modules
 COPY client/dist ./client/dist
 
+
+WORKDIR /app/server
+
 CMD [ "node", "index.js" ]

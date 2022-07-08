@@ -120,7 +120,7 @@ export class App implements IApp{
         this.autodeploy = app.autodeploy
         this.podsize = app.podsize
         this.domain = app.domain
-        this.autoscale = app.autoscale
+        this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
 
         this.envVars =  app.envVars
 
@@ -133,7 +133,7 @@ export class App implements IApp{
 
         this.affinity = {};
         this.autoscaling = {
-            enabled: this.autoscale
+            enabled: app.autoscale
         }
         this.fullnameOverride = "",
         this.imageBuilder = {
