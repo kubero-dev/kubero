@@ -1,5 +1,5 @@
 import { debug } from "debug";
-debug('app:keroku:github:api')
+debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
 import { Octokit } from "@octokit/core"

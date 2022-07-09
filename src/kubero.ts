@@ -13,12 +13,12 @@ import { v4 as uuidv4 } from 'uuid';
 import { Stream } from 'stream';
 //const stream = require('stream');
 
-debug('app:keroku')
+debug('app:kubero')
 
 import { Kubectl } from './modules/kubectl';
 import { throws } from 'assert';
 
-export class Keroku {
+export class Kubero {
     public kubectl: Kubectl;
     private _io: Server;
     private githubApi: GithubApi;

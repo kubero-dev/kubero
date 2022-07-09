@@ -4,7 +4,7 @@
       cols="12"
       class="grey lighten-2 text-center"
     >
-      <strong>Keroku</strong> {{ kerokuversion }} | 
+      <strong>Kubero</strong> {{ kuberoversion }} | 
       <strong>Kubernetes API</strong> {{ kubeversion }}
     </v-col>
   </v-footer>
@@ -14,7 +14,7 @@ export default {
 
   props: [
     'kubeversion',
-    'kerokuversion',
+    'kuberoversion',
   ],
 }
 </script>

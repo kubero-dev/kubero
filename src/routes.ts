@@ -7,8 +7,8 @@ export const Router = express.Router();
 
 Router.get('/config', async function (req: Request, res: Response) {
     let debug: any = {};
-    debug['pipelineState'] = req.app.locals.keroku.getPipelineStateList();
-    debug['appStateList'] = await req.app.locals.keroku.getAppStateList();
+    debug['pipelineState'] = req.app.locals.kubero.getPipelineStateList();
+    debug['appStateList'] = await req.app.locals.kubero.getAppStateList();
     res.send(debug);
 });
 
@@ -19,17 +19,17 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
         reviewapps: req.body.reviewapps,
         github: req.body.github
     }; 
-    req.app.locals.keroku.newPipeline(pipeline);
+    req.app.locals.kubero.newPipeline(pipeline);
     res.send("new");
 });
 
 Router.get('/pipelines', async function (req: Request, res: Response) {
-    let pipelines = await req.app.locals.keroku.listPipelines();
+    let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
 });
 
 Router.delete('/pipelines/:pipeline', async function (req: Request, res: Response) {
-    let pipelines = await req.app.locals.keroku.deletePipeline(req.params.pipeline);
+    let pipelines = await req.app.locals.kubero.deletePipeline(req.params.pipeline);
     res.send(pipelines);
 });
 
@@ -71,13 +71,13 @@ Router.post('/apps', async function (req: Request, res: Response) {
 
     let app = new App(appconfig);
     
-    req.app.locals.keroku.newApp(app);
+    req.app.locals.kubero.newApp(app);
     res.send("new");
 });
 
 // delete an app
 Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
-    await req.app.locals.keroku.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+    await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("deleted");
 });
 
@@ -121,38 +121,38 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
 
     let app = new App(appconfig);
     
-    req.app.locals.keroku.updateApp(app, req.body.resourceVersion);
+    req.app.locals.kubero.updateApp(app, req.body.resourceVersion);
 
     res.send("updated");
 });
 
 // get app details
 Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
-    let app = await req.app.locals.keroku.getApp(req.params.pipeline, req.params.phase, req.params.app);
+    let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send(app.body); 
 });
 
 // get all apps in a pipeline
 Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
-    let apps = await req.app.locals.keroku.getPipelineWithApps(req.params.pipeline);
+    let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
     res.send(apps);
 });
 
 //restart app
 Router.get('/pipelines/:pipeline/:phase/:app/restart', async function (req: Request, res: Response) {
-    req.app.locals.keroku.restartApp(req.params.pipeline, req.params.phase, req.params.app);
+    req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("restarted"); 
 });
 
 // connect pipeline with github
 Router.post('/github/connect', async function (req: Request, res: Response) {
-    let con = await req.app.locals.keroku.connectPipeline(req.body.gitrepo);
+    let con = await req.app.locals.kubero.connectPipeline(req.body.gitrepo);
     res.send(con);
 });
 
 // connect pipeline with github
 Router.get('/apps', async function (req: Request, res: Response) {
-    res.send(await req.app.locals.keroku.getAppStateList());
+    res.send(await req.app.locals.kubero.getAppStateList());
 });
 
 // get github webhook events
@@ -163,7 +163,7 @@ Router.post('/webhooks/github', async function (req: Request, res: Response) {
     let signature = req.headers['x-hub-signature-256']
     let body = req.body
 
-    req.app.locals.keroku.handleGithubWebhook(event, delivery, signature, body);
+    req.app.locals.kubero.handleGithubWebhook(event, delivery, signature, body);
     res.send("ok");
 });
 
@@ -190,15 +190,15 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
 });
 
 Router.get('/config/podsize', async function (req: Request, res: Response) {
-    res.send(await req.app.locals.keroku.getPodSizeList());
+    res.send(await req.app.locals.kubero.getPodSizeList());
 });
 
 Router.get('/config/k8s/context',  async function (req: Request, res: Response) {
-    res.send(req.app.locals.keroku.getContexts());
+    res.send(req.app.locals.kubero.getContexts());
 });
 
 Router.get('/logs/:pipeline/:phase/:app',  async function (req: Request, res: Response) {
-    req.app.locals.keroku.startLogging(
+    req.app.locals.kubero.startLogging(
         req.params.pipeline,
         req.params.phase,
         req.params.app

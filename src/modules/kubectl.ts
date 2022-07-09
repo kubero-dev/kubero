@@ -80,7 +80,7 @@ export class Kubectl {
         let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
             'application.kubero.dev', 
             'v1alpha1', 
-            'keroku', 
+            process.env.KUBERO_NAMESPACE || 'kubero', 
             'kuberopipelines', 
             'default'
         );
@@ -96,7 +96,7 @@ export class Kubectl {
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            "keroku",
+            process.env.KUBERO_NAMESPACE || 'kubero', 
             "kuberopipelines",
             pipeline
         ).catch(error => {
@@ -110,7 +110,7 @@ export class Kubectl {
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            "keroku",
+            process.env.KUBERO_NAMESPACE || 'kubero', 
             "kuberopipelines",
             pipelineName
         ).catch(error => {
@@ -124,7 +124,7 @@ export class Kubectl {
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            "keroku",
+            process.env.KUBERO_NAMESPACE || 'kubero', 
             "kuberopipelines",
             pipelineName
         ).catch(error => {
