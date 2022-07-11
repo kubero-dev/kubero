@@ -7,10 +7,24 @@ services:
     env_file:
       - .env
     ports:
-      - "8000:3000"
+      - "8000:2000"
     extra_hosts:
       - "kubero-control-plane:192.168.65.2"
     volumes:
       #- .:/app
       - ./kubeconfig-docker:/app/server/kubeconfig
       - ./config.yaml:/app/server/config.yaml
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - /tmp/gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
