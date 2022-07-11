@@ -6,7 +6,7 @@ WORKDIR /app
 COPY dist ./server
 COPY package.json ./server/package.json
 COPY node_modules ./server/node_modules
-COPY ./client/dist ./client/dist
+COPY client/dist ./client/dist
 
 
 WORKDIR /app/server
