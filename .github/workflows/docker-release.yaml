@@ -84,7 +84,6 @@ jobs:
         id: kubero-build-and-push
         uses: docker/build-push-action@v3
         with:
-          context: ./node/web
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.kubero-meta.outputs.tags }}
           labels: ${{ steps.kubero-meta.outputs.labels }}
