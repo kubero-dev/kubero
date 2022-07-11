@@ -35,10 +35,10 @@
         <v-tabs icons-and-text v-model="repotab" color="#8560A9">
             <v-tab href="#tab-github">Github <v-icon>mdi-github</v-icon> </v-tab>
             <v-tab href="#tab-gitea">Gitea <v-icon class="gitea"></v-icon></v-tab>
-            <v-tab href="#tab-gitlab">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
+            <v-tab href="#tab-gitlab" disabled>Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
-
+<!--
         <v-tabs-items v-model="repotab">
           <v-tab-item
             key="1"
@@ -162,11 +162,11 @@
         </v-tabs-items>
     
       
+-->
       
         </v-col>
       </v-row>
 
-<!--
       <v-row>
         <v-col
           cols="12"
@@ -192,11 +192,10 @@
             <v-btn
                 color="primary"
                 elevation="2"
-                @click="connectGithub()"
+                @click="connectRepo()"
                 >Connect</v-btn>
         </v-col>
       </v-row>
-
 
       <v-row
         v-if="gitrepo_connected"
@@ -219,7 +218,9 @@
               </v-alert>
         </v-col>
       </v-row>
--->
+      
+
+
       <v-row v-for="phase in phases" :key="phase.name">
         <v-col
           cols="12"
@@ -323,8 +324,29 @@ export default {
           }
         });
       },
+      connectRepo() {
+        this.gitrepo_connected = true;
+        console.log(this.gitrepo);
+        console.log(this.repotab);
+        switch (this.repotab) {
+          case 'tab-github':
+            this.connectGithub();
+            break;
+          case 'tab-gitea':
+            this.connectGitea();
+            break;
+          case 'tab-gitlab':
+            this.connectGitlab();
+            break;
+          case 'tab-bitbucket':
+            this.connectBitbucket();
+            break;
+          default:
+            break;
+        }
+      },
       connectGithub() {
-        axios.post('/api/github/connect', {
+        axios.post('/api/repo/github/connect', {
           gitrepo: this.gitrepo
         }).then(response => {
           //TODO check if connectiondata is valid
@@ -336,6 +358,26 @@ export default {
           console.log(error);
           //TODO show error message
         });
+      },
+      connectGitea() {
+        axios.post('/api/repo/gitea/connect', {
+          gitrepo: this.gitrepo
+        }).then(response => {
+          //TODO check if connectiondata is valid
+          this.github.repository = response.data.repository.data;
+          this.github.webhook = response.data.webhook.data;
+
+          this.gitrepo_connected = true;
+        }).catch(error => {
+          console.log(error);
+          //TODO show error message
+        });
+      },
+      connectGitlab() {
+        alert('Gitlab not supported yet');
+      },
+      connectBitbucket() {
+        alert('Bitbucket not supported yet');
       },
       saveForm() {
         axios.post(`/api/pipelines`, {

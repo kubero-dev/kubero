@@ -214,9 +214,5 @@ export class GithubApi {
         }
 
         return ret
-
-        
-        
-
     }
 }

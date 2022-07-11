@@ -145,8 +145,8 @@ Router.get('/pipelines/:pipeline/:phase/:app/restart', async function (req: Requ
 });
 
 // connect pipeline with github
-Router.post('/github/connect', async function (req: Request, res: Response) {
-    let con = await req.app.locals.kubero.connectPipeline(req.body.gitrepo);
+Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
+    let con = await req.app.locals.kubero.connectRepo(req.params.repoprovider, req.body.gitrepo);
     res.send(con);
 });
 

@@ -2,7 +2,8 @@ import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
-import { GithubApi } from './github/api';
+import { GithubApi } from './git/github';
+import { GiteaApi } from './git/gitea';
 import { IAddon, IAddonMinimal } from './modules/addons';
 import * as crypto from "crypto"
 import set from 'lodash.set';
@@ -22,6 +23,7 @@ export class Kubero {
     public kubectl: Kubectl;
     private _io: Server;
     private githubApi: GithubApi;
+    private giteaApi: GiteaApi;
     private appStateList: IApp[] = [];
     private pipelineStateList: IPipeline[] = [];
     private podLogStreams: string[]= []
@@ -31,6 +33,7 @@ export class Kubero {
         this.kubectl = new Kubectl();
         this._io = io;
 
+        this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
@@ -280,7 +283,22 @@ export class Kubero {
         this._io.emit('updatedApps', "deployed");
     }
 */
-    public async connectPipeline(gitrepo: string) {
+
+    public async connectRepo(repoProvider: string, pipelineName: string) {
+        debug.log('connectRepo: '+repoProvider+' '+pipelineName);
+        if (repoProvider == 'github') {
+        }
+        switch (repoProvider) {
+            case 'github':
+                return this.connectRepoGithub(pipelineName);
+            case 'gitea':
+                return this.connectRepoGitea(pipelineName);
+            default:
+                return {'error': 'unknown repo provider'};
+        }
+    }
+
+    public async connectRepoGithub(gitrepo: string) {
         debug.log('connectPipeline: '+gitrepo);
 
         if (process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 == undefined) {
@@ -298,7 +316,7 @@ export class Kubero {
 
         let repository = await this.githubApi.getRepository(gitrepo);
 
-        let webhhok = await this.githubApi.addWebhook(
+        let webhook = await this.githubApi.addWebhook(
             repository.data.owner,
             repository.data.name,
             process.env.GITHUB_WEBHOOK_URL,
@@ -307,7 +325,38 @@ export class Kubero {
 
         let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
 
-        return {keys: keys, repository: repository, webhook: webhhok};
+        return {keys: keys, repository: repository, webhook: webhook};
+    }
+
+    public async connectRepoGitea(gitrepo: string) {
+        debug.log('connectPipeline: '+gitrepo);
+
+        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 == undefined) {
+            throw new Error("GIT_DEPLOYMENTKEY_PRIVATE_B64 is not defined");
+        }
+        if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
+            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
+        }
+        if (process.env.GITEA_WEBHOOK_SECRET == undefined) {
+            throw new Error("GITHUB_WEBHOOK_SECRET is not defined");
+        }
+        if (process.env.GITEA_WEBHOOK_URL == undefined) {
+            throw new Error("GITHUB_WEBHOOK_URL is not defined");
+        }
+
+        let repository = await this.giteaApi.getRepository(gitrepo);
+
+        let webhook = await this.giteaApi.addWebhook(
+            repository.data.owner,
+            repository.data.name,
+            process.env.GITEA_WEBHOOK_URL,
+            process.env.GITEA_WEBHOOK_SECRET,
+        );
+
+        let keys = await this.giteaApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
+
+        return {keys: keys, repository: repository, webhook: webhook};
+
     }
 
     public async handleGithubWebhook(event: string, delivery: string, signature: string, body: any) {
