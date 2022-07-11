@@ -6,6 +6,7 @@ WORKDIR /app
 COPY dist ./server
 COPY package.json ./server/package.json
 COPY node_modules ./server/node_modules
+RUN mkdir -p /client/dist
 COPY client/dist ./client/dist
 
 
