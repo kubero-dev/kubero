@@ -80,7 +80,8 @@ export class Addons {
     }
 
     private loadOperators(): void {
-        this.kubectl.getOperators().then(operators => {
+        this.kubectl.getOperators()
+        .then(operators => {
 
             let operatorsList:string[] = [];
             for (const operator of operators) {
@@ -90,6 +91,9 @@ export class Addons {
             this.operatorsAvailable = [...new Set(operatorsList)]
 
             this.loadAddons(this.operatorsAvailable)
+        })
+        .catch(err => {
+            console.error(err)
         })
     }
 

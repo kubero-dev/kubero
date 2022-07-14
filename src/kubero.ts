@@ -17,7 +17,6 @@ import { Stream } from 'stream';
 debug('app:kubero')
 
 import { Kubectl } from './modules/kubectl';
-import { throws } from 'assert';
 
 export class Kubero {
     public kubectl: Kubectl;
