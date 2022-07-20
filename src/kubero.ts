@@ -306,8 +306,8 @@ export class Kubero {
         if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
             throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
         }
-        if (process.env.GITHUB_WEBHOOK_SECRET == undefined) {
-            throw new Error("GITHUB_WEBHOOK_SECRET is not defined");
+        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
+            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
         if (process.env.GITHUB_WEBHOOK_URL == undefined) {
             throw new Error("GITHUB_WEBHOOK_URL is not defined");
@@ -319,7 +319,7 @@ export class Kubero {
             repository.data.owner,
             repository.data.name,
             process.env.GITHUB_WEBHOOK_URL,
-            process.env.GITHUB_WEBHOOK_SECRET,
+            process.env.KUBERO_WEBHOOK_SECRET,
         );
 
         let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
@@ -337,10 +337,10 @@ export class Kubero {
             throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
         }
         if (process.env.GITEA_WEBHOOK_SECRET == undefined) {
-            throw new Error("GITHUB_WEBHOOK_SECRET is not defined");
+            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
         if (process.env.GITEA_WEBHOOK_URL == undefined) {
-            throw new Error("GITHUB_WEBHOOK_URL is not defined");
+            throw new Error("GITEA_WEBHOOK_URL is not defined");
         }
 
         let repository = await this.giteaApi.getRepository(gitrepo);
@@ -362,7 +362,7 @@ export class Kubero {
         debug.log('handleGithubWebhook');
 
         //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
-        let secret = process.env.GITHUB_WEBHOOK_SECRET as string;
+        let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
         let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
         if (hash === signature) {
             debug.debug('Github webhook signature is valid for event: '+delivery);
