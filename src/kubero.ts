@@ -126,7 +126,7 @@ export class Kubero {
             if (phase.enabled == true) {
                 const namespace = pipeline.name+'-'+phase.name;
                 await this.kubectl.createNamespace(namespace, phase.context);
-                await this.kubectl.createSecret(namespace, "kubero-deployment-keys", secretData, phase.context);
+                await this.kubectl.createSecret(namespace, "deployment-keys", secretData, phase.context);
             }
         }
         // update agents
