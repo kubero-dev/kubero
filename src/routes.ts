@@ -12,6 +12,7 @@ Router.get('/config', async function (req: Request, res: Response) {
     res.send(debug);
 });
 
+// create a pipeline
 Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
         name: req.body.pipelineName, 
@@ -23,16 +24,19 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
     res.send("new");
 });
 
+// get a list of pipelines
 Router.get('/pipelines', async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
 });
 
+// delete a pipeline
 Router.delete('/pipelines/:pipeline', async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.deletePipeline(req.params.pipeline);
     res.send(pipelines);
 });
 
+// create a app
 Router.post('/apps', async function (req: Request, res: Response) {
     
     let appconfig: IApp = {

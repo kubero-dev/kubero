@@ -126,7 +126,7 @@ export class Kubero {
             if (phase.enabled == true) {
                 const namespace = pipeline.name+'-'+phase.name;
                 await this.kubectl.createNamespace(namespace, phase.context);
-                await this.kubectl.createSecret(namespace, "deployment-keys", secretData, phase.context);
+                await this.kubectl.createSecret(namespace, "kubero-deployment-keys", secretData, phase.context);
             }
         }
         // update agents
@@ -309,8 +309,8 @@ export class Kubero {
         if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
-        if (process.env.GITHUB_WEBHOOK_URL == undefined) {
-            throw new Error("GITHUB_WEBHOOK_URL is not defined");
+        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
+            throw new Error("KUBERO_WEBHOOK_URL is not defined");
         }
 
         let repository = await this.githubApi.getRepository(gitrepo);
@@ -318,7 +318,7 @@ export class Kubero {
         let webhook = await this.githubApi.addWebhook(
             repository.data.owner,
             repository.data.name,
-            process.env.GITHUB_WEBHOOK_URL,
+            process.env.KUBERO_WEBHOOK_URL,
             process.env.KUBERO_WEBHOOK_SECRET,
         );
 
@@ -339,8 +339,8 @@ export class Kubero {
         if (process.env.GITEA_WEBHOOK_SECRET == undefined) {
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
-        if (process.env.GITEA_WEBHOOK_URL == undefined) {
-            throw new Error("GITEA_WEBHOOK_URL is not defined");
+        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
+            throw new Error("KUBERO_WEBHOOK_URL is not defined");
         }
 
         let repository = await this.giteaApi.getRepository(gitrepo);
@@ -348,7 +348,7 @@ export class Kubero {
         let webhook = await this.giteaApi.addWebhook(
             repository.data.owner,
             repository.data.name,
-            process.env.GITEA_WEBHOOK_URL,
+            process.env.KUBERO_WEBHOOK_URL,
             process.env.GITEA_WEBHOOK_SECRET,
         );
 
