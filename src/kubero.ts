@@ -614,4 +614,31 @@ export class Kubero {
             });
         }
     }
+
+    public getRepositories() {
+        let repositories = {
+            github: false,
+            gitea: false,
+            gitlab: false,
+            bitbucket: false
+        }
+
+        if (process.env.GITHUB_PERSONAL_ACCESS_TOKEN) {
+            repositories.github = true;
+        }
+
+        if (process.env.GITEA_PERSONAL_ACCESS_TOKEN) {
+            repositories.gitea = true;
+        }
+
+        if (process.env.GITLAB_PERSONAL_ACCESS_TOKEN) {
+            repositories.gitlab = true;
+        }
+
+        if (process.env.BITBUCKET_PERSONAL_ACCESS_TOKEN) {
+            repositories.bitbucket = true;
+        }
+
+        return repositories;
+    }
 }

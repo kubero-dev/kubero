@@ -2,7 +2,7 @@
     <v-container style="height: 80%">
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <a :href="`/#/pipeline/${pipeline}/apps`"><v-icon small>mdi-arrow-left-circle</v-icon>{{ this.pipeline }}</a>
+                <a :href="`/#/pipeline/${pipeline}/apps`"><v-icon small>mdi-arrow-left-circle</v-icon> {{ this.pipeline }}</a>
                 <h1>Logs for {{ this.app }}</h1>
                 <p></p>
             </v-col>
@@ -92,6 +92,9 @@ export default {
 <style lang="scss">
 
 a:link { text-decoration: none;}
+.v-icon.v-icon {
+    vertical-align:inherit;
+}
 .console {
     height: 100%;
     max-height: 1000px;

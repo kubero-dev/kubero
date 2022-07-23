@@ -33,9 +33,9 @@
           md="6"
         >
         <v-tabs icons-and-text v-model="repotab" color="#8560A9">
-            <v-tab href="#tab-github">Github <v-icon>mdi-github</v-icon> </v-tab>
-            <v-tab href="#tab-gitea">Gitea <v-icon class="gitea"></v-icon></v-tab>
-            <v-tab href="#tab-gitlab" disabled>Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
+            <v-tab href="#tab-github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
+            <v-tab href="#tab-gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
+            <v-tab href="#tab-gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
 <!--
@@ -192,6 +192,7 @@
             <v-btn
                 color="primary"
                 elevation="2"
+                :disabled="!repotab"
                 @click="connectRepo()"
                 >Connect</v-btn>
         </v-col>
@@ -272,6 +273,12 @@ export default {
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
       gitrepo_connected: false,
       contextList: [],
+      repositoriesList: {
+        github: false,
+        gitea: false,
+        gitlab: false,
+        bitbucket: false
+      },
       github: {
         repository: {},
         webhook: {},
@@ -312,6 +319,7 @@ export default {
     }),
     mounted() {
       this.getContextList();
+      this.listRepositories();
     },
     methods: {
       getContextList() {
@@ -322,6 +330,11 @@ export default {
               value: response.data[i].name,
             });
           }
+        });
+      },
+      listRepositories() {
+        axios.get('/api/config/repositories').then(response => {
+          this.repositoriesList = response.data
         });
       },
       connectRepo() {

@@ -209,3 +209,7 @@ Router.get('/logs/:pipeline/:phase/:app',  async function (req: Request, res: Re
     );
     res.send('ok');
 });
+
+Router.get('/config/repositories', async function (req: Request, res: Response) {
+    res.send(await req.app.locals.kubero.getRepositories());
+});
