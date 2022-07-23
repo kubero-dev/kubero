@@ -540,6 +540,19 @@ export class Kubero {
         return this.config.podSizeList;
     }
 
+    private logcolor(str: string) {
+        let hash = 0;
+        for (var i = 0; i < str.length; i++) {
+            hash = str.charCodeAt(i) + ((hash << 5) - hash);
+        }
+        let color = '#';
+        for (var i = 0; i < 3; i++) {
+            var value = (hash >> (i * 8)) & 0xFF;
+            color += ('00' + value.toString(16)).substring(2);
+        }
+        return color;
+    }
+
     public emitLogs(pipelineName: string, phaseName: string, appName: string, podName: string, container: string) {
         
         const logStream = new Stream.PassThrough();
@@ -557,6 +570,7 @@ export class Kubero {
                 pod: podName,
                 podID: podName.split('-')[3]+'-'+podName.split('-')[4],
                 container: container,
+                color: this.logcolor(podName),
                 log: chunk.toString()
             });
         });

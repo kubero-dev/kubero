@@ -10,7 +10,10 @@
         <v-row style="height: 100%">
             <v-col cols="12" sm="12" md="10">
                 <div class="console" id="console">
-                    <div v-for="line in loglines" :key="line.id">{{ new Date(line.time).toISOString()}}[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}] {{ line.log }}</div>
+                    <div v-for="line in loglines" :key="line.id">
+                    {{ new Date(line.time).toISOString()}}<span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
+                    {{ line.log }}
+                </div>
                 </div>
             </v-col>
         </v-row>
