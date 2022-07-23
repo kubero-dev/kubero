@@ -26,148 +26,22 @@
         </v-col>
       </v-row>
       <v-row>
-
-
         <v-col
           cols="12"
-          md="6"
+          md="8"
         >
         <v-tabs icons-and-text v-model="repotab" color="#8560A9">
             <v-tab href="#tab-github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
             <v-tab href="#tab-gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#tab-gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
-        </v-tabs>
-<!--
-        <v-tabs-items v-model="repotab">
-          <v-tab-item
-            key="1"
-            value="tab-github"
-          >
-
-            <v-card flat>
-              <v-card-text>
-                <v-text-field
-                  v-model="gitrepo"
-                  :rules="repositoryRules"
-                  :counter="60"
-                  label="Repository"
-                  :disabled="gitrepo_connected"
-                  required
-                ></v-text-field>
-                <v-container
-                  v-if="!gitrepo_connected"
-                >
-                  <v-btn
-                      color="primary"
-                      elevation="2"
-                      @click="connectGithub()"
-                      >Connect</v-btn>
-                </v-container>
-                <v-container
-                  v-if="gitrepo_connected"
-                >
-                  <v-alert class="alert"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Webhook created
-                  </v-alert>
-                  <v-alert class="alert"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Deploy keys added
-                  </v-alert>
-                </v-container>
-              </v-card-text>
-            </v-card>
-
-          </v-tab-item>
-        </v-tabs-items>
-
-        <v-tabs-items v-model="repotab">
-          <v-tab-item
-            key="1"
-            value="tab-gitea"
-          >
-
-            <v-card flat>
-              <v-card-text>
-                <v-text-field
-                  v-model="gitrepo"
-                  :rules="repositoryRules"
-                  :counter="60"
-                  label="Repository"
-                  :disabled="gitrepo_connected"
-                  required
-                ></v-text-field>
-                <v-container
-                  v-if="!gitrepo_connected"
-                >
-                  <v-btn
-                      color="primary"
-                      elevation="2"
-                      @click="connectGitea()"
-                      >Connect</v-btn>
-                </v-container>
-                <v-container
-                  v-if="gitrepo_connected"
-                >
-                  <v-alert class="alert"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Webhook created
-                  </v-alert>
-                  <v-alert class="alert"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Deploy keys added
-                  </v-alert>
-                </v-container>
-              </v-card-text>
-            </v-card>
-
-          </v-tab-item>
-        </v-tabs-items>
-
-
-        <v-tabs-items v-model="repotab">
-          <v-tab-item
-            key="2"
-            value="tab-gitlab"
-          >
-            <v-card flat>
-              <v-card-text>
-                <v-text-field
-                  v-model="gitrepo"
-                  :rules="repositoryRules"
-                  :counter="60"
-                  label="Repository"
-                  :disabled="gitrepo_connected"
-                  required
-                ></v-text-field>
-                
-                  <v-alert class="alert"
-                    type="warning"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Not implemented yet
-                  </v-alert>
-              </v-card-text>
-            </v-card>
-          </v-tab-item>
-        </v-tabs-items>
-    
-      
--->
-      
+            <v-tab href="#tab-docker">Docker <v-icon>mdi-docker</v-icon></v-tab>
+        </v-tabs>      
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row 
+        v-if="repotab && repotab!='tab-docker'">
         <v-col
           cols="12"
           md="6"
@@ -183,7 +57,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="!gitrepo_connected"
+        v-if="!gitrepo_connected && repotab && repotab!='tab-docker'"
       >
         <v-col
           cols="12"
@@ -199,7 +73,7 @@
       </v-row>
 
       <v-row
-        v-if="gitrepo_connected"
+        v-if="gitrepo_connected && repotab && repotab!='tab-docker'"
       >
         <v-col
           cols="12"
@@ -344,15 +218,29 @@ export default {
         switch (this.repotab) {
           case 'tab-github':
             this.connectGithub();
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.gitlab = false;
+            this.repositoriesList.bitbucket = false;
             break;
           case 'tab-gitea':
             this.connectGitea();
+            this.repositoriesList.github = false;
+            this.repositoriesList.gitlab = false;
+            this.repositoriesList.bitbucket = false;
             break;
           case 'tab-gitlab':
             this.connectGitlab();
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.github = false;
+            this.repositoriesList.bitbucket = false;
             break;
           case 'tab-bitbucket':
             this.connectBitbucket();
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.gitlab = false;
+            this.repositoriesList.github = false;
+            break;
+          case 'tab-docker':
             break;
           default:
             break;
