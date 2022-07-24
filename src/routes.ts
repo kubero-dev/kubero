@@ -18,7 +18,9 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
         name: req.body.pipelineName, 
         phases: req.body.phases,
         reviewapps: req.body.reviewapps,
-        github: req.body.github
+        github: req.body.github,
+        dockerimage: req.body.dockerimage,
+        deploymentstrategy: req.body.deploymentstrategy,
     }; 
     req.app.locals.kubero.newPipeline(pipeline);
     res.send("new");

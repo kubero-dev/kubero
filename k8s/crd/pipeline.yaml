@@ -25,6 +25,10 @@ spec:
                   type: string
                 gitrepo:
                   type: string
+                dockerimage:
+                  type: string
+                deploymentstrategy:
+                  type: string
                 github:
                   description: Metainformation for github
                   type: object

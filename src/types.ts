@@ -108,6 +108,8 @@ export interface IPipeline {
         repository?: IGithubRepository
         webhook: object;
     };
+    dockerimage: string;
+    deploymentstrategy: string;
 }
 
 export interface IGithubRepository {

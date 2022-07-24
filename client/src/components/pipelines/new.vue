@@ -31,17 +31,17 @@
           md="8"
         >
         <v-tabs icons-and-text v-model="repotab" color="#8560A9">
-            <v-tab href="#tab-github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
-            <v-tab href="#tab-gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
-            <v-tab href="#tab-gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
-            <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
-            <v-tab href="#tab-docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>
+            <v-tab href="#github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
+            <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
+            <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
+            <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+            <v-tab href="#docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>
         </v-tabs>      
         </v-col>
       </v-row>
 
       <v-row 
-        v-if="repotab && repotab=='tab-docker'">
+        v-if="repotab && repotab=='docker'">
         <v-col
           cols="12"
           md="6"
@@ -57,7 +57,7 @@
       </v-row>
 
       <v-row 
-        v-if="repotab && repotab!='tab-docker'">
+        v-if="repotab && repotab!='docker'">
         <v-col
           cols="12"
           md="6"
@@ -73,7 +73,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="!gitrepo_connected && repotab && repotab!='tab-docker'"
+        v-if="!gitrepo_connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -89,7 +89,7 @@
       </v-row>
 
       <v-row
-        v-if="gitrepo_connected && repotab && repotab!='tab-docker'"
+        v-if="gitrepo_connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -144,7 +144,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid || (!gitrepo_connected && repotab!='tab-docker')"
+                :disabled="!valid || (!gitrepo_connected && repotab!='docker')"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -156,26 +156,26 @@
 import axios from "axios";
 export default {
     data: () => ({
-      repotab: 'tab-github',
-      valid: false,
-      pipelineName: '',
+      repotab: 'github', //selected tab
+      valid: false, // final form validation
+      pipelineName: '', 
       reviewapps: true,
-      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
-      dockerimage: 'kubero/template-nodeapp',
-      gitrepo_connected: false,
-      contextList: [],
-      repositoriesList: {
+      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with
+      dockerimage: 'kubero/template-nodeapp', // docker image to pull from
+      gitrepo_connected: false, // if git repo is connected
+      contextList: [], // a list of kubernets contexts in the kubeconfig to select from
+      repositoriesList: { // a list of available repositories to connect with
         github: false,
         gitea: false,
         gitlab: false,
         bitbucket: false,
         docker: true
       },
-      github: {
+      github: { // the connected repository
         repository: {},
         webhook: {},
       },
-      phases: [
+      phases: [ // List of phases to enable
         {
           name: 'review',
           enabled: false,
@@ -233,36 +233,41 @@ export default {
         console.log(this.gitrepo);
         console.log(this.repotab);
         switch (this.repotab) {
-          case 'tab-github':
+          case 'github':
             this.connectGithub();
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
-          case 'tab-gitea':
+          case 'gitea':
             this.connectGitea();
             this.repositoriesList.github = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
-          case 'tab-gitlab':
+          case 'gitlab':
             this.connectGitlab();
             return;
+            /*
             this.repositoriesList.gitea = false;
             this.repositoriesList.github = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
-          case 'tab-bitbucket':
+            */
+          case 'bitbucket':
             this.connectBitbucket();
+            return;
+            /*
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.github = false;
             this.repositoriesList.docker = false;
             break;
-          case 'tab-docker':
+            */
+          case 'docker':
             break;
           default:
             break;
@@ -304,12 +309,20 @@ export default {
         alert('Bitbucket not supported yet');
       },
       saveForm() {
+        let deploymentstrategy = "git"
+
+        if (this.repotab == 'docker') {
+          deploymentstrategy = "docker"
+        }
+        
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
-          github: this.github
+          github: this.github,
+          dockerimage: this.dockerimage,
+          deploymentstrategy: deploymentstrategy,
         })
         .then(response => {
           this.pipelineName = '';

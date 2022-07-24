@@ -3,22 +3,25 @@ import { IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IGithubR
 export class Pipeline implements IPipeline {
     public name: string;
     //public gitrepo: string;
+    public dockerimage: string;
     public reviewapps: boolean;
     public phases: IPipelinePhase[];
+    public deploymentstrategy: string;
     public github: {
-        repository: IGithubRepository
+        repository?: IGithubRepository | undefined;
         webhook: object;
     };
 
-    constructor(name: string, gitrepo: string, reviewapps: boolean, phases: IPipelinePhase[]) {
-        this.name = name;
+    constructor(
+        pl: IPipeline,
+    ) {
+        this.name = pl.name;
         //this.gitrepo = gitrepo;
-        this.reviewapps = reviewapps;
-        this.phases = phases;
-        this.github = {
-            repository: {},
-            webhook: {},
-        };
+        this.reviewapps = pl.reviewapps;
+        this.phases = pl.phases;
+        this.dockerimage = pl.dockerimage;
+        this.github = pl.github;
+        this.deploymentstrategy = pl.deploymentstrategy;
     }
 }
 
