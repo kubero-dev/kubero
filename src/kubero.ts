@@ -336,7 +336,7 @@ export class Kubero {
         if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
             throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
         }
-        if (process.env.GITEA_WEBHOOK_SECRET == undefined) {
+        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
         if (process.env.KUBERO_WEBHOOK_URL == undefined) {
@@ -349,7 +349,7 @@ export class Kubero {
             repository.data.owner,
             repository.data.name,
             process.env.KUBERO_WEBHOOK_URL,
-            process.env.GITEA_WEBHOOK_SECRET,
+            process.env.KUBERO_WEBHOOK_SECRET,
         );
 
         let keys = await this.giteaApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
@@ -620,7 +620,8 @@ export class Kubero {
             github: false,
             gitea: false,
             gitlab: false,
-            bitbucket: false
+            bitbucket: false,
+            docker: true
         }
 
         if (process.env.GITHUB_PERSONAL_ACCESS_TOKEN) {

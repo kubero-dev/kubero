@@ -34,6 +34,10 @@ export class GiteaApi {
         let repo = gitrepo.match(/^git@.*:.*\/(.*)\.git$/)?.[1] as string;
 
         let res = await this.gitea.repos.repoGet(owner, repo)
+        .catch((error: any) => {
+            console.log(error)
+            return ret;
+        })
 
         ret = {
             status: res.status,
@@ -71,6 +75,7 @@ export class GiteaApi {
         const webhooksList = await this.gitea.repos.repoListHooks(owner, repo)
         .catch((error: any) => {
             console.log(error)
+            return ret;
         })
 
         // try to find the webhook
@@ -145,6 +150,7 @@ export class GiteaApi {
         const keysList = await this.gitea.repos.repoListKeys(owner, repo)
         .catch((error: any) => {
             console.log(error)
+            return ret;
         })
 
         // try to find the key

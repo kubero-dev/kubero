@@ -35,8 +35,24 @@
             <v-tab href="#tab-gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#tab-gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#tab-bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
-            <v-tab href="#tab-docker">Docker <v-icon>mdi-docker</v-icon></v-tab>
+            <v-tab href="#tab-docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>
         </v-tabs>      
+        </v-col>
+      </v-row>
+
+      <v-row 
+        v-if="repotab && repotab=='tab-docker'">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="dockerimage"
+            :rules="imageRules"
+            :counter="60"
+            label="Image"
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -128,7 +144,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid || !gitrepo_connected"
+                :disabled="!valid || (!gitrepo_connected && repotab!='tab-docker')"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -140,18 +156,20 @@
 import axios from "axios";
 export default {
     data: () => ({
-      repotab: null,
+      repotab: 'tab-github',
       valid: false,
       pipelineName: '',
       reviewapps: true,
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', 
+      dockerimage: 'kubero/template-nodeapp',
       gitrepo_connected: false,
       contextList: [],
       repositoriesList: {
         github: false,
         gitea: false,
         gitlab: false,
-        bitbucket: false
+        bitbucket: false,
+        docker: true
       },
       github: {
         repository: {},
@@ -212,7 +230,6 @@ export default {
         });
       },
       connectRepo() {
-        this.gitrepo_connected = true;
         console.log(this.gitrepo);
         console.log(this.repotab);
         switch (this.repotab) {
@@ -221,30 +238,36 @@ export default {
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
+            this.repositoriesList.docker = false;
             break;
           case 'tab-gitea':
             this.connectGitea();
             this.repositoriesList.github = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
+            this.repositoriesList.docker = false;
             break;
           case 'tab-gitlab':
             this.connectGitlab();
+            return;
             this.repositoriesList.gitea = false;
             this.repositoriesList.github = false;
             this.repositoriesList.bitbucket = false;
+            this.repositoriesList.docker = false;
             break;
           case 'tab-bitbucket':
             this.connectBitbucket();
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.github = false;
+            this.repositoriesList.docker = false;
             break;
           case 'tab-docker':
             break;
           default:
             break;
         }
+        this.gitrepo_connected = true;
       },
       connectGithub() {
         axios.post('/api/repo/github/connect', {
