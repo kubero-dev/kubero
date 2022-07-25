@@ -137,55 +137,6 @@ export class Kubectl {
         }
     }
 
-    public async createSecret(namespace: string, secretName: string, secretData: any, context: string) {
-        debug.log(`create secret ${secretName} in namespace ${namespace}`);
-        let secret = {
-            apiVersion: "v1",
-            kind: "Secret",
-            metadata: {
-                name: secretName,
-                namespace: namespace
-            },
-            type: "Opaque",
-            data: secretData
-        }
-        this.kc.setCurrentContext(context);
-        await this.coreV1Api.createNamespacedSecret(namespace, secret).catch(error => {
-            debug.log(error);
-        }
-        );
-    }
-
-    public async createNamespace(ns_name: string, context: string) {
-        debug.log("create namespace "+ns_name);
-
-        try {
-            let ns = new V1Namespace();
-            ns.metadata = {
-                name: ns_name,
-                labels: {
-                    "managed-by": "kubero"
-                }
-            }
-            this.kc.setCurrentContext(context);
-            const ret = await this.coreV1Api.createNamespace(ns);
-        } catch (error) {
-            debug.log(error);
-        }
-    }
-
-    public async deleteNamespace(ns_name: string, context: string) {
-        debug.log("delete namespace "+ns_name);
-
-        try {
-            this.kc.setCurrentContext(context);
-            const ret = await this.coreV1Api.deleteNamespace(ns_name);
-            //debug.debug(ret);
-        } catch (error) {
-            debug.log(error);
-        }
-    }
-
     public async getKubeVersion() {
         let versionInfo = await this.versionApi.getCode()
         this.kubeVersion= versionInfo.body;

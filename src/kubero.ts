@@ -117,18 +117,6 @@ export class Kubero {
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
 
-        // create namespace for each phase
-        let secretData = {
-            'github.pub': Buffer.from(process.env.GIT_DEPLOYMENTKEY_PUBLIC as string).toString('base64'),
-            'github': process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 as string,
-        }
-        for (const phase of pipeline.phases) {
-            if (phase.enabled == true) {
-                const namespace = pipeline.name+'-'+phase.name;
-                await this.kubectl.createNamespace(namespace, phase.context);
-                await this.kubectl.createSecret(namespace, "deployment-keys", secretData, phase.context);
-            }
-        }
         // update agents
         this._io.emit('updatedPipelines', "created");
     }
@@ -153,12 +141,6 @@ export class Kubero {
         this.kubectl.getPipeline(pipelineName).then(async pipeline =>{
             if (pipeline) {
                 await this.kubectl.deletePipeline(pipelineName);
-                for (const phase of pipeline.spec.phases) {
-                    if (phase.enabled == true) {
-                        const namespace = pipeline.spec.name+"-"+phase.name;
-                        await this.kubectl.deleteNamespace(namespace, phase.context);
-                    }
-                }
                 this._io.emit('updatedPipelines', "deleted");
             }
         })
