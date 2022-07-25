@@ -16,7 +16,7 @@ export const after = (app: Express, server: Server) => {
     // Attache socket.io to server
     let sockets = init(server);
     const kubero = new Kubero(sockets);
-    kubero.init();
+    kubero.updateState();
     app.locals.kubero = kubero;
     const addons = new Addons({
         kubectl: kubero.kubectl

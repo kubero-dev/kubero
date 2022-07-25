@@ -38,7 +38,9 @@ export class Kubero {
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 
-    public init() {
+    public updateState() {
+        this.pipelineStateList = [];
+        this.appStateList = [];
         this.listPipelines().then(pl => {
             for (const pipeline of pl.items as IPipeline[]) {
                 this.pipelineStateList.push(pipeline);
@@ -116,6 +118,7 @@ export class Kubero {
 
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
+        this.updateState();
 
         // update agents
         this._io.emit('updatedPipelines', "created");
@@ -141,6 +144,9 @@ export class Kubero {
         this.kubectl.getPipeline(pipelineName).then(async pipeline =>{
             if (pipeline) {
                 await this.kubectl.deletePipeline(pipelineName);
+
+                // TODO: lines not working, since object may still exist in the API
+                this.updateState();
                 this._io.emit('updatedPipelines', "deleted");
             }
         })
