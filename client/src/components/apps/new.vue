@@ -49,7 +49,8 @@
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
 
-      <v-row>
+      <v-row 
+        v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -63,7 +64,8 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row 
+        v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -77,7 +79,8 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
+      <v-row 
+        v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -86,6 +89,37 @@
             v-model="autodeploy"
             :label="`Autodeploy: ${autodeploy.toString()}`"
           ></v-switch>
+        </v-col>
+      </v-row>
+
+      <v-row 
+        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="this.pipelineData.dockerimage"
+            :rules="repositoryRules"
+            :counter="60"
+            label="Docker image"
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row 
+        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="imageTag"
+            :rules="branchRules"
+            :counter="60"
+            label="Tag"
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
 
@@ -419,6 +453,7 @@ export default {
     },
     data: () => ({
       valid: false,
+      pipelineData: {},
       appname: '',
       resourceVersion: undefined,
       /*
@@ -501,11 +536,17 @@ export default {
     mounted() {
       this.loadApp();
       this.loadPodsizeList();
+      this.loadPipeline();
     },
     components: {
         Addons,
     },
     methods: {
+      loadPipeline() {
+        axios.get('/api/pipelines/'+this.pipeline).then(response => {
+          this.pipelineData = response.data;
+        });
+      },
       loadPodsizeList() {
         axios.get('/api/config/podsize').then(response => {
           for (let i = 0; i < response.data.length; i++) {

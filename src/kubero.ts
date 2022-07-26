@@ -125,7 +125,7 @@ export class Kubero {
     }
 
     public async listPipelines() {
-        debug.debug('listPipeline');
+        debug.debug('listPipelines');
         let pipelines = await this.kubectl.getPipelinesList();
         const ret = {
             items: new Array()
@@ -135,6 +135,19 @@ export class Kubero {
             ret.items.push(pipeline.spec);
         }
         return ret;
+    }
+
+    public async getPipeline(pipelineName: string) {
+        debug.debug('getPipeline');
+
+        let pipeline = await this.kubectl.getPipeline(pipelineName)
+        .catch(error => {
+            debug.log(error);
+        });
+
+        if (pipeline) {
+            return pipeline.spec;
+        }
     }
 
     // delete a pipeline and all its namespaces/phases

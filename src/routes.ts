@@ -5,13 +5,6 @@ import { IAddonMinimal } from './modules/addons';
 
 export const Router = express.Router();
 
-Router.get('/config', async function (req: Request, res: Response) {
-    let debug: any = {};
-    debug['pipelineState'] = req.app.locals.kubero.getPipelineStateList();
-    debug['appStateList'] = await req.app.locals.kubero.getAppStateList();
-    res.send(debug);
-});
-
 // create a pipeline
 Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
@@ -30,6 +23,12 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
 Router.get('/pipelines', async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
+});
+
+// get a pipeline
+Router.get('/pipelines/:pipeline', async function (req: Request, res: Response) {
+    let pipeline = await req.app.locals.kubero.getPipeline(req.params.pipeline);
+    res.send(pipeline);
 });
 
 // delete a pipeline
@@ -193,6 +192,13 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
     } as IAddonMinimal;
     await req.app.locals.addons.deleteAddon(addon);
     res.send('ok');
+});
+
+Router.get('/config', async function (req: Request, res: Response) {
+    let debug: any = {};
+    debug['pipelineState'] = req.app.locals.kubero.getPipelineStateList();
+    debug['appStateList'] = await req.app.locals.kubero.getAppStateList();
+    res.send(debug);
 });
 
 Router.get('/config/podsize', async function (req: Request, res: Response) {
