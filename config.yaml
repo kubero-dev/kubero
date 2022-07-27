@@ -2,6 +2,49 @@ kubero:
   context: kind-kubero
   namespace: kubero
   port: 3000
+buildpacks:
+  - name: NodeJS
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/node-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/node-builder
+      tag: main
+  - name: Python
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/python-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/python-builder
+      tag: main
+  - name: PHP
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/php-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/php-builder
+      tag: main
+  - name: Go
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/go-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/go-builder
+      tag: main
+  - name: Scala
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/scala-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/scala-builder
+      tag: main
+  - name: Ruby
+    web:
+      repository: ghcr.io/kubero-dev/docker-images/ruby-web
+      tag: main
+    builder:
+      repository: ghcr.io/kubero-dev/docker-images/ruby-builder
+      tag: main
 podSizeList: 
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'

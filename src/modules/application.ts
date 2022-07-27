@@ -6,18 +6,18 @@ export class KubectlApp implements IKubectlApp{
     apiVersion: string;
     kind: string;
     metadata: IKubectlMetadata;
-    spec: IApp;
+    spec: App;
     
-    constructor(name: string) {
+    constructor(app: App) {
         this.apiVersion = "application.kubero.dev/v1alpha1";
         this.kind = "KuberoApp";
         this.metadata = {
-            name: name,
+            name: app.name,
             labels: {
                 manager: 'kubero',
             }
         }
-        this.spec = {} as IApp; 
+        this.spec = app; 
     }
 }
 
@@ -62,17 +62,17 @@ export class App implements IApp{
         enabled: boolean,
     };
     private fullnameOverride: "";
-    private imageBuilder: {
+    public imageBuilder: {
         pullPolicy: 'IfNotPresent',
-        repository: 'ghcr.io/kubero-dev/docker-images/node-builder',
+        repository: string | 'ghcr.io/kubero-dev/docker-images/node-builder',
         tag: 'main',
         securityContext: {
             readOnlyRootFilesystem: boolean
         },
     };
-    private imageWeb: {
+    public imageWeb: {
         pullPolicy: 'IfNotPresent',
-        repository: 'ghcr.io/kubero-dev/docker-images/node-web',
+        repository: string | 'ghcr.io/kubero-dev/docker-images/node-web',
         tag: 'main',
         securityContext: {
             readOnlyRootFilesystem: boolean

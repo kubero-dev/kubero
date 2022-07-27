@@ -191,8 +191,20 @@ export interface IPodSize {
     }
 }
 
+interface IBuildpack {
+    name: string;
+    web: {
+        repository: string,
+        tag: string
+    },
+    builder: {
+        repository: string,
+        tag: string
+    }
+}
 export interface IKuberoConfig {
     name: string;
     version: string;
     podSizeList: IPodSize[];
+    buildpacks: IBuildpack[];
 }

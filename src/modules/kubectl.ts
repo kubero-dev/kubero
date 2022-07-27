@@ -15,7 +15,7 @@ import {
     V1Pod,
     V1Namespace,
 } from '@kubernetes/client-node'
-import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList} from '../types';
+import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
 import { KubectlPipeline } from './pipeline';
 import { IAddon, IAddonMinimal } from './addons';
@@ -30,8 +30,10 @@ export class Kubectl {
     private kubeVersion: VersionInfo;
     private patchUtils: PatchUtils;
     public log: KubeLog;
+    public config: IKuberoConfig;
 
-    constructor() {
+    constructor(config: IKuberoConfig) {
+        this.config = config;
         this.kc = new KubeConfig();
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
@@ -145,16 +147,26 @@ export class Kubectl {
     }
 
     public async createApp(app: App, context: string) {
-        console.log(app)
+        debug.log("create app: " + app.name);
         this.kc.setCurrentContext(context);
 
-        let appl = new KubectlApp(app.name);
-        appl.spec = app
+        let appl = new KubectlApp(app);
 
         let namespace = app.pipeline+'-'+app.phase;
 
         let pipeline = await this.getPipeline(app.pipeline)
-        appl.spec.gitrepo = pipeline.spec.github.repository
+        appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
+
+        // search images for buildpack in config
+        const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
+
+        if (appl.spec.buildpack == 'Docker') {
+            appl.spec.imageWeb.repository = pipeline.spec.dockerimage
+            appl.spec.imageBuilder.repository = pipeline.spec.dockerimage
+        } else if (buildpack) {
+            appl.spec.imageWeb.repository = buildpack.web.repository
+            appl.spec.imageBuilder.repository = buildpack.builder.repository
+        }
         
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
@@ -171,11 +183,23 @@ export class Kubectl {
         debug.log("update app: " + app.name);
         this.kc.setCurrentContext(context);
 
-        let appl = new KubectlApp(app.name);
+        let appl = new KubectlApp(app);
         appl.metadata.resourceVersion = resourceVersion;
-        appl.spec = app
 
         let namespace = app.pipeline+'-'+app.phase;
+
+        let pipeline = await this.getPipeline(app.pipeline)
+
+        // search images for buildpack in config
+        const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
+
+        if (appl.spec.buildpack == 'Docker') {
+            appl.spec.imageWeb.repository = pipeline.spec.dockerimage
+            appl.spec.imageBuilder.repository = pipeline.spec.dockerimage
+        } else if (buildpack) {
+            appl.spec.imageWeb.repository = buildpack.web.repository
+            appl.spec.imageBuilder.repository = buildpack.builder.repository
+        }
         
         await this.customObjectsApi.replaceNamespacedCustomObject(
         //await this.customObjectsApi.patchNamespacedCustomObject( 

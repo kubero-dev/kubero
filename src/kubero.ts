@@ -29,12 +29,12 @@ export class Kubero {
     public config: IKuberoConfig;
 
     constructor(io: Server) {
-        this.kubectl = new Kubectl();
+        this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
+        this.kubectl = new Kubectl(this.config);
         this._io = io;
 
         this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
-        this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 

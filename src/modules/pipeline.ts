@@ -31,7 +31,7 @@ export class KubectlPipeline implements IKubectlPipeline {
     public apiVersion: string;
     public kind: string;
     public metadata: IKubectlMetadata;
-    public spec: IPipeline;
+    public spec: Pipeline;
 
     constructor(pipeline: IPipeline) {
         this.apiVersion = "application.kubero.dev/v1alpha1";
