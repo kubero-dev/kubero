@@ -123,6 +123,21 @@
         </v-col>
       </v-row>
 
+
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-select
+            v-model="buildpack"
+            :items="buildpackList"
+            label="Buildpack"
+            @change="updateBuildpack"
+          ></v-select>
+        </v-col>
+      </v-row>
+
       <v-divider class="ma-5"></v-divider>
       <!-- ENV VARS-->
       <h4 class="text-uppercase">Environment vars</h4>
@@ -453,6 +468,13 @@ export default {
     },
     data: () => ({
       valid: false,
+      buildpack: "Docker",
+      buildpackList: [
+        "Docker",
+        "NodeJS",
+        //"Python",
+        //"Ruby",
+      ],
       pipelineData: {},
       appname: '',
       resourceVersion: undefined,
@@ -545,6 +567,19 @@ export default {
       loadPipeline() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
           this.pipelineData = response.data;
+
+          if (this.app == 'new') {
+            switch (this.pipelineData.github.repository.language) {
+              case "JavaScript":
+                this.buildpack = 'NodeJS';
+                break;
+              case "Python":
+              default:
+                this.buildpack = "Docker";
+                break;
+            }
+          }
+
         });
       },
       loadPodsizeList() {
@@ -560,6 +595,10 @@ export default {
       updatePodsize(podsize) {
         console.log(podsize);
         //this.podsize = podsize;
+      },
+      updateBuildpack(buildpack) {
+        console.log(buildpack);
+        this.buildpack = buildpack;
       },
       deleteAddon(addon) {
           
@@ -599,6 +638,7 @@ export default {
             this.resourceVersion = response.data.metadata.resourceVersion;
 
             this.appname = response.data.spec.name;
+            this.buildpack = response.data.spec.buildpack;
             this.gitrepo = response.data.spec.gitrepo;
             this.branch = response.data.spec.branch;
             this.autodeploy = response.data.spec.autodeploy;
@@ -618,7 +658,8 @@ export default {
       updateApp() {
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, {
           resourceVersion: this.resourceVersion,
-          name: this.appname,
+          buildpack: this.buildpack,
+          appname: this.appname,
           gitrepo: this.gitrepo,
           branch: this.branch,
           autodeploy: this.autodeploy,
@@ -643,6 +684,7 @@ export default {
       createApp() {
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
+          buildpack: this.buildpack,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
           gitrepo: this.gitrepo,

@@ -446,6 +446,7 @@ export class Kubero {
                     name: websaveTitle,
                     pipeline: pipelaneName,
                     gitrepo: pipeline.spec.github.repository,
+                    buildpack: pipeline.spec.buildpack,
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,

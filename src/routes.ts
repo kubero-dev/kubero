@@ -10,6 +10,7 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
         name: req.body.pipelineName, 
         phases: req.body.phases,
+        buildpack: req.body.buildpack,
         reviewapps: req.body.reviewapps,
         github: req.body.github,
         dockerimage: req.body.dockerimage,
@@ -44,6 +45,7 @@ Router.post('/apps', async function (req: Request, res: Response) {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
+        buildpack: req.body.buildpack,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
@@ -94,6 +96,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
         pipeline: req.params.pipeline,
         phase: req.params.phase,
 
+        buildpack: req.body.buildpack,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,

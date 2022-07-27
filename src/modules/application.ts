@@ -25,6 +25,7 @@ export class App implements IApp{
     public name: string
     public pipeline: string
     public phase: string
+    public buildpack: string
     public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean
@@ -115,6 +116,7 @@ export class App implements IApp{
         this.name = app.name
         this.pipeline = app.pipeline
         this.phase = app.phase
+        this.buildpack = app.buildpack
         this.gitrepo = app.gitrepo
         this.branch = app.branch
         this.autodeploy = app.autodeploy

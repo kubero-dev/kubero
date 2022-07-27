@@ -109,9 +109,21 @@
               </v-alert>
         </v-col>
       </v-row>
+
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-select
+            v-model="buildpack"
+            :items="buildpackList"
+            label="Buildpack"
+            @change="updateBuildpack"
+          ></v-select>
+        </v-col>
+      </v-row>
       
-
-
       <v-row v-for="phase in phases" :key="phase.name">
         <v-col
           cols="12"
@@ -157,6 +169,13 @@ import axios from "axios";
 export default {
     data: () => ({
       repotab: 'github', //selected tab
+      buildpack: "JavaScript",
+      buildpackList: [
+        "Docker",
+        "NodeJS",
+        //"Python",
+        //"Ruby",
+      ],
       valid: false, // final form validation
       pipelineName: '', 
       reviewapps: true,
@@ -214,6 +233,9 @@ export default {
       this.listRepositories();
     },
     methods: {
+      updateBuildpack(buildpack) {
+        this.buildpack = buildpack;
+      },
       getContextList() {
         axios.get('/api/config/k8s/context').then(response => {
           for (let i = 0; i < response.data.length; i++) {

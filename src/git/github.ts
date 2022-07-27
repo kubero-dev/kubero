@@ -26,6 +26,7 @@ export class GithubApi {
                 owner: "",
                 private : false,
                 ssh_url: "",
+                language: "",
             }
         }
         // TODO : Improve matching here
@@ -48,6 +49,7 @@ export class GithubApi {
                 owner: res.data.owner.login,
                 private : res.data.private,
                 ssh_url: res.data.ssh_url,
+                language: res.data.language,
             }
         }
         return ret;

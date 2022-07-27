@@ -6,6 +6,7 @@ export class Pipeline implements IPipeline {
     public dockerimage: string;
     public reviewapps: boolean;
     public phases: IPipelinePhase[];
+    public buildpack: string;
     public deploymentstrategy: string;
     public github: {
         repository?: IGithubRepository | undefined;
@@ -19,6 +20,7 @@ export class Pipeline implements IPipeline {
         //this.gitrepo = gitrepo;
         this.reviewapps = pl.reviewapps;
         this.phases = pl.phases;
+        this.buildpack = pl.buildpack;
         this.dockerimage = pl.dockerimage;
         this.github = pl.github;
         this.deploymentstrategy = pl.deploymentstrategy;

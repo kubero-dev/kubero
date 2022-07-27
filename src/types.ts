@@ -3,6 +3,7 @@ export interface IApp {
     name: string,
     pipeline: string,
     phase: string,
+    buildpack: string,
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
@@ -104,6 +105,7 @@ export interface IPipeline {
     //gitrepo: string;
     reviewapps: boolean;
     phases: IPipelinePhase[]; 
+    buildpack: string;
     github: {
         repository?: IGithubRepository
         webhook: object;
