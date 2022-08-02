@@ -180,7 +180,7 @@ export default {
       pipelineName: '', 
       reviewapps: true,
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with
-      dockerimage: 'kubero/template-nodeapp', // docker image to pull from
+      dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from
       gitrepo_connected: false, // if git repo is connected
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
@@ -215,6 +215,9 @@ export default {
           enabled: true,
           context: '',
         },
+      ],
+      imageRules: [
+        v => !!v || 'Image is required'
       ],
       nameRules: [
         v => !!v || 'Name is required',

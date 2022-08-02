@@ -62,22 +62,23 @@ export class App implements IApp{
         enabled: boolean,
     };
     private fullnameOverride: "";
-    public imageBuilder: {
-        pullPolicy: 'IfNotPresent',
-        repository: string | 'ghcr.io/kubero-dev/docker-images/node-builder',
-        tag: 'main',
-        securityContext: {
-            readOnlyRootFilesystem: boolean
-        },
+
+    public image: {
+        pullPolicy: 'Always',
+        repository: string | 'ghcr.io/kubero-dev/docker-images/node',
+        tag: string | 'main',
+        web: {
+            securityContext: {
+                readOnlyRootFilesystem: true
+            }
+        }
+        builder: {
+            securityContext: {
+                readOnlyRootFilesystem: false
+            }
+        }
     };
-    public imageWeb: {
-        pullPolicy: 'IfNotPresent',
-        repository: string | 'ghcr.io/kubero-dev/docker-images/node-web',
-        tag: 'main',
-        securityContext: {
-            readOnlyRootFilesystem: boolean
-        },
-    };
+
     private imagePullSecrets: [];
     private ingress?: {
         annotations: {},
@@ -138,22 +139,23 @@ export class App implements IApp{
             enabled: app.autoscale
         }
         this.fullnameOverride = "",
-        this.imageBuilder = {
-            pullPolicy: 'IfNotPresent',
-            repository: 'ghcr.io/kubero-dev/docker-images/node-builder',
+
+        this.image = {
+            pullPolicy: 'Always',
+            repository: 'ghcr.io/kubero-dev/docker-images/node',
             tag: 'main',
-            securityContext: {
-                readOnlyRootFilesystem: false
+            web: {
+                securityContext: {
+                    readOnlyRootFilesystem: true
+                }
+            },
+            builder: {
+                securityContext: {
+                    readOnlyRootFilesystem: false
+                }
             }
         }
-        this.imageWeb = {
-            pullPolicy: 'IfNotPresent',
-            repository: 'ghcr.io/kubero-dev/docker-images/node-web',
-            tag: 'main',
-            securityContext: {
-                readOnlyRootFilesystem: true
-            }
-        },
+
         this.imagePullSecrets = []
 
         if (app.domain) {

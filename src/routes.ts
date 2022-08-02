@@ -53,6 +53,11 @@ Router.post('/apps', async function (req: Request, res: Response) {
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
+        image: {
+            repository: req.body.image.repository,
+            tag: req.body.image.tag || "main",
+            pullPolicy: "Always",
+        },
         web: {
             replicaCount: req.body.webreplicas,
             autoscaling: {
@@ -88,7 +93,7 @@ Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, 
     res.send("deleted");
 });
 
-// create a new app in a specific pipeline
+// update a app in a specific pipeline
 Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
 
     let appconfig: IApp = {
@@ -104,6 +109,11 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
+        image: {
+            repository: req.body.image.repository,
+            tag: req.body.image.tag || "main",
+            pullPolicy: "Always",
+        },
         web: {
             replicaCount: req.body.webreplicas,
             autoscaling: {

@@ -454,6 +454,11 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
+                    image: {
+                        repository: pipeline.spec.dockerimage, // FIXME: Maybe needs a lookup into buildpack
+                        tag: "main",
+                        pullPolicy: "Always",
+                    },
                     web: {
                         replicaCount: 1,
                         autoscaling: {

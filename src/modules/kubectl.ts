@@ -161,11 +161,10 @@ export class Kubectl {
         const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
 
         if (appl.spec.buildpack == 'Docker') {
-            appl.spec.imageWeb.repository = pipeline.spec.dockerimage
-            appl.spec.imageBuilder.repository = pipeline.spec.dockerimage
+            //appl.spec.image.repository = pipeline.spec.dockerimage
+            // FIXME: this overwrites the image from the app. Is this required?
         } else if (buildpack) {
-            appl.spec.imageWeb.repository = buildpack.web.repository
-            appl.spec.imageBuilder.repository = buildpack.builder.repository
+            appl.spec.image.repository = buildpack.repository
         }
         
         await this.customObjectsApi.createNamespacedCustomObject(
@@ -188,17 +187,16 @@ export class Kubectl {
 
         let namespace = app.pipeline+'-'+app.phase;
 
-        let pipeline = await this.getPipeline(app.pipeline)
-
         // search images for buildpack in config
         const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
 
+
         if (appl.spec.buildpack == 'Docker') {
-            appl.spec.imageWeb.repository = pipeline.spec.dockerimage
-            appl.spec.imageBuilder.repository = pipeline.spec.dockerimage
+            //let pipeline = await this.getPipeline(app.pipeline)
+            //appl.spec.image.repository = pipeline.spec.dockerimage
+            // FIXME: this overwrites the docker image from the app. Is this required?
         } else if (buildpack) {
-            appl.spec.imageWeb.repository = buildpack.web.repository
-            appl.spec.imageBuilder.repository = buildpack.builder.repository
+            appl.spec.image.repository = buildpack.repository
         }
         
         await this.customObjectsApi.replaceNamespacedCustomObject(

@@ -99,8 +99,7 @@
           md="6"
         >
           <v-text-field
-            v-model="this.pipelineData.dockerimage"
-            :rules="repositoryRules"
+            v-model="docker.image"
             :counter="60"
             label="Docker image"
             required
@@ -114,7 +113,7 @@
           md="6"
         >
           <v-text-field
-            v-model="imageTag"
+            v-model="docker.tag"
             :rules="branchRules"
             :counter="60"
             label="Tag"
@@ -488,7 +487,11 @@ export default {
       gitrepo: {
         ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git', 
       },
-      branch: 'master',
+      branch: 'main',
+      docker: {
+        image: 'ghcr.io/kubero-dev/template-nodeapp',
+        tag: 'main',
+      },
       autodeploy: true,
       domain: '',
       envvars: [
@@ -535,18 +538,18 @@ export default {
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       repositoryRules: [ 
-        v => !!v || 'Repository is required',
+        //v => !!v || 'Repository is required',
         v => v.length <= 60 || 'Repository must be less than 10 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
       branchRules: [
-        v => !!v || 'Branch is required',
+        //v => !!v || 'Branch is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       domainRules: [
-        v => !!v || 'Branch is required',
+        v => !!v || 'Domain is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
       ],
@@ -567,6 +570,10 @@ export default {
       loadPipeline() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
           this.pipelineData = response.data;
+
+          if (this.pipelineData.dockerimage) {
+            this.docker.image = this.pipelineData.dockerimage;
+          }
 
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {
@@ -641,6 +648,9 @@ export default {
             this.buildpack = response.data.spec.buildpack;
             this.gitrepo = response.data.spec.gitrepo;
             this.branch = response.data.spec.branch;
+            this.imageTag= response.data.spec.imageTag;
+            this.docker.image = response.data.spec.docker.image;
+            this.docker.tag = response.data.spec.docker.tag;
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
@@ -662,6 +672,10 @@ export default {
           appname: this.appname,
           gitrepo: this.gitrepo,
           branch: this.branch,
+          image : {
+            image: this.docker.image,
+            tag: this.docker.tag,
+          },
           autodeploy: this.autodeploy,
           domain: this.domain,
           envvars: this.envvars,
@@ -689,6 +703,10 @@ export default {
           appname: this.appname.toLowerCase(),
           gitrepo: this.gitrepo,
           branch: this.branch,
+          image : {
+            image: this.docker.image,
+            tag: this.docker.tag,
+          },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),
           envvars: this.envvars,

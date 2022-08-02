@@ -12,6 +12,12 @@ export interface IApp {
     autoscale: boolean,
     envVars: {}[],
 
+    image : {
+        repository: string,
+        tag: string,
+        pullPolicy: 'Always',
+    }
+
     web: {
         replicaCount: number
         autoscaling: {
@@ -43,20 +49,6 @@ export interface IApp {
         targetCPUUtilizationPercentage: number
     },
     fullnameOverride: string,
-    imageBuilder: {
-        pullPolicy: string,
-        repository: string,
-        tag: string,
-        securityContext?: string,
-        readOnlyRootFilesystem: boolean
-    },
-    imageWeb: {
-        pullPolicy: string,
-        repository: string,
-        tag: string,
-        securityContext: string,
-        readOnlyRootFilesystem: boolean
-    },
     imagePullSecrets: [],
     ingress?: {
         annotations: {},
@@ -193,14 +185,8 @@ export interface IPodSize {
 
 interface IBuildpack {
     name: string;
-    web: {
-        repository: string,
-        tag: string
-    },
-    builder: {
-        repository: string,
-        tag: string
-    }
+    repository: string;
+    tag: string;
 }
 export interface IKuberoConfig {
     name: string;
