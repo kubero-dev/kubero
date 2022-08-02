@@ -39,7 +39,7 @@ kubectl apply -f secrets.yaml
 |-------:|:-------:|:-----------|
 | GIT_DEPLOYMENTKEY_PUBLIC | required | generated Public Key |
 | GIT_DEPLOYMENTKEY_PRIVATE_B64 | required | Base64 encoded Private Key |
-| KUBECONFIG_BASE64 | reuired | Base64 encoded Kubeconfig, may contain multiple contexts |
+| KUBECONFIG_BASE64 | required | Base64 encoded Kubeconfig, may contain multiple contexts |
 | KUBERO_WEBHOOK_SECRET | required | Random secret string
 | GITHUB_PERSONAL_ACCESS_TOKEN | optional | Personal access token for GitHub API |
 | GITEA_PERSONAL_ACCESS_TOKEN | optional | Personal access token for Gitea API |
