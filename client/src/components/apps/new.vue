@@ -649,8 +649,8 @@ export default {
             this.gitrepo = response.data.spec.gitrepo;
             this.branch = response.data.spec.branch;
             this.imageTag= response.data.spec.imageTag;
-            this.docker.image = response.data.spec.docker.image;
-            this.docker.tag = response.data.spec.docker.tag;
+            this.docker.image = response.data.spec.image.repository || '';
+            this.docker.tag = response.data.spec.image.tag || 'main';
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
