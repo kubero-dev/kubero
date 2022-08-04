@@ -6,6 +6,9 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 <br>
 <br>
 
+![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
+
 ## What can Kubero do for you?
 - Create a pipeline with up to 4 separate environments: review apps -> testing -> stageing -> production
 - Build,start and cleanup reviewapps after opening/closing a pull request
