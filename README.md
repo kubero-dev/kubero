@@ -1,5 +1,10 @@
-# Kubero
+<img src="docs/logo/kubero-logo-horizontal.png">
+
+<br>
+<br>
 Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure.
+<br>
+<br>
 
 ## What can Kubero do for you?
 - Create a pipeline with up to 4 separate environments: review apps -> testing -> stageing -> production
