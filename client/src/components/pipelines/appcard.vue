@@ -15,21 +15,30 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app">{{ this.app }}</a></v-card-title>
+    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name">{{ this.app.name }}</a></v-card-title>
 
     <v-card-text>
         <v-row
+            v-if="this.app.buildpack != 'Docker'"
             class="mx-0"
         >
             <v-icon left small>mdi-github</v-icon>
-
             <div class="grey--text text-subtitle-1">
-                {{ this.gitrepo.ssh_url }}
+                {{ this.app.gitrepo.ssh_url }}
+            </div>
+        </v-row>
+        <v-row
+            v-if="this.app.buildpack == 'Docker'"
+            class="mx-0"
+        >
+            <v-icon left small>mdi-docker</v-icon>
+            <div class="grey--text text-subtitle-1">
+                {{ this.app.image.repository }}:{{ this.app.image.tag }}
             </div>
         </v-row>
         <p></p>
-        <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.branch }}</v-chip>
-        <v-chip label class="mr-1">{{ this.commithash }}</v-chip>
+        <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.app.branch }}</v-chip>
+        <v-chip label class="mr-1">{{ this.app.commithash }}</v-chip>
 
     </v-card-text>
 
@@ -37,7 +46,6 @@
 
     <v-card-actions class="ml-2">
         <v-btn
-            v-if="this.domain"
             color="deep-purple lighten-2"
             text
             @click="restartApp()"
@@ -49,17 +57,17 @@
         <v-btn
             color="deep-purple lighten-2"
             text
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app+'/logs'"
+            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/logs'"
         >
             <v-icon
                 >mdi-console
             </v-icon>
         </v-btn>
         <v-btn
-            v-if="this.domain"
+            v-if="this.app.domain"
             color="deep-purple lighten-2"
             text
-            :href="'//'+domain" target="_blank"
+            :href="'//'+app.domain" target="_blank"
         >
             <v-icon
                 >mdi-open-in-new
@@ -82,8 +90,8 @@ export default {
         default: "phaseName"
       },
       app: {
-        type: String,
-        default: "AppName"
+        type: Object,
+        default: () => ({}),
       },
       gitrepo: {
         type: Object,
@@ -120,7 +128,7 @@ export default {
     }),
     methods: {
         restartApp() {
-            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}/restart`)
+            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 console.log(response);
                 this.loadingState = true;

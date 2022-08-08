@@ -10,12 +10,7 @@
                         <Appcard v-for="app in phase.apps" :key="app.name" 
                             :pipeline="pipeline"
                             :phase="phase.name"
-                            :app="app.name" 
-                            :domain="app.domain" 
-                            :gitrepo="app.gitrepo"
-                            :branch="app.branch"
-                            :commithash="app.branch"
-                            :autodeploy="app.autodeploy"/>
+                            :app="app" />
 
                         <v-btn
                         elevation="2"

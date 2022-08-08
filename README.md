@@ -17,7 +17,7 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - No hassle with the deployment of the app with helm charts
 - Deploy Addons (PostgreSQL, Redis, more to come)
 - Easy acces of application logs in the UI
-- Easy ans safe restart of the application ibn the UI
+- Easy and safe restart of the application in the UI
 
 ## Which heroku features are still missing?
 - Dataclips
@@ -26,9 +26,9 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - Other Buildpacks (only NodeJS is currently supported, more to come soon)
 
 # Usage
-1) Create a pipeline with all your phases
-1.1) Connect the Pipeline to your git repository ( not required with pre-build image deployment )
-2) Create your apps with cronjobs and addons
+1. Create a pipeline with all your phases
+2. Connect the Pipeline to your git repository ( not required with pre-build image deployment )
+3. Create your apps with cronjobs and addons
 
 # Installation
 

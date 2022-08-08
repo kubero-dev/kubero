@@ -61,6 +61,7 @@
             :counter="60"
             label="Repository"
             required
+            disabled
           ></v-text-field>
         </v-col>
       </v-row>
@@ -103,6 +104,7 @@
             :counter="60"
             label="Docker image"
             required
+            disabled
           ></v-text-field>
         </v-col>
       </v-row>
@@ -133,6 +135,7 @@
             :items="buildpackList"
             label="Buildpack"
             @change="updateBuildpack"
+            disabled
           ></v-select>
         </v-col>
       </v-row>
@@ -673,7 +676,7 @@ export default {
           gitrepo: this.gitrepo,
           branch: this.branch,
           image : {
-            image: this.docker.image,
+            repository: this.docker.image,
             tag: this.docker.tag,
           },
           autodeploy: this.autodeploy,
@@ -704,7 +707,7 @@ export default {
           gitrepo: this.gitrepo,
           branch: this.branch,
           image : {
-            image: this.docker.image,
+            repository: this.docker.image,
             tag: this.docker.tag,
           },
           autodeploy: this.autodeploy,

@@ -142,7 +142,7 @@ export class App implements IApp{
 
         this.image = {
             pullPolicy: 'Always',
-            repository: 'ghcr.io/kubero-dev/docker-images/node',
+            repository: app.image.repository || 'ghcr.io/kubero-dev/docker-images/node',
             tag: 'main',
             web: {
                 securityContext: {
