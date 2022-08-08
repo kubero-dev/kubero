@@ -22,7 +22,7 @@
             v-if="this.app.buildpack != 'Docker'"
             class="mx-0"
         >
-            <v-icon left small>mdi-github</v-icon>
+            <v-icon left small>mdi-git</v-icon>
             <div class="grey--text text-subtitle-1">
                 {{ this.app.gitrepo.ssh_url }}
             </div>
@@ -38,7 +38,7 @@
         </v-row>
         <p></p>
         <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.app.branch }}</v-chip>
-        <v-chip label class="mr-1">{{ this.app.commithash }}</v-chip>
+        <v-chip label class="mr-1" v-if="this.app.commithash">{{ this.app.commithash }}</v-chip>
 
     </v-card-text>
 
@@ -46,6 +46,7 @@
 
     <v-card-actions class="ml-2">
         <v-btn
+            title="Restart App"
             color="deep-purple lighten-2"
             text
             @click="restartApp()"
@@ -55,6 +56,7 @@
             </v-icon>
         </v-btn>
         <v-btn
+            title="Show Logs"
             color="deep-purple lighten-2"
             text
             :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/logs'"
@@ -64,6 +66,7 @@
             </v-icon>
         </v-btn>
         <v-btn
+            title="Open App"
             v-if="this.app.domain"
             color="deep-purple lighten-2"
             text

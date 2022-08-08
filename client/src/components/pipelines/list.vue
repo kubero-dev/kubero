@@ -24,6 +24,7 @@
                                     <v-col cols="12" sm="12" md="6">
                                         <a :href="'/#/pipeline/'+item.name+'/apps'">
                                             <v-card-title>
+                                                <v-icon left>mdi-{{ item.deploymentstrategy}}</v-icon>
                                                 <span class="text-h5">{{ item.name }}</span>
                                             </v-card-title>
                                             <v-card-text>
