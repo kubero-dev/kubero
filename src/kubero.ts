@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IKubectlAppList, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
@@ -124,10 +124,10 @@ export class Kubero {
         this._io.emit('updatedPipelines', "created");
     }
 
-    public async listPipelines() {
+    public async listPipelines(): Promise<IPipelineList> {
         debug.debug('listPipelines');
         let pipelines = await this.kubectl.getPipelinesList();
-        const ret = {
+        const ret: IPipelineList = {
             items: new Array()
         }
         for (const pipeline of pipelines.items) {
@@ -429,24 +429,24 @@ export class Kubero {
 
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string) {
-        let pipelines = await this.listPipelines() as IKubectlPipelineList;
+        let pipelines = await this.listPipelines() as IPipelineList;
 
         for (const pipeline of pipelines.items) {
 
-            if (pipeline.spec.reviewapps && 
-                pipeline.spec.github.repository && 
-                pipeline.spec.github.repository.ssh_url === ssh_url) {
+            if (pipeline.reviewapps && 
+                pipeline.github.repository && 
+                pipeline.github.repository.ssh_url === ssh_url) {
                 
-                debug.debug('found pipeline: '+pipeline.spec.name);
-                let pipelaneName = pipeline.spec.name
+                debug.debug('found pipeline: '+pipeline.name);
+                let pipelaneName = pipeline.name
                 let phaseName = 'review';
                 let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
                 
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
-                    gitrepo: pipeline.spec.github.repository,
-                    buildpack: pipeline.spec.buildpack,
+                    gitrepo: pipeline.github.repository,
+                    buildpack: pipeline.buildpack,
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
@@ -455,7 +455,7 @@ export class Kubero {
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     image: {
-                        repository: pipeline.spec.dockerimage, // FIXME: Maybe needs a lookup into buildpack
+                        repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
                         tag: "main",
                         pullPolicy: "Always",
                     },

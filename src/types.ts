@@ -106,6 +106,10 @@ export interface IPipeline {
     deploymentstrategy: string;
 }
 
+export interface IPipelineList {
+    items: IPipeline[],
+}
+
 export interface IGithubRepository {
     description?: string,
     id?: number,
