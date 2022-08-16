@@ -1,4 +1,6 @@
-import { debug } from "debug";
+import debug from 'debug';
+import * as crypto from "crypto"
+import { IWebhook} from './types';
 debug('app:kubero:gitea:api')
 
 //https://www.npmjs.com/package/gitea-js
@@ -191,5 +193,59 @@ export class GiteaApi {
         }
 
         return ret
+    }
+
+    public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
+        //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
+        let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
+        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
+
+        let verified = false;
+        if (hash === signature) {
+            debug.debug('Gitea webhook signature is valid for event: '+delivery);
+            verified = true;
+        } else {
+            debug.log('ERROR: invalid signature for event: '+delivery);
+            debug.log('Hash:      '+hash);
+            debug.log('Signature: '+signature);
+            verified = false;
+            return false;
+        }
+
+        let branch: string = 'main';
+        let ssh_url: string = '';
+        let action;
+        if (body.pull_request == undefined) {
+            let ref = body.ref
+            let refs = ref.split('/')
+            branch = refs[refs.length - 1]
+            ssh_url = body.repository.ssh_url
+        } else if (body.pull_request != undefined) { 
+            action = body.action,
+            branch = body.pull_request.head.ref
+            ssh_url = body.pull_request.head.repo.ssh_url
+        } else {
+            ssh_url = body.repository.ssh_url
+        }
+
+        try {
+            let webhook: IWebhook = {
+                repoprovider: 'gitea',
+                action: action,
+                event: event,
+                delivery: delivery,
+                body: body,
+                branch: branch,
+                verified: verified,
+                repo: {
+                    ssh_url: ssh_url,
+                }
+            }
+
+            return webhook;
+        } catch (error) {
+            console.log(error)
+            return false;
+        }
     }
 }

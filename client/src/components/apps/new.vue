@@ -135,7 +135,8 @@
             :items="buildpackList"
             label="Buildpack"
             @change="updateBuildpack"
-            disabled
+            :disabled="buildpackDisabled"
+            :rules="buildpackRules"
           ></v-select>
         </v-col>
       </v-row>
@@ -470,7 +471,8 @@ export default {
     },
     data: () => ({
       valid: false,
-      buildpack: "Docker",
+      buildpack: undefined,
+      buildpackDisabled: true,
       buildpackList: [
         "Docker",
         "NodeJS",
@@ -560,6 +562,10 @@ export default {
         v => !!v || 'Schedule is required',
         v => /(((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}/.test(v) || 'Not a valid crontab format',
       ],
+      buildpackRules: [
+        v => !!v || 'Buildpack is required',
+        v => /(NodeJS|Docker)$/.test(v) || 'select a valid buildpack',
+      ],
     }),
     mounted() {
       this.loadApp();
@@ -578,14 +584,19 @@ export default {
             this.docker.image = this.pipelineData.dockerimage;
           }
 
+          this.gitrepo.ssh_url = this.pipelineData.github.repository.ssh_url;
+
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {
               case "JavaScript":
                 this.buildpack = 'NodeJS';
                 break;
               case "Python":
+                this.buildpack = 'Python';
+                break;
               default:
-                this.buildpack = "Docker";
+                this.buildpackDisabled = false;
+                //this.buildpack = "";
                 break;
             }
           }

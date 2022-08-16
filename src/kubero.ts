@@ -4,6 +4,7 @@ import { IApp, IPipeline, IPipelineList, IKubectlAppList, IKubectlPipelineList, 
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
+import { IWebhook} from './git/types';
 import { IAddon, IAddonMinimal } from './modules/addons';
 import * as crypto from "crypto"
 import set from 'lodash.set';
@@ -319,7 +320,7 @@ export class Kubero {
         let webhook = await this.githubApi.addWebhook(
             repository.data.owner,
             repository.data.name,
-            process.env.KUBERO_WEBHOOK_URL,
+            process.env.KUBERO_WEBHOOK_URL+'/github',
             process.env.KUBERO_WEBHOOK_SECRET,
         );
 
@@ -349,7 +350,7 @@ export class Kubero {
         let webhook = await this.giteaApi.addWebhook(
             repository.data.owner,
             repository.data.name,
-            process.env.KUBERO_WEBHOOK_URL,
+            process.env.KUBERO_WEBHOOK_URL+'/gitea',
             process.env.KUBERO_WEBHOOK_SECRET,
         );
 
@@ -359,42 +360,60 @@ export class Kubero {
 
     }
 
-    public async handleGithubWebhook(event: string, delivery: string, signature: string, body: any) {
-        debug.log('handleGithubWebhook');
+    public async handleWebhook(repoProvider: string, event: string, delivery: string, signature: string, body: any) {
+        debug.log('handleWebhook');
+        let webhook: boolean | IWebhook = false;
+        switch (repoProvider) {
+            case 'github':
+                webhook = this.githubApi.getWebhook(event, delivery, signature, body);
+                break;
+        
+            case 'gitea':
+                webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
+                break;
+        
+            default:
+                break;
+        }
 
-        //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
-        let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
-        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
-        if (hash === signature) {
-            debug.debug('Github webhook signature is valid for event: '+delivery);
-
-            switch (event) {
+        if (typeof webhook != 'boolean') {
+            switch (webhook.event) {
                 case 'push':
-                    this.handleGithubPush(body);
+                    this.handleWebhookPush(webhook);
                     break;
                 case 'pull_request':
-                    this.handleGithubPullRequest(body);
+                    this.handleWebhookPullRequest(webhook);
                     break;
                 default:
-                    debug.log('Github webhook event not handled: '+event);
+                    debug.log('webhook event not handled: '+event);
                     break;
             }
-        } else {
-            debug.log('ERROR: invalid signature for event: '+delivery);
-            debug.log(hash);
-            debug.log(signature);
         }
     }
 
-    private async handleGithubPush(body: any) {
-        debug.log('handleGithubPush');
-        let ref = body.ref
-        let refs = ref.split('/')
-        let branch = refs[refs.length - 1]
-        let apps = await this.getAppsByBranch(branch);
+    private async handleWebhookPush(webhook: IWebhook) {
+        debug.log('handleWebhookPush');
+        let apps = await this.getAppsByBranch(webhook.branch);
 
         for (const app of apps) {
             this.restartApp(app.pipeline, app.phase, app.name);
+        }
+    }
+
+    private async handleWebhookPullRequest(webhook: IWebhook) {
+        debug.log('handleWebhookPullRequest');
+
+        switch (webhook.action) {
+            case 'opened':
+            case 'reopened':
+                this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
+                break;
+            case 'closed':
+                this.deletePRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
+                break;
+            default:
+                console.log('webhook pull request action not handled: '+webhook.action);
+                break;
         }
     }
 
@@ -409,26 +428,9 @@ export class Kubero {
         return apps;
     }
 
-    private async handleGithubPullRequest(body: any) {
-        debug.log('handleGithubPullRequest');
-        let pullRequest = body.pull_request;
-        debug.debug(body.action);
-
-        switch (body.action) {
-            case 'opened':
-            case 'reopened':
-                this.createPRApp(pullRequest.head.ref, pullRequest.head.ref, pullRequest.head.repo.ssh_url)
-                break;
-            case 'closed':
-                this.deletePRApp(pullRequest.head.ref, pullRequest.head.ref, pullRequest.head.repo.ssh_url)
-                break;
-            default:
-                break;
-        }
-    }
-
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string) {
+        debug.log('createPRApp');
         let pipelines = await this.listPipelines() as IPipelineList;
 
         for (const pipeline of pipelines.items) {
