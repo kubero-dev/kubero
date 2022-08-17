@@ -2,7 +2,7 @@
 
 <br>
 <br>
-Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure.
+Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
 <br>
 <br>
 
@@ -10,20 +10,23 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
 
 ## What can Kubero do for you?
-- Create a pipeline with up to 4 separate environments: review apps -> testing -> stageing -> production
-- Build,start and cleanup reviewapps after opening/closing a pull request
+- Create a CI pipeline with up to 4 separate environments: review apps -> testing -> stageing -> production
+- Build, start and cleanup reviewapps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create Scheduled tasks (cronjobs)
-- No hassle with the deployment of the app with helm charts
+- Easy deployment of the apps on kubernetes without helm charts
 - Deploy Addons (PostgreSQL, Redis, more to come)
-- Easy acces of application logs in the UI
+- Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
 
 ## Which heroku features are still missing?
 - Dataclips
-- Authentication (Will be added later) ( DO NOT EXPOSE THE UI AND API TO THE PUBLIC )
+- Authentication (Will be added soon) ( DO NOT EXPOSE THE UI AND API TO THE PUBLIC )
 - CLI (May be added later since kubero has a API)
 - Other Buildpacks (only NodeJS is currently supported, more to come soon)
+
+<img width="45%" style="vertical-align: top" src="docs/screenshots/appoverview.png">
+<img width="45%" style="vertical-align: top" src="docs/screenshots/app.png">
 
 # Usage
 1. Create a pipeline with all your phases
