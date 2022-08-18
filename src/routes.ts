@@ -203,7 +203,7 @@ Router.get('/apps', authMiddleware, async function (req: Request, res: Response)
 });
 
 // get github webhook events
-Router.post('/repo/webhooks/:repoprovider', authMiddleware, async function (req: Request, res: Response) {
+Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
 
     let ret: string = 'ok';
     switch (req.params.repoprovider){ 
