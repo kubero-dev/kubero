@@ -82,7 +82,7 @@ export class Auth {
                     callbackURL: process.env.GITHUB_CLIENT_CALLBACKURL as string
                 },
                 function(accessToken: string, refreshToken: string, profile: any, done: any) {
-                    console.log(profile);
+                    debug.debug( JSON.stringify(profile));
                     // TODO Check if User is in requred github Organisatio. Rquires a extra call to github API.
                     const user: User = {
                         method: 'github',
