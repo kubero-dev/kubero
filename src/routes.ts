@@ -323,3 +323,14 @@ Router.get('/logout', authMiddleware, function (req: Request, res: Response, nex
     console.log("logged out")
     return res.send("logged out");
 });
+
+
+Router.get('/auth/github',
+  auth.passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+Router.get('/auth/github/callback', 
+  auth.passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });

@@ -36,6 +36,15 @@
                 type="submit"
             >Login</v-btn>
         </form>
+        <p></p>
+        <v-divider></v-divider>
+        <p></p>
+            <v-btn
+                block
+                depressed
+                color="primary"
+                href="/api/auth/github"
+            >Github</v-btn>
         </v-card-text>
         </v-card>
     </v-row>
