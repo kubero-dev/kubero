@@ -334,3 +334,7 @@ Router.get('/auth/github/callback',
     // Successful authentication, redirect home.
     res.redirect('/');
   });
+
+Router.get('/auth/methods', function (req: Request, res: Response, next: NextFunction) {
+    res.send(auth.authmethods);
+})

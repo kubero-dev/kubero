@@ -10,35 +10,38 @@
         class="ma-10"
         >
         <v-card-text>
-        <v-alert
-            v-show="error"
-            outlined
-            type="warning"
-            prominent
-            border="left"
-            >Wrong username or password!
-        </v-alert>
-        <form v-on:submit="login">
-            <v-text-field
-                label="username"
-                name="username"
-                required
-            ></v-text-field>
-            <v-text-field
-                label="password"
-                type="password"
-                name="password"
-                required
-            ></v-text-field>
-            <v-btn
-                depressed
-                color="primary"
-                type="submit"
-            >Login</v-btn>
-        </form>
+        <div v-if="authMethods.local">
+            <v-alert
+                v-show="error"
+                outlined
+                type="warning"
+                prominent
+                border="left"
+                >Wrong username or password!
+            </v-alert>
+            <form v-on:submit="login">
+                <v-text-field
+                    label="username"
+                    name="username"
+                    required
+                ></v-text-field>
+                <v-text-field
+                    label="password"
+                    type="password"
+                    name="password"
+                    required
+                ></v-text-field>
+                <v-btn
+                    depressed
+                    color="primary"
+                    type="submit"
+                >Login</v-btn>
+            </form>
+            <p></p>
+        </div>
+        <v-divider v-if="authMethods.local && authMethods.github"></v-divider>
         <p></p>
-        <v-divider></v-divider>
-        <p></p>
+        <div v-if="authMethods.github">
             <v-btn
                 block
                 depressed
@@ -51,6 +54,7 @@
                 </v-icon>
                 Login with Github
             </v-btn>
+        </div>
         </v-card-text>
         </v-card>
     </v-row>
@@ -62,9 +66,27 @@
     export default {
         name: "Login",
         data: () => ({
-                error: false
+            error: false,
+            authMethods : {
+                "local": false,
+                "github": false
+            }
         }),
+        mounted() {
+            this.getAuthMethods();
+        },
         methods: {
+            getAuthMethods() {
+                axios
+                    .get("/api/auth/methods")
+                    .then((result) => {
+                        console.log(result.data)
+                        this.authMethods = result.data
+                    })
+                    .catch((err) => {
+                        console.log(err)
+                    })
+            },
             login: function (e) {
                 e.preventDefault()
                 let username = e.target.elements.username.value
