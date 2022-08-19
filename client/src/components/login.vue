@@ -42,9 +42,15 @@
             <v-btn
                 block
                 depressed
-                color="primary"
+                color="#24292f"
                 href="/api/auth/github"
-            >Github</v-btn>
+                style='color:white !important'>
+                <v-icon left
+                style='color:white !important'>
+                    mdi-github
+                </v-icon>
+                Login with Github
+            </v-btn>
         </v-card-text>
         </v-card>
     </v-row>
