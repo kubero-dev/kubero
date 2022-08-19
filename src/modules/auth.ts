@@ -3,6 +3,7 @@ debug('app:auth')
 import { Passport, Authenticator, AuthenticateOptions} from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import * as crypto from "crypto"
 
 type User =  {
     id: number,
@@ -40,7 +41,7 @@ export class Auth {
                 console.log("ERROR loading local Users");
                 debug.log(error);
             }
-            debug.log('users', this.users);
+            debug.debug('loaded users: ' + JSON.stringify(this.users));
 
             this.passport.use(
                 'local',
@@ -50,9 +51,13 @@ export class Auth {
                 }, 
                 (username, password, done) => {
                     let profile: any = this.users.find((u: any) => {
-                    return u.username === username && u.password === password
+                        if (u.insecure) {
+                            return u.username === username && u.password === password
+                        } else if (!u.insecure && process.env.KUBER_SESSION_KEY) {
+                            return u.username === username && u.password === crypto.createHmac('sha256', process.env.KUBER_SESSION_KEY).update(password).digest('hex')
+                        }
                     })
-            
+                    
                     if (profile) {
                         const user: User = {
                             method: 'local',
@@ -91,12 +96,12 @@ export class Auth {
         }
 
         this.passport.serializeUser((user: User, done: any) => {
-            console.log(user)
+            debug.debug(JSON.stringify(user))
             done(null, user)
         })
 
         this.passport.deserializeUser((authUser: any, done: any) => {
-            console.log(authUser)
+            debug.debug(JSON.stringify(authUser))
 
             // try to deserialize user from local environment
             let user: User | undefined = undefined; 
@@ -107,7 +112,7 @@ export class Auth {
                 })
 
                 if (user) {
-                    console.log("deserialize local user", user);
+                    debug.debug("deserialize local user : "+ JSON.stringify(user));
                     done(null, user)
                 }
             }

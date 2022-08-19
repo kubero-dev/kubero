@@ -10,6 +10,8 @@ import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
 
+//TODO replace default with random string 
+//const secret = crypto.randomBytes(20).toString('hex'); 
 const { KUBER_SESSION_KEY = "3KYu07W85yDjIhUtBVHa61gmF" } = process.env;
 
 export const before = (app: Express) => {

@@ -3,19 +3,20 @@ import { IApp, IPipeline } from './types';
 import { App } from './modules/application';
 import { IAddonMinimal } from './modules/addons';
 import { Auth } from './modules/auth';
+import debug from 'debug';
+debug('app:routes')
 
 export const Router = express.Router();
 export const auth = new Auth();
 auth.init();
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    console.log("authMiddleware");
     if (process.env.KUBERO_USERS) {
         if (!req.isAuthenticated()) {
-            console.log("not authenticated")
+            debug.debug("not authenticated")
             res.status(401).send('You are not authenticated')
         } else {
-            console.log("authenticated")
+            debug.debug("authenticated")
             return next()
         }
     } else {
