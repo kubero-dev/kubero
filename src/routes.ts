@@ -2,7 +2,6 @@ import express, { Express, NextFunction, Request, Response } from 'express';
 import { IApp, IPipeline } from './types';
 import { App } from './modules/application';
 import { IAddonMinimal } from './modules/addons';
-//import { passport } from './modules/auth';
 import { Auth } from './modules/auth';
 
 export const Router = express.Router();
@@ -294,7 +293,6 @@ Router.get('/config/repositories', authMiddleware, async function (req: Request,
 
 // Login user
 Router.post('/login', function(req: Request, res: Response, next: NextFunction) {
-    //passport.authenticate("local", function (err: Error, user: Express.User, info: string) {
     auth.passport.authenticate("local", function (err: Error, user: Express.User, info: string) {
         if (err) {
             return next(err);
