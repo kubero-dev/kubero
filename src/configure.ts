@@ -5,7 +5,6 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import { Router } from "./routes";
 import { auth } from "./routes";
-//import { passport } from './modules/auth';
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
@@ -23,12 +22,8 @@ export const before = (app: Express) => {
         saveUninitialized: true,
     }));
     app.use(bodyParser.json());
-    if (process.env.KUBERO_USERS) {
+    if (auth.authmethods.local || auth.authmethods.github) {
         console.log("initialize Passport");
-        /*
-        app.use(auth.passport.initialize());
-        app.use(auth.passport.session());
-        */
     
         app.use(auth.passport.initialize());
         app.use(auth.passport.session());

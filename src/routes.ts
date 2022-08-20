@@ -11,7 +11,7 @@ export const auth = new Auth();
 auth.init();
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if (process.env.KUBERO_USERS) {
+    if (auth.authmethods.local || auth.authmethods.github) {
         if (!req.isAuthenticated()) {
             debug.debug("not authenticated")
             res.status(401).send('You are not authenticated')
@@ -26,10 +26,14 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
 }
 
 Router.all("/session", (req: Request, res: Response) => {
-    const isAuthenticated = req.isAuthenticated()
+
     let status = 200
-    if (!isAuthenticated) {
-        status = 401
+    let isAuthenticated = false
+    if (auth.authmethods.local || auth.authmethods.github) {
+        isAuthenticated = req.isAuthenticated()
+        if (!isAuthenticated) {
+            status = 401
+        }
     }
     res.status(status).send(isAuthenticated)
 })
@@ -334,6 +338,7 @@ Router.get('/auth/github/callback',
     res.redirect('/');
   });
 
+// Send auth methods to display in the login page
 Router.get('/auth/methods', function (req: Request, res: Response, next: NextFunction) {
     res.send(auth.authmethods);
 })

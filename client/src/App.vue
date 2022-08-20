@@ -29,7 +29,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Addons</v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="logout()">
+                <v-list-item @click="logout()" v-if="session">
                     <v-list-item-icon>
                     <v-icon>mdi-logout</v-icon>
                     </v-list-item-icon>
@@ -73,7 +73,7 @@ export default {
         this.checkSession();
     },
     data: () => ({
-        session: "login to",
+        session: false,
         isAuthenticated: false
     }),
     methods: {
