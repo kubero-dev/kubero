@@ -10,7 +10,7 @@ export function init(httpServer: HttpServer) {
     const io = new Server(httpServer, { /* options */ });
     console.log('socket.io started')
     io.on('connection', client => {
-        debug.log('socket.io connected')
+        debug.debug('socket.io connected')
 
         client.on('join', join => {
             //leave all rooms before joining new one
