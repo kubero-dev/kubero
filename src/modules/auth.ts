@@ -4,6 +4,7 @@ import { Passport, Authenticator, AuthenticateOptions} from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import * as crypto from "crypto"
+import axios from 'axios';
 
 type User =  {
     id: number,
@@ -81,16 +82,28 @@ export class Auth {
                     clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
                     callbackURL: process.env.GITHUB_CLIENT_CALLBACKURL as string
                 },
-                function(accessToken: string, refreshToken: string, profile: any, done: any) {
+                async function(accessToken: string, refreshToken: string, profile: any, done: any) {
                     debug.debug( JSON.stringify(profile));
-                    // TODO Check if User is in requred github Organisatio. Rquires a extra call to github API.
-                    const user: User = {
-                        method: 'github',
-                        id: profile.id,
-                        username: profile.username,
-                    }
 
-                    done(null, user);
+                    const orgas = await axios.get(profile._json.organizations_url)
+
+                    const orgAllowd = process.env.GITHUB_ORG || false
+                    const org = orgas.data.find((o: any) => {
+                        return o.login === process.env.GITHUB_ORG
+                    } )
+
+                    if (org) {
+                        const user: User = {
+                            method: 'github',
+                            id: profile.id,
+                            username: profile.username,
+                        }
+
+                        done(null, user);
+                    } else {
+                        console.log(profile.username+' is not in allowd organisation '+process.env.GITHUB_ORG)
+                        done(null, false, { message: 'Not in allowd organisation'})
+                    }
                 })
             );
         }
