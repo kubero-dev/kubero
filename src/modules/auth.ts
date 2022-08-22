@@ -3,6 +3,8 @@ debug('app:auth')
 import { Passport, Authenticator, AuthenticateOptions} from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github2';
+import { Strategy as OAuth2Strategy } from 'passport-oauth2';
+
 import * as crypto from "crypto"
 import axios from 'axios';
 
@@ -17,7 +19,9 @@ export class Auth {
     public authmethods = {
         local: false,
         github: false,
+        oauth2: false,
     }
+    public authentication: boolean;
     private users = []
 
     constructor() {
@@ -28,6 +32,18 @@ export class Auth {
         (process.env.GITHUB_CLIENT_ID && 
          process.env.GITHUB_CLIENT_SECRET && 
          process.env.GITHUB_CLIENT_CALLBACKURL ) ? this.authmethods.github = true : this.authmethods.github = false;
+
+        (process.env.OAUTO2_CLIENT_NAME && 
+         process.env.OAUTO2_CLIENT_AUTH_URL && 
+         process.env.OAUTO2_CLIENT_TOKEN_URL && 
+         process.env.OAUTH2_CLIENT_ID && 
+         process.env.OAUTH2_CLIENT_SECRET && 
+         process.env.OAUTH2_CLIENT_CALLBACKURL ) ? this.authmethods.oauth2 = true : this.authmethods.oauth2 = false;
+
+        this.authentication = false;
+        if (this.authmethods.local || this.authmethods.github || this.authmethods.oauth2) {
+            this.authentication = true; 
+        }
     }
 
     init() {
@@ -108,6 +124,33 @@ export class Auth {
             );
         }
 
+        if (this.authmethods.oauth2) {
+            this.passport.use(new OAuth2Strategy({
+                authorizationURL: process.env.OAUTO2_CLIENT_AUTH_URL as string,
+                tokenURL: process.env.OAUTO2_CLIENT_TOKEN_URL as string,
+                clientID: process.env.OAUTH2_CLIENT_ID as string,
+                clientSecret: process.env.OAUTH2_CLIENT_SECRET as string,
+                callbackURL: process.env.OAUTH2_CLIENT_CALLBACKURL as string
+            },
+            function(accessToken: string, refreshToken: string, profile: any, done: any) {
+                debug.debug( JSON.stringify(profile));
+
+                const user: User = {
+                    method: 'oauth2',
+                    id: profile.id,
+                    username: profile.username,
+                }
+
+                /*
+                User.findOrCreate({ exampleId: profile.id }, function (err, user) {
+                return done(null, user);
+                });
+                */
+                done(null, user);
+            }
+            ));
+        }
+
         this.passport.serializeUser((user: User, done: any) => {
             debug.debug(JSON.stringify(user))
             done(null, user)
@@ -131,6 +174,10 @@ export class Auth {
             }
 
             if (authUser.method === 'github') {
+                done(null, authUser);
+            }
+
+            if (authUser.method === 'oauth2') {
                 done(null, authUser);
             }
             

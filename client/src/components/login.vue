@@ -54,6 +54,23 @@
                 </v-icon>
                 Login with Github
             </v-btn>
+        </div>        <p></p>
+        <v-divider v-if="(authMethods.local || authMethods.github) && authMethods.oauth2"></v-divider>
+        <p></p>
+        <div v-if="authMethods.oauth2">
+            <v-btn
+                block
+                depressed
+                color_not="#3C79A6"
+                color="#AA4242"
+                href="/api/auth/oauth2"
+                style='color:white !important'>
+                <v-icon left
+                style='color:white !important'>
+                    mdi-cog
+                </v-icon>
+                Login with Oauth2
+            </v-btn>
         </div>
         </v-card-text>
         </v-card>

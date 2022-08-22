@@ -22,7 +22,7 @@ export const before = (app: Express) => {
         saveUninitialized: true,
     }));
     app.use(bodyParser.json());
-    if (auth.authmethods.local || auth.authmethods.github) {
+    if (auth.authentication === true) {
         console.log("initialize Passport");
     
         app.use(auth.passport.initialize());

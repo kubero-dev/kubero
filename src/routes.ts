@@ -11,7 +11,7 @@ export const auth = new Auth();
 auth.init();
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-    if (auth.authmethods.local || auth.authmethods.github) {
+    if (auth.authentication === true) {
         if (!req.isAuthenticated()) {
             debug.debug("not authenticated")
             res.status(401).send('You are not authenticated')
@@ -29,7 +29,8 @@ Router.all("/session", (req: Request, res: Response) => {
 
     let status = 200
     let isAuthenticated = false
-    if (auth.authmethods.local || auth.authmethods.github) {
+    
+    if (auth.authentication === true) {
         isAuthenticated = req.isAuthenticated()
         if (!isAuthenticated) {
             status = 401
@@ -333,6 +334,17 @@ Router.get('/auth/github',
 
 Router.get('/auth/github/callback', 
   auth.passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+
+Router.get('/auth/oauth2',
+  auth.passport.authenticate('oauth2', { scope: [ 'user:email' ] }));
+
+Router.get('/auth/oauth2/callback', 
+  auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
     res.redirect('/');

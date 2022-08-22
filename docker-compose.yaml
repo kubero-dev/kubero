@@ -22,7 +22,7 @@ services:
       - USER_GID=1000
     restart: always
     volumes:
-      - /tmp/gitea:/data
+      - ./.dockerdata/gitea:/data
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     ports:
