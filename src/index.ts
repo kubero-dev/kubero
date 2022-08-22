@@ -4,11 +4,11 @@ import history from 'connect-history-api-fallback';
 import dotenv from 'dotenv';
 import debug from 'debug';
 import http from 'http';
+dotenv.config();
 import {before, after} from './configure';
 
 debug('app:server')
 
-dotenv.config();
 
 const app: Express = express();
 const server = http.createServer(app)

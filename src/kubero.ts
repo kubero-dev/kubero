@@ -6,7 +6,6 @@ import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
 import { IWebhook} from './git/types';
 import { IAddon, IAddonMinimal } from './modules/addons';
-import * as crypto from "crypto"
 import set from 'lodash.set';
 import YAML from 'yaml';
 import * as fs from 'fs';

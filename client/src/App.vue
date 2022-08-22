@@ -6,6 +6,7 @@
             expand-on-hover
             permanent
             mini-variant
+            v-if="isAuthenticated"
         >
             <v-list nav dense>
                 <v-list-item link to="/">
@@ -28,6 +29,12 @@
                     </v-list-item-icon>
                     <v-list-item-title>Addons</v-list-item-title>
                 </v-list-item>
+                <v-list-item @click="logout()" v-if="session">
+                    <v-list-item-icon>
+                    <v-icon>mdi-logout</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Logout</v-list-item-title>
+                </v-list-item>
                 
             </v-list>
 
@@ -49,7 +56,7 @@
 
 
 <script>
-//import axios from "axios";
+import axios from "axios";
 //import Appfooter from "./components/appfooter.vue";
 
 export default {
@@ -60,25 +67,48 @@ export default {
     },
     */
     mounted() {
-        /*
-        axios
-            .get("/api/status")
-            .then((result) => {
-                this.status = result.data;
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-        */
+        this.checkSession()
+    },
+    updated() {
+        this.checkSession();
     },
     data: () => ({
-      status: {
-        swarmversion: "",
-        kubeVersion: {
-          gitVersion: ""
-        }
-      }
+        session: false,
+        isAuthenticated: false
     }),
+    methods: {
+        logout: () => {
+            axios.get("/api/logout")
+            .then((response) => {
+                console.log("Logged out"+response)
+                window.location.reload()
+            })
+            .catch((errors) => {
+                console.log("Cannot logout "+errors)
+            })
+        },
+        checkSession() {
+            if (this.$route.name != 'Login') {
+                axios
+                    .get("/api/session")
+                    .then((result) => {
+                        console.log("isAuthenticated: " + result.data);
+                        this.session = result.data;
+                        if (result.status === 200) {
+                            this.isAuthenticated = true;
+                        }
+                    })
+                    .catch((err) => {
+                        if (err.response.status === 401) {
+                            this.isAuthenticated = false;
+                            this.$router.push('/login') 
+                        } else {
+                            console.log(err);
+                        }
+                    });
+            }
+        }
+    },
 };
 </script>
 

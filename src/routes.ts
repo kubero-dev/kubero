@@ -1,12 +1,46 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express, NextFunction, Request, Response } from 'express';
 import { IApp, IPipeline } from './types';
 import { App } from './modules/application';
 import { IAddonMinimal } from './modules/addons';
+import { Auth } from './modules/auth';
+import debug from 'debug';
+debug('app:routes')
 
 export const Router = express.Router();
+export const auth = new Auth();
+auth.init();
+
+const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+    if (auth.authentication === true) {
+        if (!req.isAuthenticated()) {
+            debug.debug("not authenticated")
+            res.status(401).send('You are not authenticated')
+        } else {
+            debug.debug("authenticated")
+            return next()
+        }
+    } else {
+        // skip middleware if no users defined
+        return next()
+    }
+}
+
+Router.all("/session", (req: Request, res: Response) => {
+
+    let status = 200
+    let isAuthenticated = false
+    
+    if (auth.authentication === true) {
+        isAuthenticated = req.isAuthenticated()
+        if (!isAuthenticated) {
+            status = 401
+        }
+    }
+    res.status(status).send(isAuthenticated)
+})
 
 // create a pipeline
-Router.post('/pipelines', async function (req: Request, res: Response) {
+Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
     let pipeline: IPipeline = { 
         name: req.body.pipelineName, 
         phases: req.body.phases,
@@ -21,25 +55,25 @@ Router.post('/pipelines', async function (req: Request, res: Response) {
 });
 
 // get a list of pipelines
-Router.get('/pipelines', async function (req: Request, res: Response) {
+Router.get('/pipelines', authMiddleware, async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
 });
 
 // get a pipeline
-Router.get('/pipelines/:pipeline', async function (req: Request, res: Response) {
+Router.get('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
     let pipeline = await req.app.locals.kubero.getPipeline(req.params.pipeline);
     res.send(pipeline);
 });
 
 // delete a pipeline
-Router.delete('/pipelines/:pipeline', async function (req: Request, res: Response) {
+Router.delete('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.deletePipeline(req.params.pipeline);
     res.send(pipelines);
 });
 
 // create a app
-Router.post('/apps', async function (req: Request, res: Response) {
+Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
     
     let appconfig: IApp = {
         name: req.body.appname,
@@ -88,13 +122,13 @@ Router.post('/apps', async function (req: Request, res: Response) {
 });
 
 // delete an app
-Router.delete('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("deleted");
 });
 
 // update a app in a specific pipeline
-Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
 
     let appconfig: IApp = {
         name: req.params.app,
@@ -145,19 +179,19 @@ Router.put('/pipelines/:pipeline/:phase/:app', async function (req: Request, res
 });
 
 // get app details
-Router.get('/pipelines/:pipeline/:phase/:app', async function (req: Request, res: Response) {
+Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send(app.body); 
 });
 
 // get all apps in a pipeline
-Router.get('/pipelines/:pipeline/apps', async function (req: Request, res: Response) {
+Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Request, res: Response) {
     let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
     res.send(apps);
 });
 
 //restart app
-Router.get('/pipelines/:pipeline/:phase/:app/restart', async function (req: Request, res: Response) {
+Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async function (req: Request, res: Response) {
     req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("restarted"); 
 });
@@ -169,7 +203,7 @@ Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Re
 });
 
 // connect pipeline with github
-Router.get('/apps', async function (req: Request, res: Response) {
+Router.get('/apps', authMiddleware, async function (req: Request, res: Response) {
     res.send(await req.app.locals.kubero.getAppStateList());
 });
 
@@ -214,14 +248,14 @@ Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: R
 });
 
 // get a list of addons
-Router.get('/addons', async function (req: Request, res: Response) {
+Router.get('/addons', authMiddleware, async function (req: Request, res: Response) {
     //res.send('ok');
     let addonslist = await req.app.locals.addons.getAddonsList();
     res.send(addonslist)
 });
 
 // delete an addon
-Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request, res: Response) {
+Router.delete('/addons/:pipeline/:phase/:addonID', authMiddleware, async function (req: Request, res: Response) {
     let addon = {
         group: req.body.apiVersion.split('/')[0],
         version: req.body.apiVersion.split('/')[1],
@@ -235,22 +269,22 @@ Router.delete('/addons/:pipeline/:phase/:addonID', async function (req: Request,
     res.send('ok');
 });
 
-Router.get('/config', async function (req: Request, res: Response) {
+Router.get('/config', authMiddleware, async function (req: Request, res: Response) {
     let debug: any = {};
     debug['pipelineState'] = req.app.locals.kubero.getPipelineStateList();
     debug['appStateList'] = await req.app.locals.kubero.getAppStateList();
     res.send(debug);
 });
 
-Router.get('/config/podsize', async function (req: Request, res: Response) {
+Router.get('/config/podsize', authMiddleware, async function (req: Request, res: Response) {
     res.send(await req.app.locals.kubero.getPodSizeList());
 });
 
-Router.get('/config/k8s/context',  async function (req: Request, res: Response) {
+Router.get('/config/k8s/context', authMiddleware, async function (req: Request, res: Response) {
     res.send(req.app.locals.kubero.getContexts());
 });
 
-Router.get('/logs/:pipeline/:phase/:app',  async function (req: Request, res: Response) {
+Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     req.app.locals.kubero.startLogging(
         req.params.pipeline,
         req.params.phase,
@@ -259,6 +293,64 @@ Router.get('/logs/:pipeline/:phase/:app',  async function (req: Request, res: Re
     res.send('ok');
 });
 
-Router.get('/config/repositories', async function (req: Request, res: Response) {
+Router.get('/config/repositories', authMiddleware, async function (req: Request, res: Response) {
     res.send(await req.app.locals.kubero.getRepositories());
 });
+
+// Login user
+Router.post('/login', function(req: Request, res: Response, next: NextFunction) {
+    auth.passport.authenticate("local", function (err: Error, user: Express.User, info: string) {
+        if (err) {
+            return next(err);
+        }
+    
+        if (!user) {
+            console.log("login error")
+            return res.status(400).send([user, "Cannot log in", info]);
+        }
+    
+        req.login(user, err => {
+            console.log("logged in")
+            res.send("Logged in");
+        });
+    })(req, res, next);
+});
+
+// Logout user
+Router.get('/logout', authMiddleware, function (req: Request, res: Response, next: NextFunction) {
+    req.logout({}, function (err: Error) {
+        if (err) {
+            return next(err);
+        }
+        res.send("Logged out");
+    } as any);
+    console.log("logged out")
+    return res.send("logged out");
+});
+
+
+Router.get('/auth/github',
+  auth.passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+Router.get('/auth/github/callback', 
+  auth.passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+
+Router.get('/auth/oauth2',
+  auth.passport.authenticate('oauth2', { scope: [ 'user:email' ] }));
+
+Router.get('/auth/oauth2/callback', 
+  auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+// Send auth methods to display in the login page
+Router.get('/auth/methods', function (req: Request, res: Response, next: NextFunction) {
+    res.send(auth.authmethods);
+})
