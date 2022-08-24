@@ -760,7 +760,7 @@ export default {
           name: 'hello world',
           schedule: '* * * * *',
           image: 'busybox:1.28',
-          command: '/bin/sh -c "echo hello world"',
+          command: '/bin/sh -c echo hello world',
           restartPolicy: 'OnFailure',
         });
       },
