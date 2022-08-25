@@ -254,6 +254,13 @@ Router.get('/addons', authMiddleware, async function (req: Request, res: Respons
     res.send(addonslist)
 });
 
+// get a list of addons
+Router.get('/addons/operators', authMiddleware, async function (req: Request, res: Response) {
+    //res.send('ok');
+    let operatorslist = await req.app.locals.addons.getOperatorsList();
+    res.send(operatorslist)
+});
+
 // delete an addon
 Router.delete('/addons/:pipeline/:phase/:addonID', authMiddleware, async function (req: Request, res: Response) {
     let addon = {

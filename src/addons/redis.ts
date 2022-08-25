@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { IAddon, IAddonFormFields } from '../modules/addons';
 
 export class RedisCluster implements IAddon {
@@ -5,10 +6,14 @@ export class RedisCluster implements IAddon {
     public operator = 'redis-operator';
     public enabled = false;
     public name: string = 'Redis Cluster';
+    public CRDkind: string = 'RedisCluster';
     public icon: string = 'redis.png';
     public plural: string = 'redisclusters';
-    public version: string = 'v0.9.0';
+    public version: string = '0.9.0';
     public description: string = 'TBD';
+    public install: string = 'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml';
+    private artifact_url: string = 'https://artifacthub.io/api/v1/packages/olm/community-operators/redis-operator';
+    public crd: any;
 
     public formfields: {[key: string]: IAddonFormFields} = {
         'metadata.name':{
@@ -71,55 +76,23 @@ export class RedisCluster implements IAddon {
         }
     };
 
-    public crd = {
-        apiVersion: 'redis.redis.opstreelabs.in/v1beta1',
-        kind: 'RedisCluster',
-        metadata: {
-            name: this.formfields['metadata.name'].default as string || 'redis-cluster'
-        },
-        spec: {
-            clusterSize: this.formfields['spec.clusterSize'].default as number || 3,
-            kubernetesConfig: {
-                image: 'quay.io/opstree/redis:v6.2.5',
-                imagePullPolicy: 'IfNotPresent',
-                resources: {
-                    limits: {
-                        cpu: this.formfields['spec.kubernetesConfig.resources.limits.cpu'].default as string || '101m',
-                        memory: this.formfields['spec.kubernetesConfig.resources.limits.memory'].default as string || '128Mi',
-                    },
-                    requests: {
-                        cpu: this.formfields['spec.kubernetesConfig.resources.requests.cpu'].default as string || '101m',
-                        memory: this.formfields['spec.kubernetesConfig.resources.requests.memory'].default as string || '128Mi'
-                    }
-                }
-            },
-            redisExporter: {
-                enabled: this.formfields['spec.redisExporter.enabled'].default as boolean || false,
-                image: 'quay.io/opstree/redis-exporter:1.0'
-            },
-            redisFollower: {
-                serviceType: 'ClusterIP'
-            },
-            redisLeader: {
-                serviceType: 'ClusterIP'
-            },
-            storage: {
-                volumeClaimTemplate: {
-                    spec: {
-                        accessModes: [
-                            'ReadWriteOnce'
-                        ],
-                        resources: {
-                            requests: {
-                                storage: this.formfields['spec.storage.volumeClaimTemplate.sepc.resources.requests.storage'].default as string || '1Gi'
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
     env: [] = [];
+/*
+    constructor() {
+        console.log('RedisCluster constructor')
+        axios.get(this.artifact_url)
+            .then(response => {
+                this.crd = response.data.crds_examples[0];
+                this.description = response.data.readme;
+                this.version = response.data.version;
+                console.log(response.data.crds_examples[0])
+            })
+            .catch(error => {
+                console.log(error);
+            }
+        );
+    }
+*/
 }
 
 
@@ -129,10 +102,13 @@ export class Redis implements IAddon {
     public operator = 'redis-operator';
     public enabled = false;
     public name: string = 'Redis';
+    public CRDkind: string = 'Redis';
     public icon: string = 'redis.png';
     public plural: string = 'redisclusters';
     public version: string = 'v0.9.0';
     public description: string = 'TBD';
+    public install: string = 'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml';
+    public crd: any;
 
     public formfields: {[key: string]: IAddonFormFields} = {
         'metadata.name':{
@@ -186,7 +162,7 @@ export class Redis implements IAddon {
             required: true
         }
     };
-
+/*
     // https://www.convertsimple.com/convert-yaml-to-javascript-object/
     public crd = {
         apiVersion: 'redis.redis.opstreelabs.in/v1beta1',
@@ -231,5 +207,6 @@ export class Redis implements IAddon {
             }
         }
     }
+*/
     env: [] = [];
 }

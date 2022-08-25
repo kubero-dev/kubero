@@ -301,13 +301,12 @@ export class Kubectl {
 
     public async getOperators() {
         // TODO list operators from all clusters
-
-        let response = await this.customObjectsApi.listClusterCustomObject(
-            'operators.coreos.com', 
-            'v1alpha1', 
-            'clusterserviceversions', 
-            'default'
-        );
+        let response = await this.customObjectsApi.listNamespacedCustomObject(
+            'operators.coreos.com',
+            'v1alpha1',
+            'operators',
+            'clusterserviceversions'
+        )
 
         //let operators = response.body as KubernetesListObject<KubernetesObject>;
         let operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work

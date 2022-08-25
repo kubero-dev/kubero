@@ -19,9 +19,12 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
 
+## What Kubero can't do for you
+- Manage your cluster
+
+
 ## Which heroku features are still missing?
 - Dataclips
-- Authentication (Will be added soon) ( DO NOT EXPOSE THE UI AND API TO THE PUBLIC )
 - CLI (May be added later since kubero has a API)
 - Other Buildpacks (only NodeJS is currently supported, more to come soon)
 

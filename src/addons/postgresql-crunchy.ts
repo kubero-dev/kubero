@@ -5,11 +5,15 @@ export class CrunchyPostgresqlCluster implements IAddon {
     public operator = 'postgresoperator';
     public enabled = false;
     public name: string = 'PostgreSQL';
+    public CRDkind: string = 'PostgresCluster';
     public icon: string = 'postgresql.png';
     public plural: string = 'postgresclusters';
     public version: string = 'v5.1.1';
     public description: string = 'TBD';
     public install: string = 'kubectl create -f https://operatorhub.io/install/v5/postgresql.yaml';
+    private artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql';
+    public crd: any;
+
     public formfields: {[key: string]: IAddonFormFields} = {
       'metadata.name':{
           type: 'text',
@@ -52,7 +56,7 @@ export class CrunchyPostgresqlCluster implements IAddon {
           description: 'Number of Postgres instances in the cluster'
       },
     };
-
+/*
     public crd = {
       apiVersion: "postgres-operator.crunchydata.com/v1beta1",
       kind: "PostgresCluster",
@@ -113,6 +117,7 @@ export class CrunchyPostgresqlCluster implements IAddon {
         }
       }
     }
+    */
     
     public env: any[] = [
       {

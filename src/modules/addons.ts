@@ -5,6 +5,7 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { RedisCluster, Redis} from '../addons/redis';
 import { CrunchyPostgresqlCluster} from '../addons/postgresql-crunchy';
 
+
 export interface AddonOptions {
     kubectl: Kubectl;
 }
@@ -33,10 +34,12 @@ export interface IAddon {
     operator: string,
     enabled: boolean,
     name: string, 
+    CRDkind: string,
     icon: string,
     version: string
     plural: string;
     description?: string,
+    install: string,
     formfields: {[key: string]: IAddonFormFields},
     crd: KubernetesObject
 }
@@ -49,6 +52,7 @@ export class Addons {
     private kubectl: Kubectl;
     private operatorsAvailable: string[] = [];
     public addonsList: IAddon[] = []
+    private operatorsList: any;
 
     constructor(
         options: AddonOptions
@@ -62,26 +66,58 @@ export class Addons {
         let rediscluster = new RedisCluster()
         if (operatorsAvailable.includes(rediscluster.operator)) {
             rediscluster.enabled = true
+            rediscluster.crd = this.getOperatorCRD(rediscluster)
+            //console.log(rediscluster.crd)
         }
         this.addonsList.push(rediscluster)
 
         let redis = new Redis()
         if (operatorsAvailable.includes(rediscluster.operator)) {
             redis.enabled = true
+            redis.crd = this.getOperatorCRD(redis)
         }
         this.addonsList.push(redis)
 
         let crunchyPostgresCluster = new CrunchyPostgresqlCluster()
         if (operatorsAvailable.includes(crunchyPostgresCluster.operator)) {
             crunchyPostgresCluster.enabled = true
+            crunchyPostgresCluster.crd = this.getOperatorCRD(crunchyPostgresCluster)
+            //console.log(crunchyPostgresCluster.crd)
         }
         this.addonsList.push(crunchyPostgresCluster)
 
     }
 
+    // get the CRD from the installed operator
+    private getOperatorCRD(addon: IAddon): KubernetesObject {
+        let operatorCRD;
+        let operatorCRDList;
+
+        for (const crd of this.operatorsList) {
+            //console.log('-------------------------')
+            //console.log(crd.metadata.name, addon.operator)
+            if (crd.metadata.name.includes(addon.operator)) {
+                operatorCRDList = crd.metadata.annotations['alm-examples'];
+                
+                for (const op of JSON.parse(operatorCRDList)) {
+
+                    //console.log(op.kind, addon.CRDkind)
+                    //console.log(op.kind)
+                    if (op.kind === addon.CRDkind) {
+                        operatorCRD = op;
+                        break;
+                    }
+                }
+            } 
+        }
+        return operatorCRD
+    }
+
     private loadOperators(): void {
         this.kubectl.getOperators()
         .then(operators => {
+            
+            this.operatorsList = operators;
 
             let operatorsList:string[] = [];
             for (const operator of operators) {
@@ -99,5 +135,9 @@ export class Addons {
 
     public async getAddonsList(): Promise<IAddon[]> {
         return this.addonsList
+    }
+
+    public getOperatorsList(): string[] {
+        return this.operatorsAvailable
     }
 }
