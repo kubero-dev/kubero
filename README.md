@@ -29,6 +29,9 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - CLI (May be added later since kubero has a API)
 - Other Buildpacks (only NodeJS is currently supported, more to come soon)
 
+
+## Screenshots
+<a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a>
 <img width="45%" style="vertical-align: top" src="docs/screenshots/appoverview.png">
 <img width="45%" style="vertical-align: top" src="docs/screenshots/app.png">
 
