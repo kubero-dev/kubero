@@ -47,6 +47,17 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - OLM - Operator Lifecycle Manager
 
 
+## Install the Operator
+The operator will also install the UI and all the required CRD
+```bash
+TODO
+```
+
+## create the namespace
+```bash
+kubectl create namespace kubero
+```
+
 ## Create and deploy the secrets
 ```bash
 curl -sL https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/helm-charts/kubero/secrets.yaml.example > secrets.yaml
@@ -63,15 +74,14 @@ kubectl apply -f secrets.yaml -n kubero
 | GITEA_PERSONAL_ACCESS_TOKEN | optional | Personal access token for Gitea API |
 GITLAB_PERSONAL_ACCESS_TOKEN | optional | Personal access token for GitLab API |
 
-## To base64 encode your kubeconfig
+### To base64 encode your kubeconfig
 ```bash
 cat kubeconfig | base64
 ```
 
-## Install the Operator
-The operator will also install the UI and all the required CRD
+## deploy the UI
 ```bash
-TODO
+kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/config/samples/application_v1alpha1_kubero.yaml -n kubero
 ```
 
 ## configure Kubero
@@ -79,7 +89,7 @@ TODO
 kubectl edit configmap kubero-config -n kubero
 ```
 
-## Development
+# Development
 
 ### local development
 from local source
