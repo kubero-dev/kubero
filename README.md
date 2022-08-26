@@ -51,7 +51,7 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 ```bash
 curl -sL https://github.com/downloads/kubero-dev/kubero-operator/helm-charts/kubero/secrets.yaml.example secrets.yaml
 # Edit the secret with your credentials
-kubectl apply -f secrets.yaml
+kubectl apply -f secrets.yaml -n kubero
 ```
 | Variable | Required | Description |
 |-------:|:-------:|:-----------|
@@ -65,7 +65,7 @@ GITLAB_PERSONAL_ACCESS_TOKEN | optional | Personal access token for GitLab API |
 
 ## To base64 encode your kubeconfig
 ```bash
-cat kubeconfig | base64 --wrap=0
+cat kubeconfig | base64
 ```
 
 ## Install the Operator
@@ -98,11 +98,7 @@ docker-compose up -d
 kind create cluster --config kind.yaml
 kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
 kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/olm.yaml
-kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/catalog.yaml
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
-
-kubectl apply -f k8s/crd/pipeline.yaml
-//TODO: add kubero operator installation here
 ``` 
 
 ### Exporting the Kubernetes config file 
@@ -114,5 +110,5 @@ kind export kubeconfig --name kubero --kubeconfig ./kubeconfig
 
 To use in the docker-compose 
 ```bash
-kind get kubeconfig --internal --name kubero > kubeconfig-docker
+kind get kubeconfig --internal --name kubero > ./kubeconfig-docker
 ```
