@@ -1,7 +1,7 @@
 import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 
 // Classname must be same as the CRD's Name
-export class Redis extends Plugin implements IPlugin {
+export class RedisCluster extends Plugin implements IPlugin {
     public id: string = 'redis-operator';//same as operator name
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/redis-operator'
@@ -14,6 +14,14 @@ export class Redis extends Plugin implements IPlugin {
             required: true,
             default: 'redis-cluster',
             description: 'The name of the Redis cluster'
+        },
+        'spec.clusterSize':{
+            type: 'number',
+            label: 'Clustersize',
+            name: 'spec.clusterSize',
+            default: 3,
+            required: true,
+            description: 'Number of Redis nodes in the cluster'
         },
         'spec.redisExporter.enabled':{
             type: 'switch',

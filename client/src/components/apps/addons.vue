@@ -153,7 +153,7 @@ export default {
             .then(response => {
                 for (let addon of response.data) {
                     this.availableAddons.push({
-                        text: addon.name,
+                        text: addon.kind,
                         value: addon
                     });
                 }

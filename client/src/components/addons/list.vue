@@ -15,13 +15,16 @@
                             size="57"
                             rounded
                             ><img
-                            :src="'/img/addons/'+addon.icon"
+                            :src="'/img/addons/'+addon.kind+'.png'"
                             :alt="addon.name"
                             ></v-avatar>
-                        <v-card-title>{{ addon.name }}</v-card-title>
-                        <v-card-subtitle>{{ addon.version }}</v-card-subtitle>
+                        <v-card-title>{{ addon.kind }}</v-card-title>
+                        <v-card-subtitle>
+                            <span v-if="addon.enabled">{{ addon.version.installed }}</span>
+                            <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
+                        </v-card-subtitle>
                         <v-card-text>
-                            Operator: {{ addon.operator }}
+                            Operator: {{ addon.id }}
                         </v-card-text>
 
                     </v-list-item-content>
