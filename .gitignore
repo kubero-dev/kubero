@@ -12,3 +12,5 @@ example-*.json
 
 *.log
 .dockerdata
+
+secrets.yaml
