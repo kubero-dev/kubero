@@ -10,18 +10,19 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
 
 ## What can Kubero do for you?
-- Create a CI pipeline with up to 4 separate environments: review apps -> testing -> stageing -> production
+- Create a CI pipeline with up to 4 separate environments for all your standard apps: review apps -> testing -> stageing -> production
 - Build, start and cleanup reviewapps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create Scheduled tasks (cronjobs)
-- Easy deployment of the apps on kubernetes without helm charts
-- Deploy Addons (PostgreSQL, Redis, more to come)
+- Easy deployment of your apps on kubernetes without helm charts
+- Deploy addons (PostgreSQL, Redis, more to come)
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
 
 ## What Kubero can't do for you
-- Manage your cluster
-
+- Manage your Kubernetes cluster
+- Install and Manage your operators
+- Give access to your Contaier CLI
 
 ## Which heroku features are still missing?
 - Dataclips
