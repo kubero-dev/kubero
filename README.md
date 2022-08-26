@@ -49,7 +49,7 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 
 ## Create and deploy the secrets
 ```bash
-curl -sL https://github.com/downloads/kubero-dev/kubero-operator/helm-charts/kubero/secrets.yaml.example secrets.yaml
+curl -sL https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/helm-charts/kubero/secrets.yaml.example secrets.yaml
 # Edit the secret with your credentials
 kubectl apply -f secrets.yaml -n kubero
 ```
