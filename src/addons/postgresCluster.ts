@@ -5,6 +5,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
     public id: string = 'postgresoperator';//same as operator name
     public install: string = 'kubectl create -f https://operatorhub.io/install/v5/postgresql.yaml'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql'
+    public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
         'metadata.name':{

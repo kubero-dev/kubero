@@ -5,6 +5,7 @@ export class RedisCluster extends Plugin implements IPlugin {
     public id: string = 'redis-operator';//same as operator name
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/redis-operator'
+    public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
         'metadata.name':{

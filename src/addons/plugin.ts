@@ -13,6 +13,7 @@ export interface IPluginFormFields {
 export interface IPlugin {
     id: string
     enabled: boolean,
+    beta: boolean,
     version: {
         latest: string,
         installed: string,

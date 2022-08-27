@@ -5,6 +5,7 @@ export class PerconaServerMongoDB extends Plugin implements IPlugin {
     public id: string = 'percona-server-mongodb-operator';//same as operator name
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/percona-server-mongodb-operator.yaml'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/percona-server-mongodb-operator'
+    public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
         'metadata.name':{

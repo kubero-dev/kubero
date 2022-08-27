@@ -11,6 +11,7 @@
             v-for="addon in addons" :key="addon.id">
                 <v-card :disabled="!addon.enabled">
                     <v-list-item-content class="justify-center">
+                        
                         <v-avatar
                             size="57"
                             rounded
@@ -18,7 +19,15 @@
                             :src="'/img/addons/'+addon.kind+'.png'"
                             :alt="addon.name"
                             ></v-avatar>
-                        <v-card-title>{{ addon.kind }}</v-card-title>
+                        <v-card-title>
+                            <v-badge 
+                                v-if="addon.beta"
+                                color="blue"
+                                content="beta"
+                                >
+                            {{ addon.kind }}
+                            </v-badge>
+                        </v-card-title>
                         <v-card-subtitle>
                             <span v-if="addon.enabled">{{ addon.version.installed }}</span>
                             <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
