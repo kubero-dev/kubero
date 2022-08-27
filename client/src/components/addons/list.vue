@@ -10,7 +10,7 @@
             <v-col cols="12" sm="12" md="4"
             v-for="addon in addons" :key="addon.kind">
                 <v-card 
-                    :disabled="addon.enabled"
+                    :disabled="!addon.enabled"
                     color="#fafafa">
                     <v-list-item-content class="justify-center">
                         
