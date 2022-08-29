@@ -11,6 +11,7 @@
             v-for="addon in addons" :key="addon.kind">
                 <v-card 
                     :disabled="!addon.enabled"
+                    style="padding-bottom: 40px;"
                     color="#fafafa">
                     <v-list-item-content class="justify-center">
                         
@@ -37,16 +38,18 @@
                         <v-card-text>
                             Operator: {{ addon.id }}
                         </v-card-text>
-                        <v-btn
-                            color="primary"
-                            dark
-                            @click="openInstallDialog(addon)"
-                            >
-                            Installation
-                        </v-btn>
-
                     </v-list-item-content>
                 </v-card>
+                <div class="text-center" style="height:0px">
+                <v-btn
+                    style="top: -50px;"
+                    color="primary"
+                    dark
+                    @click="openInstallDialog(addon)"
+                    >
+                    Installation
+                </v-btn>
+                </div>
             </v-col>
         </v-row>
         <v-dialog
