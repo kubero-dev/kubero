@@ -8,10 +8,9 @@ import { auth } from "./routes";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
+import * as crypto from "crypto"
 
-//TODO replace default with random string 
-//const secret = crypto.randomBytes(20).toString('hex'); 
-const { KUBER_SESSION_KEY = "3KYu07W85yDjIhUtBVHa61gmF" } = process.env;
+const { KUBER_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
 export const before = (app: Express) => {
     app.use(cors())
