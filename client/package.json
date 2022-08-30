@@ -9,18 +9,16 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "ansi-regex": ">=5.0.1",
     "axios": "^0.21.4",
     "core-js": "^3.18.3",
     "lodash-es": "^4.17.20",
-    "moment": "^2.29.1",
+    "nth-check": ">=2.0.1",
+    "set-value": ">=4.0.1",
     "socket.io-client": "^3.1.1",
     "vue": "^2.6.11",
     "vue-socket.io-extended": "^4.0.6",
-    "vuetify": "^2.5.10",
-
-    "ansi-regex": ">=5.0.1",
-    "set-value": ">=4.0.1",
-    "nth-check": ">=2.0.1"
+    "vuetify": "^2.5.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.14",
