@@ -4,14 +4,89 @@ kubero:
   port: 3000
 buildpacks:
   - name: NodeJS
-    repository: ghcr.io/kubero-dev/docker-images/node
-    tag: main
-  - name: Python
-    repository: ghcr.io/kubero-dev/docker-images/python
-    tag: main
+    language: JavaScript
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: node
+        tag: latest
+      run:
+        image: node
+        tag: latest
   - name: PHP
-    repository: ghcr.io/kubero-dev/docker-images/php
-    tag: main
+    language: PHP
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: composer
+        tag: latest
+      run:
+        image: webdevops/php-apache
+        tag: "8.1"
+  - name: Python
+    language: Python
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: python
+        tag: 3.10-buster
+      run:
+        image: python
+        tag: 3.10-buster
+  - name: Go
+    language: goLang
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: golang
+        tag: alpine
+      run:
+        image: golang
+        tag: alpine
+  - name: Python
+    language: goLang
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: golang
+        tag: alpine
+      run:
+        image: golang
+        tag: alpine
+  - name: Ruby
+    language: Ruby
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: ruby
+        tag: "2.7"
+      run:
+        image: ruby
+        tag: "2.7"
+  - name: Static
+    language: HTML
+    repositories:
+      fetch:
+        image: ghcr.io/kubero-dev/docker-images/base
+        tag: main
+      build:
+        image: busybox
+        tag: latest
+      run:
+        image: webdevops/nginx
+        tag: alpine
 podSizeList: 
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'

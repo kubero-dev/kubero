@@ -650,4 +650,8 @@ export class Kubero {
 
         return repositories;
     }
+
+    public getBuildpacks() {
+        return this.config.buildpacks;
+    }
 }

@@ -287,6 +287,10 @@ Router.get('/config/podsize', authMiddleware, async function (req: Request, res:
     res.send(await req.app.locals.kubero.getPodSizeList());
 });
 
+Router.get('/config/buildpacks', authMiddleware, async function (req: Request, res: Response) {
+    res.send(await req.app.locals.kubero.getBuildpacks());
+});
+
 Router.get('/config/k8s/context', authMiddleware, async function (req: Request, res: Response) {
     res.send(req.app.locals.kubero.getContexts());
 });

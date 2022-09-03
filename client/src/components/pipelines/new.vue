@@ -173,9 +173,6 @@ export default {
       buildpack: "JavaScript",
       buildpackList: [
         "Docker",
-        "NodeJS",
-        //"Python",
-        //"Ruby",
       ],
       valid: false, // final form validation
       pipelineName: '', 
@@ -235,6 +232,7 @@ export default {
     mounted() {
       this.getContextList();
       this.listRepositories();
+      this.listBuildpacks();
     },
     methods: {
       updateBuildpack(buildpack) {
@@ -253,6 +251,13 @@ export default {
       listRepositories() {
         axios.get('/api/config/repositories').then(response => {
           this.repositoriesList = response.data
+        });
+      },
+      listBuildpacks() {
+        axios.get('/api/config/buildpacks').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.buildpackList.push(response.data[i].name);
+          }
         });
       },
       connectRepo() {
