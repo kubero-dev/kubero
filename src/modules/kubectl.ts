@@ -155,7 +155,15 @@ export class Kubectl {
         let namespace = app.pipeline+'-'+app.phase;
 
         let pipeline = await this.getPipeline(app.pipeline)
-        appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
+        //appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
+        appl.spec.deploymentstrategy = pipeline.spec.deploymentstrategy
+/*
+        appl.spec.image.fetch.repository = pipeline.spec.buildpack.fetch.repository
+        appl.spec.image.fetch.tag = pipeline.spec.buildpack.fetch.tag
+        appl.spec.image.build.repository =  pipeline.spec.buildpack.build.repository
+        appl.spec.image.build.tag = pipeline.spec.buildpack.build.tag
+        appl.spec.image.run.repository = pipeline.spec.buildpack.run.repository
+        appl.spec.image.run.tag = pipeline.spec.buildpack.run.tag
 
         // search images for buildpack in config
         const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
@@ -164,8 +172,14 @@ export class Kubectl {
             //appl.spec.image.repository = pipeline.spec.dockerimage
             // FIXME: this overwrites the image from the app. Is this required?
         } else if (buildpack) {
-            appl.spec.image.repository = buildpack.repository
+            appl.spec.image.fetch.repository = buildpack.fetch.repository
+            appl.spec.image.fetch.tag = buildpack.fetch.tag
+            appl.spec.image.build.repository = buildpack.build.repository
+            appl.spec.image.build.tag = buildpack.build.tag
+            appl.spec.image.run.repository = buildpack.run.repository
+            appl.spec.image.run.tag = buildpack.run.tag
         }
+*/
         
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
@@ -186,7 +200,18 @@ export class Kubectl {
         appl.metadata.resourceVersion = resourceVersion;
 
         let namespace = app.pipeline+'-'+app.phase;
+/*
+        let pipeline = await this.getPipeline(app.pipeline)
+        appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
 
+        appl.spec.image.fetch.repository = pipeline.spec.buildpack.fetch.repository
+        appl.spec.image.fetch.tag = pipeline.spec.buildpack.fetch.tag
+        appl.spec.image.build.repository =  pipeline.spec.buildpack.build.repository
+        appl.spec.image.build.tag = pipeline.spec.buildpack.build.tag
+        appl.spec.image.run.repository = pipeline.spec.buildpack.run.repository
+        appl.spec.image.run.tag = pipeline.spec.buildpack.run.tag
+
+/*
         // search images for buildpack in config
         const buildpack = this.config.buildpacks.find(bp => bp.name == appl.spec.buildpack)
 
@@ -196,9 +221,15 @@ export class Kubectl {
             //appl.spec.image.repository = pipeline.spec.dockerimage
             // FIXME: this overwrites the docker image from the app. Is this required?
         } else if (buildpack) {
-            appl.spec.image.repository = buildpack.repository
+            appl.spec.image.fetch.repository = buildpack.fetch.repository
+            appl.spec.image.fetch.tag = buildpack.fetch.tag
+            appl.spec.image.build.repository = buildpack.build.repository
+            appl.spec.image.build.tag = buildpack.build.tag
+            appl.spec.image.run.repository = buildpack.run.repository
+            appl.spec.image.run.tag = buildpack.run.tag
         }
-        
+*/
+
         await this.customObjectsApi.replaceNamespacedCustomObject(
         //await this.customObjectsApi.patchNamespacedCustomObject( 
         // patch : https://stackoverflow.com/questions/67520468/patch-k8s-custom-resource-with-kubernetes-client-node

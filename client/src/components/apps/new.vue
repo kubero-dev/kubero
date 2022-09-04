@@ -124,7 +124,7 @@
         </v-col>
       </v-row>
 
-
+<!--
       <v-row>
         <v-col
           cols="12"
@@ -140,7 +140,7 @@
           ></v-select>
         </v-col>
       </v-row>
-
+-->
       <v-divider class="ma-5"></v-divider>
       <!-- ENV VARS-->
       <h4 class="text-uppercase">Environment vars</h4>
@@ -472,6 +472,7 @@ export default {
     data: () => ({
       valid: false,
       buildpack: undefined,
+      /*
       buildpackDisabled: true,
       buildpackList: [
         "Docker",
@@ -479,6 +480,7 @@ export default {
         //"Python",
         //"Ruby",
       ],
+      */
       pipelineData: {},
       appname: '',
       resourceVersion: undefined,
@@ -562,10 +564,12 @@ export default {
         v => !!v || 'Schedule is required',
         v => /(((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}/.test(v) || 'Not a valid crontab format',
       ],
+/*
       buildpackRules: [
         v => !!v || 'Buildpack is required',
         v => /(NodeJS|Docker)$/.test(v) || 'select a valid buildpack',
       ],
+*/
     }),
     mounted() {
       this.loadApp();
@@ -584,8 +588,11 @@ export default {
             this.docker.image = this.pipelineData.dockerimage;
           }
 
-          this.gitrepo.ssh_url = this.pipelineData.github.repository.ssh_url;
 
+          this.buildpack = this.pipelineData.buildpack;
+
+          this.gitrepo.ssh_url = this.pipelineData.github.repository.ssh_url;
+/*
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {
               case "JavaScript":
@@ -600,7 +607,7 @@ export default {
                 break;
             }
           }
-
+*/
         });
       },
       loadPodsizeList() {
@@ -617,10 +624,12 @@ export default {
         console.log(podsize);
         //this.podsize = podsize;
       },
+      /*
       updateBuildpack(buildpack) {
         console.log(buildpack);
         this.buildpack = buildpack;
       },
+      */
       deleteAddon(addon) {
           
           // remove addon in kubernetes cluster
@@ -689,6 +698,9 @@ export default {
           image : {
             repository: this.docker.image,
             tag: this.docker.tag,
+            fetch: this.buildpack.fetch,
+            build: this.buildpack.build,
+            run: this.buildpack.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain,
@@ -712,7 +724,7 @@ export default {
       createApp() {
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
-          buildpack: this.buildpack,
+          buildpack: this.buildpack.name,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
           gitrepo: this.gitrepo,
@@ -720,6 +732,9 @@ export default {
           image : {
             repository: this.docker.image,
             tag: this.docker.tag,
+            fetch: this.buildpack.fetch,
+            build: this.buildpack.build,
+            run: this.buildpack.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),

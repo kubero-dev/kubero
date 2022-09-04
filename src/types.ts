@@ -4,6 +4,7 @@ export interface IApp {
     pipeline: string,
     phase: string,
     buildpack: string,
+    deploymentstrategy: 'git' | 'docker',
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
@@ -16,6 +17,18 @@ export interface IApp {
         repository: string,
         tag: string,
         pullPolicy: 'Always',
+        fetch: {
+            repository: string,
+            tag: string
+          },
+          build: {
+            repository: string,
+            tag: string
+          },
+          run: {
+            repository: string,
+            tag: string
+          },
     }
 
     web: {
@@ -97,13 +110,13 @@ export interface IPipeline {
     //gitrepo: string;
     reviewapps: boolean;
     phases: IPipelinePhase[]; 
-    buildpack: string;
+    buildpack: IBuildpack
     github: {
         repository?: IGithubRepository
         webhook: object;
     };
     dockerimage: string;
-    deploymentstrategy: string;
+    deploymentstrategy: 'git' | 'docker',
 }
 
 export interface IPipelineList {
@@ -187,14 +200,28 @@ export interface IPodSize {
     }
 }
 
-interface IBuildpack {
+export interface IBuildpack {
     name: string;
-    repository: string;
+    language: string;
+    fetch: {
+        repository: string;
+        tag: string;
+    },
+    build: {
+        repository: string;
+        tag: string;
+    },
+    run: {
+        repository: string;
+        tag: string;
+    }
     tag: string;
 }
 export interface IKuberoConfig {
     name: string;
     version: string;
     podSizeList: IPodSize[];
+    namespace: string;
+    port: number;
     buildpacks: IBuildpack[];
 }

@@ -26,6 +26,7 @@ export class App implements IApp{
     public pipeline: string
     public phase: string
     public buildpack: string
+    public deploymentstrategy: 'git' | 'docker';
     public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean
@@ -67,14 +68,25 @@ export class App implements IApp{
         pullPolicy: 'Always',
         repository: string | 'ghcr.io/kubero-dev/docker-images/node',
         tag: string | 'main',
-        web: {
-            securityContext: {
-                readOnlyRootFilesystem: true
-            }
-        }
-        builder: {
+        fetch: {
+            repository: string | 'ghcr.io/kubero-dev/docker-images/fetch',
+            tag: string | 'main',
             securityContext: {
                 readOnlyRootFilesystem: false
+            }
+        }
+        build: {
+            repository: string | 'node',
+            tag: string | 'latest',
+            securityContext: {
+                readOnlyRootFilesystem: false
+            }
+        }
+        run: {
+            repository: string | 'node',
+            tag: string | 'latest',
+            securityContext: {
+                readOnlyRootFilesystem: true
             }
         }
     };
@@ -118,6 +130,7 @@ export class App implements IApp{
         this.pipeline = app.pipeline
         this.phase = app.phase
         this.buildpack = app.buildpack
+        this.deploymentstrategy = app.deploymentstrategy
         this.gitrepo = app.gitrepo
         this.branch = app.branch
         this.autodeploy = app.autodeploy
@@ -144,14 +157,25 @@ export class App implements IApp{
             pullPolicy: 'Always',
             repository: app.image.repository || 'ghcr.io/kubero-dev/docker-images/node',
             tag: 'main',
-            web: {
-                securityContext: {
-                    readOnlyRootFilesystem: true
-                }
-            },
-            builder: {
+            fetch: {
+                repository: app.image.fetch.repository || 'ghcr.io/kubero-dev/docker-images/fetch',
+                tag: app.image.fetch.tag || 'main',
                 securityContext: {
                     readOnlyRootFilesystem: false
+                }
+            },
+            build: {
+                repository: app.image.build.repository || 'node',
+                tag: app.image.build.tag || 'latest',
+                securityContext: {
+                    readOnlyRootFilesystem: false
+                }
+            },
+            run: {
+                repository: app.image.run.repository || 'node',
+                tag: app.image.run.tag || 'latest',
+                securityContext: {
+                    readOnlyRootFilesystem: true
                 }
             }
         }

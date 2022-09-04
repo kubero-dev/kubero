@@ -170,7 +170,7 @@ import axios from "axios";
 export default {
     data: () => ({
       repotab: 'github', //selected tab
-      buildpack: "JavaScript",
+      buildpack: undefined,
       buildpackList: [
         "Docker",
       ],
@@ -256,7 +256,10 @@ export default {
       listBuildpacks() {
         axios.get('/api/config/buildpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
-            this.buildpackList.push(response.data[i].name);
+            this.buildpackList.push({
+              text: response.data[i].name,
+              value: response.data[i],
+            });
           }
         });
       },
@@ -299,6 +302,29 @@ export default {
             break;
             */
           case 'docker':
+            this.repositoriesList.github = false;
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.gitlab = false;
+            this.repositoriesList.bitbucket = false;
+            this.repositoriesList.docker = true;
+            this.buildpack = {
+              name: "Docker",
+              language: "unknown",
+              repositories: {
+                fetch: {
+                  image: "ghcr.io/kubero-dev/docker-images/base",
+                  tag: "main"
+                },
+                build: {
+                  image: "node",
+                  tag: "latest"
+                },
+                run: {
+                  image: "node",
+                  tag: "latest"
+                }
+              }
+            }
             break;
           default:
             break;
@@ -354,6 +380,7 @@ export default {
           github: this.github,
           dockerimage: this.dockerimage,
           deploymentstrategy: deploymentstrategy,
+          buildpack: this.buildpack,
         })
         .then(response => {
           this.pipelineName = '';

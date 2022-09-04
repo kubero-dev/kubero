@@ -1,4 +1,4 @@
-import { IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IGithubRepository} from '../types';
+import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IGithubRepository} from '../types';
 
 export class Pipeline implements IPipeline {
     public name: string;
@@ -6,8 +6,8 @@ export class Pipeline implements IPipeline {
     public dockerimage: string;
     public reviewapps: boolean;
     public phases: IPipelinePhase[];
-    public buildpack: string;
-    public deploymentstrategy: string;
+    public buildpack: IBuildpack;
+    public deploymentstrategy: 'git' | 'docker';
     public github: {
         repository?: IGithubRepository | undefined;
         webhook: object;

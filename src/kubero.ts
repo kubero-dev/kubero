@@ -447,7 +447,8 @@ export class Kubero {
                     name: websaveTitle,
                     pipeline: pipelaneName,
                     gitrepo: pipeline.github.repository,
-                    buildpack: pipeline.buildpack,
+                    buildpack: pipeline.buildpack.name,
+                    deploymentstrategy: pipeline.deploymentstrategy,
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
@@ -459,6 +460,9 @@ export class Kubero {
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
                         tag: "main",
                         pullPolicy: "Always",
+                        fetch: pipeline.buildpack.fetch,
+                        build: pipeline.buildpack.build,
+                        run: pipeline.buildpack.run,
                     },
                     web: {
                         replicaCount: 1,

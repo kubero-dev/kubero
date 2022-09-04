@@ -5,88 +5,81 @@ kubero:
 buildpacks:
   - name: NodeJS
     language: JavaScript
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: node
-        tag: latest
-      run:
-        image: node
-        tag: latest
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: node
+      tag: latest
+    run:
+      repository: node
+      tag: latest
   - name: PHP
     language: PHP
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: composer
-        tag: latest
-      run:
-        image: webdevops/php-apache
-        tag: "8.1"
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: composer
+      tag: latest
+    run:
+      repository: webdevops/php-apache
+      tag: "8.1"
   - name: Python
     language: Python
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: python
-        tag: 3.10-buster
-      run:
-        image: python
-        tag: 3.10-buster
-  - name: Go
-    language: goLang
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: golang
-        tag: alpine
-      run:
-        image: golang
-        tag: alpine
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: python
+      tag: 3.10-buster
+    run:
+      repository: python
+      tag: 3.10-buster
+  - name: GoLang
+    language: GoLang
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: golang
+      tag: alpine
+    run:
+      repository: golang
+      tag: alpine
   - name: Python
     language: goLang
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: golang
-        tag: alpine
-      run:
-        image: golang
-        tag: alpine
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: golang
+      tag: alpine
+    run:
+      repository: golang
+      tag: alpine
   - name: Ruby
     language: Ruby
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: ruby
-        tag: "2.7"
-      run:
-        image: ruby
-        tag: "2.7"
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: ruby
+      tag: "2.7"
+    run:
+      repository: ruby
+      tag: "2.7"
   - name: Static
     language: HTML
-    repositories:
-      fetch:
-        image: ghcr.io/kubero-dev/docker-images/base
-        tag: main
-      build:
-        image: busybox
-        tag: latest
-      run:
-        image: webdevops/nginx
-        tag: alpine
+    fetch:
+      repository: ghcr.io/kubero-dev/docker-images/base
+      tag: main
+    build:
+      repository: busybox
+      tag: latest
+    run:
+      repository: webdevops/nginx
+      tag: alpine
 podSizeList: 
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
