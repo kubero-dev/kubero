@@ -690,7 +690,7 @@ export default {
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
-            this.containerPort = response.data.spec.containerPort;
+            this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
             this.autoscale = response.data.spec.autoscale;
             this.webreplicas = response.data.spec.web.replicaCount;

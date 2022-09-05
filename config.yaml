@@ -25,6 +25,7 @@ buildpacks:
     run:
       repository: webdevops/php-apache
       tag: "8.1"
+      readOnly: false
   - name: Python
     language: Python
     fetch:

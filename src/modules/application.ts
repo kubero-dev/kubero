@@ -77,15 +77,16 @@ export class App implements IApp{
             }
         }
         build: {
-            repository: string | 'node',
-            tag: string | 'latest',
+            repository: string,
+            tag: string,
             securityContext: {
                 readOnlyRootFilesystem: false
             }
         }
         run: {
-            repository: string | 'node',
-            tag: string | 'latest',
+            repository: string,
+            tag: string,
+            readOnly?: boolean,
             securityContext: {
                 readOnlyRootFilesystem: true
             }
@@ -176,6 +177,7 @@ export class App implements IApp{
             run: {
                 repository: app.image.run.repository || 'node',
                 tag: app.image.run.tag || 'latest',
+                readOnly: app.image.run.readOnly,
                 securityContext: {
                     readOnlyRootFilesystem: true
                 }

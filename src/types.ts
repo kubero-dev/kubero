@@ -29,6 +29,7 @@ export interface IApp {
           run: {
             repository: string,
             tag: string
+            readOnly?: boolean
           },
     }
 
