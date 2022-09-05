@@ -206,6 +206,18 @@
           cols="12"
           md="6"
         >
+            <v-text-field
+              v-model="containerPort"
+              label="Container Port"
+            ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-select
             v-model="podsize"
             :items="podsizes"
@@ -504,6 +516,7 @@ export default {
       envvars: [
         //{ name: '', value: '' },
       ],
+      containerPort: 8080,
       podsize: '',
       podsizes: [
         /*
@@ -677,6 +690,7 @@ export default {
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
+            this.containerPort = response.data.spec.containerPort;
             this.podsize = response.data.spec.podsize;
             this.autoscale = response.data.spec.autoscale;
             this.webreplicas = response.data.spec.web.replicaCount;
@@ -696,6 +710,7 @@ export default {
           gitrepo: this.gitrepo,
           branch: this.branch,
           image : {
+            containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             fetch: this.buildpack.fetch,
@@ -730,6 +745,7 @@ export default {
           gitrepo: this.gitrepo,
           branch: this.branch,
           image : {
+            containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             fetch: this.buildpack.fetch,

@@ -65,6 +65,7 @@ export class App implements IApp{
     private fullnameOverride: "";
 
     public image: {
+        containerPort: number,
         pullPolicy: 'Always',
         repository: string | 'ghcr.io/kubero-dev/docker-images/node',
         tag: string | 'main',
@@ -154,6 +155,7 @@ export class App implements IApp{
         this.fullnameOverride = "",
 
         this.image = {
+            containerPort: app.image.containerPort,
             pullPolicy: 'Always',
             repository: app.image.repository || 'ghcr.io/kubero-dev/docker-images/node',
             tag: 'main',

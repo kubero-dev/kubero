@@ -89,6 +89,7 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
         image: {
+            containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
             tag: req.body.image.tag || "main",
             pullPolicy: "Always",
@@ -148,6 +149,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
         image: {
+            containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
             tag: req.body.image.tag || "main",
             pullPolicy: "Always",

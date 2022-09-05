@@ -17,6 +17,7 @@ export interface IApp {
         repository: string,
         tag: string,
         pullPolicy: 'Always',
+        containerPort: number,
         fetch: {
             repository: string,
             tag: string

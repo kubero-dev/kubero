@@ -457,6 +457,7 @@ export class Kubero {
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     image: {
+                        containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
                         tag: "main",
                         pullPolicy: "Always",
