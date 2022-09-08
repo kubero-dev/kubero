@@ -67,28 +67,43 @@ export class App implements IApp{
     public image: {
         containerPort: number,
         pullPolicy: 'Always',
-        repository: string | 'ghcr.io/kubero-dev/docker-images/node',
-        tag: string | 'main',
+        repository: string,
+        tag: string,
         fetch: {
-            repository: string | 'ghcr.io/kubero-dev/docker-images/fetch',
-            tag: string | 'main',
-            securityContext: {
-                readOnlyRootFilesystem: false
+            repository: string,
+            tag: string,
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
             }
         }
         build: {
             repository: string,
             tag: string,
-            securityContext: {
-                readOnlyRootFilesystem: false
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
             }
         }
         run: {
             repository: string,
             tag: string,
             readOnly?: boolean,
-            securityContext: {
-                readOnlyRootFilesystem: true
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
             }
         }
     };
@@ -158,30 +173,11 @@ export class App implements IApp{
         this.image = {
             containerPort: app.image.containerPort,
             pullPolicy: 'Always',
-            repository: app.image.repository || 'ghcr.io/kubero-dev/docker-images/node',
-            tag: 'main',
-            fetch: {
-                repository: app.image.fetch.repository || 'ghcr.io/kubero-dev/docker-images/fetch',
-                tag: app.image.fetch.tag || 'main',
-                securityContext: {
-                    readOnlyRootFilesystem: false
-                }
-            },
-            build: {
-                repository: app.image.build.repository || 'node',
-                tag: app.image.build.tag || 'latest',
-                securityContext: {
-                    readOnlyRootFilesystem: false
-                }
-            },
-            run: {
-                repository: app.image.run.repository || 'node',
-                tag: app.image.run.tag || 'latest',
-                readOnly: app.image.run.readOnly,
-                securityContext: {
-                    readOnlyRootFilesystem: true
-                }
-            }
+            repository: app.image.repository || 'busybox',
+            tag: 'latest',
+            fetch: app.image.fetch,
+            build: app.image.build,
+            run: app.image.run,
         }
 
         this.imagePullSecrets = []

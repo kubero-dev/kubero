@@ -20,17 +20,41 @@ export interface IApp {
         containerPort: number,
         fetch: {
             repository: string,
-            tag: string
-          },
-          build: {
+            tag: string,
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
+            }
+        }
+        build: {
             repository: string,
-            tag: string
-          },
-          run: {
+            tag: string,
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
+            }
+        }
+        run: {
             repository: string,
-            tag: string
-            readOnly?: boolean
-          },
+            tag: string,
+            readOnly?: boolean,
+            securityContext?: {
+                readOnlyRootFilesystem?: boolean;
+                allowPrivilegeEscalation?: boolean;
+                capabilities?: {
+                    drop?: string[];
+                    add?: string[];
+                }
+            }
+        }
     }
 
     web: {
@@ -208,14 +232,35 @@ export interface IBuildpack {
     fetch: {
         repository: string;
         tag: string;
+        securityContext?: {
+            readOnlyRootFilesystem?: boolean;
+            allowPrivilegeEscalation?: boolean;
+            capabilities?: {
+                drop?: string[];
+            }
+        }
     },
     build: {
         repository: string;
         tag: string;
+        securityContext?: {
+            readOnlyRootFilesystem?: boolean;
+            allowPrivilegeEscalation?: boolean;
+            capabilities?: {
+                drop?: string[];
+            }
+        }
     },
     run: {
         repository: string;
         tag: string;
+        securityContext?: {
+            readOnlyRootFilesystem?: boolean;
+            allowPrivilegeEscalation?: boolean;
+            capabilities?: {
+                drop?: string[];
+            }
+        }
     }
     tag: string;
 }

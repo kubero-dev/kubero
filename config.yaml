@@ -6,7 +6,7 @@ buildpacks:
   - name: NodeJS
     language: JavaScript
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: node
@@ -17,7 +17,22 @@ buildpacks:
   - name: PHP
     language: PHP
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
+      tag: main
+    build:
+      repository: composer
+      tag: latest
+    run:
+      repository: ghcr.io/kubero-dev/buildpacks/php
+      tag: "main"
+      readOnlyAppStorage: false
+      securityContext:
+        allowPrivilegeEscalation: true
+        readOnlyRootFilesystem: false
+  - name: PHP-testing
+    language: PHP
+    fetch:
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: composer
@@ -25,11 +40,14 @@ buildpacks:
     run:
       repository: webdevops/php-apache
       tag: "8.1"
-      readOnly: false
+      readOnlyAppStorage: false
+      securityContext:
+        allowPrivilegeEscalation: true
+        readOnlyRootFilesystem: false
   - name: Python
     language: Python
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: python
@@ -40,7 +58,7 @@ buildpacks:
   - name: GoLang
     language: GoLang
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: golang
@@ -51,7 +69,7 @@ buildpacks:
   - name: Python
     language: goLang
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: golang
@@ -62,7 +80,7 @@ buildpacks:
   - name: Ruby
     language: Ruby
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: ruby
@@ -73,7 +91,7 @@ buildpacks:
   - name: Static
     language: HTML
     fetch:
-      repository: ghcr.io/kubero-dev/docker-images/base
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     build:
       repository: busybox
