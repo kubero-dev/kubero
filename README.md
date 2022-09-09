@@ -54,5 +54,5 @@ https://github.com/kubero-dev/kubero/tree
 2. Connect the Pipeline to your git repository ( not required with pre-build image deployment )
 3. Create your apps with cronjobs and addons
 
-# Full ocumentation 
+# Full documentation 
 https://github.com/kubero-dev/kubero/wiki
