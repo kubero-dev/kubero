@@ -205,13 +205,13 @@ Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async fun
     res.send("restarted"); 
 });
 
-// connect pipeline with github
+// connect pipeline with repository
 Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
     let con = await req.app.locals.kubero.connectRepo(req.params.repoprovider, req.body.gitrepo);
     res.send(con);
 });
 
-// connect pipeline with github
+// list all availabe apps
 Router.get('/apps', authMiddleware, async function (req: Request, res: Response) {
     res.send(await req.app.locals.kubero.getAppStateList());
 });

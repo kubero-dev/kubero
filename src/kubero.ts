@@ -605,7 +605,7 @@ export class Kubero {
                     debug.log(err);
                 });
             } else {
-                debug.debug('logs already running '+podName+' '+container);
+                debug.log('logs already running '+podName+' '+container);
             }
         }
     }
@@ -622,6 +622,11 @@ export class Kubero {
                         for (const container of pod.spec.containers) {
                             this.emitLogs(pipelineName, phaseName, appName, pod.metadata.name, container.name);
                         }
+                        /* TODO needs some improvements since it wont load web anymore
+                        for (const initcontainer of pod.spec.initContainers) {
+                            this.emitLogs(pipelineName, phaseName, appName, pod.metadata.name, initcontainer.name);
+                        }
+                        */
                     }
                 }
             });

@@ -1,0 +1,757 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "REST API",
+    "description": ""
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/pipelines": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "pipelineName": {
+                  "example": "any"
+                },
+                "phases": {
+                  "example": "any"
+                },
+                "buildpack": {
+                  "example": "any"
+                },
+                "reviewapps": {
+                  "example": "any"
+                },
+                "github": {
+                  "example": "any"
+                },
+                "dockerimage": {
+                  "example": "any"
+                },
+                "deploymentstrategy": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/pipelines/{pipeline}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/apps": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "appname": {
+                  "example": "any"
+                },
+                "pipeline": {
+                  "example": "any"
+                },
+                "phase": {
+                  "example": "any"
+                },
+                "buildpack": {
+                  "example": "any"
+                },
+                "deploymentstrategy": {
+                  "example": "any"
+                },
+                "gitrepo": {
+                  "example": "any"
+                },
+                "branch": {
+                  "example": "any"
+                },
+                "autodeploy": {
+                  "example": "any"
+                },
+                "domain": {
+                  "example": "any"
+                },
+                "podsize": {
+                  "example": "any"
+                },
+                "autoscale": {
+                  "example": "any"
+                },
+                "envvars": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                },
+                "webreplicas": {
+                  "example": "any"
+                },
+                "webreplicasrange": {
+                  "example": "any"
+                },
+                "webtargetCPUUtilizationPercentage": {
+                  "example": "any"
+                },
+                "webtargetMemoryUtilizationPercentage": {
+                  "example": "any"
+                },
+                "workerreplicas": {
+                  "example": "any"
+                },
+                "workerreplicasrange": {
+                  "example": "any"
+                },
+                "workertargetCPUUtilizationPercentage": {
+                  "example": "any"
+                },
+                "workertargetMemoryUtilizationPercentage": {
+                  "example": "any"
+                },
+                "cronjobs": {
+                  "example": "any"
+                },
+                "addons": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/pipelines/{pipeline}/{phase}/{app}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "buildpack": {
+                  "example": "any"
+                },
+                "deploymentstrategy": {
+                  "example": "any"
+                },
+                "gitrepo": {
+                  "example": "any"
+                },
+                "branch": {
+                  "example": "any"
+                },
+                "autodeploy": {
+                  "example": "any"
+                },
+                "domain": {
+                  "example": "any"
+                },
+                "podsize": {
+                  "example": "any"
+                },
+                "autoscale": {
+                  "example": "any"
+                },
+                "envvars": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                },
+                "webreplicas": {
+                  "example": "any"
+                },
+                "webreplicasrange": {
+                  "example": "any"
+                },
+                "webtargetCPUUtilizationPercentage": {
+                  "example": "any"
+                },
+                "webtargetMemoryUtilizationPercentage": {
+                  "example": "any"
+                },
+                "workerreplicas": {
+                  "example": "any"
+                },
+                "workerreplicasrange": {
+                  "example": "any"
+                },
+                "workertargetCPUUtilizationPercentage": {
+                  "example": "any"
+                },
+                "workertargetMemoryUtilizationPercentage": {
+                  "example": "any"
+                },
+                "cronjobs": {
+                  "example": "any"
+                },
+                "addons": {
+                  "example": "any"
+                },
+                "resourceVersion": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/pipelines/{pipeline}/apps": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/pipelines/{pipeline}/{phase}/{app}/restart": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/repo/{repoprovider}/connect": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "repoprovider",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "gitrepo": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/repo/webhooks/{repoprovider}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "repoprovider",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "x-github-event",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "x-github-delivery",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "x-hub-signature-256",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "x-gitea-event",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "x-gitea-delivery",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/addons": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/addons/operators": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/addons/{pipeline}/{phase}/{addonID}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "addonID",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "apiVersion": {
+                  "example": "any"
+                },
+                "plural": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/config": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/config/podsize": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/config/buildpacks": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/config/k8s/context": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/logs/{pipeline}/{phase}/{app}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/config/repositories": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/auth/github": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/auth/github/callback": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/auth/oauth2": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/auth/oauth2/callback": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {}
+      }
+    },
+    "/auth/methods": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  }
+}
