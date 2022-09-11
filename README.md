@@ -29,7 +29,7 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 - CLI (Will be added later since kubero has a API)
 - More Buildpacks 
 
-## Wich languages are supported
+## Which languages are supported
 Basicly everything that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
 
 So far tested languages:
