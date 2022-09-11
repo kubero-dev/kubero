@@ -3,8 +3,13 @@ import cors from 'cors';
 import { Server } from 'http';
 import session from 'express-session';
 import bodyParser from 'body-parser';
-import { Router } from "./routes";
-import { auth } from "./routes";
+import { RouterAddons } from "./routes/addons";
+import { auth, RouterAuth } from "./routes/auth";
+import { RouterConfig } from "./routes/config";
+import { RouterApps} from "./routes/apps";
+import { RouterLogs } from "./routes/logs";
+import { RouterPipelines } from "./routes/pipelines";
+import { RouterRepo } from "./routes/repo";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
@@ -41,7 +46,13 @@ export const after = (app: Express, server: Server) => {
         kubectl: kubero.kubectl
     });
     app.locals.addons = addons;
-    app.use('/api', Router);
+    app.use('/api', RouterAddons);
+    app.use('/api', RouterAuth);
+    app.use('/api', RouterConfig);
+    app.use('/api', RouterApps);
+    app.use('/api', RouterLogs);
+    app.use('/api', RouterPipelines);
+    app.use('/api', RouterRepo);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 }

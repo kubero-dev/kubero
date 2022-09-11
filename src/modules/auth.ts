@@ -4,6 +4,7 @@ import { Passport, Authenticator, AuthenticateOptions} from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as OAuth2Strategy } from 'passport-oauth2';
+import { Request, Response, NextFunction } from 'express';
 
 import * as crypto from "crypto"
 import axios from 'axios';
@@ -182,5 +183,28 @@ export class Auth {
             }
             
         })
+    }
+
+    public authMiddleware(req: Request, res: Response, next: NextFunction) {
+        if (!req.isAuthenticated()) {
+            debug.debug("not authenticated")
+            res.status(401).send('You are not authenticated')
+        } else {
+            debug.debug("authenticated")
+            return next()
+        }
+    }
+
+    private noAuthMiddleware(req: Request, res: Response, next: NextFunction) {
+        return next()
+    }
+
+    public getAuthMiddleware() {
+        if (this.authentication === true) {
+            return this.authMiddleware;
+        } else {
+            // skip middleware if no users defined
+            return this.noAuthMiddleware;
+        }
     }
 }
