@@ -9,6 +9,7 @@ import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
 import * as crypto from "crypto"
+import SwaggerUi from 'swagger-ui-express';
 
 const { KUBER_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
@@ -30,6 +31,7 @@ export const before = (app: Express) => {
 }
 
 export const after = (app: Express, server: Server) => {
+
     // Attache socket.io to server
     let sockets = init(server);
     const kubero = new Kubero(sockets);
@@ -40,4 +42,6 @@ export const after = (app: Express, server: Server) => {
     });
     app.locals.addons = addons;
     app.use('/api', Router);
+    const swagger = SwaggerUi.setup(require('../swagger.json'));
+    app.use('/api/docs', SwaggerUi.serve, swagger);
 }

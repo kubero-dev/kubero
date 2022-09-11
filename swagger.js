@@ -1,5 +1,5 @@
 const swaggerAutogen = require('swagger-autogen')()
-
+// https://github.com/davibaltar/swagger-autogen
 const doc = {
     info: {
       title: 'Kubero',
