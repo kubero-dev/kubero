@@ -1,6 +1,6 @@
 import debug from 'debug';
 import * as crypto from "crypto"
-import { IWebhook} from './types';
+import { IWebhook, IRepository} from './types';
 debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
@@ -17,41 +17,49 @@ export class GithubApi {
     }
 
     public async getRepository(gitrepo: string) {
-        let ret = {
+        let ret: IRepository = {
             status: 500,
             statusText: 'error',
             data: {
-                id: 0,
-                node_id: "",
-                name: "",
-                description: "",
-                owner: "",
-                private : false,
-                ssh_url: "",
-                language: "",
+                owner: 'unknown',
+                name: 'unknown',
             }
         }
+
         // TODO : Improve matching here
         let owner = gitrepo.match(/^git@github.com:(.*)\/.*$/)?.[1] as string;
         let repo = gitrepo.match(/^git@github.com:.*\/(.*).git$/)?.[1] as string;
 
-        let res = await this.octokit.request('GET /repos/{owner}/{repo}', {
-            owner: owner,
-            repo: repo,
-        })
+        try {
+            let res = await this.octokit.request('GET /repos/{owner}/{repo}', {
+                owner: owner,
+                repo: repo,
+            });
 
-        ret = {
-            status: res.status,
-            statusText: 'found',
-            data: {
-                id: res.data.id,
-                node_id: res.data.node_id,
-                name: res.data.name,
-                description: res.data.description,
-                owner: res.data.owner.login,
-                private : res.data.private,
-                ssh_url: res.data.ssh_url,
-                language: res.data.language,
+            ret = {
+                status: res.status,
+                statusText: 'found',
+                data: {
+                    id: res.data.id,
+                    node_id: res.data.node_id,
+                    name: res.data.name,
+                    description: res.data.description,
+                    owner: res.data.owner.login,
+                    private : res.data.private,
+                    ssh_url: res.data.ssh_url,
+                    language: res.data.language,
+                }
+            }
+        } catch (e) {
+            let res = e as RequestError;
+            debug.log("Repository not found: "+ gitrepo);
+            ret = {
+                status: res.status,
+                statusText: 'not found',
+                data: {
+                    owner: owner,
+                    name: repo,
+                }
             }
         }
         return ret;

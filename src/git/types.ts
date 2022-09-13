@@ -10,3 +10,18 @@ export interface IWebhook {
         ssh_url: string,
     }
 }
+
+export interface IRepository {
+    status: number,
+    statusText: 'error' | 'not found' | 'found',
+    data: {
+        id?: number,
+        node_id?: string,
+        name: string,
+        description?: string,
+        owner: string,
+        private?: boolean,
+        ssh_url?: string,
+        language?: string,
+    }
+}
