@@ -80,6 +80,14 @@
           cols="12"
           md="6"
         >
+            <v-alert
+                v-show="gitrepo_error"
+                outlined
+                type="warning"
+                prominent
+                border="left"
+                >{{gitrepo_error}}
+            </v-alert>
             <v-btn
                 color="primary"
                 elevation="2"
@@ -170,6 +178,7 @@ import axios from "axios";
 export default {
     data: () => ({
       repotab: 'github', //selected tab
+      gitrepo_error: false, //error connecting to repo
       buildpack: undefined,
       buildpackList: [
         "Docker",
@@ -325,11 +334,11 @@ export default {
                 }
               }
             }
+            this.gitrepo_connected = true;
             break;
           default:
             break;
         }
-        this.gitrepo_connected = true;
       },
       connectGithub() {
         axios.post('/api/repo/github/connect', {
@@ -339,10 +348,26 @@ export default {
           this.github.repository = response.data.repository.data;
           this.github.webhook = response.data.webhook.data;
 
-          this.gitrepo_connected = true;
+          console.log(response.data.repository.status);
+
+          if (response.data.repository.status == 404)
+            this.gitrepo_error = "Repository not found";
+          else if (response.data.repository.status == 401)
+            this.gitrepo_error = "Unauthorized";
+          else if (response.data.repository.status == 200) {
+            this.gitrepo_error = false;
+            if (response.data.webhook.status == 200 || response.data.webhook.status == 201) 
+              this.gitrepo_webhook = true;
+            else
+              this.gitrepo_webhook = false;
+
+            this.gitrepo_connected = true;
+          } else
+            this.gitrepo_error = "Unknown error";
+          
         }).catch(error => {
           console.log(error);
-          //TODO show error message
+          this.gitrepo_error = "Failed to connect to repository";
         });
       },
       connectGitea() {
@@ -356,7 +381,7 @@ export default {
           this.gitrepo_connected = true;
         }).catch(error => {
           console.log(error);
-          //TODO show error message
+          this.gitrepo_error = "Failed to connect to repository";
         });
       },
       connectGitlab() {
