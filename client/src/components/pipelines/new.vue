@@ -68,13 +68,13 @@
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
-            :disabled="gitrepo_connected"
+            :disabled="repository.connected"
             required
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row
-        v-if="!gitrepo_connected && repotab && repotab!='docker'"
+        v-if="!repository.connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -98,7 +98,7 @@
       </v-row>
 
       <v-row
-        v-if="gitrepo_connected && repotab && repotab!='docker'"
+        v-if="repository.connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -165,7 +165,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid || (!gitrepo_connected && repotab!='docker')"
+                :disabled="!valid || (!repository.connected && repotab!='docker')"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -188,7 +188,6 @@ export default {
       reviewapps: true,
       gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with
       dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from
-      gitrepo_connected: false, // if git repo is connected
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
@@ -197,9 +196,24 @@ export default {
         bitbucket: false,
         docker: true
       },
-      github: { // the connected repository
-        repository: {},
-        webhook: {},
+      repository: {
+        connected: false,
+        statusTxt: 'Not connected',
+        keys: {
+          data: {},
+          status: 0,
+          statusText: 'Not connected'
+        },
+        repository: {
+          data: {},
+          status: 0,
+          statusText: 'Not connected'
+        },
+        webhook: {
+          data: {},
+          status: 0,
+          statusText: 'Not connected'
+        },
       },
       phases: [ // List of phases to enable
         {
@@ -277,7 +291,7 @@ export default {
         console.log(this.repotab);
         switch (this.repotab) {
           case 'github':
-            this.connectGithub();
+            this.connectRepository('github')
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
@@ -334,61 +348,32 @@ export default {
                 }
               }
             }
-            this.gitrepo_connected = true;
+            this.repository.connected = true;
             break;
           default:
             break;
         }
       },
-      connectGithub() {
-        axios.post('/api/repo/github/connect', {
+
+      connectRepository(repo) {
+        axios.post(`/api/repo/${repo}/connect`, {
           gitrepo: this.gitrepo
         }).then(response => {
-          //TODO check if connectiondata is valid
-          this.github.repository = response.data.repository.data;
-          this.github.webhook = response.data.webhook.data;
+          this.repository = response.data;
 
-          console.log(response.data.repository.status);
+          if (
+            this.repository.repository.status === 200 &&
+            (this.repository.webhook.status == 200 || this.repository.webhook.status == 422) &&
+            (this.repository.keys.status == 200 || this.repository.keys.status == 422)
+          ) {
+            this.repository.connected = true;
+            this.repository.statusTxt = "Repository Connectd";
+          }
 
-          if (response.data.repository.status == 404)
-            this.gitrepo_error = "Repository not found";
-          else if (response.data.repository.status == 401)
-            this.gitrepo_error = "Unauthorized";
-          else if (response.data.repository.status == 200) {
-            this.gitrepo_error = false;
-            if (response.data.webhook.status == 200 || response.data.webhook.status == 201) 
-              this.gitrepo_webhook = true;
-            else
-              this.gitrepo_webhook = false;
-
-            this.gitrepo_connected = true;
-          } else
-            this.gitrepo_error = "Unknown error";
-          
         }).catch(error => {
           console.log(error);
-          this.gitrepo_error = "Failed to connect to repository";
+            this.repository.statusTxt = "Failed to connect to repository API";
         });
-      },
-      connectGitea() {
-        axios.post('/api/repo/gitea/connect', {
-          gitrepo: this.gitrepo
-        }).then(response => {
-          //TODO check if connectiondata is valid
-          this.github.repository = response.data.repository.data;
-          this.github.webhook = response.data.webhook.data;
-
-          this.gitrepo_connected = true;
-        }).catch(error => {
-          console.log(error);
-          this.gitrepo_error = "Failed to connect to repository";
-        });
-      },
-      connectGitlab() {
-        alert('Gitlab not supported yet');
-      },
-      connectBitbucket() {
-        alert('Bitbucket not supported yet');
       },
       saveForm() {
         let deploymentstrategy = "git"

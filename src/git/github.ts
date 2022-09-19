@@ -210,7 +210,7 @@ export class GithubApi {
                         
                         ret = {
                             status: res.status,
-                            statusText: 'created',
+                            statusText: 'existing',
                             data: {
                                 id: key.id,
                                 title: key.title,
