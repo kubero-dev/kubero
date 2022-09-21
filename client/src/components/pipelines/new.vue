@@ -68,25 +68,25 @@
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
-            :disabled="repository.connected"
+            :disabled="repository_status.connected"
             required
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row
-        v-if="!repository.connected && repotab && repotab!='docker'"
+        v-if="!repository_status.connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
           md="6"
         >
             <v-alert
-                v-show="gitrepo_error"
+                v-show="repository_status.error"
                 outlined
                 type="warning"
                 prominent
                 border="left"
-                >{{gitrepo_error}}
+                >{{this.repository_status.statusTxt}}
             </v-alert>
             <v-btn
                 color="primary"
@@ -98,7 +98,7 @@
       </v-row>
 
       <v-row
-        v-if="repository.connected && repotab && repotab!='docker'"
+        v-if="repository_status.connected && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -165,7 +165,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid || (!repository.connected && repotab!='docker')"
+                :disabled="!valid || (!repository_status.connected && repotab!='docker')"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -178,7 +178,6 @@ import axios from "axios";
 export default {
     data: () => ({
       repotab: 'github', //selected tab
-      gitrepo_error: false, //error connecting to repo
       buildpack: undefined,
       buildpackList: [
         "Docker",
@@ -197,6 +196,12 @@ export default {
         docker: true
       },
       repository: {
+        keys: {},
+        repository: {},
+        webhooks: {},
+      },
+      repository_status: {
+        error: false,
         connected: false,
         statusTxt: 'Not connected',
         keys: {
@@ -348,7 +353,7 @@ export default {
                 }
               }
             }
-            this.repository.connected = true;
+            this.repository_status.connected = true;
             break;
           default:
             break;
@@ -359,20 +364,29 @@ export default {
         axios.post(`/api/repo/${repo}/connect`, {
           gitrepo: this.gitrepo
         }).then(response => {
-          this.repository = response.data;
+          this.repository_status = response.data;
 
           if (
-            this.repository.repository.status === 200 &&
-            (this.repository.webhook.status == 200 || this.repository.webhook.status == 422) &&
-            (this.repository.keys.status == 200 || this.repository.keys.status == 422)
+            this.repository_status.repository.status === 200 &&
+            (this.repository_status.webhook.status == 200 || this.repository_status.webhook.status == 422) &&
+            (this.repository_status.keys.status == 200 || this.repository_status.keys.status == 201)
           ) {
-            this.repository.connected = true;
-            this.repository.statusTxt = "Repository Connectd";
+            this.repository_status.error = false;
+            this.repository_status.connected = true;
+            this.repository_status.statusTxt = "Repository Connectd";
+            this.repository.keys = this.repository_status.keys.data;
+            this.repository.webhook = this.repository_status.webhook.data;
+            this.repository.repository = this.repository_status.repository.data;
+          } else {
+            this.repository_status.error = true;
+            this.repository_status.connected = false;
+            this.repository_status.statusTxt = "Repository Not Connectd";
           }
 
         }).catch(error => {
           console.log(error);
-            this.repository.statusTxt = "Failed to connect to repository API";
+          this.repository_status.error = true;
+          this.repository_status.statusTxt = "Failed to connect to repository API";
         });
       },
       saveForm() {
@@ -387,7 +401,7 @@ export default {
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
-          github: this.github,
+          repository: this.repository,
           dockerimage: this.dockerimage,
           deploymentstrategy: deploymentstrategy,
           buildpack: this.buildpack,

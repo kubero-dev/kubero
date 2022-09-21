@@ -175,6 +175,13 @@
   dependencies:
     defer-to-connect "^2.0.0"
 
+"@types/asn1@*":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@types/asn1/-/asn1-0.2.0.tgz#23b568688b321740bd4eafef49e6b13ffc101b31"
+  integrity sha512-5TMxIpYbIA9c1J0hYQjQDX3wr+rTgQEAXaW2BI8ECM8FO53wSW4HFZplTalrKSHuZUc76NtXcePRhwuOHqGD5g==
+  dependencies:
+    "@types/node" "*"
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -436,6 +443,14 @@
   integrity sha512-z5xyF6uh8CbjAu9760KDKsH2FcDxZ2tFCsA4HIMWE6IkiYMXfVoa+4f9KX+FN0ZLsaMw1WNG2ETLA6N+/YA+cg==
   dependencies:
     "@types/mime" "*"
+    "@types/node" "*"
+
+"@types/sshpk@^1.17.0":
+  version "1.17.0"
+  resolved "https://registry.yarnpkg.com/@types/sshpk/-/sshpk-1.17.0.tgz#2391f7845b554ee309a28f60f56e0abd10dfdfa1"
+  integrity sha512-yHxVn9o5r9g4qd6HByA3ydIdHGzxw5NFQCwY7uS4aM1b4RLnexdtLwp08Dq5n0W/asrDpvbX0+C+tzep4tVDZQ==
+  dependencies:
+    "@types/asn1" "*"
     "@types/node" "*"
 
 "@types/stream-buffers@^3.0.3":
@@ -2310,7 +2325,7 @@ sprintf-js@~1.0.2:
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==
 
-sshpk@^1.7.0:
+sshpk@^1.17.0, sshpk@^1.7.0:
   version "1.17.0"
   resolved "https://registry.yarnpkg.com/sshpk/-/sshpk-1.17.0.tgz#578082d92d4fe612b13007496e543fa0fbcbe4c5"
   integrity sha512-/9HIEs1ZXGhSPE8X6Ccm7Nam1z8KcoCqPdI7ecm1N33EzAetWahvQWVqLZtaZQ+IDKX4IyA2o0gBzqIMkAagHQ==

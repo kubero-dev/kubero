@@ -1,6 +1,7 @@
 import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook} from './types';
+import { IDeployKeyPair} from '../types';
 debug('app:kubero:gitea:api')
 
 //https://www.npmjs.com/package/gitea-js
@@ -133,7 +134,7 @@ export class GiteaApi {
     }
 
 
-    public async addDeployKey(owner: string, repo: string, key: string) {
+    public async addDeployKey(owner: string, repo: string, keyPair: IDeployKeyPair) {
 
         const title: string = "bot@kubero";
         let ret = {
@@ -146,6 +147,8 @@ export class GiteaApi {
                 created_at: '2020-01-01T00:00:00Z',
                 url: '',
                 read_only: true,
+                pub: keyPair.pubKeyBase64,
+                priv: keyPair.privKeyBase64
             }
         }
         //https://try.gitea.io/api/swagger#/repository/repoListKeys
@@ -172,7 +175,7 @@ export class GiteaApi {
             //https://try.gitea.io/api/swagger#/repository/repoCreateKey
             let res = await this.gitea.repos.repoCreateKey(owner, repo, {
                 title: title,
-                key: key,
+                key: keyPair.pubKey,
                 read_only: true
             });
 
@@ -186,6 +189,8 @@ export class GiteaApi {
                     created_at: res.data.created_at,
                     url: res.data.url,
                     read_only: res.data.read_only,
+                    pub: keyPair.pubKeyBase64,
+                    priv: keyPair.privKeyBase64
                 }
             }
         } catch (e) {

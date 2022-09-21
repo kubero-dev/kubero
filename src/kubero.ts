@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IPipelineList, IKubectlAppList, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
@@ -13,6 +13,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Stream } from 'stream';
 //const stream = require('stream');
+import * as crypto from 'crypto'
+import sshpk from 'sshpk';
 
 debug('app:kubero')
 
@@ -283,30 +285,58 @@ export class Kubero {
         this._io.emit('updatedApps', "deployed");
     }
 */
+    private createDeployKeyPair(): IDeployKeyPair{
+        debug.debug('createDeployKeyPair');
+
+        const keyPair = crypto.generateKeyPairSync('ed25519', {
+            modulusLength: 4096,
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem'
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem',
+                cipher: 'aes-256-cbc',
+                passphrase: ''
+            }
+        });
+        debug.debug(JSON.stringify(keyPair));
+
+        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
+        const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem').toString('ssh');
+        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
+        const pubKey: string = keyPair.publicKey;
+        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
+        const privKey: string = keyPair.privateKey;
+
+        return {
+            pubKeySsh: pubKeySsh,
+            pubKey: pubKey,
+            pubKeyBase64: Buffer.from(pubKey).toString('base64'),
+            privKey: privKey,
+            privKeyBase64: Buffer.from(privKey).toString('base64')
+        };
+    }
 
     public async connectRepo(repoProvider: string, pipelineName: string) {
         debug.log('connectRepo: '+repoProvider+' '+pipelineName);
-        if (repoProvider == 'github') {
-        }
+        
+        let deployKeypair = this.createDeployKeyPair();
+
         switch (repoProvider) {
             case 'github':
-                return this.connectRepoGithub(pipelineName);
+                return this.connectRepoGithub(pipelineName, deployKeypair);
             case 'gitea':
-                return this.connectRepoGitea(pipelineName);
+                return this.connectRepoGitea(pipelineName, deployKeypair);
             default:
                 return {'error': 'unknown repo provider'};
         }
     }
 
-    public async connectRepoGithub(gitrepo: string) {
+    public async connectRepoGithub(gitrepo: string, deployKeypair: IDeployKeyPair) {
         debug.log('connectPipeline: '+gitrepo);
-
-        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 == undefined) {
-            throw new Error("GIT_DEPLOYMENTKEY_PRIVATE_B64 is not defined");
-        }
-        if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
-            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
-        }
+        
         if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
@@ -323,20 +353,14 @@ export class Kubero {
             process.env.KUBERO_WEBHOOK_SECRET,
         );
 
-        let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
+        let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, deployKeypair);
 
         return {keys: keys, repository: repository, webhook: webhook};
     }
 
-    public async connectRepoGitea(gitrepo: string) {
+    public async connectRepoGitea(gitrepo: string, deployKeypair: IDeployKeyPair) {
         debug.log('connectPipeline: '+gitrepo);
 
-        if (process.env.GIT_DEPLOYMENTKEY_PRIVATE_B64 == undefined) {
-            throw new Error("GIT_DEPLOYMENTKEY_PRIVATE_B64 is not defined");
-        }
-        if (process.env.GIT_DEPLOYMENTKEY_PUBLIC == undefined) {
-            throw new Error("GIT_DEPLOYMENTKEY_PUBLIC is not defined");
-        }
         if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
@@ -353,7 +377,7 @@ export class Kubero {
             process.env.KUBERO_WEBHOOK_SECRET,
         );
 
-        let keys = await this.giteaApi.addDeployKey(repository.data.owner, repository.data.name, process.env.GIT_DEPLOYMENTKEY_PUBLIC as string);
+        let keys = await this.giteaApi.addDeployKey(repository.data.owner, repository.data.name, deployKeypair);
 
         return {keys: keys, repository: repository, webhook: webhook};
 
@@ -435,8 +459,8 @@ export class Kubero {
         for (const pipeline of pipelines.items) {
 
             if (pipeline.reviewapps && 
-                pipeline.github.repository && 
-                pipeline.github.repository.ssh_url === ssh_url) {
+                pipeline.repository.repository && 
+                pipeline.repository.repository.ssh_url === ssh_url) {
                 
                 debug.debug('found pipeline: '+pipeline.name);
                 let pipelaneName = pipeline.name
@@ -446,7 +470,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
-                    gitrepo: pipeline.github.repository,
+                    gitrepo: pipeline.repository.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
                     phase: phaseName,

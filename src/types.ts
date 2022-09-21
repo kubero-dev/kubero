@@ -137,7 +137,8 @@ export interface IPipeline {
     reviewapps: boolean;
     phases: IPipelinePhase[]; 
     buildpack: IBuildpack
-    github: {
+    repository: {
+        keys: object,
         repository?: IGithubRepository
         webhook: object;
     };
@@ -271,4 +272,12 @@ export interface IKuberoConfig {
     namespace: string;
     port: number;
     buildpacks: IBuildpack[];
+}
+
+export interface IDeployKeyPair {
+    pubKeySsh: string;
+    pubKey: string;
+    pubKeyBase64: string;
+    privKey: string;
+    privKeyBase64: string;
 }

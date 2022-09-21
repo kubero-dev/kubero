@@ -1,6 +1,7 @@
 import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository} from './types';
+import { IDeployKeyPair} from '../types';
 debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
@@ -160,7 +161,7 @@ export class GithubApi {
         }
     }
 
-    public async addDeployKey(owner: string, repo: string, key: string) {
+    public async addDeployKey(owner: string, repo: string, keyPair: IDeployKeyPair) {
 
         let ret = {
             status: 500,
@@ -172,6 +173,8 @@ export class GithubApi {
                 created_at: '2020-01-01T00:00:00Z',
                 url: '',
                 read_only: true,
+                pub: keyPair.pubKeyBase64,
+                priv: keyPair.privKeyBase64
             }
         }
 
@@ -180,7 +183,7 @@ export class GithubApi {
                 owner: owner,
                 repo: repo,
                 title: "bot@kubero",
-                key: key,
+                key: keyPair.pubKeySsh,
                 read_only: true
             });
 
@@ -194,35 +197,13 @@ export class GithubApi {
                     created_at: res.data.created_at,
                     url: res.data.url,
                     read_only: res.data.read_only,
+                    pub: keyPair.pubKeyBase64,
+                    priv: keyPair.privKeyBase64
                 }
             }
         } catch (e) {
             let res = e as RequestError;
-
-            if (res.status === 422) {
-                let existingKeyres = await this.octokit.request('GET /repos/{owner}/{repo}/keys', {
-                    owner: owner,
-                    repo: repo,
-                })
-                for (let key of existingKeyres.data) {
-                    if (key.title === "bot@kubero") {
-                        debug.log("key already exists");
-                        
-                        ret = {
-                            status: res.status,
-                            statusText: 'existing',
-                            data: {
-                                id: key.id,
-                                title: key.title,
-                                verified: key.verified,
-                                created_at: key.created_at,
-                                url: key.url,
-                                read_only: key.read_only,
-                            }
-                        }
-                    }
-                }
-            }
+            debug.log("Error adding deploy key: "+ res);
         }
 
         return ret
