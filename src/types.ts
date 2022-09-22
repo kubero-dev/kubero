@@ -137,7 +137,7 @@ export interface IPipeline {
     reviewapps: boolean;
     phases: IPipelinePhase[]; 
     buildpack: IBuildpack
-    repository: {
+    git: {
         keys: object,
         repository?: IGithubRepository
         webhook: object;

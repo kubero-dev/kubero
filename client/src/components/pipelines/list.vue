@@ -28,7 +28,7 @@
                                                 <span class="text-h5">{{ item.name }}</span>
                                             </v-card-title>
                                             <v-card-text>
-                                                <span>{{ item.repository.repository.description }}</span>
+                                                <span>{{ item.git.repository.description }}</span>
                                             </v-card-text>
                                         </a>
                                     </v-col>

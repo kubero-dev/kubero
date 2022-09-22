@@ -459,8 +459,8 @@ export class Kubero {
         for (const pipeline of pipelines.items) {
 
             if (pipeline.reviewapps && 
-                pipeline.repository.repository && 
-                pipeline.repository.repository.ssh_url === ssh_url) {
+                pipeline.git.repository && 
+                pipeline.git.repository.ssh_url === ssh_url) {
                 
                 debug.debug('found pipeline: '+pipeline.name);
                 let pipelaneName = pipeline.name
@@ -470,7 +470,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
-                    gitrepo: pipeline.repository.repository,
+                    gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
                     phase: phaseName,

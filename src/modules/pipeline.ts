@@ -8,7 +8,7 @@ export class Pipeline implements IPipeline {
     public phases: IPipelinePhase[];
     public buildpack: IBuildpack;
     public deploymentstrategy: 'git' | 'docker';
-    public repository: {
+    public git: {
         keys: object,
         repository?: IGithubRepository | undefined;
         webhook: object;
@@ -23,7 +23,7 @@ export class Pipeline implements IPipeline {
         this.phases = pl.phases;
         this.buildpack = pl.buildpack;
         this.dockerimage = pl.dockerimage;
-        this.repository = pl.repository;
+        this.git = pl.git;
         this.deploymentstrategy = pl.deploymentstrategy;
     }
 }

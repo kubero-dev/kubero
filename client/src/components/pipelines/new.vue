@@ -195,7 +195,7 @@ export default {
         bitbucket: false,
         docker: true
       },
-      repository: {
+      git: {
         keys: {},
         repository: {},
         webhooks: {},
@@ -374,9 +374,9 @@ export default {
             this.repository_status.error = false;
             this.repository_status.connected = true;
             this.repository_status.statusTxt = "Repository Connectd";
-            this.repository.keys = this.repository_status.keys.data;
-            this.repository.webhook = this.repository_status.webhook.data;
-            this.repository.repository = this.repository_status.repository.data;
+            this.git.keys = this.repository_status.keys.data;
+            this.git.webhook = this.repository_status.webhook.data;
+            this.git.repository = this.repository_status.repository.data;
           } else {
             this.repository_status.error = true;
             this.repository_status.connected = false;
@@ -401,7 +401,7 @@ export default {
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
-          repository: this.repository,
+          git: this.git,
           dockerimage: this.dockerimage,
           deploymentstrategy: deploymentstrategy,
           buildpack: this.buildpack,

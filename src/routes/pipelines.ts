@@ -16,7 +16,7 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
         phases: req.body.phases,
         buildpack: req.body.buildpack,
         reviewapps: req.body.reviewapps,
-        repository: req.body.repository,
+        git: req.body.git,
         dockerimage: req.body.dockerimage,
         deploymentstrategy: req.body.deploymentstrategy,
     }; 
