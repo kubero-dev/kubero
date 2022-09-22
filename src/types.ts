@@ -275,7 +275,7 @@ export interface IKuberoConfig {
 }
 
 export interface IDeployKeyPair {
-    pubKeySsh: string;
+    fingerprint: string;
     pubKey: string;
     pubKeyBase64: string;
     privKey: string;

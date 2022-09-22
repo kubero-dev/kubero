@@ -289,7 +289,7 @@ export class Kubero {
         debug.debug('createDeployKeyPair');
 
         const keyPair = crypto.generateKeyPairSync('ed25519', {
-            modulusLength: 4096,
+            //modulusLength: 4096,
             publicKeyEncoding: {
                 type: 'spki',
                 format: 'pem'
@@ -297,25 +297,27 @@ export class Kubero {
             privateKeyEncoding: {
                 type: 'pkcs8',
                 format: 'pem',
-                cipher: 'aes-256-cbc',
-                passphrase: ''
+                //cipher: 'aes-256-cbc',
+                //passphrase: ''
             }
         });
         debug.debug(JSON.stringify(keyPair));
 
-        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
-        const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem').toString('ssh');
-        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
-        const pubKey: string = keyPair.publicKey;
-        // @ts-expect-error ts(2352) KNOWN ISSUE: Conversion of type 'KeyObject' to type 'string'
-        const privKey: string = keyPair.privateKey;
+        const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem');
+        const pubKeySshString = pubKeySsh.toString('ssh');
+        const fingerprint = pubKeySsh.fingerprint('sha256').toString('hex');
+        console.log(pubKeySshString);
+
+        const privKeySsh = sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
+        const privKeySshString = privKeySsh.toString('ssh');
+        console.log(privKeySshString);
 
         return {
-            pubKeySsh: pubKeySsh,
-            pubKey: pubKey,
-            pubKeyBase64: Buffer.from(pubKey).toString('base64'),
-            privKey: privKey,
-            privKeyBase64: Buffer.from(privKey).toString('base64')
+            fingerprint: fingerprint,
+            pubKey: pubKeySshString,
+            pubKeyBase64: Buffer.from(pubKeySshString).toString('base64'),
+            privKey: privKeySshString,
+            privKeyBase64: Buffer.from(privKeySshString).toString('base64')
         };
     }
 

@@ -183,7 +183,7 @@ export class GithubApi {
                 owner: owner,
                 repo: repo,
                 title: "bot@kubero",
-                key: keyPair.pubKeySsh,
+                key: keyPair.pubKey,
                 read_only: true
             });
 
