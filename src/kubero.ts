@@ -306,11 +306,11 @@ export class Kubero {
         const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem');
         const pubKeySshString = pubKeySsh.toString('ssh');
         const fingerprint = pubKeySsh.fingerprint('sha256').toString('hex');
-        console.log(pubKeySshString);
+        console.debug(pubKeySshString);
 
         const privKeySsh = sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
         const privKeySshString = privKeySsh.toString('ssh');
-        console.log(privKeySshString);
+        console.debug(privKeySshString);
 
         return {
             fingerprint: fingerprint,
