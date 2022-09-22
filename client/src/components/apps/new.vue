@@ -56,7 +56,7 @@
           md="6"
         >
           <v-text-field
-            v-model="gitrepo.ssh_url"
+            v-model="pipelineData.git.repository.ssh_url"
             :rules="repositoryRules"
             :counter="60"
             label="Repository"
@@ -707,7 +707,7 @@ export default {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
-          gitrepo: this.gitrepo,
+          gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
           image : {
             containerport: this.containerPort,
@@ -742,7 +742,7 @@ export default {
           buildpack: this.buildpack.name,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
-          gitrepo: this.gitrepo,
+          gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
           image : {
             containerport: this.containerPort,
