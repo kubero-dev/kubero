@@ -23,5 +23,38 @@ export interface IRepository {
         private?: boolean,
         ssh_url?: string,
         language?: string,
+        homepage?: string,
+        admin: boolean,
+        push: boolean,
+        visibility?: string,
+        default_branch?: string
+    }
+}
+
+export interface IWebhookR {
+    status: number,
+    statusText: 'error' | 'created' | 'not found' | 'found',
+    data: {
+        id?: number,
+        active: boolean,
+        created_at: string,
+        url: string,
+        insecure: boolean,
+        events: string[],
+    }
+}
+
+export interface IDeploykeyR {
+    status: number,
+    statusText: 'error' | 'created' | 'not found' | 'found',
+    data: {
+        id?: number,
+        title: string,
+        verified: boolean,
+        created_at: string,
+        url: string,
+        read_only: boolean,
+        pub: string,
+        priv: string
     }
 }

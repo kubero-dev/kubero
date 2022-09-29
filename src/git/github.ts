@@ -1,29 +1,58 @@
 import debug from 'debug';
 import * as crypto from "crypto"
-import { IWebhook, IRepository} from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { IDeployKeyPair} from '../types';
+import { Repo, IRepo } from './repo';
 debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
 import { Octokit } from "@octokit/core"
 import { RequestError } from '@octokit/types';
 
-export class GithubApi {
+export class GithubApi extends Repo implements IRepo {
     private octokit: any;
 
     constructor(token: string) {
+        super();
         this.octokit = new Octokit({
             auth: token
         });
     }
 
-    public async getRepository(gitrepo: string) {
+    public async connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR, repository: IRepository, webhook: IWebhookR}> {
+        debug.log('connectPipeline: '+gitrepo);
+        
+        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
+            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
+        }
+        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
+            throw new Error("KUBERO_WEBHOOK_URL is not defined");
+        }
+
+        const repository = await this.getRepository(gitrepo)
+
+        let webhook = await this.addWebhook(
+            repository.data.owner,
+            repository.data.name,
+            process.env.KUBERO_WEBHOOK_URL+'/github',
+            process.env.KUBERO_WEBHOOK_SECRET,
+        );
+
+        let keys = await this.addDeployKey(repository.data.owner, repository.data.name);
+
+        return {keys: keys, repository: repository, webhook: webhook};
+
+    }
+
+    public async getRepository(gitrepo: string): Promise<IRepository> {
         let ret: IRepository = {
             status: 500,
             statusText: 'error',
             data: {
                 owner: 'unknown',
                 name: 'unknown',
+                admin: false,
+                push: false,
             }
         }
 
@@ -36,6 +65,7 @@ export class GithubApi {
                 owner: owner,
                 repo: repo,
             });
+            //console.log(res.data);
 
             ret = {
                 status: res.status,
@@ -49,6 +79,11 @@ export class GithubApi {
                     private : res.data.private,
                     ssh_url: res.data.ssh_url,
                     language: res.data.language,
+                    homepage: res.data.homepage,
+                    admin: res.data.permissions.admin,
+                    push: res.data.permissions.push,
+                    visibility: res.data.visibility,
+                    default_branch: res.data.default_branch,
                 }
             }
         } catch (e) {
@@ -60,6 +95,8 @@ export class GithubApi {
                 data: {
                     owner: owner,
                     name: repo,
+                    admin: false,
+                    push: false,
                 }
             }
         }
@@ -87,9 +124,9 @@ export class GithubApi {
         });
     }
 */
-    public async addWebhook(owner: string, repo: string, url: string, secret: string) {
+    public async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
         
-        let ret = {
+        let ret: IWebhookR = {
             status: 500,
             statusText: 'error',
             data: {
@@ -157,13 +194,16 @@ export class GithubApi {
                     }
                 }
             }
-            return ret;
         }
+
+        return ret;
     }
 
-    public async addDeployKey(owner: string, repo: string, keyPair: IDeployKeyPair) {
+    public async addDeployKey(owner: string, repo: string): Promise<IDeploykeyR> {
 
-        let ret = {
+        const keyPair = this.createDeployKeyPair();
+
+        let ret: IDeploykeyR = {
             status: 500,
             statusText: 'error',
             data: {
@@ -208,8 +248,6 @@ export class GithubApi {
 
         return ret
     }
-
-
 
     public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
         //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks

@@ -285,81 +285,22 @@ export class Kubero {
         this._io.emit('updatedApps', "deployed");
     }
 */
-    private createDeployKeyPair(): IDeployKeyPair{
-        debug.debug('createDeployKeyPair');
 
-        const keyPair = crypto.generateKeyPairSync('ed25519', {
-            //modulusLength: 4096,
-            publicKeyEncoding: {
-                type: 'spki',
-                format: 'pem'
-            },
-            privateKeyEncoding: {
-                type: 'pkcs8',
-                format: 'pem',
-                //cipher: 'aes-256-cbc',
-                //passphrase: ''
-            }
-        });
-        debug.debug(JSON.stringify(keyPair));
-
-        const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem');
-        const pubKeySshString = pubKeySsh.toString('ssh');
-        const fingerprint = pubKeySsh.fingerprint('sha256').toString('hex');
-        console.debug(pubKeySshString);
-
-        const privKeySsh = sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
-        const privKeySshString = privKeySsh.toString('ssh');
-        console.debug(privKeySshString);
-
-        return {
-            fingerprint: fingerprint,
-            pubKey: pubKeySshString,
-            pubKeyBase64: Buffer.from(pubKeySshString).toString('base64'),
-            privKey: privKeySshString,
-            privKeyBase64: Buffer.from(privKeySshString).toString('base64')
-        };
-    }
-
-    public async connectRepo(repoProvider: string, pipelineName: string) {
-        debug.log('connectRepo: '+repoProvider+' '+pipelineName);
-        
-        let deployKeypair = this.createDeployKeyPair();
+    public async connectRepo(repoProvider: string, repoAddress: string) {
+        debug.log('connectRepo: '+repoProvider+' '+repoAddress);
 
         switch (repoProvider) {
             case 'github':
-                return this.connectRepoGithub(pipelineName, deployKeypair);
-            case 'gitea':
-                return this.connectRepoGitea(pipelineName, deployKeypair);
+                return this.githubApi.connectRepo(repoAddress);    
+            // TODO : Refactor Gitea
+            //case 'gitea':
+            //    return this.connectRepoGitea(repoAddress);
             default:
                 return {'error': 'unknown repo provider'};
         }
     }
 
-    public async connectRepoGithub(gitrepo: string, deployKeypair: IDeployKeyPair) {
-        debug.log('connectPipeline: '+gitrepo);
-        
-        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
-            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
-        }
-        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
-            throw new Error("KUBERO_WEBHOOK_URL is not defined");
-        }
-
-        let repository = await this.githubApi.getRepository(gitrepo);
-
-        let webhook = await this.githubApi.addWebhook(
-            repository.data.owner,
-            repository.data.name,
-            process.env.KUBERO_WEBHOOK_URL+'/github',
-            process.env.KUBERO_WEBHOOK_SECRET,
-        );
-
-        let keys = await this.githubApi.addDeployKey(repository.data.owner, repository.data.name, deployKeypair);
-
-        return {keys: keys, repository: repository, webhook: webhook};
-    }
-
+    // TODO : Refactor Gitea
     public async connectRepoGitea(gitrepo: string, deployKeypair: IDeployKeyPair) {
         debug.log('connectPipeline: '+gitrepo);
 
