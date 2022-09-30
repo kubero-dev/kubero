@@ -1,50 +1,24 @@
 import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
-import { IDeployKeyPair} from '../types';
-import { Repo, IRepo } from './repo';
+import { Repo } from './repo';
 debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
 import { Octokit } from "@octokit/core"
 import { RequestError } from '@octokit/types';
 
-export class GithubApi extends Repo implements IRepo {
+export class GithubApi extends Repo {
     private octokit: any;
 
     constructor(token: string) {
-        super();
+        super("github");
         this.octokit = new Octokit({
             auth: token
         });
     }
 
-    public async connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR, repository: IRepository, webhook: IWebhookR}> {
-        debug.log('connectPipeline: '+gitrepo);
-        
-        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
-            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
-        }
-        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
-            throw new Error("KUBERO_WEBHOOK_URL is not defined");
-        }
-
-        const repository = await this.getRepository(gitrepo)
-
-        let webhook = await this.addWebhook(
-            repository.data.owner,
-            repository.data.name,
-            process.env.KUBERO_WEBHOOK_URL+'/github',
-            process.env.KUBERO_WEBHOOK_SECRET,
-        );
-
-        let keys = await this.addDeployKey(repository.data.owner, repository.data.name);
-
-        return {keys: keys, repository: repository, webhook: webhook};
-
-    }
-
-    public async getRepository(gitrepo: string): Promise<IRepository> {
+    protected async getRepository(gitrepo: string): Promise<IRepository> {
         let ret: IRepository = {
             status: 500,
             statusText: 'error',
@@ -124,7 +98,7 @@ export class GithubApi extends Repo implements IRepo {
         });
     }
 */
-    public async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
+    protected async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
         
         let ret: IWebhookR = {
             status: 500,
@@ -199,7 +173,7 @@ export class GithubApi extends Repo implements IRepo {
         return ret;
     }
 
-    public async addDeployKey(owner: string, repo: string): Promise<IDeploykeyR> {
+    protected async addDeployKey(owner: string, repo: string): Promise<IDeploykeyR> {
 
         const keyPair = this.createDeployKeyPair();
 

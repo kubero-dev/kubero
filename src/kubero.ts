@@ -291,39 +291,12 @@ export class Kubero {
 
         switch (repoProvider) {
             case 'github':
-                return this.githubApi.connectRepo(repoAddress);    
-            // TODO : Refactor Gitea
-            //case 'gitea':
-            //    return this.connectRepoGitea(repoAddress);
+                return this.githubApi.connectRepo(repoAddress);
+            case 'gitea':
+                return this.giteaApi.connectRepo(repoAddress);
             default:
                 return {'error': 'unknown repo provider'};
         }
-    }
-
-    // TODO : Refactor Gitea
-    public async connectRepoGitea(gitrepo: string, deployKeypair: IDeployKeyPair) {
-        debug.log('connectPipeline: '+gitrepo);
-
-        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
-            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
-        }
-        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
-            throw new Error("KUBERO_WEBHOOK_URL is not defined");
-        }
-
-        let repository = await this.giteaApi.getRepository(gitrepo);
-
-        let webhook = await this.giteaApi.addWebhook(
-            repository.data.owner,
-            repository.data.name,
-            process.env.KUBERO_WEBHOOK_URL+'/gitea',
-            process.env.KUBERO_WEBHOOK_SECRET,
-        );
-
-        let keys = await this.giteaApi.addDeployKey(repository.data.owner, repository.data.name, deployKeypair);
-
-        return {keys: keys, repository: repository, webhook: webhook};
-
     }
 
     public async handleWebhook(repoProvider: string, event: string, delivery: string, signature: string, body: any) {

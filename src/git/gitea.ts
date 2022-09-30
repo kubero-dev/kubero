@@ -1,37 +1,36 @@
 import debug from 'debug';
 import * as crypto from "crypto"
-import { IWebhook} from './types';
-import { IDeployKeyPair} from '../types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
+import { Repo } from './repo';
 debug('app:kubero:gitea:api')
 
 //https://www.npmjs.com/package/gitea-js
 import { giteaApi } from "gitea-js"
 import { fetch as fetchGitea } from 'cross-fetch';
 
-export class GiteaApi {
+export class GiteaApi extends Repo {
     private gitea: any;
 
     constructor(baseURL: string, token: string) {
+        super("gitea");
         this.gitea = giteaApi(baseURL, {
             token: token,
             customFetch: fetchGitea,
         });
     }
 
-    public async getRepository(gitrepo: string) {
-        let ret = {
+    protected async getRepository(gitrepo: string): Promise<IRepository> {
+        let ret: IRepository = {
             status: 500,
             statusText: 'error',
             data: {
-                id: 0,
-                node_id: "",
-                name: "",
-                description: "",
-                owner: "",
-                private : false,
-                ssh_url: "",
+                owner: 'unknown',
+                name: 'unknown',
+                admin: false,
+                push: false,
             }
         }
+
         // TODO : Improve matching here
         let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
         let repo = gitrepo.match(/^git@.*:.*\/(.*)\.git$/)?.[1] as string;
@@ -53,15 +52,21 @@ export class GiteaApi {
                 owner: res.data.owner.login,
                 private : res.data.private,
                 ssh_url: res.data.ssh_url,
+                language: res.data.language,
+                homepage: res.data.homepage,
+                admin: res.data.permissions.admin,
+                push: res.data.permissions.push,
+                visibility: res.data.visibility,
+                default_branch: res.data.default_branch,
             }
         }
         return ret;
 
     }
 
-    public async addWebhook(owner: string, repo: string, url: string, secret: string) {
+    protected async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
         
-        let ret = {
+        let ret: IWebhookR = {
             status: 500,
             statusText: 'error',
             data: {
@@ -134,10 +139,13 @@ export class GiteaApi {
     }
 
 
-    public async addDeployKey(owner: string, repo: string, keyPair: IDeployKeyPair) {
+    protected async addDeployKey(owner: string, repo: string): Promise<IDeploykeyR> {
+
+        const keyPair = this.createDeployKeyPair();
 
         const title: string = "bot@kubero";
-        let ret = {
+
+        let ret: IDeploykeyR = {
             status: 500,
             statusText: 'error',
             data: {

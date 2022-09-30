@@ -5,8 +5,13 @@ import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { IDeployKeyPair} from '../types';
 debug('app:kubero:git:repo')
 
-export class Repo {
-    constructor() {}
+export abstract class Repo {
+
+    protected repoProvider: string;
+
+    constructor(repoProvider: string) {
+        this.repoProvider = repoProvider;
+    }
 
     protected createDeployKeyPair(): IDeployKeyPair{
         debug.debug('createDeployKeyPair');
@@ -43,12 +48,64 @@ export class Repo {
             privKeyBase64: Buffer.from(privKeySshString).toString('base64')
         };
     }
-}
 
-export interface IRepo extends Repo {
-    connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR, repository: IRepository, webhook: IWebhookR}>;
-    getRepository(gitrepo: string): Promise<IRepository>;
-    addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
-    addDeployKey(owner: string, repo: string, keyPair: IDeployKeyPair): Promise<IDeploykeyR>;
-    getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
+    public async connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR | undefined, repository: IRepository, webhook: IWebhookR | undefined}> {
+        debug.log('connectPipeline: '+gitrepo);
+        
+        if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
+            throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
+        }
+        if (process.env.KUBERO_WEBHOOK_URL == undefined) {
+            throw new Error("KUBERO_WEBHOOK_URL is not defined");
+        }
+
+        const repository = await this.getRepository(gitrepo)
+        console.debug(repository);
+
+        let keys: IDeploykeyR = {
+            status: 500,
+            statusText: 'error',
+            data: {
+                id: 0,
+                title: "bot@kubero",
+                verified: false,
+                created_at: '2020-01-01T00:00:00Z',
+                url: '',
+                read_only: true,
+                pub: '',
+                priv: '',
+            }
+        }
+        let webhook: IWebhookR = {
+            status: 500,
+            statusText: 'error',
+            data: {
+                id: 0,
+                active: false,
+                created_at: '2020-01-01T00:00:00Z',
+                url: '',
+                insecure: true,
+                events: [],
+            }
+        }
+        if (repository.status == 200 && repository.data.admin == true) {
+
+            webhook = await this.addWebhook(
+                repository.data.owner,
+                repository.data.name,
+                process.env.KUBERO_WEBHOOK_URL+'/'+this.repoProvider,
+                process.env.KUBERO_WEBHOOK_SECRET,
+            );
+
+            keys = await this.addDeployKey(repository.data.owner, repository.data.name);
+        } 
+
+        return {keys: keys, repository: repository, webhook: webhook};
+
+    }
+
+    protected abstract addDeployKey(owner: string, repo: string): Promise<IDeploykeyR>
+    protected abstract getRepository(gitrepo: string): Promise<IRepository>;
+    protected abstract addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
+    protected abstract getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
 }

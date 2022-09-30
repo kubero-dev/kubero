@@ -98,7 +98,7 @@
       </v-row>
 
       <v-row
-        v-if="repository_status.connected && repotab && repotab!='docker'"
+        v-if="repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -141,6 +141,7 @@
           <v-switch
             v-model="phase.enabled"
             :label="phase.name"
+            :disabled="phase.name == 'review' && repository_status.connected === false"
           ></v-switch>
         </v-col>
         <v-col
@@ -165,7 +166,9 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid || (!repository_status.connected && repotab!='docker')"
+                :disabled="!valid 
+                  || (repotab=='docker' && !dockerimage)
+                  || (repotab!='docker' && !gitrepo)"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -185,7 +188,8 @@ export default {
       valid: false, // final form validation
       pipelineName: '', 
       reviewapps: true,
-      gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with
+      /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
+      gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
       dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
@@ -203,7 +207,7 @@ export default {
       repository_status: {
         error: false,
         connected: false,
-        statusTxt: 'Not connected',
+        statusTxt: "Repository Not Connected",
         keys: {
           data: {},
           status: 0,
@@ -373,14 +377,21 @@ export default {
           ) {
             this.repository_status.error = false;
             this.repository_status.connected = true;
-            this.repository_status.statusTxt = "Repository Connectd";
+            this.repository_status.statusTxt = "Repository Connected";
             this.git.keys = this.repository_status.keys.data;
             this.git.webhook = this.repository_status.webhook.data;
             this.git.repository = this.repository_status.repository.data;
+          } else if (
+            this.repository_status.repository.status === 200 &&
+            this.repository_status.repository.data.private === false
+          ) {
+            this.repository_status.error = true;
+            this.repository_status.connected = false;
+            this.repository_status.statusTxt = "No permission to connect to Repository";
           } else {
             this.repository_status.error = true;
             this.repository_status.connected = false;
-            this.repository_status.statusTxt = "Repository Not Connectd";
+            this.repository_status.statusTxt = "Repository Not Connected";
           }
 
         }).catch(error => {
