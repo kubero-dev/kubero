@@ -604,7 +604,7 @@ export default {
 
           this.buildpack = this.pipelineData.buildpack;
 
-          this.gitrepo.ssh_url = this.pipelineData.github.repository.ssh_url;
+          this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
 /*
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {

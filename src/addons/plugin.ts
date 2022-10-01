@@ -25,7 +25,7 @@ export interface IPlugin {
     artifact_url: string;
 }
 
-export class Plugin {
+export abstract class Plugin {
     public plugin?: any;
     public id: string = ''; //same as operator name
     public enabled: boolean = false; // true if installed

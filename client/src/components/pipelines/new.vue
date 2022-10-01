@@ -63,14 +63,15 @@
           cols="12"
           md="6"
         >
-          <v-text-field
+          <v-autocomplete
             v-model="gitrepo"
             :rules="repositoryRules"
             :counter="60"
+            :items="gitrepoItems"
             label="Repository"
             :disabled="repository_status.connected"
             required
-          ></v-text-field>
+          ></v-autocomplete>
         </v-col>
       </v-row>
       <v-row
@@ -190,6 +191,7 @@ export default {
       reviewapps: true,
       /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
       gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
+      gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],
       dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
@@ -388,6 +390,9 @@ export default {
             this.repository_status.error = true;
             this.repository_status.connected = false;
             this.repository_status.statusTxt = "No permission to connect to Repository";
+            this.git.keys = this.repository_status.keys.data;
+            this.git.webhook = this.repository_status.webhook.data;
+            this.git.repository = this.repository_status.repository.data;
           } else {
             this.repository_status.error = true;
             this.repository_status.connected = false;
