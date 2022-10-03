@@ -11,9 +11,11 @@ buildpacks:
     build:
       repository: node
       tag: latest
+      command: "npm install"
     run:
       repository: node
       tag: latest
+      command: "node index.js"
   - name: PHP
     language: PHP
     fetch:
@@ -22,21 +24,7 @@ buildpacks:
     build:
       repository: composer
       tag: latest
-    run:
-      repository: ghcr.io/kubero-dev/buildpacks/php
-      tag: "main"
-      readOnlyAppStorage: false
-      securityContext:
-        allowPrivilegeEscalation: true
-        readOnlyRootFilesystem: false
-  - name: PHP-testing
-    language: PHP
-    fetch:
-      repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
-    build:
-      repository: composer
-      tag: latest
+      command: "composer install; chown -R 1000:1000 /app"
     run:
       repository: webdevops/php-apache
       tag: "8.1"
@@ -44,6 +32,7 @@ buildpacks:
       securityContext:
         allowPrivilegeEscalation: true
         readOnlyRootFilesystem: false
+      command: "apache2-foreground"
   - name: Python
     language: Python
     fetch:
@@ -52,9 +41,11 @@ buildpacks:
     build:
       repository: python
       tag: 3.10-buster
+      command: "python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt"
     run:
       repository: python
       tag: 3.10-buster
+      command: "python3 -m venv .venv && . .venv/bin/activate && python3 main.py"
   - name: GoLang
     language: GoLang
     fetch:
@@ -63,20 +54,11 @@ buildpacks:
     build:
       repository: golang
       tag: alpine
+      command: "go mod download && go mod verify && go build -v -o app"
     run:
       repository: golang
       tag: alpine
-  - name: Python
-    language: goLang
-    fetch:
-      repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
-    build:
-      repository: golang
-      tag: alpine
-    run:
-      repository: golang
-      tag: alpine
+      command: "./app"
   - name: Ruby
     language: Ruby
     fetch:
@@ -85,9 +67,11 @@ buildpacks:
     build:
       repository: ruby
       tag: "2.7"
+      command: "export GEM_HOME=/app/bundle; bundle install --jobs=4 --retry=3"
     run:
       repository: ruby
       tag: "2.7"
+      command: "export GEM_HOME=/app/bundle; bundle exec ruby main.rb"
   - name: Static
     language: HTML
     fetch:
@@ -96,9 +80,11 @@ buildpacks:
     build:
       repository: busybox
       tag: latest
+      command: "echo 'Buildpack not required'"
     run:
       repository: webdevops/nginx
       tag: alpine
+      command: "supervisord"
 podSizeList: 
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'

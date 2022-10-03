@@ -52,6 +52,7 @@ export class GithubApi extends Repo {
                     owner: res.data.owner.login,
                     private : res.data.private,
                     ssh_url: res.data.ssh_url,
+                    clone_url: res.data.clone_url,
                     language: res.data.language,
                     homepage: res.data.homepage,
                     admin: res.data.permissions.admin,

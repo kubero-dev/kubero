@@ -22,6 +22,7 @@ export interface IRepository {
         owner: string,
         private?: boolean,
         ssh_url?: string,
+        clone_url?: string,
         language?: string,
         homepage?: string,
         admin: boolean,

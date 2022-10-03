@@ -63,7 +63,7 @@
           cols="12"
           md="6"
         >
-          <v-autocomplete
+          <v-combobox
             v-model="gitrepo"
             :rules="repositoryRules"
             :counter="60"
@@ -71,7 +71,7 @@
             label="Repository"
             :disabled="repository_status.connected"
             required
-          ></v-autocomplete>
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-row
