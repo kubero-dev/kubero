@@ -50,6 +50,9 @@ export class Kubectl {
             try {
                 this.kc.loadFromCluster();
                 debug.log(this.kc);
+                debug.log(this.kc.users);
+                debug.log(this.kc.clusters);
+                debug.log(this.kc.contexts);
             } catch (error) {
                 debug.log("error loading from cluster");
                 debug.log(error);
