@@ -51,6 +51,7 @@ export class Kubectl {
                 this.kc.loadFromCluster();
                 debug.log(this.kc);
                 debug.log(this.kc.users);
+                debug.log(this.kc.users[0].authProvider.config);
                 debug.log(this.kc.clusters);
                 debug.log(this.kc.contexts);
             } catch (error) {
