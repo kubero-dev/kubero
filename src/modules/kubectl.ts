@@ -49,11 +49,7 @@ export class Kubectl {
             debug.log("load from cluster");
             try {
                 this.kc.loadFromCluster();
-                debug.log(this.kc);
-                debug.log(this.kc.users);
-                debug.log(this.kc.users[0].authProvider.config);
-                debug.log(this.kc.clusters);
-                debug.log(this.kc.contexts);
+                console.log(this.kc);
             } catch (error) {
                 debug.log("error loading from cluster");
                 debug.log(error);
