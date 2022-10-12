@@ -48,7 +48,8 @@ export class Kubectl {
         } else{
             debug.log("load from cluster");
             try {
-                this.kc.loadFromDefault();
+                this.kc.loadFromCluster();
+                debug.log(this.kc);
             } catch (error) {
                 debug.log("error loading from cluster");
                 debug.log(error);
