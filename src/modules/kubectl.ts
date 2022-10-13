@@ -46,10 +46,9 @@ export class Kubectl {
             debug.log("load kubectl config from file");
             this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
         } else{
-            debug.log("load from cluster");
             try {
                 this.kc.loadFromCluster();
-                console.log(this.kc);
+                debug.log("kubeconfig loaded from cluster");
             } catch (error) {
                 debug.log("error loading from cluster");
                 debug.log(error);

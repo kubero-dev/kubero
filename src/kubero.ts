@@ -51,13 +51,17 @@ export class Kubero {
 
                     if (phase.enabled == true) {
                         debug.log("Checking Namespace: "+pipeline.name+"-"+phase.name);
-                        this.listAppsInNamespace(pipeline.name, phase.name).then(appsList => {
+                        this.listAppsInNamespace(pipeline.name, phase.name)
+                        .then(appsList => {
                             if (appsList) {
                                 for (const app of appsList.items) {
                                     debug.log("added App to state: "+app.spec.name);
                                     this.appStateList.push(app.spec);
                                 }
                             }
+                        })
+                        .catch(error => {
+                            debug.log(error);
                         })
                     }
                 }

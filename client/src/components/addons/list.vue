@@ -40,7 +40,7 @@
                         </v-card-text>
                     </v-list-item-content>
                 </v-card>
-                <div class="text-center" style="height:0px">
+                <div class="text-center" style="height:0px" v-if="!addon.enabled">
                 <v-btn
                     style="top: -50px;"
                     color="primary"

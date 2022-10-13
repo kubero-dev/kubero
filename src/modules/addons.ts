@@ -99,4 +99,9 @@ export class Addons {
     public getOperatorsList(): string[] {
         return this.operatorsAvailable
     }
+
+    public deleteAddon(addon: IAddonMinimal) {
+        console.log(addon)
+        //return this.kubectl.deleteResource(addon)
+    }
 }

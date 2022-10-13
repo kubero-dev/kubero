@@ -391,20 +391,20 @@
           md="2"
         >
         
-          <v-card>
+          <v-card color="#F7F8FB">
             <v-list-item-content class="justify-center">
               <div class="mx-auto text-center">
                 <v-avatar
                   size="57"
                   rounded
                 ><img
-                :src="'/img/addons/'+addon.icon"
+                :src="'/img/addons/'+addon.kind+'.png'"
                 :alt="addon.name"
                 >
                 </v-avatar>
                 <h3>{{ addon.name }}</h3>
                 <p class="text-caption mt-1">
-                  {{ addon.version }}
+                  {{ addon.version.installed }}
                 </p>
                 <v-divider class="my-3"></v-divider>
                 <v-btn
