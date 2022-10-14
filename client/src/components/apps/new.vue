@@ -644,19 +644,6 @@ export default {
       },
       */
       deleteAddon(addon) {
-          
-          // remove addon in kubernetes cluster
-          axios.delete(`/api/addons/${this.pipeline}/${this.phase}/${addon.id}`, {
-            data: {
-              apiVersion: addon.crd.apiVersion,
-              plural: addon.plural
-            }}).then(response => {
-              console.log(response);
-            })
-            .catch(error => {
-              console.log(error);
-            });
-
           // remove addon from local view and kuberoapp yaml
           for (let i = 0; i < this.addons.length; i++) {
             if (this.addons[i].id == addon.id) {

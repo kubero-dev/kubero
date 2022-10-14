@@ -292,36 +292,6 @@ export class Kubectl {
         return operators.items;
     }
 
-    public async createAddon(addon: IAddon, namespace: string, context: string) {
-        let apiVersion = addon.crd.apiVersion as string;
-        this.kc.setCurrentContext(context);
-
-        await this.customObjectsApi.createNamespacedCustomObject(
-            apiVersion.split('/')[0],
-            apiVersion.split('/')[1],
-            namespace,
-            addon.plural,
-            addon.crd
-        ).catch(error => {
-            debug.log(addon.crd);
-            debug.log('ERROR: '+error.body.message);
-        })
-    }
-
-    public async deleteAddon(addon: IAddonMinimal, context: string) {
-        this.kc.setCurrentContext(context);
-        await this.customObjectsApi.deleteNamespacedCustomObject(
-            addon.group,
-            addon.version,
-            addon.namespace,
-            addon.plural,
-            addon.id
-        ).catch(error => {
-            debug.log(addon)
-            debug.log('ERROR: '+error);
-        })
-    }
-
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;

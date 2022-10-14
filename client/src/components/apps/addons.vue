@@ -167,7 +167,17 @@ export default {
         },
         submitForm() {
             this.dialog = false;
-            this.addons.push(this.selectedAddon);
+            console.log(this.selectedAddon);
+            const addon = {
+                id: this.selectedAddon.id,
+                kind: this.selectedAddon.kind,
+                version: this.selectedAddon.version,
+                env: this.selectedAddon.env,
+                crd: this.selectedAddon.crd,
+            };
+            this.$emit('addon-added', this.selectedAddon);
+
+            this.addons.push(addon);
         }
     }
 }

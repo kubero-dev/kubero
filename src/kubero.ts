@@ -183,7 +183,6 @@ export class Kubero {
             this.appStateList.push(app);
             
             let namespace = app.pipeline+'-'+app.phase;
-            this.createAddons(app.addons, namespace, contextName);
             this._io.emit('updatedApps', "created");
         }
     }
@@ -197,10 +196,6 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
-
-            let namespace = app.pipeline+'-'+app.phase;
-            //TODO: the addons are created even when they exist. This should be handled in a better way
-            this.createAddons(app.addons, namespace, contextName);
             this._io.emit('updatedApps', "updated");
         }
     }
@@ -453,31 +448,6 @@ export class Kubero {
                 
                     this.deleteApp(app.pipeline, app.phase, websaveTitle);
             }
-        }
-    }
-
-    private async createAddons(addons: IAddon[], namespace: string, context: string) {
-        for (const addon of addons) {
-            for (const field in addon.formfields) {
-                let val = addon.formfields[field].default;
-                
-                if (addon.formfields[field].type === 'number') {
-                    val = Number(val);
-                }
-
-                set(addon.crd, field, val);
-            }
-
-            this.kubectl.createAddon(addon, namespace, context);
-        }
-    }
-
-    // delete a addon in a namespace
-    public async deleteAddon(addon: IAddonMinimal): Promise<void> {
-        debug.log(`Deleting addon ${addon.id}`)
-        const contextName = this.getContext(addon.pipeline, addon.phase);
-        if (contextName) {
-            this.kubectl.deleteAddon(addon, contextName);
         }
     }
 

@@ -22,18 +22,3 @@ Router.get('/addons/operators', authMiddleware, async function (req: Request, re
     let operatorslist = await req.app.locals.addons.getOperatorsList();
     res.send(operatorslist)
 });
-
-// delete an addon
-Router.delete('/addons/:pipeline/:phase/:addonID', authMiddleware, async function (req: Request, res: Response) {
-    let addon = {
-        group: req.body.apiVersion.split('/')[0],
-        version: req.body.apiVersion.split('/')[1],
-        namespace: req.params.pipeline + "-" + req.params.phase,
-        pipeline: req.params.pipeline,
-        phase: req.params.phase,
-        plural: req.body.plural,
-        id: req.params.addonID
-    } as IAddonMinimal;
-    await req.app.locals.addons.deleteAddon(addon);
-    res.send('ok');
-});
