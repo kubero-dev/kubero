@@ -5,7 +5,8 @@ import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 import { PostgresCluster } from '../addons/postgresCluster';
 import { RedisCluster } from '../addons/redisCluster';
 import { Redis } from '../addons/redis';
-import { PerconaServerMongoDB } from '../addons/perconaServerMongoDB';
+//import { PerconaServerMongoDB } from '../addons/perconaServerMongoDB';
+import { MongoDB } from '../addons/mongoDB';
 import { IPlugin } from '../addons/plugin';
 
 
@@ -82,10 +83,14 @@ export class Addons {
             this.addonsList.push(redis)
             console.log(redis.crd)
 
+            const mongoDB = new MongoDB(operators)
+            this.addonsList.push(mongoDB)
+            console.log(mongoDB.crd)
+/*
             const perconaServerMongoDB = new PerconaServerMongoDB(operators)
             this.addonsList.push(perconaServerMongoDB)
             console.log(perconaServerMongoDB.crd)
-
+*/
         })
         .catch(err => {
             console.error(err)

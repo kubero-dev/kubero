@@ -99,6 +99,7 @@
 
 <script>
 import axios from "axios";
+import set from 'lodash.set';
 export default {
     props: {
         addons: {
@@ -139,9 +140,11 @@ export default {
         ],
         selectedAddon: { 
             id: '',
-            name: '',
+            kind: '',
             version: '',
-            formfields: []
+            env: [],
+            crd: {},
+            formfields: {}
         },
     }),
     mounted() {
@@ -167,7 +170,12 @@ export default {
         },
         submitForm() {
             this.dialog = false;
-            console.log(this.selectedAddon);
+
+            // replace the formfields with the form value
+            Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+                set(this.selectedAddon.crd, field, value.default);
+            });
+
             const addon = {
                 id: this.selectedAddon.id,
                 kind: this.selectedAddon.kind,
@@ -175,7 +183,9 @@ export default {
                 env: this.selectedAddon.env,
                 crd: this.selectedAddon.crd,
             };
-            this.$emit('addon-added', this.selectedAddon);
+            this.$emit('addon-added', addon);
+
+            console.log(addon);
 
             this.addons.push(addon);
         }

@@ -12,6 +12,7 @@
     "ansi-regex": ">=5.0.1",
     "axios": "^0.21.4",
     "core-js": "^3.18.3",
+    "lodash": "^4.17.21",
     "lodash-es": "^4.17.20",
     "nth-check": ">=2.0.1",
     "set-value": ">=4.0.1",
