@@ -59,10 +59,10 @@ export class RedisCluster extends Plugin implements IPlugin {
             default: '128Mi',
             required: true
         },
-        'spec.storage.volumeClaimTemplate.sepc.resources.requests.storage': {
+        'spec.storage.volumeClaimTemplate.spec.resources.requests.storage': {
             type: 'text',
             label: 'Storage Size',
-            name: 'spec.storage.volumeClaimTemplate.sepc.resources.requests.storage',
+            name: 'spec.storage.volumeClaimTemplate.spec.resources.requests.storage',
             default: '1Gi',
             required: true
         }
