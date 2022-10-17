@@ -10,7 +10,7 @@ Router.all("/session", (req: Request, res: Response) => {
 
     let status = 200
     let isAuthenticated = false
-    
+
     if (auth.authentication === true) {
         isAuthenticated = req.isAuthenticated()
         if (!isAuthenticated) {
@@ -23,7 +23,7 @@ Router.all("/session", (req: Request, res: Response) => {
 Router.get('/auth/github',
   auth.passport.authenticate('github', { scope: [ 'user:email' ] }));
 
-Router.get('/auth/github/callback', 
+Router.get('/auth/github/callback',
   auth.passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -33,7 +33,7 @@ Router.get('/auth/github/callback',
 Router.get('/auth/oauth2',
   auth.passport.authenticate('oauth2', { scope: [ 'user:email' ] }));
 
-Router.get('/auth/oauth2/callback', 
+Router.get('/auth/oauth2/callback',
   auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -51,12 +51,12 @@ Router.post('/login', function(req: Request, res: Response, next: NextFunction) 
         if (err) {
             return next(err);
         }
-    
+
         if (!user) {
             console.log("login error")
             return res.status(400).send([user, "Cannot log in", info]);
         }
-    
+
         req.login(user, err => {
             console.log("logged in")
             res.send("Logged in");

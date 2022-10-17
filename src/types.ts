@@ -94,7 +94,7 @@ export interface IApp {
         className: string,
         enabled: boolean,
         hosts: [
-            {host: string} 
+            {host: string}
         ],
         paths: [
             {path: string, pathType: string}
@@ -135,7 +135,7 @@ export interface IPipeline {
     name: string;
     //gitrepo: string;
     reviewapps: boolean;
-    phases: IPipelinePhase[]; 
+    phases: IPipelinePhase[];
     buildpack: IBuildpack
     git: {
         keys: object,
@@ -176,7 +176,7 @@ export interface IKubectlMetadata {
         'kubernetes.io/metadata.name'?: String,
         manager?: string;
     }
-    managedFields?: [Array: Object]; 
+    managedFields?: [Array: Object];
     name?: String;
     namespace?: string;
     resourceVersion?: string;

@@ -37,7 +37,7 @@ export interface IAddon {
     id: string
     operator: string,
     enabled: boolean,
-    name: string, 
+    name: string,
     CRDkind: string,
     icon: string,
     version: string
@@ -68,9 +68,9 @@ export class Addons {
     private loadOperators(): void {
         this.kubectl.getOperators()
         .then(operators => {
-            
+
             this.operatorsList = operators;
-            
+
             const postgresCluster = new PostgresCluster(operators)
             this.addonsList.push(postgresCluster)
             console.log(postgresCluster.crd)

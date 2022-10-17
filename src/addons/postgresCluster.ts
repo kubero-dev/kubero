@@ -49,7 +49,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
             description: 'Number of Postgres instances in the cluster'
         },
     };
-    
+
     public env: any[] = [
       {
         name: "DB_VENDOR",

@@ -11,15 +11,15 @@ export const authMiddleware = auth.getAuthMiddleware();
 
 // create a pipeline
 Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
-    let pipeline: IPipeline = { 
-        name: req.body.pipelineName, 
+    let pipeline: IPipeline = {
+        name: req.body.pipelineName,
         phases: req.body.phases,
         buildpack: req.body.buildpack,
         reviewapps: req.body.reviewapps,
         git: req.body.git,
         dockerimage: req.body.dockerimage,
         deploymentstrategy: req.body.deploymentstrategy,
-    }; 
+    };
     req.app.locals.kubero.newPipeline(pipeline);
     res.send("new");
 });
@@ -98,7 +98,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     };
 
     let app = new App(appconfig);
-    
+
     req.app.locals.kubero.updateApp(app, req.body.resourceVersion);
 
     res.send("updated");
@@ -107,7 +107,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
 // get app details
 Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send(app.body); 
+    res.send(app.body);
 });
 
 // get all apps in a pipeline
@@ -119,5 +119,5 @@ Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Req
 //restart app
 Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async function (req: Request, res: Response) {
     req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send("restarted"); 
+    res.send("restarted");
 });

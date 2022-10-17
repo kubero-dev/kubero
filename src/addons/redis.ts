@@ -59,7 +59,7 @@ export class Redis extends Plugin implements IPlugin {
             required: true
         }
     };
-    
+
     public env: any[] = []
 
     constructor(availableOperators: any) {

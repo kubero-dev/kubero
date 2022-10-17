@@ -11,7 +11,7 @@ import axios from 'axios';
 
 type User =  {
     id: number,
-    method: string, 
+    method: string,
     username: string,
 }
 
@@ -30,20 +30,20 @@ export class Auth {
 
         (process.env.KUBERO_USERS) ? this.authmethods.local = true : this.authmethods.local = false;
 
-        (process.env.GITHUB_CLIENT_ID && 
-         process.env.GITHUB_CLIENT_SECRET && 
+        (process.env.GITHUB_CLIENT_ID &&
+         process.env.GITHUB_CLIENT_SECRET &&
          process.env.GITHUB_CLIENT_CALLBACKURL ) ? this.authmethods.github = true : this.authmethods.github = false;
 
-        (process.env.OAUTO2_CLIENT_NAME && 
-         process.env.OAUTO2_CLIENT_AUTH_URL && 
-         process.env.OAUTO2_CLIENT_TOKEN_URL && 
-         process.env.OAUTH2_CLIENT_ID && 
-         process.env.OAUTH2_CLIENT_SECRET && 
+        (process.env.OAUTO2_CLIENT_NAME &&
+         process.env.OAUTO2_CLIENT_AUTH_URL &&
+         process.env.OAUTO2_CLIENT_TOKEN_URL &&
+         process.env.OAUTH2_CLIENT_ID &&
+         process.env.OAUTH2_CLIENT_SECRET &&
          process.env.OAUTH2_CLIENT_CALLBACKURL ) ? this.authmethods.oauth2 = true : this.authmethods.oauth2 = false;
 
         this.authentication = false;
         if (this.authmethods.local || this.authmethods.github || this.authmethods.oauth2) {
-            this.authentication = true; 
+            this.authentication = true;
         }
     }
 
@@ -66,7 +66,7 @@ export class Auth {
                 new LocalStrategy({
                     usernameField: "username",
                     passwordField: "password"
-                }, 
+                },
                 (username, password, done) => {
                     let profile: any = this.users.find((u: any) => {
                         if (u.insecure) {
@@ -75,7 +75,7 @@ export class Auth {
                             return u.username === username && u.password === crypto.createHmac('sha256', process.env.KUBER_SESSION_KEY).update(password).digest('hex')
                         }
                     })
-                    
+
                     if (profile) {
                         const user: User = {
                             method: 'local',
@@ -161,8 +161,8 @@ export class Auth {
             debug.debug(JSON.stringify(authUser))
 
             // try to deserialize user from local environment
-            let user: User | undefined = undefined; 
-            
+            let user: User | undefined = undefined;
+
             if (authUser.method === 'local') {
                 user = this.users.find((user: User) => {
                 return user.id === authUser.id
@@ -181,7 +181,7 @@ export class Auth {
             if (authUser.method === 'oauth2') {
                 done(null, authUser);
             }
-            
+
         })
     }
 

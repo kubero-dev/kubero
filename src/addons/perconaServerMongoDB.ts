@@ -41,7 +41,7 @@ export class PerconaServerMongoDB extends Plugin implements IPlugin {
             description: 'Type of the Expose'
         },
     };
-    
+
     public env: any[] = []
 
     constructor(availableOperators: any) {

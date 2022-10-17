@@ -17,7 +17,7 @@ Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Re
 Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
 
     let ret: string = 'ok';
-    switch (req.params.repoprovider){ 
+    switch (req.params.repoprovider){
         case "github":
             let github_event = req.headers['x-github-event']
             let github_delivery = req.headers['x-github-delivery']

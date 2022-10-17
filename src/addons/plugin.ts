@@ -29,9 +29,9 @@ export abstract class Plugin {
     public plugin?: any;
     public id: string = ''; //same as operator name
     public enabled: boolean = false; // true if installed
-    public version: { 
-        latest:string, 
-        installed: string 
+    public version: {
+        latest:string,
+        installed: string
         } = {
             'latest': '0.0.0', // version fetched from artifacthub
             'installed': '0.0.0', // loaded if avialable from local operators
@@ -63,7 +63,7 @@ export abstract class Plugin {
                 //console.log(error);
             }
         );
-        
+
         // Load data from local Operators
         for (const operator of availableOperators) {
             const operatorName = operator.metadata.name.split(".")[0]
@@ -72,14 +72,14 @@ export abstract class Plugin {
                 this.version.installed = operator.spec.version
 
                 const operatorCRDList = operator.metadata.annotations['alm-examples'];
-                
+
                 for (const op of JSON.parse(operatorCRDList)) {
                     if (op.kind === this.constructor.name) {
                         this.crd = op;
                         break;
                     }
                 }
-                
+
 
             }
         }

@@ -2,14 +2,14 @@ import debug from 'debug';
 debug('app:kubectl')
 
 import {
-    KubeConfig, 
-    VersionApi, 
-    CoreV1Api, 
-    AppsV1Api, 
-    CustomObjectsApi, 
-    KubernetesListObject, 
+    KubeConfig,
+    VersionApi,
+    CoreV1Api,
+    AppsV1Api,
+    CustomObjectsApi,
+    KubernetesListObject,
     KubernetesObject,
-    VersionInfo, 
+    VersionInfo,
     PatchUtils,
     Log as KubeLog,
     V1Pod,
@@ -42,7 +42,7 @@ export class Kubectl {
             let buff = Buffer.from(process.env.KUBECONFIG_BASE64, 'base64');
             const kubeconfig = buff.toString('ascii');
             this.kc.loadFromString(kubeconfig);
-        } else if(process.env.KUBECONFIG_PATH) { 
+        } else if(process.env.KUBECONFIG_PATH) {
             debug.log("load kubectl config from file");
             this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
         } else{
@@ -65,7 +65,7 @@ export class Kubectl {
         this.getKubeVersion().then(v => {
             this.kubeVersion = v;
         })
-        
+
         this.log = new KubeLog(this.kc);
     }
 
@@ -80,10 +80,10 @@ export class Kubectl {
     public async getPipelinesList() {
         this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
-            'application.kubero.dev', 
-            'v1alpha1', 
-            process.env.KUBERO_NAMESPACE || 'kubero', 
-            'kuberopipelines', 
+            'application.kubero.dev',
+            'v1alpha1',
+            process.env.KUBERO_NAMESPACE || 'kubero',
+            'kuberopipelines',
             'default'
         );
         return pipelines.body as IKubectlPipelineList;
@@ -98,7 +98,7 @@ export class Kubectl {
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            process.env.KUBERO_NAMESPACE || 'kubero', 
+            process.env.KUBERO_NAMESPACE || 'kubero',
             "kuberopipelines",
             pipeline
         ).catch(error => {
@@ -112,7 +112,7 @@ export class Kubectl {
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            process.env.KUBERO_NAMESPACE || 'kubero', 
+            process.env.KUBERO_NAMESPACE || 'kubero',
             "kuberopipelines",
             pipelineName
         ).catch(error => {
@@ -126,7 +126,7 @@ export class Kubectl {
         let pipeline = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
-            process.env.KUBERO_NAMESPACE || 'kubero', 
+            process.env.KUBERO_NAMESPACE || 'kubero',
             "kuberopipelines",
             pipelineName
         ).catch(error => {
@@ -157,7 +157,7 @@ export class Kubectl {
         let pipeline = await this.getPipeline(app.pipeline)
         //appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
         appl.spec.deploymentstrategy = pipeline.spec.deploymentstrategy
-        
+
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -179,7 +179,7 @@ export class Kubectl {
         let namespace = app.pipeline+'-'+app.phase;
 
         await this.customObjectsApi.replaceNamespacedCustomObject(
-        //await this.customObjectsApi.patchNamespacedCustomObject( 
+        //await this.customObjectsApi.patchNamespacedCustomObject(
         // patch : https://stackoverflow.com/questions/67520468/patch-k8s-custom-resource-with-kubernetes-client-node
         // https://github.com/kubernetes-client/javascript/blob/master/examples/patch-example.js
             "application.kubero.dev",
@@ -198,7 +198,7 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
-        
+
         await this.customObjectsApi.deleteNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -214,7 +214,7 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
-        
+
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -231,9 +231,9 @@ export class Kubectl {
     public async getAppsList(namespace: string, context: string) {
         this.kc.setCurrentContext(context);
         let appslist = await this.customObjectsApi.listNamespacedCustomObject(
-            'application.kubero.dev', 
-            'v1alpha1', 
-            namespace, 
+            'application.kubero.dev',
+            'v1alpha1',
+            namespace,
             'kuberoapps'
         )
         return appslist.body as IKubectlAppList;
@@ -242,7 +242,7 @@ export class Kubectl {
     public async restartApp(pipelineName: string, phaseName: string, appName: string, workloadType: string, context: string) {
         debug.log("restart app: " + appName);
         this.kc.setCurrentContext(context);
-            
+
         let namespace = pipelineName+'-'+phaseName;
         let deploymentName = appName+'-kuberoapp-'+workloadType;
         const date = new Date();
@@ -257,17 +257,17 @@ export class Kubectl {
               }
             },
           ];
-        
+
         const options = { "headers": { "Content-type": 'application/json-patch+json' } };
         this.appsV1Api.patchNamespacedDeployment(
             deploymentName,
             namespace,
-            patch, 
-            undefined, 
-            undefined, 
-            undefined, 
-            undefined, 
-            options 
+            patch,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            options
         ).then(() => {
             debug.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
         }).catch(error => {

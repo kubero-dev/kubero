@@ -33,7 +33,7 @@ export class MongoDBCluster extends Plugin implements IPlugin {
             description: 'Size of the storage'
         },
     };
-    
+
     public env: any[] = []
 
     constructor(availableOperators: any) {

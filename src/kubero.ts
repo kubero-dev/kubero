@@ -46,7 +46,7 @@ export class Kubero {
         this.listPipelines().then(pl => {
             for (const pipeline of pl.items as IPipeline[]) {
                 this.pipelineStateList.push(pipeline);
-                
+
                 for (const phase of pipeline.phases) {
 
                     if (phase.enabled == true) {
@@ -181,7 +181,7 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
             this.appStateList.push(app);
-            
+
             let namespace = app.pipeline+'-'+app.phase;
             this._io.emit('updatedApps', "created");
         }
@@ -191,7 +191,7 @@ export class Kubero {
     public async updateApp(app: App, resourceVersion: string) {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.setContext(app.pipeline, app.phase);
-        
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
@@ -210,11 +210,11 @@ export class Kubero {
             this._io.emit('updatedApps', "deleted");
         }
     }
-    
+
     private removeAppFromState(pipelineName: string, phaseName: string, appName: string) {
         for (let i = 0; i < this.appStateList.length; i++) {
-            if (this.appStateList[i].name == appName && 
-                this.appStateList[i].pipeline == pipelineName && 
+            if (this.appStateList[i].name == appName &&
+                this.appStateList[i].pipeline == pipelineName &&
                 this.appStateList[i].phase == phaseName) {
                 this.appStateList.splice(i, 1);
             }
@@ -246,14 +246,14 @@ export class Kubero {
                     if (contextName) {
                         const namespace = pipelineName+'-'+phase.name;
                         let apps = await this.kubectl.getAppsList(namespace, contextName);
-                        
+
                         let appslist = new Array();
                         for (const app of apps.items) {
                             appslist.push(app.spec);
                         }
                         // @ts-expect-error ts(2532) FIXME: Object is possibly 'undefined'.
                         pipeline.phases.find(p => p.name == phase.name).apps = appslist;
-                        
+
                     }
                 }
             }
@@ -269,9 +269,9 @@ export class Kubero {
             this.kubectl.restartApp(pipelineName, phaseName, appName, 'worker', contextName);
 
             let message = {
-                'action': 'restarted', 
-                'pipeline':pipelineName, 
-                'phase':phaseName, 
+                'action': 'restarted',
+                'pipeline':pipelineName,
+                'phase':phaseName,
                 'app': appName
             }
             //this._io.emit('restartedApp', message);
@@ -305,11 +305,11 @@ export class Kubero {
             case 'github':
                 webhook = this.githubApi.getWebhook(event, delivery, signature, body);
                 break;
-        
+
             case 'gitea':
                 webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
                 break;
-        
+
             default:
                 break;
         }
@@ -373,15 +373,15 @@ export class Kubero {
 
         for (const pipeline of pipelines.items) {
 
-            if (pipeline.reviewapps && 
-                pipeline.git.repository && 
+            if (pipeline.reviewapps &&
+                pipeline.git.repository &&
                 pipeline.git.repository.ssh_url === ssh_url) {
-                
+
                 debug.debug('found pipeline: '+pipeline.name);
                 let pipelaneName = pipeline.name
                 let phaseName = 'review';
                 let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
-                
+
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
@@ -428,7 +428,7 @@ export class Kubero {
 
                 }
                 let app = new App(appOptions);
-    
+
                 this.newApp(app);
             }
         }
@@ -440,12 +440,12 @@ export class Kubero {
         let websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
 
         for (const app of this.appStateList) {
-            
-            if (app.phase === 'review' && 
-                app.gitrepo && 
-                app.gitrepo.ssh_url === ssh_url && 
+
+            if (app.phase === 'review' &&
+                app.gitrepo &&
+                app.gitrepo.ssh_url === ssh_url &&
                 app.branch === branch) {
-                
+
                     this.deleteApp(app.pipeline, app.phase, websaveTitle);
             }
         }
@@ -481,7 +481,7 @@ export class Kubero {
     }
 
     public emitLogs(pipelineName: string, phaseName: string, appName: string, podName: string, container: string) {
-        
+
         const logStream = new Stream.PassThrough();
 
         logStream.on('data', (chunk: any) => {

@@ -11,7 +11,7 @@ export const authMiddleware = auth.getAuthMiddleware();
 
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
-    
+
     let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
@@ -58,7 +58,7 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
     };
 
     let app = new App(appconfig);
-    
+
     req.app.locals.kubero.newApp(app);
     res.send("new");
 });

@@ -29,7 +29,7 @@ export const before = (app: Express) => {
     app.use(bodyParser.json());
     if (auth.authentication === true) {
         console.log("initialize Passport");
-    
+
         app.use(auth.passport.initialize());
         app.use(auth.passport.session());
     }

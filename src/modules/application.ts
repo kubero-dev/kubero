@@ -6,7 +6,7 @@ export class KubectlApp implements IKubectlApp{
     kind: string;
     metadata: IKubectlMetadata;
     spec: App;
-    
+
     constructor(app: App) {
         this.apiVersion = "application.kubero.dev/v1alpha1";
         this.kind = "KuberoApp";
@@ -16,7 +16,7 @@ export class KubectlApp implements IKubectlApp{
                 manager: 'kubero',
             }
         }
-        this.spec = app; 
+        this.spec = app;
     }
 }
 
@@ -138,7 +138,7 @@ export class App implements IApp{
         name: "",
     };
     private tolerations: [];
-    
+
     constructor(
         app: IApp
     ) {
@@ -196,7 +196,7 @@ export class App implements IApp{
                 ],
                 tls: [],
             }
-        } 
+        }
         this.nameOverride= "",
         this.nodeSelector= {},
         this.podAnnotations= {},

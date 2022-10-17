@@ -13,7 +13,7 @@ export class MongoDB extends Plugin implements IPlugin {
             label: 'MongoDB Name',
             name: 'metadata.name',
             required: true,
-            default: 'mongodbInsstance',
+            default: 'mongodbinstance',
             description: 'The name of the MongoDB cluster'
         },
         'spec.storage.storageSize':{
@@ -23,6 +23,14 @@ export class MongoDB extends Plugin implements IPlugin {
             default: '1Gi',
             required: true,
             description: 'Size of the storage'
+        },
+        'spec.storage.storageClass':{
+            type: 'text',
+            label: 'Sorage Class',
+            name: 'spec.storage.storageClass',
+            default: 'standard',
+            required: true,
+            description: 'Classname of the storage'
         },
     };
     
