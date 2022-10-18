@@ -109,42 +109,15 @@ export default {
     },
     data: () => ({
         dialog: false,
-        availableAddons: [
-          /*
-            { text: 'Redis', value: { 
-                id: 'redis',
-                name: 'Redis', 
-                version: 'v0.0.1'
-            }},
-            { text: 'Percona MongoDB', value: { 
-                id: 'mongodb',
-                name: 'Mongodb', 
-                version: 'v0.0.2'
-            }},
-            { text: 'PostgreSQL', value: { 
-                id: 'postgresql',
-                name: 'Postgresql', 
-                version: 'v0.0.3'
-            } },
-            { text: 'Memcached', value: { 
-                id: 'memcached',
-                name: 'Memcached', 
-                version: 'v0.0.4'
-            } },
-            { text: 'MariaDB', value: { 
-                id: 'mariadb',
-                name: 'Mariadb', 
-                version: 'v0.0.5'
-            } },
-          */
-        ],
-        selectedAddon: { 
+        availableAddons: [],
+        selectedAddon: {
             id: '',
             kind: '',
             version: '',
             env: [],
             crd: {},
-            formfields: {}
+            formfields: {},
+            additionalResources: {}
         },
     }),
     mounted() {
@@ -182,6 +155,7 @@ export default {
                 version: this.selectedAddon.version,
                 env: this.selectedAddon.env,
                 crd: this.selectedAddon.crd,
+                additionalResources: this.selectedAddon.additionalResources,
             };
             this.$emit('addon-added', addon);
 

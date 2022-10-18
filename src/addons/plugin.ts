@@ -39,6 +39,8 @@ export abstract class Plugin {
     public description: string = '';
     public readme: string = '';
     public crd: KubernetesObject = {}; // ExampleCRD which will be used as template
+    public additionalResources: Object = {};
+
     public artifact_url: string = ''; // Example: https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql
 
     public kind: string;

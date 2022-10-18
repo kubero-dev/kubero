@@ -33,8 +33,31 @@ export class MongoDB extends Plugin implements IPlugin {
             description: 'Classname of the storage'
         },
     };
-    
+
     public env: any[] = []
+
+    //https://www.convertsimple.com/convert-yaml-to-javascript-object/
+    public additionalResources: Object = {
+        mongodbSecret: {
+            apiVersion: "v1",
+            stringData: {
+              // TODO - generate a random password or make it configurable
+              password: "test",
+            },
+            kind: "Secret",
+            metadata: {
+              annotations: {
+                'meta.helm.sh/release-name': "test",
+                'meta.helm.sh/release-namespace': "kubero-dev"
+              },
+              labels: {
+                'app.kubernetes.io/managed-by': "Kubero"
+              },
+              name: "mongodb-secret",
+            },
+            type: "Opaque"
+        }
+    }
 
     constructor(availableOperators: any) {
         super();

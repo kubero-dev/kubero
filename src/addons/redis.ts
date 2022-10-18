@@ -1,3 +1,4 @@
+import { KubernetesObject } from '@kubernetes/client-node';
 import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 
 // Classname must be same as the CRD's Name
@@ -61,6 +62,27 @@ export class Redis extends Plugin implements IPlugin {
     };
 
     public env: any[] = []
+
+    public additionalResources: Object = {
+        redisSecret: {
+            apiVersion: "v1",
+            data: {
+              password: "test",
+            },
+            kind: "Secret",
+            metadata: {
+              annotations: {
+                'meta.helm.sh/release-name': "test",
+                'meta.helm.sh/release-namespace': "kubero-dev"
+              },
+              labels: {
+                'app.kubernetes.io/managed-by': "Kubero"
+              },
+              name: "redis-secrets",
+            },
+            type: "Opaque"
+        }
+    }
 
     constructor(availableOperators: any) {
         super();
