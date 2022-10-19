@@ -8,36 +8,44 @@ export class MongoDB extends Plugin implements IPlugin {
     public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
-        'metadata.name':{
+        'MongoDB.metadata.name':{
             type: 'text',
             label: 'MongoDB Name',
-            name: 'metadata.name',
+            name: 'MongoDB.metadata.name',
             required: true,
             default: 'mongodbinstance',
             description: 'The name of the MongoDB cluster'
         },
-        'spec.storage.storageSize':{
+        'MongoDB.spec.storage.storageSize':{
             type: 'text',
             label: 'Sorage Size',
-            name: 'spec.storage.storageSize',
+            name: 'MongoDB.spec.storage.storageSize',
             default: '1Gi',
             required: true,
             description: 'Size of the storage'
         },
-        'spec.storage.storageClass':{
+        'MongoDB.spec.storage.storageClass':{
             type: 'text',
             label: 'Sorage Class',
-            name: 'spec.storage.storageClass',
+            name: 'MongoDB.spec.storage.storageClass',
             default: 'standard',
             required: true,
             description: 'Classname of the storage'
+        },
+        'mongodbSecret.stringData.password':{
+            type: 'text',
+            label: 'MongoDB Password',
+            name: 'mongodbSecret.stringData.password',
+            default: 'changeMe',
+            required: true,
+            description: 'Password for MongoDB'
         },
     };
 
     public env: any[] = []
 
     //https://www.convertsimple.com/convert-yaml-to-javascript-object/
-    public additionalResources: Object = {
+    protected additionalResourceDefinitions: Object = {
         mongodbSecret: {
             apiVersion: "v1",
             stringData: {

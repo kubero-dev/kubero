@@ -21,7 +21,8 @@ export interface IPlugin {
     description: string,
     install: string,
     formfields: {[key: string]: IPluginFormFields},
-    crd: KubernetesObject,
+    //crd: KubernetesObject,
+    resourceDefinitions: any,
     artifact_url: string;
 }
 
@@ -38,8 +39,9 @@ export abstract class Plugin {
         };
     public description: string = '';
     public readme: string = '';
-    public crd: KubernetesObject = {}; // ExampleCRD which will be used as template
-    public additionalResources: Object = {};
+    //public crd: KubernetesObject = {}; // ExampleCRD which will be used as template
+    protected additionalResourceDefinitions: Object = {};
+    public resourceDefinitions: any = {}; // List of CRD to apply
 
     public artifact_url: string = ''; // Example: https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql
 
@@ -77,9 +79,14 @@ export abstract class Plugin {
 
                 for (const op of JSON.parse(operatorCRDList)) {
                     if (op.kind === this.constructor.name) {
-                        this.crd = op;
+                        //this.crd = op;
+                        this.resourceDefinitions[op.kind] = op;
                         break;
                     }
+                }
+
+                for (const [key, value] of Object.entries(this.additionalResourceDefinitions)) {
+                    this.resourceDefinitions[key] = value;
                 }
 
 

@@ -8,7 +8,7 @@ export class MongoDBCluster extends Plugin implements IPlugin {
     public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
-        'metadata.name':{
+        'MongoDBCluster.metadata.name':{
             type: 'text',
             label: 'MongoDB Cluster Name',
             name: 'metadata.name',
@@ -16,7 +16,7 @@ export class MongoDBCluster extends Plugin implements IPlugin {
             default: 'mongodb-cluster',
             description: 'The name of the MongoDB cluster'
         },
-        'spec.clusterSize':{
+        'MongoDBCluster.spec.clusterSize':{
             type: 'number',
             label: 'Clustersize',
             name: 'spec.clusterSize',
@@ -24,7 +24,7 @@ export class MongoDBCluster extends Plugin implements IPlugin {
             required: true,
             description: 'Number of Replicasets MongoDB instances in the cluster'
         },
-        'spec.storage.storageSize':{
+        'MongoDBCluster.spec.storage.storageSize':{
             type: 'text',
             label: 'Sorage Size',
             name: 'spec.storage.storageSize',
@@ -35,6 +35,8 @@ export class MongoDBCluster extends Plugin implements IPlugin {
     };
 
     public env: any[] = []
+
+    protected additionalResourceDefinitions: Object = {}
 
     constructor(availableOperators: any) {
         super();

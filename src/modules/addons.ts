@@ -73,24 +73,15 @@ export class Addons {
 
             const postgresCluster = new PostgresCluster(operators)
             this.addonsList.push(postgresCluster)
-            console.log(postgresCluster.crd)
 
             const redisCluster = new RedisCluster(operators)
             this.addonsList.push(redisCluster)
-            console.log(redisCluster.crd)
 
             const redis = new Redis(operators)
             this.addonsList.push(redis)
-            console.log(redis.crd)
 
             const mongoDB = new MongoDB(operators)
             this.addonsList.push(mongoDB)
-            console.log(mongoDB.crd)
-/*
-            const perconaServerMongoDB = new PerconaServerMongoDB(operators)
-            this.addonsList.push(perconaServerMongoDB)
-            console.log(perconaServerMongoDB.crd)
-*/
         })
         .catch(err => {
             console.error(err)

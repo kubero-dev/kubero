@@ -8,7 +8,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
     public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
-        'metadata.name':{
+        'PostgresCluster.metadata.name':{
             type: 'text',
             label: 'Redis Cluster Name',
             name: 'metadata.name',
@@ -16,7 +16,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
             default: 'pg-cluster',
             description: 'The name of the Redis cluster'
         },
-        'spec.postgresVersion':{
+        'PostgresCluster.spec.postgresVersion':{
             type: 'number',
             label: 'Postgres Version',
             name: 'spec.postgresVersion',
@@ -24,7 +24,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
             required: true,
             description: 'Version of the Running Postgresql'
         },
-        'spec.instances[0].name':{
+        'PostgresCluster.spec.instances[0].name':{
             type: 'text',
             label: 'Cluster Name',
             name: 'spec.instances[0].name',
@@ -32,7 +32,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
             required: true,
             description: 'Name of the Instance'
         },
-        'spec.instances[0].replicas':{
+        'PostgresCluster.spec.instances[0].replicas':{
             type: 'number',
             label: 'Clustersize',
             name: 'spec.instances[0].replicas',
@@ -40,7 +40,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
             required: true,
             description: 'Number of Postgres instances in the cluster'
         },
-        'spec.instances[0].dataVolumeClaimSpec.resources.requests.storage':{
+        'PostgresCluster.spec.instances[0].dataVolumeClaimSpec.resources.requests.storage':{
             type: 'text',
             label: 'Data Volume size',
             name: 'spec.instances[0].dataVolumeClaimSpec.resources.requests.storage',
@@ -101,6 +101,78 @@ export class PostgresCluster extends Plugin implements IPlugin {
         }
       }
     ]
+
+    protected additionalResourceDefinitions: Object = {
+      // override default resource definitions since example is missing "backups" section
+      PostgresCluster : {
+        apiVersion: "postgres-operator.crunchydata.com/v1beta1",
+        kind: "PostgresCluster",
+        metadata: {
+          name: "hippo"
+        },
+        spec: {
+          image: "registry.developers.crunchydata.com/crunchydata/crunchy-postgres:ubi8-14.5-1",
+          postgresVersion: 14,
+          instances: [
+            {
+              name: "instance1",
+              dataVolumeClaimSpec: {
+                accessModes: [
+                  "ReadWriteMany"
+                ],
+                resources: {
+                  requests: {
+                    storage: "1Gi"
+                  }
+                }
+              }
+            }
+          ],
+          backups: {
+            pgbackrest: {
+              image: "registry.developers.crunchydata.com/crunchydata/crunchy-pgbackrest:ubi8-2.40-1",
+              repos: [
+                {
+                  name: "repo1",
+                  volume: {
+                    volumeClaimSpec: {
+                      accessModes: [
+                        "ReadWriteMany"
+                      ],
+                      resources: {
+                        requests: {
+                          storage: "1Gi"
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  name: "repo2",
+                  volume: {
+                    volumeClaimSpec: {
+                      accessModes: [
+                        "ReadWriteMany"
+                      ],
+                      resources: {
+                        requests: {
+                          storage: "1Gi"
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          proxy: {
+            pgBouncer: {
+              image: "registry.developers.crunchydata.com/crunchydata/crunchy-pgbouncer:ubi8-1.17-1"
+            }
+          }
+        }
+      }
+    }
 
     constructor(availableOperators: any) {
         super();

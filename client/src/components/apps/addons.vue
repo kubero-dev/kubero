@@ -115,9 +115,8 @@ export default {
             kind: '',
             version: '',
             env: [],
-            crd: {},
             formfields: {},
-            additionalResources: {}
+            resourceDefinitions: {}
         },
     }),
     mounted() {
@@ -146,7 +145,7 @@ export default {
 
             // replace the formfields with the form value
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
-                set(this.selectedAddon.crd, field, value.default);
+                set(this.selectedAddon.resourceDefinitions, field, value.default);
             });
 
             const addon = {
@@ -154,8 +153,7 @@ export default {
                 kind: this.selectedAddon.kind,
                 version: this.selectedAddon.version,
                 env: this.selectedAddon.env,
-                crd: this.selectedAddon.crd,
-                additionalResources: this.selectedAddon.additionalResources,
+                resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
             this.$emit('addon-added', addon);
 
