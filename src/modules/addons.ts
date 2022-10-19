@@ -7,6 +7,7 @@ import { RedisCluster } from '../addons/redisCluster';
 import { Redis } from '../addons/redis';
 //import { PerconaServerMongoDB } from '../addons/perconaServerMongoDB';
 import { MongoDB } from '../addons/mongoDB';
+import { Minio } from '../addons/minio';
 import { IPlugin } from '../addons/plugin';
 
 
@@ -82,6 +83,9 @@ export class Addons {
 
             const mongoDB = new MongoDB(operators)
             this.addonsList.push(mongoDB)
+
+            const minio = new Minio(operators)
+            this.addonsList.push(minio)
         })
         .catch(err => {
             console.error(err)

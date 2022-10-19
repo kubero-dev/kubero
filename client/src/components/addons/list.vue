@@ -9,12 +9,12 @@
         <v-row>
             <v-col cols="12" sm="12" md="4"
             v-for="addon in addons" :key="addon.kind">
-                <v-card 
+                <v-card
                     :disabled="!addon.enabled"
                     style="padding-bottom: 40px;"
                     color="#fafafa">
                     <v-list-item-content class="justify-center">
-                        
+
                         <v-avatar
                             size="57"
                             rounded
@@ -23,7 +23,7 @@
                             :alt="addon.name"
                             ></v-avatar>
                         <v-card-title>
-                            <v-badge 
+                            <v-badge
                                 v-if="addon.beta"
                                 color="blue"
                                 content="beta"

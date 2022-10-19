@@ -118,7 +118,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
               name: "instance1",
               dataVolumeClaimSpec: {
                 accessModes: [
-                  "ReadWriteMany"
+                  "ReadWriteOnce"
                 ],
                 resources: {
                   requests: {
@@ -137,7 +137,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
                   volume: {
                     volumeClaimSpec: {
                       accessModes: [
-                        "ReadWriteMany"
+                        "ReadWriteOnce"
                       ],
                       resources: {
                         requests: {
@@ -152,7 +152,7 @@ export class PostgresCluster extends Plugin implements IPlugin {
                   volume: {
                     volumeClaimSpec: {
                       accessModes: [
-                        "ReadWriteMany"
+                        "ReadWriteOnce"
                       ],
                       resources: {
                         requests: {
