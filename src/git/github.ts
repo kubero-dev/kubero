@@ -282,7 +282,6 @@ export class GithubApi extends Repo {
         let ret: string[] = [];
         try {
             const repos = await this.octokit.request('GET /user/repos', {})
-            console.log(repos)
             for (let repo of repos.data) {
                 ret.push(repo.ssh_url)
             }

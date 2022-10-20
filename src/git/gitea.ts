@@ -265,9 +265,9 @@ export class GiteaApi extends Repo {
     public async listRepos(): Promise<string[]> {
         let ret: string[] = [];
         try {
-            const repos = await this.gitea.repos.repoList()
+            const repos = await this.gitea.request('GET /user/repos', {})
             for (let repo of repos.data) {
-                ret.push(repo.full_name)
+                ret.push(repo.ssh_url)
             }
         } catch (error) {
             console.log(error)
