@@ -65,7 +65,7 @@ export class GiteaApi extends Repo {
     }
 
     protected async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
-        
+
         let ret: IWebhookR = {
             status: 500,
             statusText: 'error',
@@ -78,7 +78,7 @@ export class GiteaApi extends Repo {
                 events: [],
             }
         }
-        
+
         //https://try.gitea.io/api/swagger#/repository/repoListHooks
         const webhooksList = await this.gitea.repos.repoListHooks(owner, repo)
         .catch((error: any) => {
@@ -88,7 +88,7 @@ export class GiteaApi extends Repo {
 
         // try to find the webhook
         for (let webhook of webhooksList.data) {
-            if (webhook.config.url === url && 
+            if (webhook.config.url === url &&
                 webhook.config.content_type === 'json' &&
                 webhook.active === true) {
                 ret = {
@@ -168,7 +168,7 @@ export class GiteaApi extends Repo {
 
         // try to find the key
         for (let key of keysList.data) {
-            if (key.title === title && 
+            if (key.title === title &&
                 key.read_only === true) {
                 ret = {
                     status: 422,
@@ -233,7 +233,7 @@ export class GiteaApi extends Repo {
             let refs = ref.split('/')
             branch = refs[refs.length - 1]
             ssh_url = body.repository.ssh_url
-        } else if (body.pull_request != undefined) { 
+        } else if (body.pull_request != undefined) {
             action = body.action,
             branch = body.pull_request.head.ref
             ssh_url = body.pull_request.head.repo.ssh_url
@@ -260,5 +260,18 @@ export class GiteaApi extends Repo {
             console.log(error)
             return false;
         }
+    }
+
+    public async listRepos(): Promise<string[]> {
+        let ret: string[] = [];
+        try {
+            const repos = await this.gitea.repos.repoList()
+            for (let repo of repos.data) {
+                ret.push(repo.full_name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        return ret;
     }
 }

@@ -100,7 +100,7 @@ export class GithubApi extends Repo {
     }
 */
     protected async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
-        
+
         let ret: IWebhookR = {
             status: 500,
             statusText: 'error',
@@ -113,7 +113,7 @@ export class GithubApi extends Repo {
                 events: [],
             }
         }
-        
+
         try {
             let res = await this.octokit.request('POST /repos/{owner}/{repo}/hooks', {
                 owner: owner,
@@ -153,7 +153,7 @@ export class GithubApi extends Repo {
                 for (let webhook of existingWebhooksRes.data) {
                     if (webhook.config.url === url) {
                         debug.log("Webhook already exists");
-                        
+
                         ret = {
                             status: res.status,
                             statusText: 'created',
@@ -249,7 +249,7 @@ export class GithubApi extends Repo {
             let refs = ref.split('/')
             branch = refs[refs.length - 1]
             ssh_url = body.repository.ssh_url
-        } else if (body.pull_request != undefined) { 
+        } else if (body.pull_request != undefined) {
             action = body.action,
             branch = body.pull_request.head.ref
             ssh_url = body.pull_request.head.repo.ssh_url
@@ -276,5 +276,19 @@ export class GithubApi extends Repo {
             console.log(error)
             return false;
         }
+    }
+
+    public async listRepos(): Promise<string[]> {
+        let ret: string[] = [];
+        try {
+            const repos = await this.octokit.request('GET /user/repos', {})
+            console.log(repos)
+            for (let repo of repos.data) {
+                ret.push(repo.ssh_url)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        return ret;
     }
 }

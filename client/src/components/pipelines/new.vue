@@ -190,9 +190,12 @@ export default {
       pipelineName: '',
       reviewapps: true,
       /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
-      gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
-      gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],
-      dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from
+      /*gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
+      gitrepo: '',
+      /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
+      gitrepoItems: [],
+      /*dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from*/
+      dockerimage: '',
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
@@ -267,6 +270,7 @@ export default {
       this.getContextList();
       this.listRepositories();
       this.listBuildpacks();
+      this.loadRepository();
     },
     methods: {
       updateBuildpack(buildpack) {
@@ -364,6 +368,15 @@ export default {
           default:
             break;
         }
+      },
+
+      loadRepository() {
+        axios.get(`/api/repo/${this.repotab}/list`)
+        .then(response => {
+          this.gitrepoItems = response.data;
+        }).catch(error => {
+          console.log(error);
+        });
       },
 
       connectRepository(repo) {

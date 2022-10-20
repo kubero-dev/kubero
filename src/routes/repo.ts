@@ -8,6 +8,12 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 
 // connect pipeline with repository
+Router.get('/repo/:repoprovider/list', async function (req: Request, res: Response) {
+    let repolist = await req.app.locals.kubero.listRepos(req.params.repoprovider);
+    res.send(repolist);
+});
+
+// connect pipeline with repository
 Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
     let con = await req.app.locals.kubero.connectRepo(req.params.repoprovider, req.body.gitrepo);
     res.send(con);

@@ -285,6 +285,19 @@ export class Kubero {
     }
 */
 
+    public async listRepos(repoProvider: string) {
+        debug.log('listRepos: '+repoProvider);
+
+        switch (repoProvider) {
+            case 'github':
+                return this.githubApi.listRepos();
+            case 'gitea':
+                return this.giteaApi.listRepos();
+            default:
+                return {'error': 'unknown repo provider'};
+        }
+    }
+
     public async connectRepo(repoProvider: string, repoAddress: string) {
         debug.log('connectRepo: '+repoProvider+' '+repoAddress);
 

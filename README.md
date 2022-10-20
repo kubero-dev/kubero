@@ -27,7 +27,6 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 ## Which heroku features are still missing?
 - Dataclips
 - CLI (Will be added later since kubero has a API)
-- More Buildpacks 
 
 ## Which languages are supported
 Basicly everything that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -54,5 +53,5 @@ https://github.com/kubero-dev/kubero/tree
 2. Connect the Pipeline to your git repository ( not required with pre-build image deployment )
 3. Create your apps with cronjobs and addons
 
-# Full documentation 
+# Full documentation
 https://github.com/kubero-dev/kubero/wiki
