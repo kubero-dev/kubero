@@ -37,11 +37,11 @@
             <v-tab href="#bitbucket" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
             <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
             <v-tab href="#docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>
-        </v-tabs>      
+        </v-tabs>
         </v-col>
       </v-row>
 
-      <v-row 
+      <v-row
         v-if="repotab && repotab=='docker'">
         <v-col
           cols="12"
@@ -57,7 +57,7 @@
         </v-col>
       </v-row>
 
-      <v-row 
+      <v-row
         v-if="repotab && repotab!='docker'">
         <v-col
           cols="12"
@@ -133,7 +133,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      
+
       <v-row v-for="phase in phases" :key="phase.name">
         <v-col
           cols="12"
@@ -167,7 +167,7 @@
                 color="primary"
                 elevation="2"
                 @click="saveForm()"
-                :disabled="!valid 
+                :disabled="!valid
                   || (repotab=='docker' && !dockerimage)
                   || (repotab!='docker' && !gitrepo)"
                 >Sumbit</v-btn>
@@ -187,7 +187,7 @@ export default {
         "Docker",
       ],
       valid: false, // final form validation
-      pipelineName: '', 
+      pipelineName: '',
       reviewapps: true,
       /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
       gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
@@ -256,7 +256,7 @@ export default {
         v => v.length <= 60 || 'Name must be less than 10 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
-      repositoryRules: [ 
+      repositoryRules: [
         v => !!v || 'Repository is required',
         v => v.length <= 60 || 'Repository must be less than 10 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
@@ -411,7 +411,7 @@ export default {
         if (this.repotab == 'docker') {
           deploymentstrategy = "docker"
         }
-        
+
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
@@ -438,10 +438,10 @@ export default {
 <style lang="scss">
 .alert i.v-icon.v-icon {
   color: white !important;
-} 
+}
 
 .onedev{
-    background-image: url('/img/icons/onedev.svg');
+    background-image: url('./../../../public/img/icons/onedev.svg');
     background-size: contain;
     background-repeat: no-repeat;
     filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
@@ -456,7 +456,7 @@ export default {
 }
 
 .gitea{
-    background-image: url('/img/icons/gitea.svg');
+    background-image: url('./../../../public/img/icons/gitea.svg');
     background-size: contain;
     background-repeat: no-repeat;
     filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
