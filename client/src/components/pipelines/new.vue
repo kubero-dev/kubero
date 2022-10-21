@@ -385,10 +385,16 @@ export default {
         }).then(response => {
           this.repository_status = response.data;
 
+          const con_status = {
+            repository: this.repository_status.repository.status,
+            webhook: this.repository_status.webhook.status,
+            keys: this.repository_status.keys.status,
+          }
+
           if (
-            this.repository_status.repository.status === 200 &&
-            (this.repository_status.webhook.status == 200 || this.repository_status.webhook.status == 422) &&
-            (this.repository_status.keys.status == 200 || this.repository_status.keys.status == 201)
+            con_status.repository === 200 &&
+            (con_status.webhook == 200 || con_status.webhook == 201 || con_status.webhook == 422) &&
+            (con_status.keys == 200 || con_status.keys == 201)
           ) {
             this.repository_status.error = false;
             this.repository_status.connected = true;
@@ -397,8 +403,10 @@ export default {
             this.git.webhook = this.repository_status.webhook.data;
             this.git.repository = this.repository_status.repository.data;
           } else if (
-            this.repository_status.repository.status === 200 &&
-            this.repository_status.repository.data.private === false
+            con_status.repository === 200 &&
+            this.repository_status.repository.data.private === false &&
+            con_status.webhook > 399 &&
+            con_status.keys > 399
           ) {
             this.repository_status.error = true;
             this.repository_status.connected = false;
