@@ -48,7 +48,7 @@ https://github.com/kubero-dev/buildpacks
 
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
-<img src="docs/screenshots/createapp.png">
+<img src="docs/screenshots/createapp.gif">
 
 # Usage
 1. Create a pipeline with all your phases
