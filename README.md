@@ -1,5 +1,10 @@
+<p align="center">
 <img src="docs/logo/kubero-logo-horizontal.png">
-
+</p>
+<hr>
+<br>
+![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
 <br>
 <br>
 Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
@@ -7,8 +12,6 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 <br>
 Kubero runs as a operator and has a UI, API and soon a CLI.
 
-![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
 
 ## What can Kubero do for you?
 - Create a CI pipeline with up to 4 separate environments for all your applications: review apps -> testing -> stageing -> production
