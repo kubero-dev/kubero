@@ -5,6 +5,7 @@
 Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
 <br>
 <br>
+Kubero runs as a operator and has a UI, API and soon a CLI.
 
 ![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
@@ -26,7 +27,7 @@ Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. 
 
 ## Which heroku features are still missing?
 - Dataclips
-- CLI (Will be added later since kubero has a API)
+- CLI (Work in progress: https://github.com/kubero-dev/kubero-cli )
 
 ## Which languages are supported
 Basicly everything that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -38,15 +39,16 @@ So far tested languages:
 - PHP ( in Progress )
 - ruby
 - Static HTML
+- rust
+- ...
 
-You find buildpack examples and:
-https://github.com/kubero-dev/kubero/tree
+You find the preconfigured buildpacks and examples here :
+https://github.com/kubero-dev/buildpacks
 
 
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
-<img width="45%" style="vertical-align: top" src="docs/screenshots/app.png">
-<img width="45%" style="vertical-align: top" src="docs/screenshots/appoverview.png">
+<img src="docs/screenshots/createapp.png">
 
 # Usage
 1. Create a pipeline with all your phases
