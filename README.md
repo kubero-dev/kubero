@@ -3,8 +3,10 @@
 </p>
 <hr>
 <br>
+
 ![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
+
 <br>
 <br>
 Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
