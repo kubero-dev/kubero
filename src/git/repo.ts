@@ -51,11 +51,13 @@ export abstract class Repo {
 
     public async connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR | undefined, repository: IRepository, webhook: IWebhookR | undefined}> {
         debug.log('connectPipeline: '+gitrepo);
-        
+
         if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
+            debug.log("KUBERO_WEBHOOK_SECRET is not defined")
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
         if (process.env.KUBERO_WEBHOOK_URL == undefined) {
+            debug.log("KUBERO_WEBHOOK_URL is not defined")
             throw new Error("KUBERO_WEBHOOK_URL is not defined");
         }
 
@@ -98,7 +100,7 @@ export abstract class Repo {
             );
 
             keys = await this.addDeployKey(repository.data.owner, repository.data.name);
-        } 
+        }
 
         return {keys: keys, repository: repository, webhook: webhook};
 
