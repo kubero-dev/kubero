@@ -25,7 +25,7 @@ Kubero runs as a operator and has a UI, API and soon a CLI.
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
 
-## What Kubero can't do for you
+## What Kubero won't do for you
 - Manage your Kubernetes cluster
 - Install and manage your operators
 - Give access to your container CLI
@@ -35,19 +35,19 @@ Kubero runs as a operator and has a UI, API and soon a CLI.
 - CLI (Work in progress: https://github.com/kubero-dev/kubero-cli )
 
 ## Which languages are supported
-Basicly everything that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
+Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
 
-So far tested languages:
-- GoLang (including Hugo)
-- Python
+So far tested languages/frameworks:
+- GoLang (including Hugo, gin-gonic)
+- Python (including Flask) 
 - JavaScript/NodeJS
-- PHP ( in Progress )
-- ruby
+- PHP (including Laravel)
+- ruby (including Rails)
 - Static HTML
-- rust
+- rust (including Rocket)
 - ...
 
-You find the preconfigured buildpacks and examples here :
+You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 
