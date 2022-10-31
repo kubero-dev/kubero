@@ -16,13 +16,13 @@ import { Addons } from './modules/addons';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
 
-const { KUBER_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
+const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
 export const before = (app: Express) => {
     app.use(cors())
     app.use(session({
         name: 'KuberoSessioneee',
-        secret: KUBER_SESSION_KEY,
+        secret: KUBERO_SESSION_KEY,
         resave: false,
         saveUninitialized: true,
     }));

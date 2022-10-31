@@ -71,8 +71,8 @@ export class Auth {
                     let profile: any = this.users.find((u: any) => {
                         if (u.insecure) {
                             return u.username === username && u.password === password
-                        } else if (!u.insecure && process.env.KUBER_SESSION_KEY) {
-                            return u.username === username && u.password === crypto.createHmac('sha256', process.env.KUBER_SESSION_KEY).update(password).digest('hex')
+                        } else if (!u.insecure && process.env.KUBERO_SESSION_KEY) {
+                            return u.username === username && u.password === crypto.createHmac('sha256', process.env.KUBERO_SESSION_KEY).update(password).digest('hex')
                         }
                     })
 
