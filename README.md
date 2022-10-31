@@ -42,9 +42,9 @@ So far tested languages/frameworks:
 - Python (including Flask) 
 - JavaScript/NodeJS
 - PHP (including Laravel)
-- ruby (including Rails)
+- Ruby (including Rails)
 - Static HTML
-- rust (including Rocket)
+- Rust (including Rocket)
 - ...
 
 You find the preconfigured buildpacks and examples here:
