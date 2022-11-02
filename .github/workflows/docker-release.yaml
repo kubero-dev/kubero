@@ -23,7 +23,7 @@ env:
 
 
 jobs:
-  prepare:
+  build:
 
     runs-on: ubuntu-latest
     permissions:
@@ -36,10 +36,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+
       - name: build
         run: |
-          yarn install 
+          yarn install
           yarn build
           cd client
           npm install
@@ -97,10 +97,10 @@ jobs:
       # repository is public to avoid leaking data.  If you would like to publish
       # transparency data even for private images, pass --force to cosign below.
       # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image
-        if: ${{ github.event_name != 'pull_request' }}
-        env:
-          COSIGN_EXPERIMENTAL: "true"
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: cosign sign ${{ steps.kubero-meta.outputs.tags }}@${{ steps.kubero-build-and-push.outputs.digest }}
+#      - name: Sign the published Docker image
+#        if: ${{ github.event_name != 'pull_request' }}
+#          COSIGN_EXPERIMENTAL: "true"
+#        env:
+#        # This step uses the identity token to provision an ephemeral certificate
+#        # against the sigstore community Fulcio instance.
+#        run: cosign sign ${{ steps.kubero-meta.outputs.tags }}@${{ steps.kubero-build-and-push.outputs.digest }}
