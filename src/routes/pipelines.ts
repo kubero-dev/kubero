@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
 import { IApp, IPipeline } from '../types';
 import { App } from '../modules/application';
+import { Webhooks } from '@octokit/webhooks';
 
 const Router = express.Router();
 export const RouterPipelines = Router;
@@ -9,6 +10,27 @@ export const auth = new Auth();
 auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
+
+Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res: Response) {
+    console.log(req.body)
+    let con = await req.app.locals.kubero.connectRepo(req.body.repoprovider.toLowerCase(), req.body.repositoryURL);
+    console.log(con)
+    let pipeline: IPipeline = {
+        name: req.body.pipelineName,
+        phases: req.body.phases,
+        buildpack: req.body.buildpack,
+        reviewapps: req.body.reviewapps,
+        git: {
+            keys: con.keys.data,
+            webhook: con.webhook.data,
+            repository: con.repository.data
+        },
+        dockerimage: req.body.dockerimage,
+        deploymentstrategy: req.body.deploymentstrategy,
+    };
+    req.app.locals.kubero.newPipeline(pipeline);
+    res.send(pipeline);
+});
 
 // create a pipeline
 Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
@@ -51,10 +73,16 @@ Router.get('/pipelines/:pipeline', authMiddleware, async function (req: Request,
 
 // delete a pipeline
 Router.delete('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
-    let pipelines = await req.app.locals.kubero.deletePipeline(req.params.pipeline);
-    res.send(pipelines);
+    await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
+    res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
 });
 
+
+// delete a pipeline
+Router.delete('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Request, res: Response) {
+    await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
+    res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
+});
 
 // delete an app
 Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
