@@ -53,7 +53,7 @@ Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: R
             ret = "bitbucket not supported yet";
             break;
         default:
-            ret = "unknown repoprovider "+req.params.repoprovider;
+            ret = "unknown repoprovider "+escape(req.params.repoprovider);
             break;
     }
     res.send(ret);

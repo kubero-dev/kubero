@@ -21,7 +21,7 @@ const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.
 export const before = (app: Express) => {
     app.use(cors())
     app.use(session({
-        name: 'KuberoSessioneee',
+        name: 'KuberoSession',
         secret: KUBERO_SESSION_KEY,
         resave: false,
         saveUninitialized: true,

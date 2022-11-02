@@ -8,6 +8,7 @@ export const RouterPipelines = Router;
 export const auth = new Auth();
 auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
+export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a pipeline
 Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
@@ -25,9 +26,21 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
 });
 
 // get a list of pipelines
+Router.get('/cli/pipelines', bearerMiddleware, async function (req: Request, res: Response) {
+    let pipelines = await req.app.locals.kubero.listPipelines();
+    res.send(pipelines);
+});
+
+// get a list of pipelines
 Router.get('/pipelines', authMiddleware, async function (req: Request, res: Response) {
     let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
+});
+
+// get a pipeline
+Router.get('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Request, res: Response) {
+    let pipeline = await req.app.locals.kubero.getPipeline(req.params.pipeline);
+    res.send(pipeline);
 });
 
 // get a pipeline

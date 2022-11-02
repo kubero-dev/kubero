@@ -4,6 +4,7 @@ import { Passport, Authenticator, AuthenticateOptions} from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as GitHubStrategy } from 'passport-github2';
 import { Strategy as OAuth2Strategy } from 'passport-oauth2';
+import { Strategy as BearerStrategy } from 'passport-http-bearer';
 import { Request, Response, NextFunction } from 'express';
 
 import * as crypto from "crypto"
@@ -13,6 +14,7 @@ type User =  {
     id: number,
     method: string,
     username: string,
+    apitoken?: string
 }
 
 export class Auth {
@@ -88,6 +90,31 @@ export class Auth {
                     }
                 })
             )
+
+            this.passport.use(
+                'bearer',
+                new BearerStrategy(
+                    (apitoken, done) => {
+                        console.log("BEARER "+apitoken)
+                        let profile: any = this.users.find((u: any) => {
+                            if (u.apitoken) {
+                                return u.apitoken === apitoken
+                            }
+                        })
+
+                        if (profile) {
+                            const user: User = {
+                                method: 'local',
+                                id: profile.id,
+                                username: profile.username,
+                            }
+                            done(null, user)
+                        } else {
+                            done(null, false)
+                        }
+                    }
+                )
+            );
         }
 
         if (this.authmethods.github) {
@@ -206,5 +233,9 @@ export class Auth {
             // skip middleware if no users defined
             return this.noAuthMiddleware;
         }
+    }
+
+    public getBearerMiddleware() {
+        return this.passport.authenticate('bearer', { session: false })
     }
 }

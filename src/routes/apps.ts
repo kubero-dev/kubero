@@ -8,6 +8,7 @@ export const RouterApps = Router;
 export const auth = new Auth();
 auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
+export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
@@ -61,6 +62,11 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
 
     req.app.locals.kubero.newApp(app);
     res.send("new");
+});
+
+// list all availabe apps
+Router.get('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    res.send(await req.app.locals.kubero.getAppStateList());
 });
 
 // list all availabe apps
