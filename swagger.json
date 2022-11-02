@@ -33,51 +33,6 @@
         }
       }
     },
-    "/addons/{pipeline}/{phase}/{addonID}": {
-      "delete": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "pipeline",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "addonID",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "apiVersion": {
-                  "example": "any"
-                },
-                "plural": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/apps": {
       "post": {
         "description": "",
@@ -177,6 +132,17 @@
         }
       }
     },
+    "/cli/apps": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/auth/github": {
       "get": {
         "description": "",
@@ -252,7 +218,29 @@
         }
       }
     },
+    "/cli/config/podsize": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/config/podsize": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/config/buildpacks": {
       "get": {
         "description": "",
         "parameters": [],
@@ -274,7 +262,29 @@
         }
       }
     },
+    "/cli/config/k8s/context": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/config/k8s/context": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/config/repositories": {
       "get": {
         "description": "",
         "parameters": [],
@@ -348,7 +358,7 @@
                 "reviewapps": {
                   "example": "any"
                 },
-                "github": {
+                "git": {
                   "example": "any"
                 },
                 "dockerimage": {
@@ -370,6 +380,35 @@
       "get": {
         "description": "",
         "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/pipelines": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/pipelines/{pipeline}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -605,6 +644,24 @@
           },
           {
             "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/repo/{repoprovider}/list": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "repoprovider",
             "in": "path",
             "required": true,
             "type": "string"
