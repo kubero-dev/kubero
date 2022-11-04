@@ -7,7 +7,7 @@
 - kubero https://github.com/kubero-dev/kubero
 
 
-|                   | kubero              | coolify            | dokku              | Capover            | piku               |
+|                   | kubero              | coolify            | dokku              | Caprover           | piku               |
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
 | User Interface    | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                |
 | Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                |                    |
@@ -19,7 +19,7 @@
 | Autodeployment    | :white_check_mark:  | :white_check_mark: |                    |                    |                    |
 | Pull-Request-Apps | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                |
 | CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    | :white_check_mark: |
-| Builtin Addons    | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    |                    |
+| Builtin Addons    | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |
 | Builtin Services  | :x:                 | :white_check_mark: |                    | :white_check_mark: | :x:                |
 
 
