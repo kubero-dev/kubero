@@ -8,16 +8,17 @@
 
 |                   | kubero              | coolify            | dokku              | Capover            | piku               |
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| User Interface    | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: |                    |
+| User Interface    | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                |
 | Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                |                    |
-| Autoscaling       | :white_check_mark:  | :x:                |                    |                    |                    |
+| Autoscaling       | :white_check_mark:  | :x:                |                    | :x:                | :x:                |
 | Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: |                    |                    |
 | CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: |                    |
 | API               | :white_check_mark:  | :x:                |                    |                    |                    |
+| Autodeployment    | :white_check_mark:  | :white_check_mark: |                    |                    |                    |
 | Pull-Request-Apps | :white_check_mark:  | :white_check_mark: |                    |                    |                    |
-| CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    |                    |
+| CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    | :white_check_mark: |
 | Builtin Addons    | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    |                    |
-| Builtin Services  | :x:                 | :white_check_mark: |                    | :white_check_mark: |                    |
+| Builtin Services  | :x:                 | :white_check_mark: |                    | :white_check_mark: | :x:                |
 
 
 \* Work in progress
