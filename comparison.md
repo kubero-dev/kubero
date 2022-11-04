@@ -28,35 +28,35 @@
 
 
 
-## User interface
+### User interface
 The app needs to be easy to use. It should be possible to deploy an app with a view clicks. The user should be able to see the status of the app and the logs.
 
-## Scaling
+### Scaling
 The app should be able to scale apps horizontally and vertically.
 
-## Auto scaling
+### Auto scaling
 The app should be able to auto scale apps horizontally and vertically.
 
-## Cron jobs
+### Cron jobs
 The app should be able to run timed cron jobs periodically.
 
-## CLI
+### CLI
 The app should have a CLI to manage the running applications.
 
-## API
+### API
 The app should have an API to manage the running applications.
 
-## CI/CD
+### CI/CD
 The app should be able to deploy apps from git repositories.
 
-## Autodeployment
+### Autodeployment
 The app should listen to git pushes on a branch
 
-## Pullrequest Apps
+### Pullrequest Apps
 Tha app should automaticly start a new app for every pull request.
 
-## Built in addons
+### Built in addons
 The app should have built in addons like databases, caches, queues, etc.
 
-## Built in Services
+### Built in Services
 The app should have built in services like Wordpress, Nextcloud, Cachet, etc.
