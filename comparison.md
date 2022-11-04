@@ -9,14 +9,14 @@
 
 |                   | kubero              | coolify            | dokku              | Caprover           | piku               |
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| User Interface    | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                |
-| Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                |                    |
+| User Interface    | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                |
+| Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                |
 | Scaling           | :white_check_mark:  | :x:                |                    | :x:                | :x:                |
 | Autoscaling       | :white_check_mark:  | :x:                |                    | :x:                | :x:                |
-| Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: |                    |                    |
-| CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: |                    |
-| API               | :white_check_mark:  | :x:                |                    |                    |                    |
-| Autodeployment    | :white_check_mark:  | :white_check_mark: |                    |                    |                    |
+| Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                |
+| CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| API               | :white_check_mark:  | :x:                | :x: PRO            |                    |                    |
+| Autodeployment    | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                |
 | Pull-Request-Apps | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                |
 | CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    | :white_check_mark: |
 | Builtin Addons    | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |
