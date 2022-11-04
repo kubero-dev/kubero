@@ -7,18 +7,23 @@ export const RouterAddons = Router;
 export const auth = new Auth();
 auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
+export const bearerMiddleware = auth.getBearerMiddleware();
+
 
 
 // get a list of addons
-Router.get('/addons', authMiddleware, async function (req: Request, res: Response) {
-    //res.send('ok');
+Router.get('/cli/addons', bearerMiddleware, async function (req: Request, res: Response) {
     let addonslist = await req.app.locals.addons.getAddonsList();
     res.send(addonslist)
 });
 
 // get a list of addons
+Router.get('/addons', authMiddleware, async function (req: Request, res: Response) {
+    let addonslist = await req.app.locals.addons.getAddonsList();
+    res.send(addonslist)
+});
+
 Router.get('/addons/operators', authMiddleware, async function (req: Request, res: Response) {
-    //res.send('ok');
     let operatorslist = await req.app.locals.addons.getOperatorsList();
     res.send(operatorslist)
 });
