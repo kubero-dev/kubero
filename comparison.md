@@ -6,26 +6,26 @@
 - piku https://github.com/piku/piku
 - kubero https://github.com/kubero-dev/kubero
 - Cuber https://cuber.cloud/
-- Acron https://github.com/acorn-io/acorn
+- Acorn https://github.com/acorn-io/acorn
 
 
 |                   | kubero              | coolify            | dokku              | Caprover           | piku               | Cuber              | Acorn        | Heroku <br>Private Space |
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
 | User Interface    | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
-| Multi User        | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    |                    |                    |                    | :white_check_mark: |
+| Multi User        | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | N/A                | N/A                | N/A                | :white_check_mark: |
 | Kubernetes        | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | Multi Kubernetes  | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                | N/A                |
 | Scaling           | :white_check_mark:  | :x:                | :x:                | :white_check_mark: | vertically         | :x:                | :x:                | :white_check_mark: |
 | Autoscaling       | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                | :white_check_mark: |
 | Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 | CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| API               | :white_check_mark:  | :x:                | :x: PRO            | :white_check_mark: | :x:                |                    | :white_check_mark: | :white_check_mark: |
-| Autodeployment    | :white_check_mark:  | :white_check_mark: | plugin             |                    | :x:                |                    |                    | :white_check_mark: |
-| Pull-Request-Apps | :white_check_mark:  | :white_check_mark: | plugin             |                    | :x:                | :x:                | :x:                | :white_check_mark: |
+| API               | :white_check_mark:  | :x:                | :x: PRO            | :white_check_mark: | :x:                | :x:                | :white_check_mark: | :white_check_mark: |
+| Autodeployment    | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
+| Pull-Request-Apps | :white_check_mark:  | :white_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                | :white_check_mark: |
 | CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :white_check_mark: |
-| Builtin Addons    | :white_check_mark:  | :white_check_mark: | plugin             | :white_check_mark: | :x:                |                    |                    | :white_check_mark: |
-| Builtin Services  | :x:                 | :white_check_mark: | :x:                | :white_check_mark: | :x:                |                    |                    | :white_check_mark: |
-| Any language      | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |                    | :white_check_mark: |
+| Builtin Addons    | :white_check_mark:  | :white_check_mark: | plugin             | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
+| Builtin Services  | :x:                 | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
+| Any language      | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 
 \* Work in progress
@@ -63,7 +63,7 @@ The app should have an API to manage the running applications.
 The app should be able to deploy apps from git repositories.
 
 ### Autodeployment
-The app should listen to git pushes on a branch
+The app should listen to git pushes on a branch (webhooks)
 
 ### Pullrequest Apps
 Tha app should automaticly start a new app for every pull request.
