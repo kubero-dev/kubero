@@ -13,7 +13,7 @@
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:-------------------:|
 | User Interface    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                | :x:                | :x:                |
 | Multi User        | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | N/A                | N/A                | N/A                |
-| Kubernetes        | :white_check_mark:  | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :white_check_mark: | :white_check_mark: |
+| Kubernetes        | N/A                 | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :white_check_mark: | :white_check_mark: |
 | Multi Kubernetes  | N/A                 | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | Scaling           | :white_check_mark:  | :white_check_mark:  | :x:                | :x:                | :white_check_mark: | vertically         | :x:                | :x:                |
 | Autoscaling       | :white_check_mark:  | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
