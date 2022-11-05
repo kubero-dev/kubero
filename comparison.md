@@ -22,6 +22,7 @@
 | API               | :white_check_mark:  | :white_check_mark:  | :x:                | :x: PRO            | :white_check_mark: | :x:                | :x:                | :white_check_mark: |
 | Autodeployment    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                |
 | Pull-Request-Apps | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
+| Dataclips         | :white_check_mark:  | :x:                 | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
 | CI/CD             | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                |
 | Builtin Addons    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | plugin             | :white_check_mark: | :x:                | :x:                | :x:                |
 | Builtin Services  | :white_check_mark:  | :x:                 | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                |
