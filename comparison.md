@@ -5,22 +5,25 @@
 - dokku https://dokku.com/
 - piku https://github.com/piku/piku
 - kubero https://github.com/kubero-dev/kubero
+- Cuber
+- Acron https://github.com/acorn-io/acorn
 
 
-|                   | kubero              | coolify            | dokku              | Caprover           | piku               |
-|-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|
-| User Interface    | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                |
-| Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                |
-| Scaling           | :white_check_mark:  | :x:                |                    | :x:                | :x:                |
-| Autoscaling       | :white_check_mark:  | :x:                |                    | :x:                | :x:                |
-| Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                |
-| CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| API               | :white_check_mark:  | :x:                | :x: PRO            |                    |                    |
+|                   | kubero              | coolify            | dokku              | Caprover           | piku               | Cuber              | Acorn              | Heroku Private Space |
+|-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:--------------------:|
+| User Interface    | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
+| Kubernetes        | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Scaling           | :white_check_mark:  | :x:                |                    | :x:                | :x:                | :x:                | :x:                | :white_check_mark: |
+| Autoscaling       | :white_check_mark:  | :x:                |                    | :x:                | :x:                | :x:                | :x:                | :white_check_mark: |
+| Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| CLI               | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| API               | :white_check_mark:  | :x:                | :x: PRO            |                    |                    |                    | :white_check_mark: | :white_check_mark: |
 | Autodeployment    | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                |
-| Pull-Request-Apps | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                |
-| CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    | :white_check_mark: |
+| Pull-Request-Apps | :white_check_mark:  | :white_check_mark: |                    |                    | :x:                | :x:                | :x:                |
+| CI/CD             | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    | :white_check_mark: | :x:                | :x:                |
 | Builtin Addons    | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: |                    |
 | Builtin Services  | :x:                 | :white_check_mark: |                    | :white_check_mark: | :x:                |
+| Any language      | :white_check_mark:
 
 
 \* Work in progress
