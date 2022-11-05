@@ -5,7 +5,7 @@
 - dokku https://dokku.com/
 - piku https://github.com/piku/piku
 - kubero https://github.com/kubero-dev/kubero
-- Cuber
+- Cuber https://cuber.cloud/
 - Acron https://github.com/acorn-io/acorn
 
 
@@ -14,6 +14,7 @@
 | User Interface    | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                | :x:                | :x:                | :white_check_mark: |
 | Multi User        | :white_check_mark:  | :white_check_mark: | :white_check_mark: |                    |                    |                    |                    | :white_check_mark: |
 | Kubernetes        | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| Multi Kubernetes  | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                | N/A                |
 | Scaling           | :white_check_mark:  | :x:                | :x:                | :white_check_mark: | vertically         | :x:                | :x:                | :white_check_mark: |
 | Autoscaling       | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                | :white_check_mark: |
 | Cronjobs          | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
@@ -35,6 +36,14 @@
 ### User interface
 The app needs to be easy to use. It should be possible to deploy an app with a view clicks. The user should be able to see the status of the app and the logs.
 
+### Multi User
+The app should be able to handle multiple users. Each user should be able manage applications.
+
+### Kubernetes
+Kubernetes has benefits like metrics, logmanagement, autoscaling and immutable infrastructure (restarts when the app crashes).
+
+### Multi Kubernetes
+It should be possible to deploy its apps to multiple different Kubernetes clusters.
 ### Scaling
 The app should be able to scale apps horizontally and vertically.
 
