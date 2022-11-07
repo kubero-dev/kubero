@@ -61,7 +61,10 @@ Router.get('/cli/pipelines', bearerMiddleware, async function (req: Request, res
 
 // get a list of pipelines
 Router.get('/pipelines', authMiddleware, async function (req: Request, res: Response) {
-    let pipelines = await req.app.locals.kubero.listPipelines();
+    let pipelines = await req.app.locals.kubero.listPipelines()
+    .catch((err: any) => {
+        console.log(err)
+    });
     res.send(pipelines);
 });
 

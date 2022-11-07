@@ -27,7 +27,7 @@ export class Kubectl {
     private coreV1Api: CoreV1Api;
     private appsV1Api: AppsV1Api;
     private customObjectsApi: CustomObjectsApi;
-    private kubeVersion: VersionInfo;
+    private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
     public log: KubeLog;
     public config: IKuberoConfig;
@@ -62,7 +62,12 @@ export class Kubectl {
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
 
         this.kubeVersion = new VersionInfo();
-        this.getKubeVersion().then(v => {
+        this.getKubeVersion()
+        .catch(error => {
+            debug.log("error getting kube version");
+            debug.log(error);
+        })
+        .then(v => {
             this.kubeVersion = v;
         })
 
