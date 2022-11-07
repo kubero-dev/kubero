@@ -5,16 +5,12 @@ import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
 import { IWebhook} from './git/types';
-import { IAddon, IAddonMinimal } from './modules/addons';
-import set from 'lodash.set';
 import YAML from 'yaml';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Stream } from 'stream';
 //const stream = require('stream');
-import * as crypto from 'crypto'
-import sshpk from 'sshpk';
 
 debug('app:kubero')
 
@@ -97,7 +93,10 @@ export class Kubero {
     public async setContext(pipelineName: string, phaseName: string): Promise<boolean> {
         const context = this.getContext(pipelineName, phaseName)
         if (context) {
-            await this.kubectl.setCurrentContext(context);
+            await this.kubectl.setCurrentContext(context)
+            .catch(error => {
+                debug.debug(error);
+            });
             return true;
         } else {
             return false;
