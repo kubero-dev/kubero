@@ -1,4 +1,4 @@
-<template>
+    <template>
     <v-container>
 
                 <v-row class="justify-space-between">
@@ -7,7 +7,7 @@
                     </v-col>
                     <v-spacer />
                     <v-col class="text-right">
-                        <v-btn 
+                        <v-btn
                         elevation="2"
                         color="primary"
                         :to="{ name: 'New Pipeline'}"
@@ -15,10 +15,16 @@
                     </v-col>
                 </v-row>
 
+                <v-row v-if="apps && apps.length < 1">
+                    <v-col cols="12" style="text-align: center;">
+                        <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
+                        <h2>Ready to start building your first pipeline?</h2>
+                    </v-col>
+                </v-row>
+
                 <v-row v-for="item in apps" :key="item.name">
                     <v-col cols="12">
                         <v-card elevation="2" outlined color="#fafafa">
-                            
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" sm="12" md="6">
