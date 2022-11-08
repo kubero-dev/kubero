@@ -160,6 +160,11 @@ Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     res.send(app.body);
 });
 
+Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
+    res.send(apps);
+});
+
 // get all apps in a pipeline
 Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Request, res: Response) {
     let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);

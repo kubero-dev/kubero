@@ -95,7 +95,6 @@ export class Auth {
                 'bearer',
                 new BearerStrategy(
                     (apitoken, done) => {
-                        console.log("BEARER "+apitoken)
                         let profile: any = this.users.find((u: any) => {
                             if (u.apitoken) {
                                 return u.apitoken === apitoken

@@ -273,7 +273,7 @@ export class GithubApi extends Repo {
 
             return webhook;
         } catch (error) {
-            console.log(error)
+            debug.log(error)
             return false;
         }
     }
@@ -286,7 +286,7 @@ export class GithubApi extends Repo {
                 ret.push(repo.ssh_url)
             }
         } catch (error) {
-            console.log(error)
+            debug.log(error)
         }
         return ret;
     }
