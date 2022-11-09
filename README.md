@@ -39,7 +39,7 @@ Basicly *everything* that can be shipped in a single container. Kubero uses offi
 
 So far tested languages/frameworks:
 - GoLang (including Hugo, gin-gonic)
-- Python (including Flask) 
+- Python (including Flask)
 - JavaScript/NodeJS
 - PHP (including Laravel)
 - Ruby (including Rails)
@@ -50,6 +50,11 @@ So far tested languages/frameworks:
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
+
+Staring this prijects helps a lot. ⭐ Thank you!
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
 
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
