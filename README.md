@@ -51,11 +51,6 @@ You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 
-Staring this prijects helps a lot. ⭐ Thank you!
-## Stargazers over time
-
-[![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
-
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
 <img src="docs/screenshots/createapp.gif">
@@ -67,3 +62,8 @@ Staring this prijects helps a lot. ⭐ Thank you!
 
 # Full documentation
 https://github.com/kubero-dev/kubero/wiki
+
+Staring this prijects helps a lot. ⭐ Thank you!
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
