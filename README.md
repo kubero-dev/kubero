@@ -63,7 +63,7 @@ https://github.com/kubero-dev/buildpacks
 # Full documentation
 https://github.com/kubero-dev/kubero/wiki
 
-Staring this projects helps a lot. ⭐ Thank you!
 ## Stargazers over time
+Staring this projects helps a lot. ⭐ Thank you!
 
 [![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
