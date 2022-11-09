@@ -6,3 +6,4 @@
 <img src="app.png">
 <img src="addons.png">
 <img src="login.png">
+<img src="cli.png">
