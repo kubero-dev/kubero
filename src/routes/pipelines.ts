@@ -99,6 +99,12 @@ Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function
     res.send("deleted");
 });
 
+// delete an app
+Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async function (req: Request, res: Response) {
+    await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+    res.send("deleted "+req.params.pipeline+" "+req.params.phase+" "+req.params.app);
+});
+
 // update a app in a specific pipeline
 Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
 
