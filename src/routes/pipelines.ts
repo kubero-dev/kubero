@@ -12,15 +12,14 @@ export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
 Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res: Response) {
-    console.log(req.body)
-    let con = await req.app.locals.kubero.connectRepo(req.body.repoprovider.toLowerCase(), req.body.repositoryURL);
+    let con = await req.app.locals.kubero.connectRepo(
+        req.body.git.repository.provider.toLowerCase(),
+        req.body.git.repository.ssh_url);
 
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
-    const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack);
-    console.log(buildpackList)
+    const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack.name);
 
-    console.log(con)
     let pipeline: IPipeline = {
         name: req.body.pipelineName,
         phases: req.body.phases,

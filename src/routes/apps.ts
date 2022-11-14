@@ -10,6 +10,10 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
+// create a app with CLI
+Router.post('/apps', bearerMiddleware, async function (req: Request, res: Response) {
+});
+
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
 

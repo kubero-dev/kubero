@@ -15,7 +15,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-if="apps && apps.length < 1">
+                <v-row v-if="apps && apps.length < 1" class="delay-visible-enter-active">
                     <v-col cols="12" style="text-align: center;">
                         <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
                         <h2>Ready to start building your first pipeline?</h2>
@@ -117,6 +117,16 @@ export default {
 </script>
 
 <style lang="scss">
+.delay-visible-enter-active {
+    opacity: 0;
+    animation: fadeIn 2s;
+    animation-delay: 1s;
+    animation-fill-mode: forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
 .v-card a{
     text-decoration: none;
     color: #8560A9 !important;
