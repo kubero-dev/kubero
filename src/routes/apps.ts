@@ -12,6 +12,7 @@ export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a app with CLI
 Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+
     const app = createApp(req);
     req.app.locals.kubero.newApp(app);
     res.send("new");
@@ -25,11 +26,15 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
 });
 
 function createApp(req: Request,) : IApp {
+    const buildpackList = req.app.locals.kubero.getBuildpacks()
+
+    const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack);
+
     let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
-        buildpack: req.body.buildpack.name,
+        buildpack: req.body.buildpack,
         deploymentstrategy: req.body.deploymentstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
@@ -40,12 +45,12 @@ function createApp(req: Request,) : IApp {
         envVars: req.body.envvars,
         image: {
             containerPort: req.body.image.containerport,
-            repository: req.body.image.repository,
-            tag: req.body.image.tag || "main",
+            repository: selectedBuildpack.repository,
+            tag: selectedBuildpack.tag || "main",
             pullPolicy: "Always",
-            fetch: req.body.image.fetch,
-            build: req.body.image.build,
-            run: req.body.image.run,
+            fetch: selectedBuildpack.fetch,
+            build: selectedBuildpack.build,
+            run: selectedBuildpack.run,
         },
         web: req.body.web,
         worker: req.body.worker,
