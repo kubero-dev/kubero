@@ -49,7 +49,7 @@
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
 
-      <v-row 
+      <v-row
         v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
@@ -65,7 +65,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row 
+      <v-row
         v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
@@ -80,7 +80,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row 
+      <v-row
         v-if="this.pipelineData.deploymentstrategy == 'git'">
         <v-col
           cols="12"
@@ -93,7 +93,7 @@
         </v-col>
       </v-row>
 
-      <v-row 
+      <v-row
         v-if="this.pipelineData.deploymentstrategy == 'docker'">
         <v-col
           cols="12"
@@ -108,7 +108,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row 
+      <v-row
         v-if="this.pipelineData.deploymentstrategy == 'docker'">
         <v-col
           cols="12"
@@ -390,7 +390,7 @@
           cols="12"
           md="2"
         >
-        
+
           <v-card color="#F7F8FB">
             <v-list-item-content class="justify-center">
               <div class="mx-auto text-center">
@@ -504,7 +504,7 @@ export default {
       ],
       */
       gitrepo: {
-        ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git', 
+        ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git',
       },
       branch: 'main',
       docker: {
@@ -533,8 +533,8 @@ export default {
       workerreplicasrange: [0,0],
       cronjobs: [
         /*
-        { 
-          name: '', 
+        {
+          name: '',
           schedule: '',
           image: '',
           command: '',
@@ -544,20 +544,20 @@ export default {
       ],
       addons: [
         /*
-        { 
-          id: "redis", 
-          name: 'Redis', 
+        {
+          id: "redis",
+          name: 'Redis',
           version: 'v0.0.1'
         },
         */
-        
+
       ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
-      repositoryRules: [ 
+      repositoryRules: [
         //v => !!v || 'Repository is required',
         v => v.length <= 60 || 'Repository must be less than 10 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
@@ -684,8 +684,8 @@ export default {
             this.workerreplicas = response.data.spec.worker.replicaCount;
             this.webreplicasrange = [response.data.spec.web.autoscaling.minReplicas, response.data.spec.web.autoscaling.maxReplicas];
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
-            this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || []; 
-            this.addons= response.data.spec.addons || []; 
+            this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
+            this.addons= response.data.spec.addons || [];
           });
         }
       },
@@ -709,10 +709,24 @@ export default {
           envvars: this.envvars,
           podsize: this.podsize,
           autoscale: this.autoscale,
-          webreplicas: this.webreplicas,
-          workerreplicas: this.workerreplicas,
-          webreplicasrange: this.webreplicasrange,
-          workerreplicasrange: this.workerreplicasrange,
+          web: {
+            replicaCount: this.webreplicas || 1,
+            autoscaling: {
+              minReplicas: this.webreplicasrange[0] || 1,
+              maxReplicas: this.webreplicasrange[1] || 0,
+              targetCPUUtilizationPercentage : 80,
+              targetMemoryUtilizationPercentage : 80,
+            },
+          },
+          worker: {
+            replicaCount: this.workerreplicas || 0,
+            autoscaling: {
+              minReplicas: this.workerreplicasrange[0] || 0,
+              maxReplicas: this.workerreplicasrange[1] || 0,
+              targetCPUUtilizationPercentage : 80,
+              targetMemoryUtilizationPercentage : 80,
+            },
+          },
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
 
@@ -744,10 +758,24 @@ export default {
           envvars: this.envvars,
           podsize: this.podsize,
           autoscale: this.autoscale,
-          webreplicas: this.webreplicas,
-          workerreplicas: this.workerreplicas,
-          webreplicasrange: this.webreplicasrange,
-          workerreplicasrange: this.workerreplicasrange,
+          web: {
+            replicaCount: this.webreplicas || 1,
+            autoscaling: {
+              minReplicas: this.webreplicasrange[0] || 1,
+              maxReplicas: this.webreplicasrange[1] || 0,
+              targetCPUUtilizationPercentage : 80,
+              targetMemoryUtilizationPercentage : 80,
+            },
+          },
+          worker: {
+            replicaCount: this.workerreplicas || 0,
+            autoscaling: {
+              minReplicas: this.workerreplicasrange[0] || 0,
+              maxReplicas: this.workerreplicasrange[1] || 0,
+              targetCPUUtilizationPercentage : 80,
+              targetMemoryUtilizationPercentage : 80,
+            },
+          },
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
         })
@@ -791,7 +819,7 @@ export default {
       },
       cronjobFormat(cronjobs) {
         cronjobs.map(cronjob => {
-          // TODO make sure cronjob has a valid structure 
+          // TODO make sure cronjob has a valid structure
           cronjob.name = cronjob.name.replace(/\s/g, '-');
           cronjob.restartPolicy = 'OnFailure';
 
@@ -799,7 +827,7 @@ export default {
           //cronjob.command = cronjob.command.replace(/\//g, '-');
           //cronjob.command = cronjob.command.replace(/\*/g, '*');
           //cronjob.command = cronjob.command.split(" ");
-          cronjob.command = cronjob.command.match(/(?:[^\s"]+|"[^"]*")+/g) 
+          cronjob.command = cronjob.command.match(/(?:[^\s"]+|"[^"]*")+/g)
         });
         return cronjobs;
       },

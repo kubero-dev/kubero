@@ -11,12 +11,20 @@ export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a app with CLI
-Router.post('/apps', bearerMiddleware, async function (req: Request, res: Response) {
+Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    const app = createApp(req);
+    req.app.locals.kubero.newApp(app);
+    res.send("new");
 });
 
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
+    const app = createApp(req);
+    req.app.locals.kubero.newApp(app);
+    res.send("new");
+});
 
+function createApp(req: Request,) : IApp {
     let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
@@ -39,6 +47,9 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
             build: req.body.image.build,
             run: req.body.image.run,
         },
+        web: req.body.web,
+        worker: req.body.worker,
+        /*
         web: {
             replicaCount: req.body.webreplicas,
             autoscaling: {
@@ -57,16 +68,15 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
                 targetMemoryUtilizationPercentage: req.body.workertargetMemoryUtilizationPercentage || 0
             }
         },
+        */
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
     };
 
     let app = new App(appconfig);
-
-    req.app.locals.kubero.newApp(app);
-    res.send("new");
-});
+    return app;
+}
 
 // list all availabe apps
 Router.get('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {

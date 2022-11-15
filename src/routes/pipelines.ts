@@ -129,6 +129,9 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
             build: req.body.image.build,
             run: req.body.image.run,
         },
+        web: req.body.web,
+        worker: req.body.worker,
+        /*
         web: {
             replicaCount: req.body.webreplicas,
             autoscaling: {
@@ -147,6 +150,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
                 targetMemoryUtilizationPercentage: req.body.workertargetMemoryUtilizationPercentage || 0
             }
         },
+        */
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
