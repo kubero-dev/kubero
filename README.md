@@ -50,6 +50,9 @@ So far tested languages/frameworks:
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
+## Quickstart
+1) Download and unpack the Kubero CLI <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">here</a><p>
+2) Run `kubero install` to install all components on your cluster
 
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
