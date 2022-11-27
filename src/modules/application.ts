@@ -1,3 +1,4 @@
+import { env } from 'process';
 import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize} from '../types';
 import { IAddon } from './addons';
 
@@ -110,13 +111,13 @@ export class App implements IApp{
     private imagePullSecrets: [];
     private ingress?: {
         annotations: {},
-        className: "",
+        className: string,
         enabled: true,
         hosts: [
             {
                 host: string,
                 paths: [
-                    {path: '/', pathType: 'ImplementationSpecific'}
+                    {path: string, pathType: string}
                 ]
             }
         ],
@@ -184,13 +185,13 @@ export class App implements IApp{
         if (app.domain) {
             this.ingress= {
                 annotations: {},
-                className: "",
+                className: process.env.KUBERNETES_INGRESS_CLASSNAME || "",
                 enabled: true,
                 hosts: [
                     {
                         host: app.domain,
                         paths: [
-                            {path: '/', pathType: 'ImplementationSpecific'}
+                            {path: "/" , pathType: 'ImplementationSpecific'}
                         ]
                     }
                 ],
