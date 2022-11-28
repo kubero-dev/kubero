@@ -35,30 +35,13 @@
             <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#bitbucket" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
+            <v-tab href="#gogs" disabled>Gogs <v-icon class="gogs"></v-icon></v-tab>
             <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
-            <v-tab href="#docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>
         </v-tabs>
         </v-col>
       </v-row>
 
-      <v-row
-        v-if="repotab && repotab=='docker'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="dockerimage"
-            :rules="imageRules"
-            :counter="60"
-            label="Image"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
-      <v-row
-        v-if="repotab && repotab!='docker'">
+      <v-row>
         <v-col
           cols="12"
           md="6"
@@ -168,8 +151,9 @@
                 elevation="2"
                 @click="saveForm()"
                 :disabled="!valid
-                  || (repotab=='docker' && !dockerimage)
-                  || (repotab!='docker' && !gitrepo)"
+                        || !gitrepo
+                        || !repository_status.connected
+                        || !buildpack"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -183,9 +167,7 @@ export default {
     data: () => ({
       repotab: 'github', //selected tab
       buildpack: undefined,
-      buildpackList: [
-        "Docker",
-      ],
+      buildpackList: [],
       valid: false, // final form validation
       pipelineName: '',
       reviewapps: true,
@@ -194,8 +176,6 @@ export default {
       gitrepo: '',
       /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
       gitrepoItems: [],
-      /*dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from*/
-      dockerimage: '',
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
@@ -339,32 +319,6 @@ export default {
             this.repositoriesList.docker = false;
             break;
             */
-          case 'docker':
-            this.repositoriesList.github = false;
-            this.repositoriesList.gitea = false;
-            this.repositoriesList.gitlab = false;
-            this.repositoriesList.bitbucket = false;
-            this.repositoriesList.docker = true;
-            this.buildpack = {
-              name: "Docker",
-              language: "unknown",
-              repositories: {
-                fetch: {
-                  image: "ghcr.io/kubero-dev/docker-images/base",
-                  tag: "main"
-                },
-                build: {
-                  image: "node",
-                  tag: "latest"
-                },
-                run: {
-                  image: "node",
-                  tag: "latest"
-                }
-              }
-            }
-            this.repository_status.connected = true;
-            break;
           default:
             break;
         }
@@ -427,11 +381,6 @@ export default {
         });
       },
       saveForm() {
-        let deploymentstrategy = "git"
-
-        if (this.repotab == 'docker') {
-          deploymentstrategy = "docker"
-        }
 
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
@@ -439,8 +388,8 @@ export default {
           phases: this.phases,
           reviewapps: this.reviewapps,
           git: this.git,
-          dockerimage: this.dockerimage,
-          deploymentstrategy: deploymentstrategy,
+          dockerimage: '',
+          deploymentstrategy: "git",
           buildpack: this.buildpack,
         })
         .then(response => {
@@ -460,6 +409,22 @@ export default {
 .alert i.v-icon.v-icon {
   color: white !important;
 }
+
+.gogs{
+    background-image: url('./../../../public/img/icons/gogs.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+
+.gogs::before {
+    height: 23px;
+    width: 23px;
+    visibility: hidden;
+    content: "";
+}
+
 
 .onedev{
     background-image: url('./../../../public/img/icons/onedev.svg');
