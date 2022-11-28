@@ -41,7 +41,7 @@
         </v-tabs>
         </v-col>
       </v-row>
-
+<!--
       <v-row
         v-if="repotab && repotab=='docker'">
         <v-col
@@ -57,7 +57,7 @@
           ></v-text-field>
         </v-col>
       </v-row>
-
+-->
       <v-row
         v-if="repotab && repotab!='docker'">
         <v-col
@@ -169,8 +169,9 @@
                 elevation="2"
                 @click="saveForm()"
                 :disabled="!valid
-                  || (repotab=='docker' && !dockerimage)
-                  || (repotab!='docker' && !gitrepo)"
+                        || !gitrepo
+                        || !repository_status.connected
+                        || !buildpack"
                 >Sumbit</v-btn>
         </v-col>
       </v-row>
@@ -184,9 +185,7 @@ export default {
     data: () => ({
       repotab: 'github', //selected tab
       buildpack: undefined,
-      buildpackList: [
-        "Docker",
-      ],
+      buildpackList: [],
       valid: false, // final form validation
       pipelineName: '',
       reviewapps: true,
@@ -196,7 +195,7 @@ export default {
       /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
       gitrepoItems: [],
       /*dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from*/
-      dockerimage: '',
+      //dockerimage: '',
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
@@ -429,11 +428,11 @@ export default {
       },
       saveForm() {
         let deploymentstrategy = "git"
-
+/*
         if (this.repotab == 'docker') {
           deploymentstrategy = "docker"
         }
-
+*/
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
