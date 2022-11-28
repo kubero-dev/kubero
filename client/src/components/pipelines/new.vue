@@ -37,29 +37,11 @@
             <v-tab href="#bitbucket" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
             <v-tab href="#gogs" disabled>Gogs <v-icon class="gogs"></v-icon></v-tab>
             <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
-            <!--<v-tab href="#docker" :disabled="this.repositoriesList.gitlab == false">Docker <v-icon>mdi-docker</v-icon></v-tab>-->
         </v-tabs>
         </v-col>
       </v-row>
-<!--
-      <v-row
-        v-if="repotab && repotab=='docker'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="dockerimage"
-            :rules="imageRules"
-            :counter="60"
-            label="Image"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
--->
-      <v-row
-        v-if="repotab && repotab!='docker'">
+
+      <v-row>
         <v-col
           cols="12"
           md="6"
@@ -194,8 +176,6 @@ export default {
       gitrepo: '',
       /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
       gitrepoItems: [],
-      /*dockerimage: 'ghcr.io/kubero-dev/template-nodeapp', // docker image to pull from*/
-      //dockerimage: '',
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
@@ -339,32 +319,6 @@ export default {
             this.repositoriesList.docker = false;
             break;
             */
-          case 'docker':
-            this.repositoriesList.github = false;
-            this.repositoriesList.gitea = false;
-            this.repositoriesList.gitlab = false;
-            this.repositoriesList.bitbucket = false;
-            this.repositoriesList.docker = true;
-            this.buildpack = {
-              name: "Docker",
-              language: "unknown",
-              repositories: {
-                fetch: {
-                  image: "ghcr.io/kubero-dev/docker-images/base",
-                  tag: "main"
-                },
-                build: {
-                  image: "node",
-                  tag: "latest"
-                },
-                run: {
-                  image: "node",
-                  tag: "latest"
-                }
-              }
-            }
-            this.repository_status.connected = true;
-            break;
           default:
             break;
         }
@@ -427,20 +381,15 @@ export default {
         });
       },
       saveForm() {
-        let deploymentstrategy = "git"
-/*
-        if (this.repotab == 'docker') {
-          deploymentstrategy = "docker"
-        }
-*/
+
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
           git: this.git,
-          dockerimage: this.dockerimage,
-          deploymentstrategy: deploymentstrategy,
+          dockerimage: '',
+          deploymentstrategy: "git",
           buildpack: this.buildpack,
         })
         .then(response => {
