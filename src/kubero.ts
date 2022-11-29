@@ -324,9 +324,11 @@ export class Kubero {
             case 'github':
                 webhook = this.githubApi.getWebhook(event, delivery, signature, body);
                 break;
-
             case 'gitea':
                 webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
+                break;
+            case 'gitlab':
+                webhook = this.gitlabApi.getWebhook(event, delivery, signature, body);
                 break;
 
             default:

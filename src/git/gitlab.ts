@@ -230,21 +230,32 @@ export class GitlabApi extends Repo {
         return ret
     }
 
-    public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
+    public getWebhook(event: string, delivery: string, token: string, body: any): IWebhook | boolean {
         let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
-        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex')
 
         let verified = false;
-        if (hash === signature) {
+        if (secret === token) {
             debug.debug('Gitlab webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
-            debug.log('ERROR: invalid signature for event: '+delivery);
-            debug.log('Hash:      '+hash);
-            debug.log('Signature: '+signature);
+            debug.log('ERROR: invalid token/secret for event: '+delivery);
+            debug.log('Secret:      '+secret);
+            debug.log('Token :      '+token);
             verified = false;
             return false;
         }
+
+        // use github and gitea naming for the event
+        let github_event = event;
+        if (event === 'Push Hook') {
+            github_event = 'push';
+        } else if (event === 'Merge Request Hook') {
+            github_event = 'pull_request';
+        } else {
+            debug.log('ERROR: unknown event: '+event);
+            return false;
+        }
+
 
         let branch: string = 'main';
         let ssh_url: string = '';
@@ -253,20 +264,20 @@ export class GitlabApi extends Repo {
             let ref = body.ref
             let refs = ref.split('/')
             branch = refs[refs.length - 1]
-            ssh_url = body.repository.ssh_url
+            ssh_url = body.project.git_ssh_url
         } else if (body.pull_request != undefined) {
             action = body.action,
             branch = body.pull_request.head.ref
             ssh_url = body.pull_request.head.repo.ssh_url
         } else {
-            ssh_url = body.repository.ssh_url
+            ssh_url = body.project.git_ssh_url
         }
 
         try {
             let webhook: IWebhook = {
                 repoprovider: 'gitlab',
                 action: action,
-                event: event,
+                event: github_event,
                 delivery: delivery,
                 body: body,
                 branch: branch,
