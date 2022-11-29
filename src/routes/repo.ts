@@ -20,7 +20,7 @@ Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Re
 });
 
 // get github webhook events
-Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
+Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
 
     let ret: string = 'ok';
     switch (req.params.repoprovider){
@@ -45,12 +45,15 @@ Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: R
             req.app.locals.kubero.handleWebhook('gitea', gitea_event, gitea_delivery, gitea_signature, gitea_body);
             break;
         case "gitlab":
-            //req.app.locals.kubero.handleGitlabWebhook(req.body);
-            ret = "gitlab not supported yet";
+            let gitlab_event = req.headers['x-gitlab-event']
+            let gitlab_delivery = req.headers['x-gitlab-event-uuid']
+            //let hookId = req.headers['x-github-hook-id']
+            let gitlab_signature = req.headers['x-gitlab-token']
+            let gitlab_body = req.body
+            req.app.locals.kubero.handleWebhook('gitlab', gitlab_event, gitlab_delivery, gitlab_signature, gitlab_body);
             break;
         case "bitbucket":
             //req.app.locals.kubero.handleBitbucketWebhook(req.body);
-            ret = "bitbucket not supported yet";
             break;
         default:
             ret = "unknown repoprovider "+encodeURI(req.params.repoprovider);

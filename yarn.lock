@@ -55,6 +55,13 @@
     underscore "^1.9.1"
     ws "^7.3.1"
 
+"@nerdvision/gitlab-js@^1.0.0-alpha.12":
+  version "1.0.0-alpha.12"
+  resolved "https://registry.yarnpkg.com/@nerdvision/gitlab-js/-/gitlab-js-1.0.0-alpha.12.tgz#2e869b9cb8302284bc2940b3878accc8db17a040"
+  integrity sha512-+Svx3uo/lX+lQ2E3/wn1aOtNcTdcSfycIXwfGv7/rrk6gZ770E/jiyCYUoTSaHKS0nW0lnx7tZeXZfwaEElzBw==
+  dependencies:
+    got "^11.8.1"
+
 "@octokit/auth-token@^2.4.4":
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/@octokit/auth-token/-/auth-token-2.5.0.tgz#27c37ea26c205f28443402477ffd261311f21e36"
@@ -1348,7 +1355,7 @@ glob@^7.0.0, glob@^7.1.3, glob@^7.1.7:
     once "^1.3.0"
     path-is-absolute "^1.0.0"
 
-got@^11.8.0:
+got@^11.8.0, got@^11.8.1:
   version "11.8.5"
   resolved "https://registry.yarnpkg.com/got/-/got-11.8.5.tgz#ce77d045136de56e8f024bebb82ea349bc730046"
   integrity sha512-o0Je4NvQObAuZPHLFoRSkdG2lTgtcynqymzg2Vupdx6PorhaT5MCbIyXG6d4D94kk8ZG57QeosgdiqfJWhEhlQ==

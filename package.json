@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.16.3",
+    "@nerdvision/gitlab-js": "^1.0.0-alpha.12",
     "@octokit/core": "^3.6.0",
     "@octokit/webhooks": "^9.26.0",
     "axios": "^0.27.2",
