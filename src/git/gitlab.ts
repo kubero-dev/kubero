@@ -19,9 +19,12 @@ export class GitlabApi extends Repo {
     constructor(baseURL: string, token: string) {
         super("gitlab");
 
+        console.log("Gitlab API: "+baseURL)
+        console.log("Gitlab token: "+token)
+
         this.gitlab = new GitlabClient({
             token: token,
-            host: baseURL,
+            host: baseURL || 'https://gitlab.com',
         });
     }
 
@@ -282,7 +285,7 @@ export class GitlabApi extends Repo {
 
     public async listRepos(): Promise<string[]> {
         let ret: string[] = [];
-        const repos:any = await this.gitlab.get('projects', {})
+        const repos:any = await this.gitlab.get('projects', { membership: true })
         .catch((error: any) => {
             console.log(error)
             return ret;
