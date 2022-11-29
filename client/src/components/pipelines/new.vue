@@ -30,7 +30,7 @@
           cols="12"
           md="8"
         >
-        <v-tabs icons-and-text v-model="repotab" color="#8560A9">
+        <v-tabs icons-and-text v-model="repotab" color="#8560A9" @change="loadRepository">
             <v-tab href="#github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
             <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
@@ -236,12 +236,12 @@ export default {
       ],
       nameRules: [
         v => !!v || 'Name is required',
-        v => v.length <= 60 || 'Name must be less than 10 characters',
+        v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       repositoryRules: [
         v => !!v || 'Repository is required',
-        v => v.length <= 60 || 'Repository must be less than 10 characters',
+        v => v.length <= 120 || 'Repository must be less than 120 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
@@ -293,14 +293,14 @@ export default {
             this.repositoriesList.docker = false;
             break;
           case 'gitea':
-            this.connectGitea();
+            this.connectRepository('gitea')
             this.repositoriesList.github = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
           case 'gitlab':
-            this.connectGitlab();
+            this.connectRepository('gitlab')
             return;
             /*
             this.repositoriesList.gitea = false;

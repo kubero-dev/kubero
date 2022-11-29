@@ -4,6 +4,7 @@ import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubec
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
+import { GitlabApi } from './git/gitlab';
 import { IWebhook} from './git/types';
 import YAML from 'yaml';
 import * as fs from 'fs';
@@ -21,6 +22,7 @@ export class Kubero {
     private _io: Server;
     private githubApi: GithubApi;
     private giteaApi: GiteaApi;
+    private gitlabApi: GitlabApi;
     private appStateList: IApp[] = [];
     private pipelineStateList: IPipeline[] = [];
     private podLogStreams: string[]= []
@@ -33,6 +35,7 @@ export class Kubero {
 
         this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
+        this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 
@@ -292,6 +295,8 @@ export class Kubero {
                 return this.githubApi.listRepos();
             case 'gitea':
                 return this.giteaApi.listRepos();
+            case 'gitlab':
+                return this.gitlabApi.listRepos();
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -305,6 +310,8 @@ export class Kubero {
                 return this.githubApi.connectRepo(repoAddress);
             case 'gitea':
                 return this.giteaApi.connectRepo(repoAddress);
+            case 'gitlab':
+                return this.gitlabApi.connectRepo(repoAddress);
             default:
                 return {'error': 'unknown repo provider'};
         }
