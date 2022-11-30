@@ -61,7 +61,12 @@ Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Re
             break;
         case "ondev":
         case "bitbucket":
-            //req.app.locals.kubero.handleBitbucketWebhook(req.body);
+            case "gitlab":
+                console.log(req.headers)
+                let bitbucket_event = req.headers['x-event-key']
+                let bitbucket_delivery = req.headers['x-request-uuid']
+                let bitbucket_body = req.body
+                req.app.locals.kubero.handleWebhook('bitbucket', bitbucket_event, bitbucket_delivery, "", bitbucket_body);
             break;
         default:
             ret = "unknown repoprovider "+encodeURI(req.params.repoprovider);

@@ -36,7 +36,7 @@
             <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
             <v-tab href="#gogs" :disabled="this.repositoriesList.gogs == false">Gogs <v-icon class="gogs"></v-icon></v-tab>
-            <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+            <v-tab href="#bitbucket" :disabled="this.repositoriesList.bitbucket == false">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
         </v-col>
       </v-row>
@@ -311,24 +311,20 @@ export default {
             break;
           case 'gitlab':
             this.connectRepository('gitlab')
-            return;
-            /*
-            this.repositoriesList.gitea = false;
             this.repositoriesList.github = false;
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.gogs = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
-            break;
-            */
-          case 'bitbucket':
-            this.connectBitbucket();
             return;
-            /*
+          case 'bitbucket':
+            this.connectRepository('bitbucket')
+            this.repositoriesList.github = false;
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
-            this.repositoriesList.github = false;
+            this.repositoriesList.gogs = false;
             this.repositoriesList.docker = false;
-            break;
-            */
+            return;
           default:
             break;
         }
