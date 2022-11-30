@@ -34,7 +34,7 @@
             <v-tab href="#github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
             <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
-            <v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
+            <!--<v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>-->
             <v-tab href="#gogs" :disabled="this.repositoriesList.gogs == false">Gogs <v-icon class="gogs"></v-icon></v-tab>
             <v-tab href="#bitbucket" :disabled="this.repositoriesList.bitbucket == false">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
