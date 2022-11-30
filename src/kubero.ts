@@ -4,6 +4,7 @@ import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubec
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { GiteaApi } from './git/gitea';
+import { GogsApi } from './git/gogs';
 import { GitlabApi } from './git/gitlab';
 import { IWebhook} from './git/types';
 import YAML from 'yaml';
@@ -22,6 +23,7 @@ export class Kubero {
     private _io: Server;
     private githubApi: GithubApi;
     private giteaApi: GiteaApi;
+    private gogsApi: GogsApi;
     private gitlabApi: GitlabApi;
     private appStateList: IApp[] = [];
     private pipelineStateList: IPipeline[] = [];
@@ -34,6 +36,7 @@ export class Kubero {
         this._io = io;
 
         this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
+        this.gogsApi = new GogsApi(process.env.GOGS_BASEURL as string, process.env.GOGS_PERSONAL_ACCESS_TOKEN as string);
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
         this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
@@ -295,8 +298,12 @@ export class Kubero {
                 return this.githubApi.listRepos();
             case 'gitea':
                 return this.giteaApi.listRepos();
+            case 'gogs':
+                return this.gogsApi.listRepos();
             case 'gitlab':
                 return this.gitlabApi.listRepos();
+            case 'ondev':
+            case 'bitbucket':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -310,8 +317,12 @@ export class Kubero {
                 return this.githubApi.connectRepo(repoAddress);
             case 'gitea':
                 return this.giteaApi.connectRepo(repoAddress);
+            case 'gogs':
+                return this.gogsApi.connectRepo(repoAddress);
             case 'gitlab':
                 return this.gitlabApi.connectRepo(repoAddress);
+            case 'ondev':
+            case 'bitbucket':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -327,10 +338,14 @@ export class Kubero {
             case 'gitea':
                 webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
                 break;
+            case 'gogs':
+                webhook = this.gogsApi.getWebhook(event, delivery, signature, body);
+                break;
             case 'gitlab':
                 webhook = this.gitlabApi.getWebhook(event, delivery, signature, body);
                 break;
-
+            case 'ondev':
+            case 'bitbucket':
             default:
                 break;
         }
@@ -573,6 +588,8 @@ export class Kubero {
             github: false,
             gitea: false,
             gitlab: false,
+            gogs: false,
+            onedev: false,
             bitbucket: false,
             docker: true
         }
@@ -587,6 +604,14 @@ export class Kubero {
 
         if (process.env.GITLAB_PERSONAL_ACCESS_TOKEN) {
             repositories.gitlab = true;
+        }
+
+        if (process.env.GOGS_PERSONAL_ACCESS_TOKEN) {
+            repositories.gogs = true;
+        }
+
+        if (process.env.ONEDEV_PERSONAL_ACCESS_TOKEN) {
+            repositories.onedev = true;
         }
 
         if (process.env.BITBUCKET_PERSONAL_ACCESS_TOKEN) {

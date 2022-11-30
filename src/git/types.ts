@@ -1,5 +1,5 @@
 export interface IWebhook {
-    repoprovider: 'gitea' | 'gitlab' | 'github',
+    repoprovider: 'gitea' | 'gitlab' | 'github' | 'bitbucket' | 'gogs' | 'onedev',
     action: 'opened' | 'reopened' | 'closed' | undefined,
     event: string,
     delivery: string,
