@@ -61,3 +61,17 @@ services:
     ports:
       - "3000:3000"
       - "22:22"
+  onedev:
+    image: 1dev/server:latest
+    container_name: onedev
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - ./.dockerdata/onedev:/opt/onedev
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "6610:6610"
+      - "6611:6611"
