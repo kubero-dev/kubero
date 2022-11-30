@@ -38,20 +38,28 @@ Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Re
             //console.log(req.headers)
             let gitea_event = req.headers['x-gitea-event']
             let gitea_delivery = req.headers['x-gitea-delivery']
-            //let hookId = req.headers['x-github-hook-id']
             let gitea_signature = req.headers['x-hub-signature-256']
             let gitea_body = req.body
 
             req.app.locals.kubero.handleWebhook('gitea', gitea_event, gitea_delivery, gitea_signature, gitea_body);
             break;
+        case "gogs":
+            //console.log(req.headers)
+            let gogs_event = req.headers['x-gogs-event']
+            let gogs_delivery = req.headers['x-gogs-delivery']
+            let gogs_signature = req.headers['x-hub-signature-256']
+            let gogs_body = req.body
+
+            req.app.locals.kubero.handleWebhook('gogs', gogs_event, gogs_delivery, gogs_signature, gogs_body);
+            break;
         case "gitlab":
             let gitlab_event = req.headers['x-gitlab-event']
             let gitlab_delivery = req.headers['x-gitlab-event-uuid']
-            //let hookId = req.headers['x-github-hook-id']
             let gitlab_signature = req.headers['x-gitlab-token']
             let gitlab_body = req.body
             req.app.locals.kubero.handleWebhook('gitlab', gitlab_event, gitlab_delivery, gitlab_signature, gitlab_body);
             break;
+        case "ondev":
         case "bitbucket":
             //req.app.locals.kubero.handleBitbucketWebhook(req.body);
             break;

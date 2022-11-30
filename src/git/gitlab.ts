@@ -1,7 +1,6 @@
 // https://www.nerd.vision/post/nerdvision-gitlab-js-an-easier-way-to-access-the-gitlab-api-in-javascript
 // https://www.npmjs.com/package/@nerdvision/gitlab-js
 import debug from 'debug';
-import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
 import {Client as GitlabClient} from '@nerdvision/gitlab-js';

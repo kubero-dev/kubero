@@ -2,17 +2,17 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
-debug('app:kubero:gitea:api')
+debug('app:kubero:gogs:api')
 
 //https://www.npmjs.com/package/gitea-js
-import { giteaApi } from "gitea-js"
+import { giteaApi, Api } from "gitea-js"
 import { fetch as fetchGitea } from 'cross-fetch';
 
-export class GiteaApi extends Repo {
+export class GogsApi extends Repo {
     private gitea: any;
 
     constructor(baseURL: string, token: string) {
-        super("gitea");
+        super("gogs");
         this.gitea = giteaApi(baseURL, {
             token: token,
             customFetch: fetchGitea,
@@ -117,7 +117,7 @@ export class GiteaApi extends Repo {
                     "push",
                     "pull_request"
                 ],
-                type: "gitea"
+                type: "gogs"
             });
 
             ret = {
@@ -243,7 +243,7 @@ export class GiteaApi extends Repo {
 
         try {
             let webhook: IWebhook = {
-                repoprovider: 'gitea',
+                repoprovider: 'gogs',
                 action: action,
                 event: event,
                 delivery: delivery,
