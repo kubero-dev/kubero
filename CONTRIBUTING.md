@@ -1,7 +1,7 @@
 # How to contribute
 
 All contributions are welcome. For simple typos, just open a PR.
-For bigger ideas it might be better to open a issue first before you put a lot of work into it. This way we can discuss the idea first.
+For bigger ideas it might be better to open a issue first before you put a lot of work into it.
 
 ## Development setup
 ### Requirements

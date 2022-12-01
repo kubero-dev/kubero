@@ -46,6 +46,7 @@ So far tested languages/frameworks:
 - Rust (including Rocket)
 - ...
 
+# Preconfigured Buildpacks
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
@@ -62,8 +63,11 @@ https://github.com/kubero-dev/buildpacks
 2. Connect the Pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
 
-# Full documentation
+# Documentation
 https://github.com/kubero-dev/kubero/wiki
+
+# Roadmap
+https://github.com/orgs/kubero-dev/projects/1/views/3
 
 # Contributing
 All contributions are welcome!
