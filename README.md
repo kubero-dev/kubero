@@ -5,13 +5,13 @@
 <br>
 
 ![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square&color=brightgreen)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
-Kubero brings the convinience of Heroku to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
+Kubero brings the convinience of Heroku to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment. It enables you to deploy your applications within some clicks. It also provides a dashboard and CLI to manage your applications.
 <br>
 <br>
-Kubero is Kubernetes native and runs on every Kubernetes. It comes with a UI, API and a CLI.
+Kubero is Kubernetes native and runs on every Kubernetes.
 <br>
 <br>
 
@@ -64,6 +64,15 @@ https://github.com/kubero-dev/buildpacks
 
 # Full documentation
 https://github.com/kubero-dev/kubero/wiki
+
+# Contributing
+All contributions are welcome!
+ - Open an issue
+ - Add a feature or open a feature request
+ - Discuss ideas in the discussions
+ - Fix typos
+ - Contribute code
+ - Write articles
 
 ## Support
 Staring this projects helps a lot. ⭐ Thank you!
