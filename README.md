@@ -4,14 +4,14 @@
 <hr>
 <br>
 
-![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
+![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen)
+![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
 Kubero brings the convinience of Heroku to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
 <br>
 <br>
-Kubero is Kubernetes native and runs on every Kubernetes. It cpmes with a UI, API and a CLI.
+Kubero is Kubernetes native and runs on every Kubernetes. It comes with a UI, API and a CLI.
 <br>
 <br>
 
@@ -31,12 +31,7 @@ Kubero is Kubernetes native and runs on every Kubernetes. It cpmes with a UI, AP
 - Give access to your container CLI
 
 ## Supported GIT repositories
-- Github
-- Bitbucket
-- Gilab (hosted and self hosted)
-- Gitea (hosted and self hosted)
-- Gogs (hosted and self hosted)
---> need more? Open an issue.
+<img src="docs/screenshots/gitrepositories.png">
 
 ## Which languages are supported
 Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -55,7 +50,7 @@ You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 ## Quickstart
-1) Download and unpack the Kubero CLI <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">here</a><p>
+1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on your cluster
 
 ## Screenshots
