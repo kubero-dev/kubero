@@ -307,4 +307,29 @@ export class GitlabApi extends Repo {
         return ret;
     }
 
+    public async getBranches(gitrepo: string): Promise<string[]>{
+        // https://docs.gitlab.com/ee/api/branches.html#list-repository-branches
+        // not implemented yet
+        let ret: string[] = [];
+
+        let repo = "template-nodeapp"
+        let owner = "gicara"
+        try {
+            const branches:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/branches`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let branch of branches) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+
+        return ret;
+    }
+
 }

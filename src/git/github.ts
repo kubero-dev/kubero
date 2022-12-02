@@ -30,7 +30,7 @@ export class GithubApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here
+        // TODO : Improve matching here or use default function in Superclass
         let owner = gitrepo.match(/^git@github.com:(.*)\/.*$/)?.[1] as string;
         let repo = gitrepo.match(/^git@github.com:.*\/(.*).git$/)?.[1] as string;
 
@@ -84,12 +84,6 @@ export class GithubApi extends Repo {
     }
 
 /*
-    public async getRepositoryBranches(owner: string, repo: string) {
-        return await this.octokit.git.listBranches({
-            owner: owner,
-            repo: repo
-        });
-    }
 
     public async getRepositoryCommits(owner: string, repo: string, branch: string) {
         return await this.octokit.git.listCommits({
@@ -289,5 +283,27 @@ export class GithubApi extends Repo {
             debug.log(error)
         }
         return ret;
+    }
+
+    public async getBranches(gitrepo: string): Promise<string[]>{
+
+        let ret: string[] = [];
+
+        let repo = "template-nodeapp"
+        let owner = "kubero-dev"
+        try {
+            const branches = await this.octokit.request('GET /repos/{owner}/{repo}/branches', {
+                owner: owner,
+                repo: repo,
+            })
+            for (let branch of branches.data) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        return ret;
+
     }
 }
