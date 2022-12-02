@@ -209,7 +209,6 @@ export class GogsApi extends Repo {
     }
 
     public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
-        //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
         let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
         let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
 
@@ -272,6 +271,24 @@ export class GogsApi extends Repo {
         } catch (error) {
             console.log(error)
         }
+        return ret;
+    }
+
+    public async getBranches(gitrepo: string): Promise<string[]>{
+        // https://try.gitea.io/api/swagger#/repository/repoListBranches
+        let ret: string[] = [];
+
+        let repo = "template-nodeapp"
+        let owner = "gicara"
+        try {
+            const branches = await this.gitea.repos.repoListBranches(owner, repo)
+            for (let branch of branches.data) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
         return ret;
     }
 }

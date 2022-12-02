@@ -106,8 +106,15 @@ export abstract class Repo {
 
     }
 
+    protected parseRepo(gitrepo: string): {owner: string, repo: string} {
+        let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
+        let repo = gitrepo.match(/^git@.*:.*\/(.*).git$/)?.[1] as string;
+        return { owner: owner, repo: repo };
+    }
+
     protected abstract addDeployKey(owner: string, repo: string): Promise<IDeploykeyR>
     protected abstract getRepository(gitrepo: string): Promise<IRepository>;
     protected abstract addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
     protected abstract getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
+    protected abstract getBranches(repo: string): Promise<string[]> | undefined;
 }

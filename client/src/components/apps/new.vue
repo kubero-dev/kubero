@@ -58,7 +58,6 @@
           <v-text-field
             v-model="pipelineData.git.repository.ssh_url"
             :rules="repositoryRules"
-            :counter="60"
             label="Repository"
             required
             disabled
@@ -71,13 +70,12 @@
           cols="12"
           md="6"
         >
-          <v-text-field
+          <v-combobox
             v-model="branch"
-            :rules="branchRules"
-            :counter="60"
+            :items="branchesList"
             label="Branch"
             required
-          ></v-text-field>
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-row
@@ -116,7 +114,6 @@
         >
           <v-text-field
             v-model="docker.tag"
-            :rules="branchRules"
             :counter="60"
             label="Tag"
             required
@@ -507,6 +504,7 @@ export default {
         ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git',
       },
       branch: 'main',
+      branchesList: [],
       docker: {
         image: 'ghcr.io/kubero-dev/template-nodeapp',
         tag: 'main',
@@ -563,11 +561,6 @@ export default {
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
-      branchRules: [
-        //v => !!v || 'Branch is required',
-        v => v.length <= 60 || 'Name must be less than 60 characters',
-        v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
-      ],
       domainRules: [
         v => !!v || 'Domain is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -605,6 +598,8 @@ export default {
           this.buildpack = this.pipelineData.buildpack;
 
           this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
+
+          this.loadBranches();
 /*
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {
@@ -623,6 +618,23 @@ export default {
 */
         });
       },
+      loadBranches() {
+
+        // encode string to base64 (for ssh url)
+        const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
+        const gitprovider = this.pipelineData.git.provider;
+
+        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.branchesList.push({
+              text: response.data[i],
+              value: response.data[i],
+            });
+          }
+        });
+      },
+
+
       loadPodsizeList() {
         axios.get('/api/config/podsize').then(response => {
           for (let i = 0; i < response.data.length; i++) {

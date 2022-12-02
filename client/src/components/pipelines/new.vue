@@ -188,6 +188,7 @@ export default {
         keys: {},
         repository: {},
         webhooks: {},
+        provider: ""
       },
       repository_status: {
         error: false,
@@ -379,6 +380,7 @@ export default {
             this.repository_status.connected = false;
             this.repository_status.statusTxt = "Repository Not Connected";
           }
+          this.git.provider = this.repotab;
 
         }).catch(error => {
           console.log(error);

@@ -398,6 +398,38 @@ export class Kubero {
         }
     }
 
+    public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
+        //return this.git.listRepoBranches(repo, repoProvider);
+        let branches: Promise<string[]> = new Promise((resolve, reject) => {
+            resolve([]);
+        });
+
+        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
+
+        switch (repoProvider) {
+            case 'github':
+                branches = this.githubApi.getBranches(repo);
+                break;
+            case 'gitea':
+                branches = this.giteaApi.getBranches(repo);
+                break;
+            case 'gogs':
+                branches = this.gogsApi.getBranches(repo);
+                break;
+            case 'gitlab':
+                branches = this.gitlabApi.getBranches(repo);
+                break;
+            case 'bitbucket':
+                branches = this.bitbucketApi.getBranches(repo);
+                break;
+            case 'ondev':
+            default:
+                break;
+        }
+
+        return branches
+    }
+
     private async getAppsByBranch(branch: string) {
         debug.log('getAppsByBranch: '+branch);
         let apps: IApp[] = [];

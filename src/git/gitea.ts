@@ -171,7 +171,7 @@ export class GiteaApi extends Repo {
             if (key.title === title &&
                 key.read_only === true) {
                 ret = {
-                    status: 422,
+                    status: 200,
                     statusText: 'found',
                     data: key,
                 }
@@ -272,6 +272,26 @@ export class GiteaApi extends Repo {
         } catch (error) {
             console.log(error)
         }
+        return ret;
+    }
+
+    public async getBranches(gitrepo: string): Promise<string[]>{
+        // https://try.gitea.io/api/swagger#/repository/repoListBranches
+        let ret: string[] = [];
+
+        //let repo = "template-nodeapp"
+        //let owner = "gicara"
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+        try {
+            const branches = await this.gitea.repos.repoListBranches(owner, repo)
+            for (let branch of branches.data) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
         return ret;
     }
 }
