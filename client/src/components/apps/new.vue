@@ -49,8 +49,22 @@
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
 
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="deploymentstrategyGit"
+            :label="`Deployment strategy: ${appDeploymentStrategy}`"
+            color="primary"
+            inset
+        ></v-switch>
+        </v-col>
+      </v-row>
+
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -65,7 +79,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -79,7 +93,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -87,12 +101,13 @@
           <v-switch
             v-model="autodeploy"
             :label="`Autodeploy: ${autodeploy.toString()}`"
+            inset
           ></v-switch>
         </v-col>
       </v-row>
 
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        v-if="appDeploymentStrategy == 'docker'">
         <v-col
           cols="12"
           md="6"
@@ -102,12 +117,11 @@
             :counter="60"
             label="Docker image"
             required
-            disabled
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        v-if="appDeploymentStrategy == 'docker'">
         <v-col
           cols="12"
           md="6"
@@ -232,6 +246,7 @@
           <v-switch
             v-model="autoscale"
             :label="`Autoscale: ${autoscale.toString()}`"
+            inset
           ></v-switch>
         </v-col>
       </v-row>
@@ -481,16 +496,14 @@ export default {
     data: () => ({
       valid: false,
       buildpack: undefined,
-      /*
-      buildpackDisabled: true,
-      buildpackList: [
-        "Docker",
-        "NodeJS",
-        //"Python",
-        //"Ruby",
-      ],
-      */
-      pipelineData: {},
+      deploymentstrategyGit: true,
+      pipelineData: {
+        git: {
+          repository: {
+            ssh_url: "",
+          }
+        },
+      },
       appname: '',
       resourceVersion: undefined,
       /*
@@ -557,7 +570,7 @@ export default {
       ],
       repositoryRules: [
         //v => !!v || 'Repository is required',
-        v => v.length <= 60 || 'Repository must be less than 10 characters',
+        v => v.length <= 60 || 'Repository must be less than 60 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
@@ -577,6 +590,13 @@ export default {
       ],
 */
     }),
+    computed: {
+      // a computed getter
+      appDeploymentStrategy() {
+        // `this` points to the component instance
+        return this.deploymentstrategyGit ? 'git' : 'docker'
+      }
+    },
     mounted() {
       this.loadApp();
       this.loadPodsizeList();
@@ -679,13 +699,15 @@ export default {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
             this.resourceVersion = response.data.metadata.resourceVersion;
 
+
+            this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
             this.buildpack = response.data.spec.buildpack;
             this.gitrepo = response.data.spec.gitrepo;
             this.branch = response.data.spec.branch;
             this.imageTag= response.data.spec.imageTag;
             this.docker.image = response.data.spec.image.repository || '';
-            this.docker.tag = response.data.spec.image.tag || 'main';
+            this.docker.tag = response.data.spec.image.tag || 'latest';
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
@@ -708,6 +730,7 @@ export default {
           appname: this.appname,
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
+          deploymentstrategy: this.appDeploymentStrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
@@ -757,6 +780,7 @@ export default {
           appname: this.appname.toLowerCase(),
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
+          deploymentstrategy: this.appDeploymentStrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
