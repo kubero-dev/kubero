@@ -2,17 +2,17 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
-debug('app:kubero:gitea:api')
+debug('app:kubero:gogs:api')
 
 //https://www.npmjs.com/package/gitea-js
-import { giteaApi } from "gitea-js"
+import { giteaApi, Api } from "gitea-js"
 import { fetch as fetchGitea } from 'cross-fetch';
 
-export class GiteaApi extends Repo {
+export class GogsApi extends Repo {
     private gitea: any;
 
     constructor(baseURL: string, token: string) {
-        super("gitea");
+        super("gogs");
         this.gitea = giteaApi(baseURL, {
             token: token,
             customFetch: fetchGitea,
@@ -117,7 +117,7 @@ export class GiteaApi extends Repo {
                     "push",
                     "pull_request"
                 ],
-                type: "gitea"
+                type: "gogs"
             });
 
             ret = {
@@ -171,7 +171,7 @@ export class GiteaApi extends Repo {
             if (key.title === title &&
                 key.read_only === true) {
                 ret = {
-                    status: 200,
+                    status: 422,
                     statusText: 'found',
                     data: key,
                 }
@@ -209,7 +209,6 @@ export class GiteaApi extends Repo {
     }
 
     public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
-        //https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks
         let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
         let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
 
@@ -243,7 +242,7 @@ export class GiteaApi extends Repo {
 
         try {
             let webhook: IWebhook = {
-                repoprovider: 'gitea',
+                repoprovider: 'gogs',
                 action: action,
                 event: event,
                 delivery: delivery,
@@ -279,10 +278,8 @@ export class GiteaApi extends Repo {
         // https://try.gitea.io/api/swagger#/repository/repoListBranches
         let ret: string[] = [];
 
-        //let repo = "template-nodeapp"
-        //let owner = "gicara"
-
-        let {repo, owner} = this.parseRepo(gitrepo)
+        let repo = "template-nodeapp"
+        let owner = "gicara"
         try {
             const branches = await this.gitea.repos.repoListBranches(owner, repo)
             for (let branch of branches.data) {

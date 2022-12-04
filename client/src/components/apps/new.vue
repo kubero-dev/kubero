@@ -49,8 +49,22 @@
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
 
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="deploymentstrategyGit"
+            :label="`Deployment strategy: ${appDeploymentStrategy}`"
+            color="primary"
+            inset
+        ></v-switch>
+        </v-col>
+      </v-row>
+
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -58,7 +72,6 @@
           <v-text-field
             v-model="pipelineData.git.repository.ssh_url"
             :rules="repositoryRules"
-            :counter="60"
             label="Repository"
             required
             disabled
@@ -66,22 +79,21 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
         >
-          <v-text-field
+          <v-combobox
             v-model="branch"
-            :rules="branchRules"
-            :counter="60"
+            :items="branchesList"
             label="Branch"
             required
-          ></v-text-field>
+          ></v-combobox>
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'git'">
+        v-if="appDeploymentStrategy == 'git'">
         <v-col
           cols="12"
           md="6"
@@ -89,12 +101,13 @@
           <v-switch
             v-model="autodeploy"
             :label="`Autodeploy: ${autodeploy.toString()}`"
+            inset
           ></v-switch>
         </v-col>
       </v-row>
 
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        v-if="appDeploymentStrategy == 'docker'">
         <v-col
           cols="12"
           md="6"
@@ -104,19 +117,17 @@
             :counter="60"
             label="Docker image"
             required
-            disabled
           ></v-text-field>
         </v-col>
       </v-row>
       <v-row
-        v-if="this.pipelineData.deploymentstrategy == 'docker'">
+        v-if="appDeploymentStrategy == 'docker'">
         <v-col
           cols="12"
           md="6"
         >
           <v-text-field
             v-model="docker.tag"
-            :rules="branchRules"
             :counter="60"
             label="Tag"
             required
@@ -235,6 +246,7 @@
           <v-switch
             v-model="autoscale"
             :label="`Autoscale: ${autoscale.toString()}`"
+            inset
           ></v-switch>
         </v-col>
       </v-row>
@@ -484,16 +496,14 @@ export default {
     data: () => ({
       valid: false,
       buildpack: undefined,
-      /*
-      buildpackDisabled: true,
-      buildpackList: [
-        "Docker",
-        "NodeJS",
-        //"Python",
-        //"Ruby",
-      ],
-      */
-      pipelineData: {},
+      deploymentstrategyGit: true,
+      pipelineData: {
+        git: {
+          repository: {
+            ssh_url: "",
+          }
+        },
+      },
       appname: '',
       resourceVersion: undefined,
       /*
@@ -507,6 +517,7 @@ export default {
         ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git',
       },
       branch: 'main',
+      branchesList: [],
       docker: {
         image: 'ghcr.io/kubero-dev/template-nodeapp',
         tag: 'main',
@@ -559,14 +570,9 @@ export default {
       ],
       repositoryRules: [
         //v => !!v || 'Repository is required',
-        v => v.length <= 60 || 'Repository must be less than 10 characters',
+        v => v.length <= 60 || 'Repository must be less than 60 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
-      ],
-      branchRules: [
-        //v => !!v || 'Branch is required',
-        v => v.length <= 60 || 'Name must be less than 60 characters',
-        v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       domainRules: [
         v => !!v || 'Domain is required',
@@ -584,6 +590,13 @@ export default {
       ],
 */
     }),
+    computed: {
+      // a computed getter
+      appDeploymentStrategy() {
+        // `this` points to the component instance
+        return this.deploymentstrategyGit ? 'git' : 'docker'
+      }
+    },
     mounted() {
       this.loadApp();
       this.loadPodsizeList();
@@ -605,6 +618,8 @@ export default {
           this.buildpack = this.pipelineData.buildpack;
 
           this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
+
+          this.loadBranches();
 /*
           if (this.app == 'new') {
             switch (this.pipelineData.github.repository.language) {
@@ -623,6 +638,23 @@ export default {
 */
         });
       },
+      loadBranches() {
+
+        // encode string to base64 (for ssh url)
+        const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
+        const gitprovider = this.pipelineData.git.provider;
+
+        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.branchesList.push({
+              text: response.data[i],
+              value: response.data[i],
+            });
+          }
+        });
+      },
+
+
       loadPodsizeList() {
         axios.get('/api/config/podsize').then(response => {
           for (let i = 0; i < response.data.length; i++) {
@@ -667,13 +699,15 @@ export default {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
             this.resourceVersion = response.data.metadata.resourceVersion;
 
+
+            this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
             this.buildpack = response.data.spec.buildpack;
             this.gitrepo = response.data.spec.gitrepo;
             this.branch = response.data.spec.branch;
             this.imageTag= response.data.spec.imageTag;
             this.docker.image = response.data.spec.image.repository || '';
-            this.docker.tag = response.data.spec.image.tag || 'main';
+            this.docker.tag = response.data.spec.image.tag || 'latest';
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
@@ -696,6 +730,7 @@ export default {
           appname: this.appname,
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
+          deploymentstrategy: this.appDeploymentStrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
@@ -745,6 +780,7 @@ export default {
           appname: this.appname.toLowerCase(),
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
+          deploymentstrategy: this.appDeploymentStrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,

@@ -4,16 +4,16 @@
 <hr>
 <br>
 
-![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square)
-![GitHub package.json version](https://img.shields.io/github/package-json/v/kubero-dev/kubero?style=flat-square)
+![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
+Kubero brings the convinience of Heroku to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment. It enables you to deploy your applications within some clicks. It also provides a dashboard and CLI to manage your applications.
 <br>
-Kubero brings the convinience of Heroku/platform.sh to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment.
+<br>
+Kubero is Kubernetes native and runs on every Kubernetes.
 <br>
 <br>
-Kubero runs as a operator and has a UI, API and soon a CLI.
-
 
 ## What can Kubero do for you?
 - Create a CI pipeline with up to 4 separate environments for all your applications: review apps -> testing -> stageing -> production
@@ -30,9 +30,8 @@ Kubero runs as a operator and has a UI, API and soon a CLI.
 - Install and manage your operators
 - Give access to your container CLI
 
-## Which heroku features are still missing?
-- Dataclips
-- CLI (Work in progress: https://github.com/kubero-dev/kubero-cli )
+## Supported GIT repositories
+<img src="docs/screenshots/gitrepositories.png">
 
 ## Which languages are supported
 Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -47,26 +46,39 @@ So far tested languages/frameworks:
 - Rust (including Rocket)
 - ...
 
+## Preconfigured Buildpacks
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 ## Quickstart
-1) Download and unpack the Kubero CLI <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">here</a><p>
+1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on your cluster
 
 ## Screenshots
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
 <img src="docs/screenshots/createapp.gif">
 
-# Usage
+## Usage
 1. Create a pipeline with all your phases
-2. Connect the Pipeline to your git repository ( not required with pre-build image deployment )
+2. Connect the Pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
 
-# Full documentation
+## Documentation
 https://github.com/kubero-dev/kubero/wiki
 
-## Stargazers over time
+## Roadmap
+https://github.com/orgs/kubero-dev/projects/1/views/3
+
+## Contributing
+All contributions are welcome!
+ - Open an issue
+ - Add a feature or open a feature request
+ - Discuss ideas in the discussions
+ - Fix typos
+ - Contribute code
+ - Write articles
+
+## Support
 Staring this projects helps a lot. ⭐ Thank you!
 
 [![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)

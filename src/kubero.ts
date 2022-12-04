@@ -3,7 +3,10 @@ import { Server } from "socket.io";
 import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
+import { BitbucketApi } from './git/bitbucket';
 import { GiteaApi } from './git/gitea';
+import { GogsApi } from './git/gogs';
+import { GitlabApi } from './git/gitlab';
 import { IWebhook} from './git/types';
 import YAML from 'yaml';
 import * as fs from 'fs';
@@ -21,6 +24,9 @@ export class Kubero {
     private _io: Server;
     private githubApi: GithubApi;
     private giteaApi: GiteaApi;
+    private gogsApi: GogsApi;
+    private gitlabApi: GitlabApi;
+    private bitbucketApi: BitbucketApi;
     private appStateList: IApp[] = [];
     private pipelineStateList: IPipeline[] = [];
     private podLogStreams: string[]= []
@@ -32,7 +38,10 @@ export class Kubero {
         this._io = io;
 
         this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
+        this.gogsApi = new GogsApi(process.env.GOGS_BASEURL as string, process.env.GOGS_PERSONAL_ACCESS_TOKEN as string);
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
+        this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
+        this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 
@@ -292,6 +301,13 @@ export class Kubero {
                 return this.githubApi.listRepos();
             case 'gitea':
                 return this.giteaApi.listRepos();
+            case 'gogs':
+                return this.gogsApi.listRepos();
+            case 'gitlab':
+                return this.gitlabApi.listRepos();
+            case 'bitbucket':
+                return this.bitbucketApi.listRepos();
+            case 'ondev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -305,6 +321,13 @@ export class Kubero {
                 return this.githubApi.connectRepo(repoAddress);
             case 'gitea':
                 return this.giteaApi.connectRepo(repoAddress);
+            case 'gogs':
+                return this.gogsApi.connectRepo(repoAddress);
+            case 'gitlab':
+                return this.gitlabApi.connectRepo(repoAddress);
+            case 'bitbucket':
+                return this.bitbucketApi.connectRepo(repoAddress);
+            case 'ondev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -317,11 +340,19 @@ export class Kubero {
             case 'github':
                 webhook = this.githubApi.getWebhook(event, delivery, signature, body);
                 break;
-
             case 'gitea':
                 webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
                 break;
-
+            case 'gogs':
+                webhook = this.gogsApi.getWebhook(event, delivery, signature, body);
+                break;
+            case 'gitlab':
+                webhook = this.gitlabApi.getWebhook(event, delivery, signature, body);
+                break;
+            case 'bitbucket':
+                webhook = this.bitbucketApi.getWebhook(event, delivery, body); // Bitbucket has no signature
+                break;
+            case 'ondev':
             default:
                 break;
         }
@@ -365,6 +396,38 @@ export class Kubero {
                 console.log('webhook pull request action not handled: '+webhook.action);
                 break;
         }
+    }
+
+    public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
+        //return this.git.listRepoBranches(repo, repoProvider);
+        let branches: Promise<string[]> = new Promise((resolve, reject) => {
+            resolve([]);
+        });
+
+        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
+
+        switch (repoProvider) {
+            case 'github':
+                branches = this.githubApi.getBranches(repo);
+                break;
+            case 'gitea':
+                branches = this.giteaApi.getBranches(repo);
+                break;
+            case 'gogs':
+                branches = this.gogsApi.getBranches(repo);
+                break;
+            case 'gitlab':
+                branches = this.gitlabApi.getBranches(repo);
+                break;
+            case 'bitbucket':
+                branches = this.bitbucketApi.getBranches(repo);
+                break;
+            case 'ondev':
+            default:
+                break;
+        }
+
+        return branches
     }
 
     private async getAppsByBranch(branch: string) {
@@ -564,6 +627,8 @@ export class Kubero {
             github: false,
             gitea: false,
             gitlab: false,
+            gogs: false,
+            onedev: false,
             bitbucket: false,
             docker: true
         }
@@ -580,7 +645,15 @@ export class Kubero {
             repositories.gitlab = true;
         }
 
-        if (process.env.BITBUCKET_PERSONAL_ACCESS_TOKEN) {
+        if (process.env.GOGS_PERSONAL_ACCESS_TOKEN) {
+            repositories.gogs = true;
+        }
+
+        if (process.env.ONEDEV_PERSONAL_ACCESS_TOKEN) {
+            repositories.onedev = true;
+        }
+
+        if (process.env.BITBUCKET_USERNAME && process.env.BITBUCKET_APP_PASSWORD) {
             repositories.bitbucket = true;
         }
 

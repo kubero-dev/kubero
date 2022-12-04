@@ -19,8 +19,14 @@ Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Re
     res.send(con);
 });
 
+// connect pipeline with repository
+Router.get('/repo/:repoprovider/:gitrepob64/branches/list', async function (req: Request, res: Response) {
+    let branches = await req.app.locals.kubero.listRepoBranches(req.params.repoprovider, req.params.gitrepob64);
+    res.send(branches);
+});
+
 // get github webhook events
-Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
+Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
 
     let ret: string = 'ok';
     switch (req.params.repoprovider){
@@ -38,19 +44,35 @@ Router.post('/repo/webhooks/:repoprovider', async function (req: Request, res: R
             //console.log(req.headers)
             let gitea_event = req.headers['x-gitea-event']
             let gitea_delivery = req.headers['x-gitea-delivery']
-            //let hookId = req.headers['x-github-hook-id']
             let gitea_signature = req.headers['x-hub-signature-256']
             let gitea_body = req.body
 
             req.app.locals.kubero.handleWebhook('gitea', gitea_event, gitea_delivery, gitea_signature, gitea_body);
             break;
-        case "gitlab":
-            //req.app.locals.kubero.handleGitlabWebhook(req.body);
-            ret = "gitlab not supported yet";
+        case "gogs":
+            //console.log(req.headers)
+            let gogs_event = req.headers['x-gogs-event']
+            let gogs_delivery = req.headers['x-gogs-delivery']
+            let gogs_signature = req.headers['x-hub-signature-256']
+            let gogs_body = req.body
+
+            req.app.locals.kubero.handleWebhook('gogs', gogs_event, gogs_delivery, gogs_signature, gogs_body);
             break;
+        case "gitlab":
+            let gitlab_event = req.headers['x-gitlab-event']
+            let gitlab_delivery = req.headers['x-gitlab-event-uuid']
+            let gitlab_signature = req.headers['x-gitlab-token']
+            let gitlab_body = req.body
+            req.app.locals.kubero.handleWebhook('gitlab', gitlab_event, gitlab_delivery, gitlab_signature, gitlab_body);
+            break;
+        case "ondev":
         case "bitbucket":
-            //req.app.locals.kubero.handleBitbucketWebhook(req.body);
-            ret = "bitbucket not supported yet";
+            case "gitlab":
+                console.log(req.headers)
+                let bitbucket_event = req.headers['x-event-key']
+                let bitbucket_delivery = req.headers['x-request-uuid']
+                let bitbucket_body = req.body
+                req.app.locals.kubero.handleWebhook('bitbucket', bitbucket_event, bitbucket_delivery, "", bitbucket_body);
             break;
         default:
             ret = "unknown repoprovider "+encodeURI(req.params.repoprovider);

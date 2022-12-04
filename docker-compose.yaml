@@ -28,3 +28,36 @@ services:
     ports:
       - "3000:3000"
       - "222:22"
+  gitlab:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: 'gitlab.lacolhost.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.lacolhost.com'
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '3080:80'
+      - '3443:443'
+      - '3022:22'
+    volumes:
+      - './.dockerdata/gitlab/config:/etc/gitlab'
+      - './.dockerdata/gitlab/logs:/var/log/gitlab'
+      - './.dockerdata/gitlab/data:/var/opt/gitlab'
+    shm_size: '256m'
+
+  gogs:
+    image: gogs/gogs:latest
+    container_name: gogs
+    hostname: 'localhost'
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - ./.dockerdata/gogs:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "22:22"

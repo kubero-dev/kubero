@@ -1,5 +1,5 @@
 export interface IWebhook {
-    repoprovider: 'gitea' | 'gitlab' | 'github',
+    repoprovider: 'gitea' | 'gitlab' | 'github' | 'bitbucket' | 'gogs' | 'onedev',
     action: 'opened' | 'reopened' | 'closed' | undefined,
     event: string,
     delivery: string,
@@ -15,7 +15,7 @@ export interface IRepository {
     status: number,
     statusText: 'error' | 'not found' | 'found',
     data: {
-        id?: number,
+        id?: number | string, // bitbucket uses UUID's
         node_id?: string,
         name: string,
         description?: string,
@@ -36,7 +36,7 @@ export interface IWebhookR {
     status: number,
     statusText: 'error' | 'created' | 'not found' | 'found',
     data: {
-        id?: number,
+        id?: number | string, // bitbucket uses UUID's
         active: boolean,
         created_at: string,
         url: string,

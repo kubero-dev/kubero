@@ -30,13 +30,13 @@
           cols="12"
           md="8"
         >
-        <v-tabs icons-and-text v-model="repotab" color="#8560A9">
+        <v-tabs icons-and-text v-model="repotab" color="#8560A9" @change="loadRepository">
             <v-tab href="#github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
             <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
             <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
-            <v-tab href="#bitbucket" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>
-            <v-tab href="#gogs" disabled>Gogs <v-icon class="gogs"></v-icon></v-tab>
-            <v-tab href="#bitbucket" disabled>Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+            <!--<v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>-->
+            <v-tab href="#gogs" :disabled="this.repositoriesList.gogs == false">Gogs <v-icon class="gogs"></v-icon></v-tab>
+            <v-tab href="#bitbucket" :disabled="this.repositoriesList.bitbucket == false">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
         </v-col>
       </v-row>
@@ -188,6 +188,7 @@ export default {
         keys: {},
         repository: {},
         webhooks: {},
+        provider: ""
       },
       repository_status: {
         error: false,
@@ -236,12 +237,12 @@ export default {
       ],
       nameRules: [
         v => !!v || 'Name is required',
-        v => v.length <= 60 || 'Name must be less than 10 characters',
+        v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       repositoryRules: [
         v => !!v || 'Repository is required',
-        v => v.length <= 60 || 'Repository must be less than 10 characters',
+        v => v.length <= 120 || 'Repository must be less than 120 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
@@ -288,37 +289,43 @@ export default {
           case 'github':
             this.connectRepository('github')
             this.repositoriesList.gitea = false;
+            this.repositoriesList.gogs = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
           case 'gitea':
-            this.connectGitea();
+            this.connectRepository('gitea')
             this.repositoriesList.github = false;
+            this.repositoriesList.gogs = false;
+            this.repositoriesList.gitlab = false;
+            this.repositoriesList.bitbucket = false;
+            this.repositoriesList.docker = false;
+            break;
+          case 'gogs':
+            this.connectRepository('gogs')
+            this.repositoriesList.github = false;
+            this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
             break;
           case 'gitlab':
-            this.connectGitlab();
-            return;
-            /*
-            this.repositoriesList.gitea = false;
+            this.connectRepository('gitlab')
             this.repositoriesList.github = false;
+            this.repositoriesList.gitea = false;
+            this.repositoriesList.gogs = false;
             this.repositoriesList.bitbucket = false;
             this.repositoriesList.docker = false;
-            break;
-            */
-          case 'bitbucket':
-            this.connectBitbucket();
             return;
-            /*
+          case 'bitbucket':
+            this.connectRepository('bitbucket')
+            this.repositoriesList.github = false;
             this.repositoriesList.gitea = false;
             this.repositoriesList.gitlab = false;
-            this.repositoriesList.github = false;
+            this.repositoriesList.gogs = false;
             this.repositoriesList.docker = false;
-            break;
-            */
+            return;
           default:
             break;
         }
@@ -373,6 +380,7 @@ export default {
             this.repository_status.connected = false;
             this.repository_status.statusTxt = "Repository Not Connected";
           }
+          this.git.provider = this.repotab;
 
         }).catch(error => {
           console.log(error);
