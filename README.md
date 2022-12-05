@@ -8,19 +8,19 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
-Kubero brings the convinience of Heroku to your kubernetes cluster. Your developers should not need to worry about the underlying infrastructure and deployment. It enables you to deploy your applications within some clicks. It also provides a dashboard and CLI to manage your applications.
+Kubero brings the convenience of Heroku to your Kubernetes cluster. Your developers should not need to worry about the underlying infrastructure or deployment. It enables you to deploy your applications with a few clicks. It also provides a dashboard and CLI to manage your applications.
 <br>
 <br>
-Kubero is Kubernetes native and runs on every Kubernetes.
+Kubero is Kubernetes native and runs on any Kubernetes instance.
 <br>
 <br>
 
 ## What can Kubero do for you?
 - Create a CI pipeline with up to 4 separate environments for all your applications: review apps -> testing -> stageing -> production
-- Build, start and cleanup reviewapps after opening/closing a pull request
+- Build, start and cleanup review-apps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create scheduled tasks (cronjobs)
-- Easy deployment of your apps on kubernetes without helm charts
+- Easy deployment of your apps on Kubernetes without helm charts
 - Deploy addons (PostgreSQL, Redis, more to come)
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
@@ -60,7 +60,7 @@ https://github.com/kubero-dev/buildpacks
 
 ## Usage
 1. Create a pipeline with all your phases
-2. Connect the Pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
+2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
 
 ## Documentation
@@ -79,6 +79,6 @@ All contributions are welcome!
  - Write articles
 
 ## Support
-Staring this projects helps a lot. ⭐ Thank you!
+Starring this projects helps a lot. ⭐ Thank you!
 
 [![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
