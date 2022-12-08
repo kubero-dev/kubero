@@ -45,6 +45,7 @@ export const after = (app: Express, server: Server) => {
     const addons = new Addons({
         kubectl: kubero.kubectl
     });
+    addons.loadOperators();
     app.locals.addons = addons;
     app.use('/api', RouterAddons);
     app.use('/api', RouterAuth);
