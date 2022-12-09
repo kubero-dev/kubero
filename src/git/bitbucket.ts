@@ -20,7 +20,12 @@ export class BitbucketApi extends Repo {
             },
         }
 
-         this.bitbucket = new Bitbucket(clientOptions)
+        if (process.env.BITBUCKET_USERNAME && process.env.BITBUCKET_APP_PASSWORD) {
+            this.bitbucket = new Bitbucket(clientOptions)
+        } else {
+            this.bitbucket = new Bitbucket()
+            console.log("No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
+        }
     }
 
     protected async getRepository(gitrepo: string): Promise<IRepository> {
