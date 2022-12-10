@@ -10,9 +10,11 @@ import { RouterApps} from "./routes/apps";
 import { RouterLogs } from "./routes/logs";
 import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
+import { Router as RouterSettings } from "./routes/settings";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
+import { Settings } from './modules/settings';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
 
@@ -42,11 +44,18 @@ export const after = (app: Express, server: Server) => {
     const kubero = new Kubero(sockets);
     kubero.updateState();
     app.locals.kubero = kubero;
+
     const addons = new Addons({
         kubectl: kubero.kubectl
     });
     addons.loadOperators();
     app.locals.addons = addons;
+
+    const settings = new Settings({
+        kubectl: kubero.kubectl
+    });
+    app.locals.settings = settings;
+
     app.use('/api', RouterAddons);
     app.use('/api', RouterAuth);
     app.use('/api', RouterConfig);
@@ -54,6 +63,7 @@ export const after = (app: Express, server: Server) => {
     app.use('/api', RouterLogs);
     app.use('/api', RouterPipelines);
     app.use('/api', RouterRepo);
+    app.use('/api', RouterSettings);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 }

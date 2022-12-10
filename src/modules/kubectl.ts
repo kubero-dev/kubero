@@ -13,6 +13,7 @@ import {
     PatchUtils,
     Log as KubeLog,
     V1Pod,
+    V1ConfigMap,
     V1Namespace,
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
@@ -300,5 +301,18 @@ export class Kubectl {
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;
+    }
+
+    public async getKuberoconfig(): Promise<V1ConfigMap | void> {
+        let config = await this.coreV1Api.readNamespacedConfigMap(
+            'kubero-config',
+            'kubero'
+        ).catch((error: any) => {
+            debug.log(error);
+        })
+
+        if (config) {
+            return config.body;
+        }
     }
 }

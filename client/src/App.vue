@@ -15,19 +15,17 @@
                     </v-list-item-icon>
                     <v-list-item-title>Pipelines</v-list-item-title>
                 </v-list-item>
-                <!--
-                <v-list-item link to="/settings">
-                    <v-list-item-icon>
-                    <v-icon>mdi-file-cog-outline</v-icon>
-                    </v-list-item-icon>
-                    <v-list-item-title>Settings</v-list-item-title>
-                </v-list-item>
-                -->
                 <v-list-item link to="/addons">
                     <v-list-item-icon>
                     <v-icon>mdi-bookshelf</v-icon>
                     </v-list-item-icon>
                     <v-list-item-title>Addons</v-list-item-title>
+                </v-list-item>
+                <v-list-item link to="/settings">
+                    <v-list-item-icon>
+                    <v-icon>mdi-file-cog-outline</v-icon>
+                    </v-list-item-icon>
+                    <v-list-item-title>Settings</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="logout()" v-if="session">
                     <v-list-item-icon>
@@ -35,7 +33,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Logout</v-list-item-title>
                 </v-list-item>
-                
+
             </v-list>
 
         </v-navigation-drawer>
@@ -43,7 +41,7 @@
         <v-main>
             <router-view></router-view>
         </v-main>
-        
+
         <!--<Appfooter :swarmversion="status.swarmversion" :kubeversion="status.kubeVersion.gitVersion" />-->
     </v-app>
 </template>
@@ -101,7 +99,7 @@ export default {
                     .catch((err) => {
                         if (err.response.status === 401) {
                             this.isAuthenticated = false;
-                            this.$router.push('/login') 
+                            this.$router.push('/login')
                         } else {
                             console.log(err);
                         }
