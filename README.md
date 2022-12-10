@@ -54,9 +54,9 @@ https://github.com/kubero-dev/buildpacks
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on your cluster
 
-## Screenshots
-<a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">more Screenshots</a><p>
-<img src="docs/screenshots/createapp.gif">
+## How it works
+<a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">Screenshots</a><p>
+<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank"><img src="docs/screenshots/youtube-screen.png"></a>
 
 ## Usage
 1. Create a pipeline with all your phases
