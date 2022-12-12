@@ -134,6 +134,8 @@ export class Kubero {
         await this.kubectl.createPipeline(pipeline);
         this.updateState();
 
+        this.kubectl.createEvent('Normal', 'Created', 'pipeline.created', 'created new pipeline: '+pipeline.name);
+
         // update agents
         this._io.emit('updatedPipelines', "created");
     }
@@ -175,11 +177,13 @@ export class Kubero {
                 // TODO: lines not working, since object may still exist in the API
                 this.updateState();
                 this._io.emit('updatedPipelines', "deleted");
+                this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
             }
         })
         .catch(error => {
             debug.debug(error);
         });
+
     }
 
     // create a new app in a specified pipeline and phase
@@ -192,7 +196,9 @@ export class Kubero {
 
             let namespace = app.pipeline+'-'+app.phase;
             this._io.emit('updatedApps', "created");
+            this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
+
     }
 
     // update an app in a pipeline and phase
@@ -205,6 +211,7 @@ export class Kubero {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
             this._io.emit('updatedApps', "updated");
+            this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
     }
 
@@ -216,6 +223,7 @@ export class Kubero {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
             this._io.emit('updatedApps', "deleted");
+            this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         }
     }
 
@@ -283,6 +291,7 @@ export class Kubero {
                 'app': appName
             }
             //this._io.emit('restartedApp', message);
+            this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         }
     }
 /*
@@ -377,6 +386,7 @@ export class Kubero {
         let apps = await this.getAppsByBranch(webhook.branch);
 
         for (const app of apps) {
+            this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
             this.restartApp(app.pipeline, app.phase, app.name);
         }
     }
@@ -388,9 +398,11 @@ export class Kubero {
             case 'opened':
             case 'reopened':
                 this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
+                this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
                 break;
             case 'closed':
                 this.deletePRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
+                this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
                 break;
             default:
                 console.log('webhook pull request action not handled: '+webhook.action);
@@ -662,5 +674,9 @@ export class Kubero {
 
     public getBuildpacks() {
         return this.config.buildpacks;
+    }
+
+    public getEvents() {
+        return this.kubectl.getEvents();
     }
 }

@@ -13,6 +13,8 @@ import {
     PatchUtils,
     Log as KubeLog,
     V1Pod,
+    CoreV1Event,
+    CoreV1EventList,
     V1ConfigMap,
     V1Namespace,
 } from '@kubernetes/client-node'
@@ -314,5 +316,39 @@ export class Kubectl {
         if (config) {
             return config.body;
         }
+    }
+
+    public async createEvent(type: "Normal" | "Warning",reason: string, eventName: string, message: string) {
+        debug.log("create event: " + eventName);
+
+        const date = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future //TODO make this configurable
+        const event = new CoreV1Event();
+        event.apiVersion = "v1";
+        event.kind = "Event";
+        event.type = type;
+        event.message = message;
+        event.reason = reason;
+        event.metadata = {
+            name: eventName+'.'+Date.now().toString(),
+            namespace: process.env.KUBERO_NAMESPACE || 'kubero',
+            deletionTimestamp: date,
+            deletionGracePeriodSeconds: 0,
+        };
+        event.involvedObject = {
+            kind: "Kubero",
+            namespace: process.env.KUBERO_NAMESPACE || 'kubero',
+        };
+
+        await this.coreV1Api.createNamespacedEvent(
+            process.env.KUBERO_NAMESPACE || 'kubero',
+            event
+        ).catch(error => {
+            debug.log(error);
+        }
+    )};
+
+    public async getEvents(): Promise<CoreV1Event[]> {
+        let events = await this.coreV1Api.listNamespacedEvent(process.env.KUBERO_NAMESPACE || 'kubero');
+        return events.body.items;
     }
 }
