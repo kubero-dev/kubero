@@ -37,13 +37,13 @@ export default {
         },
     },
     mounted() {
-        this.loadLogs();
+        this.loadEvents();
     },
     data: () => ({
         events: [],
     }),
     methods: {
-      async loadLogs() {
+      async loadEvents() {
         const self = this;
         axios.get(`/api/events`)
         .then(response => {

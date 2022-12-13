@@ -345,8 +345,8 @@ export class Kubectl {
         }
     )};
 
-    public async getEvents(): Promise<CoreV1Event[]> {
-        let events = await this.coreV1Api.listNamespacedEvent(process.env.KUBERO_NAMESPACE || 'kubero');
+    public async getEvents(namespace: string): Promise<CoreV1Event[]> {
+        let events = await this.coreV1Api.listNamespacedEvent(namespace);
         return events.body.items;
     }
 }
