@@ -1,16 +1,22 @@
 <template>
     <v-container>
-        <h1>APP EVENTS</h1>
+        <v-row class="justify-space-between">
+            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+                <h1>Events for {{ this.app }}</h1>
+            </v-col>
+        </v-row>
         <v-layout class="flex-column">
+            <!--
                     <v-row  v-for="event in events" :key="event.uid">
                         <v-col cols="3"><nobr>{{ event.eventTime }}</nobr></v-col>
                         <v-col>{{ event.type }}</v-col>
                         <v-col>{{ event.reason }} {{ event.action }}</v-col>
                         <v-col cols="6">{{ event.message }}</v-col>
                     </v-row>
+            -->
                 <v-row>
                     <!--  v-for="n in 10" :key="n" -->
-                    <!--
+
                     <v-timeline align-top dense>
 
                         <v-timeline-item
@@ -32,7 +38,7 @@
 
 
                     </v-timeline>
-                    -->
+
                 </v-row>
         </v-layout>
 
@@ -66,10 +72,6 @@ export default {
     components: {
     },
     props: {
-      namespace: {
-        type: String,
-        default: "MISSING"
-      },
       pipeline: {
         type: String,
         default: "MISSING"
@@ -77,6 +79,10 @@ export default {
       phase: {
         type: String,
         default: "MISSING"
+      },
+      app: {
+        type: String,
+        default: "new"
       }
     },
     methods: {

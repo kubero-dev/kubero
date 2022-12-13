@@ -59,7 +59,7 @@
             title="Show Logs"
             color="deep-purple lighten-2"
             text
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/logs'"
+            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
         >
             <v-icon
                 >mdi-console
