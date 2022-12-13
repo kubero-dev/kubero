@@ -1,6 +1,15 @@
 <template>
     <v-container>
-        <a :href="`/#/pipeline/${pipeline}/apps`"><v-icon small>mdi-arrow-left-circle</v-icon> {{ this.pipeline }}</a>
+        <v-breadcrumbs :items="items">
+            <template v-slot:item="{ item }">
+            <v-breadcrumbs-item
+                :href="item.href"
+                :disabled="item.disabled"
+            >
+                {{ item.text.toUpperCase() }}
+            </v-breadcrumbs-item>
+            </template>
+        </v-breadcrumbs>
         <v-tabs v-model="tab">
             <v-tab>Logs</v-tab>
             <v-tab>Events</v-tab>
@@ -22,6 +31,26 @@ export default {
     data () {
         return {
             tab: null,
+            items: [
+                {
+                    text: 'Pipelines Dashboard',
+                    disabled: false,
+                    href: '#/',
+                },
+                {
+                    text: this.pipeline,
+                    disabled: false,
+                    href: '#/pipeline/'+this.pipeline+'/apps',
+                },
+                {
+                    text: this.phase,
+                    disabled: false,
+                },
+                {
+                    text: this.app,
+                    disabled: false,
+                },
+            ],
         }
     },
     components: {
