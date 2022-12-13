@@ -331,8 +331,6 @@ export class Kubectl {
         event.metadata = {
             name: eventName+'.'+Date.now().toString(),
             namespace: process.env.KUBERO_NAMESPACE || 'kubero',
-            deletionTimestamp: date,
-            deletionGracePeriodSeconds: 0,
         };
         event.involvedObject = {
             kind: "Kubero",
