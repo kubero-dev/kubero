@@ -159,7 +159,7 @@ export class GitlabApi extends Repo {
 
         const keyPair = this.createDeployKeyPair();
 
-        const title: string = "bot@kubero";
+        const title: string = "bot@kubero."+Date.now();
 
         let ret: IDeploykeyR = {
             status: 500,
@@ -175,26 +175,6 @@ export class GitlabApi extends Repo {
                 priv: keyPair.privKeyBase64
             }
         }
-        // https://docs.gitlab.com/ee/api/deploy_keys.html#list-deploy-keys-for-project
-        const keysList:any = await this.gitlab.get(`projects/${owner}%2F${repo}/deploy_keys`)
-        .catch((error: any) => {
-            console.log(error)
-            return ret;
-        })
-
-        // try to find the key
-        for (let key of keysList) {
-            if (key.title === title &&
-                key.read_only === true) {
-                ret = {
-                    status: 422,
-                    statusText: 'found',
-                    data: key,
-                }
-                return ret;
-            }
-        }
-
         try {
             // https://docs.gitlab.com/ee/api/deploy_keys.html#add-deploy-key
             let res:any = await this.gitlab.post(`projects/${owner}%2F${repo}/deploy_keys`, JSON.stringify({
