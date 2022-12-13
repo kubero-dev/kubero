@@ -22,6 +22,7 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
 
     let pipeline: IPipeline = {
         name: req.body.pipelineName,
+        domain: req.body.domain,
         phases: req.body.phases,
         buildpack: selectedBuildpack,
         reviewapps: req.body.reviewapps,
@@ -41,6 +42,7 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
 Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
     let pipeline: IPipeline = {
         name: req.body.pipelineName,
+        domain: req.body.domain,
         phases: req.body.phases,
         buildpack: req.body.buildpack,
         reviewapps: req.body.reviewapps,

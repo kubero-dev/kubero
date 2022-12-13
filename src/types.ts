@@ -133,7 +133,7 @@ export interface ICronjob {
 
 export interface IPipeline {
     name: string;
-    //gitrepo: string;
+    domain: string;
     reviewapps: boolean;
     phases: IPipelinePhase[];
     buildpack: IBuildpack

@@ -478,7 +478,7 @@ export class Kubero {
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
-                    domain: websaveTitle+'.lacolhost.com', //TODO use a default domain, defined somewhere
+                    domain: websaveTitle+"."+pipeline.domain,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
@@ -501,7 +501,7 @@ export class Kubero {
                         }
                     },
                     worker: {
-                        replicaCount: 0, // TODO my be dynamic
+                        replicaCount: 0, // TODO should be dynamic
                         autoscaling: {
                             minReplicas: 0,
                             maxReplicas: 0,

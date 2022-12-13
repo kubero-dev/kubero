@@ -2,7 +2,7 @@ import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetad
 
 export class Pipeline implements IPipeline {
     public name: string;
-    //public gitrepo: string;
+    public domain: string;
     public dockerimage: string;
     public reviewapps: boolean;
     public phases: IPipelinePhase[];
@@ -18,7 +18,7 @@ export class Pipeline implements IPipeline {
         pl: IPipeline,
     ) {
         this.name = pl.name;
-        //this.gitrepo = gitrepo;
+        this.domain = pl.domain;
         this.reviewapps = pl.reviewapps;
         this.phases = pl.phases;
         this.buildpack = pl.buildpack;
