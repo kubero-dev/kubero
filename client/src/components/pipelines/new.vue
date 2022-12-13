@@ -20,8 +20,20 @@
             v-model="pipelineName"
             :rules="nameRules"
             :counter="60"
-            label="Pipeline name"
+            label="Pipeline name *"
             required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="domain"
+            :rules="domainRules"
+            label="Pipeline domain"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -51,7 +63,7 @@
             :rules="repositoryRules"
             :counter="60"
             :items="gitrepoItems"
-            label="Repository"
+            label="Repository *"
             :disabled="repository_status.connected"
             required
           ></v-combobox>
@@ -111,7 +123,7 @@
           <v-select
             v-model="buildpack"
             :items="buildpackList"
-            label="Buildpack"
+            label="Buildpack *"
             @change="updateBuildpack"
           ></v-select>
         </v-col>
@@ -170,6 +182,7 @@ export default {
       buildpackList: [],
       valid: false, // final form validation
       pipelineName: '',
+      domain: '',
       reviewapps: true,
       /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
       /*gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
@@ -239,6 +252,10 @@ export default {
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
+      ],
+      domainRules: [
+        v => v.length <= 90 || 'Name must be less than 90 characters',
+        v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
       ],
       repositoryRules: [
         v => !!v || 'Repository is required',
@@ -392,6 +409,7 @@ export default {
 
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
+          domain: this.domain,
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
