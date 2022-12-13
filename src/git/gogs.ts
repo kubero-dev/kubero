@@ -143,7 +143,7 @@ export class GogsApi extends Repo {
 
         const keyPair = this.createDeployKeyPair();
 
-        const title: string = "bot@kubero";
+        const title: string = "bot@kubero."+crypto.randomBytes(4).toString('hex');
 
         let ret: IDeploykeyR = {
             status: 500,
@@ -159,26 +159,6 @@ export class GogsApi extends Repo {
                 priv: keyPair.privKeyBase64
             }
         }
-        //https://try.gitea.io/api/swagger#/repository/repoListKeys
-        const keysList = await this.gitea.repos.repoListKeys(owner, repo)
-        .catch((error: any) => {
-            console.log(error)
-            return ret;
-        })
-
-        // try to find the key
-        for (let key of keysList.data) {
-            if (key.title === title &&
-                key.read_only === true) {
-                ret = {
-                    status: 422,
-                    statusText: 'found',
-                    data: key,
-                }
-                return ret;
-            }
-        }
-
         try {
             //https://try.gitea.io/api/swagger#/repository/repoCreateKey
             let res = await this.gitea.repos.repoCreateKey(owner, repo, {
