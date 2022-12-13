@@ -1,6 +1,6 @@
 <template>
     <v-container :fluid="true">
-        <h1>Logs</h1>
+        <h1>Events</h1>
         <v-layout>
                 <v-row>
                     <v-timeline align-top dense>

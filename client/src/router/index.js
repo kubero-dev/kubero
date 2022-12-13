@@ -6,7 +6,7 @@ import AppsNew from "@/components/apps/new"
 import AppsLogs from "@/components/apps/logs"
 import Settingsform from "@/components/settings/form"
 import Addonslist from "@/components/addons/list"
-import LogsView from "@/components/logs/view"
+import EventsView from "@/components/events/view"
 import Login from "@/components/login"
 
 export default new VueRouter({
@@ -61,9 +61,9 @@ export default new VueRouter({
       component: Login
     },
     {
-      path: "/logs",
-      name: "Logs",
-      component: LogsView
+      path: "/events",
+      name: "Events",
+      component: EventsView
     },
   ]
 })
