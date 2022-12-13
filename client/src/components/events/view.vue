@@ -95,4 +95,8 @@ export default {
 </script>
 
 <style scoped>
+.v-timeline::before {
+    top: 55px;
+    height: calc(100% - 110px)
+}
 </style>
