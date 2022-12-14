@@ -70,7 +70,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="!repository_status.connected && repotab && repotab!='docker'"
+        v-if="showConnectButton"
       >
         <v-col
           cols="12"
@@ -164,7 +164,6 @@
                 @click="saveForm()"
                 :disabled="!valid
                         || !gitrepo
-                        || !repository_status.connected
                         || !buildpack"
                 >Sumbit</v-btn>
         </v-col>
@@ -184,10 +183,7 @@ export default {
       pipelineName: '',
       domain: '',
       reviewapps: true,
-      /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
-      /*gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
       gitrepo: '',
-      /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
       gitrepoItems: [],
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
@@ -264,6 +260,11 @@ export default {
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
     }),
+    computed: {
+      showConnectButton() {
+        return this.gitrepoItems.includes(this.gitrepo) && this.repository_status.connected === false;
+      }
+    },
     mounted() {
       this.getContextList();
       this.listRepositories();
