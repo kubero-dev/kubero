@@ -646,10 +646,7 @@ export default {
 
         axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
           for (let i = 0; i < response.data.length; i++) {
-            this.branchesList.push({
-              text: response.data[i],
-              value: response.data[i],
-            });
+            this.branchesList.push(response.data[i]);
           }
         });
       },
