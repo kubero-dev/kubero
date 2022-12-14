@@ -20,6 +20,8 @@ Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: R
 });
 
 Router.get('/events', authMiddleware, async function (req: Request, res: Response) {
-    const events = await req.app.locals.kubero.getEvents();
+    const namespace = req.query.namespace || process.env.KUBERO_NAMESPACE || 'kubero';
+    console.log('namespace', namespace);
+    const events = await req.app.locals.kubero.getEvents(namespace);
     res.send(events);
 });

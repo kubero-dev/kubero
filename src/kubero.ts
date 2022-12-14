@@ -676,7 +676,7 @@ export class Kubero {
         return this.config.buildpacks;
     }
 
-    public getEvents() {
-        return this.kubectl.getEvents();
+    public getEvents(namespace: string) {
+        return this.kubectl.getEvents(namespace);
     }
 }
