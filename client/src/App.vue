@@ -27,7 +27,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Events</v-list-item-title>
                 </v-list-item>
-                <v-list-item link to="/settings">
+                <v-list-item link to="/settings" v-if="session">
                     <v-list-item-icon>
                     <v-icon>mdi-cog-outline</v-icon>
                     </v-list-item-icon>
