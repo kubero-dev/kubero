@@ -283,6 +283,12 @@ export default {
               value: response.data[i].name,
             });
           }
+          if (response.data.length > 0) {
+            this.phases[0].context = response.data[0].name;
+            this.phases[1].context = response.data[0].name;
+            this.phases[2].context = response.data[0].name;
+            this.phases[3].context = response.data[0].name;
+          }
         });
       },
       listRepositories() {
@@ -407,6 +413,21 @@ export default {
         });
       },
       saveForm() {
+
+        // fake the minimal requirements to create a pipeline if the repo is not connectedd
+        if (!this.repository_status.connected) {
+          this.git.keys = {
+            priv: btoa("foo"),
+            pub: btoa("bar")
+          }
+
+          // TODO transform git ssh url to http url
+          this.git.repository = {
+            admin: false,
+            ssh_url: this.gitrepo,
+            clone_url: this.gitrepo
+          }
+        }
 
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
