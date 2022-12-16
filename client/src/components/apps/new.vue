@@ -25,6 +25,7 @@
             :counter="60"
             :readonly="app!='new'"
             label="App name"
+            v-on="changeName(appname)"
             required
           ></v-text-field>
         </v-col>
@@ -606,6 +607,9 @@ export default {
         Addons,
     },
     methods: {
+      changeName(name) {
+        this.domain = name+"."+this.pipelineData.domain;
+      },
       loadPipeline() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
           this.pipelineData = response.data;
@@ -618,6 +622,7 @@ export default {
           this.buildpack = this.pipelineData.buildpack;
 
           this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
+          this.domain = this.pipelineData.domain;
 
           this.loadBranches();
 /*

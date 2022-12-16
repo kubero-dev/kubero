@@ -212,7 +212,7 @@ export class Auth {
     }
 
     public authMiddleware(req: Request, res: Response, next: NextFunction) {
-        if (!req.isAuthenticated()) {
+        if (typeof(req.isAuthenticated) !== "function"  || !req.isAuthenticated()) {
             debug.debug("not authenticated")
             res.status(401).send('You are not authenticated')
         } else {

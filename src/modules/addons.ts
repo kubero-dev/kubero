@@ -63,33 +63,26 @@ export class Addons {
         options: AddonOptions
     ) {
         this.kubectl = options.kubectl
-        this.loadOperators()
     }
 
-    private loadOperators(): void {
-        this.kubectl.getOperators()
-        .then(operators => {
+    public async loadOperators(): Promise<void> {
 
-            this.operatorsList = operators;
+        this.operatorsList = await this.kubectl.getOperators()
 
-            const postgresCluster = new PostgresCluster(operators)
-            this.addonsList.push(postgresCluster)
+        const postgresCluster = new PostgresCluster(this.operatorsList)
+        this.addonsList.push(postgresCluster)
 
-            const redisCluster = new RedisCluster(operators)
-            this.addonsList.push(redisCluster)
+        const redisCluster = new RedisCluster(this.operatorsList)
+        this.addonsList.push(redisCluster)
 
-            const redis = new Redis(operators)
-            this.addonsList.push(redis)
+        const redis = new Redis(this.operatorsList)
+        this.addonsList.push(redis)
 
-            const mongoDB = new MongoDB(operators)
-            this.addonsList.push(mongoDB)
+        const mongoDB = new MongoDB(this.operatorsList)
+        this.addonsList.push(mongoDB)
 
-            const minio = new Minio(operators)
-            this.addonsList.push(minio)
-        })
-        .catch(err => {
-            console.error(err)
-        })
+        const minio = new Minio(this.operatorsList)
+        this.addonsList.push(minio)
     }
 
     public async getAddonsList(): Promise<IPlugin[]> {

@@ -17,7 +17,12 @@ Router.all("/session", (req: Request, res: Response) => {
             status = 401
         }
     }
-    res.status(status).send(isAuthenticated)
+
+    let message = {
+        "isAuthenticated": isAuthenticated,
+        "version": process.env.npm_package_version,
+    }
+    res.status(status).send(message)
 })
 
 Router.get('/auth/github',

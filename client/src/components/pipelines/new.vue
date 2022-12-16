@@ -20,8 +20,20 @@
             v-model="pipelineName"
             :rules="nameRules"
             :counter="60"
-            label="Pipeline name"
+            label="Pipeline name *"
             required
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="domain"
+            :rules="domainRules"
+            label="Pipeline domain"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -51,14 +63,14 @@
             :rules="repositoryRules"
             :counter="60"
             :items="gitrepoItems"
-            label="Repository"
+            label="Repository *"
             :disabled="repository_status.connected"
             required
           ></v-combobox>
         </v-col>
       </v-row>
       <v-row
-        v-if="!repository_status.connected && repotab && repotab!='docker'"
+        v-if="showConnectButton"
       >
         <v-col
           cols="12"
@@ -111,7 +123,7 @@
           <v-select
             v-model="buildpack"
             :items="buildpackList"
-            label="Buildpack"
+            label="Buildpack *"
             @change="updateBuildpack"
           ></v-select>
         </v-col>
@@ -152,7 +164,6 @@
                 @click="saveForm()"
                 :disabled="!valid
                         || !gitrepo
-                        || !repository_status.connected
                         || !buildpack"
                 >Sumbit</v-btn>
         </v-col>
@@ -170,11 +181,9 @@ export default {
       buildpackList: [],
       valid: false, // final form validation
       pipelineName: '',
+      domain: '',
       reviewapps: true,
-      /*gitrepo: 'git@github.com:kubero-dev/template-nodeapp.git', // Git repository to connect with*/
-      /*gitrepo: 'git@github.com:johnpapa/node-hello.git', // not owned Git repository to connect with*/
       gitrepo: '',
-      /*gitrepoItems: ['git@github.com:johnpapa/node-hello.git', 'git@github.com:kubero-dev/template-nodeapp.git'],*/
       gitrepoItems: [],
       contextList: [], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
@@ -240,6 +249,10 @@ export default {
         v => v.length <= 60 || 'Name must be less than 60 characters',
         v => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
+      domainRules: [
+        v => v.length <= 90 || 'Name must be less than 90 characters',
+        v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
+      ],
       repositoryRules: [
         v => !!v || 'Repository is required',
         v => v.length <= 120 || 'Repository must be less than 120 characters',
@@ -247,6 +260,11 @@ export default {
         v => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
     }),
+    computed: {
+      showConnectButton() {
+        return this.gitrepoItems.includes(this.gitrepo) && this.repository_status.connected === false;
+      }
+    },
     mounted() {
       this.getContextList();
       this.listRepositories();
@@ -264,6 +282,12 @@ export default {
               text: response.data[i].name,
               value: response.data[i].name,
             });
+          }
+          if (response.data.length > 0) {
+            this.phases[0].context = response.data[0].name;
+            this.phases[1].context = response.data[0].name;
+            this.phases[2].context = response.data[0].name;
+            this.phases[3].context = response.data[0].name;
           }
         });
       },
@@ -390,8 +414,24 @@ export default {
       },
       saveForm() {
 
+        // fake the minimal requirements to create a pipeline if the repo is not connectedd
+        if (!this.repository_status.connected) {
+          this.git.keys = {
+            priv: btoa("foo"),
+            pub: btoa("bar")
+          }
+
+          // TODO transform git ssh url to http url
+          this.git.repository = {
+            admin: false,
+            ssh_url: this.gitrepo,
+            clone_url: this.gitrepo
+          }
+        }
+
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
+          domain: this.domain,
           gitrepo: this.gitrepo,
           phases: this.phases,
           reviewapps: this.reviewapps,
