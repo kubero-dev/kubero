@@ -25,7 +25,7 @@
             :counter="60"
             :readonly="app!='new'"
             label="App name"
-            v-on="changeName(appname)"
+            v-on:input="changeName(appname)"
             required
           ></v-text-field>
         </v-col>
@@ -618,15 +618,13 @@ export default {
             this.docker.image = this.pipelineData.dockerimage;
           }
 
-
+          this.loadBranches();
           this.buildpack = this.pipelineData.buildpack;
 
-          this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
-          this.domain = this.pipelineData.domain;
-
-          this.loadBranches();
-/*
           if (this.app == 'new') {
+            this.domain = this.pipelineData.domain;
+            this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
+            /*
             switch (this.pipelineData.github.repository.language) {
               case "JavaScript":
                 this.buildpack = 'NodeJS';
@@ -639,8 +637,9 @@ export default {
                 //this.buildpack = "";
                 break;
             }
+            */
           }
-*/
+
         });
       },
       loadBranches() {
