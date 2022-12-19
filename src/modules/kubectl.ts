@@ -162,10 +162,6 @@ export class Kubectl {
 
         let namespace = app.pipeline+'-'+app.phase;
 
-        let pipeline = await this.getPipeline(app.pipeline)
-        //appl.spec.gitrepo = pipeline.spec.github.repository //FIXME: this overwrites the gitrepo from the app. Is this required?
-        appl.spec.deploymentstrategy = pipeline.spec.deploymentstrategy
-
         await this.customObjectsApi.createNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",

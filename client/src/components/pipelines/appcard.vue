@@ -19,7 +19,7 @@
 
     <v-card-text>
         <v-row
-            v-if="this.app.buildpack != 'Docker'"
+            v-if="this.app.deploymentstrategy != 'docker'"
             class="mx-0"
         >
             <v-icon left small>mdi-git</v-icon>
@@ -28,7 +28,7 @@
             </div>
         </v-row>
         <v-row
-            v-if="this.app.buildpack == 'Docker'"
+            v-if="this.app.deploymentstrategy == 'docker'"
             class="mx-0"
         >
             <v-icon left small>mdi-docker</v-icon>
@@ -37,8 +37,8 @@
             </div>
         </v-row>
         <p></p>
-        <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.app.branch }}</v-chip>
-        <v-chip label class="mr-1" v-if="this.app.commithash">{{ this.app.commithash }}</v-chip>
+        <v-chip label class="mr-1" v-if="this.app.deploymentstrategy != 'docker'"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.app.branch }}</v-chip>
+        <v-chip label class="mr-1" v-if="this.app.deploymentstrategy != 'docker' && this.app.commithash">{{ this.app.commithash }}</v-chip>
 
     </v-card-text>
 

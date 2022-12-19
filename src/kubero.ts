@@ -188,13 +188,12 @@ export class Kubero {
 
     // create a new app in a specified pipeline and phase
     public async newApp(app: App) {
-        debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
             this.appStateList.push(app);
 
-            let namespace = app.pipeline+'-'+app.phase;
             this._io.emit('updatedApps', "created");
             this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
