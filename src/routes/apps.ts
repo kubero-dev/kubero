@@ -28,13 +28,24 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
 function createApp(req: Request,) : IApp {
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
-    const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack);
+    let selectedBuildpack: any;
+    const buildpackConfig = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack.name);
+    if (buildpackConfig == req.body.buildpack) {
+        selectedBuildpack = buildpackConfig;
+    } else {
+        selectedBuildpack = {
+            name: "custom",
+            fetch: req.body.buildpack.fetch,
+            build: req.body.buildpack.build,
+            run: req.body.buildpack.run,
+        };
+    }
 
     let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
-        buildpack: req.body.buildpack,
+        buildpack: selectedBuildpack.name,
         deploymentstrategy: req.body.deploymentstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
