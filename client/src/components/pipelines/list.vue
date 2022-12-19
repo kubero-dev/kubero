@@ -30,7 +30,7 @@
                                     <v-col cols="12" sm="12" md="6">
                                         <a :href="'/#/pipeline/'+item.name+'/apps'">
                                             <v-card-title>
-                                                <v-icon left>mdi-{{ item.deploymentstrategy}}</v-icon>
+                                                <v-icon left :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                                 <span class="text-h5">{{ item.name }}</span>
                                             </v-card-title>
                                             <v-card-text>
@@ -130,5 +130,35 @@ export default {
 .v-card a{
     text-decoration: none;
     color: #8560A9 !important;
+}
+
+.connected{
+    background-image: url('./../../../public/img/icons/connected.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+
+.connected::before {
+    height: 23px;
+    width: 23px;
+    visibility: hidden;
+    content: "";
+}
+
+.disconnected{
+    background-image: url('./../../../public/img/icons/disconnected.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+
+.disconnected::before {
+    height: 23px;
+    width: 23px;
+    visibility: hidden;
+    content: "";
 }
 </style>
