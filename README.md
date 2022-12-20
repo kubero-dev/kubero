@@ -30,13 +30,17 @@ Kubero is Kubernetes native and runs on any Kubernetes instance.
 - Install and manage your operators
 - Give access to your container CLI
 
-## Supported GIT repositories
-<img src="docs/screenshots/gitrepositories.png">
+## Supported GIT repositories (hosted and self-hosted)
+- Gitea
+- Forgejo (WIP)
+- Gogs
+- Github
+- Gitlab
+- Bitbucket
 
-## Which languages are supported
+## Tested languages/frameworks
 Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
 
-So far tested languages/frameworks:
 - GoLang (including Hugo, gin-gonic)
 - Python (including Flask)
 - JavaScript/NodeJS
@@ -46,13 +50,12 @@ So far tested languages/frameworks:
 - Rust (including Rocket)
 - ...
 
-## Preconfigured Buildpacks
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
-2) Run `kubero install` to install all components on your cluster
+2) Run `kubero install` to install all components on an new or your existing cluster
 
 ## How it works
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">Screenshots</a><p>
