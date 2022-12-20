@@ -14,6 +14,18 @@
             </p>
         </v-col>
       </v-row>
+      <!--
+      <template>
+        <v-tabs>
+          <v-tab>Appliccation</v-tab>
+          <v-tab>Deployment</v-tab>
+          <v-tab>Resources</v-tab>
+          <v-tab>Cronjobs</v-tab>
+          <v-tab>Env Vars</v-tab>
+          <v-tab>Addons</v-tab>
+        </v-tabs>
+      </template>
+      -->
       <v-row>
         <v-col
           cols="12"
@@ -49,6 +61,17 @@
       <v-divider class="ma-5"></v-divider>
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+            <v-text-field
+              v-model="containerPort"
+              label="Container Port"
+            ></v-text-field>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col
@@ -100,6 +123,24 @@
           cols="12"
           md="6"
         >
+          <v-switch
+            v-model="autodeploy"
+            :label="`Autodeploy: ${autodeploy.toString()}`"
+            inset
+          ></v-switch>
+        </v-col>
+      </v-row>
+
+      <v-divider class="ma-5"></v-divider>
+      <!-- DEPLOYMENT BUILDPACKS -->
+      <h4 class="text-uppercase">Buildpacks</h4>
+
+      <v-row
+        v-if="appDeploymentStrategy == 'git'">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-text-field
             v-model="buildpack.build.command"
             label="Build Command"
@@ -116,19 +157,6 @@
             v-model="buildpack.run.command"
             label="Run Command"
           ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-switch
-            v-model="autodeploy"
-            :label="`Autodeploy: ${autodeploy.toString()}`"
-            inset
-          ></v-switch>
         </v-col>
       </v-row>
 
@@ -239,17 +267,6 @@
       <v-divider class="ma-5"></v-divider>
       <!-- PROVISIONING -->
       <h4 class="text-uppercase">Resources</h4>
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-            <v-text-field
-              v-model="containerPort"
-              label="Container Port"
-            ></v-text-field>
-        </v-col>
-      </v-row>
 
       <v-row>
         <v-col
