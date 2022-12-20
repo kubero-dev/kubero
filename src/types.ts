@@ -9,6 +9,7 @@ export interface IApp {
     branch: string,
     autodeploy: boolean,
     domain?: string,
+    ssl?: boolean,
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
