@@ -14,6 +14,18 @@
             </p>
         </v-col>
       </v-row>
+      <!-- not sure if i will split into tabs or expandable panels
+      <template>
+        <v-tabs>
+          <v-tab>Appliccation</v-tab>
+          <v-tab>Deployment</v-tab>
+          <v-tab>Resources</v-tab>
+          <v-tab>Cronjobs</v-tab>
+          <v-tab>Env Vars</v-tab>
+          <v-tab>Addons</v-tab>
+        </v-tabs>
+      </template>
+      -->
       <v-row>
         <v-col
           cols="12"
@@ -49,6 +61,17 @@
       <v-divider class="ma-5"></v-divider>
       <!-- DEPLOYMENT-->
       <h4 class="text-uppercase">Deployment</h4>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+            <v-text-field
+              v-model="containerPort"
+              label="Container Port"
+            ></v-text-field>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col
@@ -64,6 +87,7 @@
         </v-col>
       </v-row>
 
+      <!-- DEPLOYMENT STRATEGY GIT -->
       <v-row
         v-if="appDeploymentStrategy == 'git'">
         <v-col
@@ -107,6 +131,36 @@
         </v-col>
       </v-row>
 
+      <v-divider class="ma-5"></v-divider>
+      <!-- DEPLOYMENT BUILDPACKS -->
+      <h4 class="text-uppercase">Buildpack</h4>
+
+      <v-row
+        v-if="appDeploymentStrategy == 'git'">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="buildpack.build.command"
+            label="Build Command"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+      <v-row
+        v-if="appDeploymentStrategy == 'git'">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="buildpack.run.command"
+            label="Run Command"
+          ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <!-- DEPLOYMENT STRATEGY CONTAINER -->
       <v-row
         v-if="appDeploymentStrategy == 'docker'">
         <v-col
@@ -213,17 +267,6 @@
       <v-divider class="ma-5"></v-divider>
       <!-- PROVISIONING -->
       <h4 class="text-uppercase">Resources</h4>
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-            <v-text-field
-              v-model="containerPort"
-              label="Container Port"
-            ></v-text-field>
-        </v-col>
-      </v-row>
 
       <v-row>
         <v-col
@@ -496,7 +539,14 @@ export default {
     },
     data: () => ({
       valid: false,
-      buildpack: undefined,
+      buildpack: {
+        run: {
+          command: '',
+        },
+        build: {
+          command: '',
+        },
+      },
       deploymentstrategyGit: true,
       pipelineData: {
         git: {
@@ -599,9 +649,9 @@ export default {
       }
     },
     mounted() {
-      this.loadApp();
-      this.loadPodsizeList();
       this.loadPipeline();
+      this.loadPodsizeList();
+      this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
     },
     components: {
         Addons,
@@ -703,8 +753,13 @@ export default {
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
-            this.buildpack = response.data.spec.buildpack;
+            this.buildpack = {
+              run: response.data.spec.image.run,
+              build: response.data.spec.image.build,
+              fetch: response.data.spec.image.fetch,
+            }
             this.gitrepo = response.data.spec.gitrepo;
+            this.domain = response.data.spec.domain;
             this.branch = response.data.spec.branch;
             this.imageTag= response.data.spec.imageTag;
             this.docker.image = response.data.spec.image.repository || '';
@@ -774,9 +829,19 @@ export default {
         });
       },
       createApp() {
+        if (
+          (this.buildpack.build.command !== this.pipelineData.buildpack.build.command) ||
+          (this.buildpack.run.command !== this.pipelineData.buildpack.run.command)
+        ){
+          this.buildpack.name = "custom";
+        }
+
+        console.log(this.buildpack);
+        console.log(this.pipelineData.buildpack);
+
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
-          buildpack: this.buildpack.name,
+          buildpack: this.buildpack,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
           gitrepo: this.pipelineData.git.repository,
