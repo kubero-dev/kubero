@@ -14,7 +14,7 @@
             </p>
         </v-col>
       </v-row>
-      <!--
+      <!-- not sure if i will split into tabs or expandable panels
       <template>
         <v-tabs>
           <v-tab>Appliccation</v-tab>
@@ -133,7 +133,7 @@
 
       <v-divider class="ma-5"></v-divider>
       <!-- DEPLOYMENT BUILDPACKS -->
-      <h4 class="text-uppercase">Buildpacks</h4>
+      <h4 class="text-uppercase">Buildpack</h4>
 
       <v-row
         v-if="appDeploymentStrategy == 'git'">
