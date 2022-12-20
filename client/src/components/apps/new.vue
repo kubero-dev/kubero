@@ -45,8 +45,8 @@
 
       <v-row>
         <v-col
-          cols="12"
-          md="6"
+          cols="9"
+          md="5"
         >
           <v-text-field
             v-model="domain"
@@ -55,6 +55,16 @@
             label="Domain"
             required
           ></v-text-field>
+        </v-col>
+        <v-col
+          cols="3"
+          md="1"
+          pullright
+        >
+          <v-switch
+            v-model="ssl"
+            :label="`SSL`"
+          ></v-switch>
         </v-col>
       </v-row>
 
@@ -575,6 +585,7 @@ export default {
       },
       autodeploy: true,
       domain: '',
+      ssl: false,
       envvars: [
         //{ name: '', value: '' },
       ],
@@ -750,6 +761,11 @@ export default {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
             this.resourceVersion = response.data.metadata.resourceVersion;
 
+            if (response.data.spec.ingress.tls.length > 0) {
+              this.ssl = true;
+            } else {
+              this.ssl = false;
+            }
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
@@ -797,6 +813,7 @@ export default {
           },
           autodeploy: this.autodeploy,
           domain: this.domain,
+          ssl: this.ssl,
           envvars: this.envvars,
           podsize: this.podsize,
           autoscale: this.autoscale,
@@ -857,6 +874,7 @@ export default {
           },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),
+          ssl: this.ssl,
           envvars: this.envvars,
           podsize: this.podsize,
           autoscale: this.autoscale,

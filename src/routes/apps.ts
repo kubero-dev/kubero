@@ -51,6 +51,7 @@ function createApp(req: Request,) : IApp {
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
         domain: req.body.domain,
+        ssl: req.body.ssl,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
