@@ -746,7 +746,7 @@ export default {
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
-            replicaCount: this.webreplicas || 1,
+            replicaCount: this.webreplicas || 0,
             autoscaling: {
               minReplicas: this.webreplicasrange[0] || 1,
               maxReplicas: this.webreplicasrange[1] || 0,
