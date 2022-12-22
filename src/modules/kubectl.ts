@@ -19,6 +19,7 @@ import {
     V1Namespace,
     Metrics,
     PodMetric,
+    PodMetricsList,
     NodeMetric,
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
@@ -352,52 +353,57 @@ export class Kubectl {
     }
 
     public async getPodMetrics(namespace: string): Promise<any> { //TODO make this a real type
-        const metrics = await this.metricsApi.getPodMetrics(namespace);
-
         const ret = [];
-        for (let i = 0; i < metrics.items.length; i++) {
-            const metric = metrics.items[i];
-            const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
-            const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
-            const requestMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.requests?.memory || '0');
-            const limitsCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.limits?.cpu || '0');
-            const limitsMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.limits?.memory || '0');
-            const usageCPU = this.normalizeCPU(metric.containers[0].usage.cpu);
-            const usageMemory = this.normalizeMemory(metric.containers[0].usage.memory);
-            const percentageCPU = Math.round(usageCPU / limitsCPU * 100);
-            const percentageMemory = Math.round(usageMemory / limitsMemory * 100);
 
-            /* debug caclulation *//*
-            console.log("resource CPU    : " + requestCPU)
-            console.log("limits CPU      : " + limitsCPU)
-            console.log("usage CPU       : " + usageCPU)
-            console.log("percent CPU     : " + percentageCPU)
-            console.log("resource Memory : " + requestMemory)
-            console.log("limits Memory   : " + limitsMemory)
-            console.log("usage Memory    : " + usageMemory)
-            console.log("percent Memory  : " + percentageMemory)
-            console.log("------------------------------------")
-            /* end debug calculations*/
+        try {
+            const metrics = await this.metricsApi.getPodMetrics(namespace);
 
-            const m = {
-                name: metric.metadata.name,
-                namespace: metric.metadata.namespace,
-                memory : {
-                    unit: 'Mi',
-                    request: requestMemory,
-                    limit: limitsMemory,
-                    usage: usageMemory,
-                    percentage: percentageMemory
-                },
-                cpu : {
-                    unit: 'm',
-                    request: requestCPU,
-                    limit: limitsCPU,
-                    usage: usageCPU,
-                    percentage: percentageCPU
+            for (let i = 0; i < metrics.items.length; i++) {
+                const metric = metrics.items[i];
+                const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
+                const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
+                const requestMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.requests?.memory || '0');
+                const limitsCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.limits?.cpu || '0');
+                const limitsMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.limits?.memory || '0');
+                const usageCPU = this.normalizeCPU(metric.containers[0].usage.cpu);
+                const usageMemory = this.normalizeMemory(metric.containers[0].usage.memory);
+                const percentageCPU = Math.round(usageCPU / limitsCPU * 100);
+                const percentageMemory = Math.round(usageMemory / limitsMemory * 100);
+
+                /* debug caclulation *//*
+                console.log("resource CPU    : " + requestCPU)
+                console.log("limits CPU      : " + limitsCPU)
+                console.log("usage CPU       : " + usageCPU)
+                console.log("percent CPU     : " + percentageCPU)
+                console.log("resource Memory : " + requestMemory)
+                console.log("limits Memory   : " + limitsMemory)
+                console.log("usage Memory    : " + usageMemory)
+                console.log("percent Memory  : " + percentageMemory)
+                console.log("------------------------------------")
+                /* end debug calculations*/
+
+                const m = {
+                    name: metric.metadata.name,
+                    namespace: metric.metadata.namespace,
+                    memory : {
+                        unit: 'Mi',
+                        request: requestMemory,
+                        limit: limitsMemory,
+                        usage: usageMemory,
+                        percentage: percentageMemory
+                    },
+                    cpu : {
+                        unit: 'm',
+                        request: requestCPU,
+                        limit: limitsCPU,
+                        usage: usageCPU,
+                        percentage: percentageCPU
+                    }
                 }
+                ret.push(m);
             }
-            ret.push(m);
+        } catch (error: any) {
+            debug.log('ERROR fetching metrics: '+ error);
         }
 
         return ret;

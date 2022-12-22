@@ -43,16 +43,26 @@
     </v-card-text>
 
     <v-divider></v-divider>
-    <v-card-text>
+    <v-card-text v-if="metricsDisplay == 'bars'">
       <v-row>
         <v-col cols="6" class="pb-0 text-left">CPU</v-col>
         <v-col cols="6" class="pb-0 text-right">Memory</v-col>
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" style="height:20px">
-        <v-col v-if="metric.cpu.percentage != null && metric.memory.percentage != null" cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
-        <v-col v-if="metric.cpu.percentage != null && metric.memory.percentage != null" cols="6" class="text-right"><v-progress-linear :value="metric.memory.percentage" color="#8560A9" class="float-left" ></v-progress-linear></v-col>
-        <v-col v-if="metric.cpu.percentage == null || metric.memory.percentage == null" cols="6" class="text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
-        <v-col v-if="metric.cpu.percentage == null || metric.memory.percentage == null" cols="6" class="text-left">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+        <v-col cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
+        <v-col cols="6" class="text-right"><v-progress-linear :value="metric.memory.percentage" color="#8560A9" class="float-left" ></v-progress-linear></v-col>
+      </v-row>
+    </v-card-text>
+    <v-card-text v-if="metricsDisplay == 'table'">
+      <v-row>
+        <v-col cols="8" class="pb-0 text-left">Pod</v-col>
+        <v-col cols="2" class="pb-0 text-left">CPU</v-col>
+        <v-col cols="2" class="pb-0 text-right">Memory</v-col>
+      </v-row>
+      <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
+        <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
+        <v-col cols="2" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
+        <v-col cols="2" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
       </v-row>
     </v-card-text>
     <v-divider></v-divider>
@@ -142,9 +152,11 @@ export default {
     data: () => ({
       loadingState: false,
       metrics: [],
+      metricsDisplay: "dots",
     }),
     mounted() {
         this.loadMetrics();
+        setInterval(this.loadMetrics, 10000);
     },
     methods: {
         restartApp() {
@@ -160,6 +172,17 @@ export default {
         loadMetrics() {
             axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
             .then(response => {
+                for (var i = 0; i < response.data.length; i++) {
+                    if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {
+                        this.metricsDisplay = "bars";
+                    }
+                    if (
+                      (response.data[i].cpu.percentage == null && response.data[i].memory.percentage == null) &&
+                      (response.data[i].cpu.usage != null && response.data[i].memory.usage != null)
+                     ){
+                        this.metricsDisplay = "table";
+                    }
+                }
                 this.metrics = response.data;
             })
             .catch(error => {
@@ -186,5 +209,19 @@ export default {
 
 .v-application .v-card__title {
     font-size: 1.1rem;
+}
+
+#metrics:nth-child(even) {
+  background-color: rgba(133, 96, 169, .1);
+}
+#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
+}
+
+.theme--light#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
+}
+.theme--dark#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
 }
 </style>
