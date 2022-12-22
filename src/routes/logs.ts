@@ -25,3 +25,19 @@ Router.get('/events', authMiddleware, async function (req: Request, res: Respons
     const events = await req.app.locals.kubero.getEvents(namespace);
     res.send(events);
 });
+
+Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+
+    const metrics = await req.app.locals.kubero.getPodMetrics(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app
+    );
+    res.send(metrics);
+});
+
+Router.get('/metrics', authMiddleware, async function (req: Request, res: Response) {
+
+    const metrics = await req.app.locals.kubero.getNodeMetrics();
+    res.send(metrics);
+});
