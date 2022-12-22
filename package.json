@@ -1,6 +1,6 @@
 {
   "name": "kubero",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "Heroku clone on Kubernetes",
   "main": "dist/index.js",
   "author": "Gianni Carafa",
