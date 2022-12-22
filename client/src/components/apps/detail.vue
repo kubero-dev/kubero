@@ -33,22 +33,24 @@ export default {
             tab: null,
             items: [
                 {
-                    text: 'Pipelines Dashboard',
+                    text: 'Dashboard',
                     disabled: false,
                     href: '#/',
                 },
                 {
-                    text: this.pipeline,
+                    text: 'Pipeline:'+this.pipeline,
                     disabled: false,
                     href: '#/pipeline/'+this.pipeline+'/apps',
                 },
                 {
-                    text: this.phase,
+                    text: 'Phase:'+this.phase,
                     disabled: false,
                 },
                 {
                     text: this.app,
                     disabled: false,
+                    //http://localhost:2000/#/pipeline/customcommand/production/noproc
+                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
                 },
             ],
         }
