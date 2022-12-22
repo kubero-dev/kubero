@@ -43,6 +43,19 @@
     </v-card-text>
 
     <v-divider></v-divider>
+    <v-card-text>
+      <v-row>
+        <v-col cols="6" class="pb-0 text-left">CPU</v-col>
+        <v-col cols="6" class="pb-0 text-right">Memory</v-col>
+      </v-row>
+      <v-row v-for="metric in metrics" :key="metric.name" style="height:20px">
+        <v-col v-if="metric.cpu.percentage != null && metric.memory.percentage != null" cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
+        <v-col v-if="metric.cpu.percentage != null && metric.memory.percentage != null" cols="6" class="text-right"><v-progress-linear :value="metric.memory.percentage" color="#8560A9" class="float-left" ></v-progress-linear></v-col>
+        <v-col v-if="metric.cpu.percentage == null || metric.memory.percentage == null" cols="6" class="text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
+        <v-col v-if="metric.cpu.percentage == null || metric.memory.percentage == null" cols="6" class="text-left">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+      </v-row>
+    </v-card-text>
+    <v-divider></v-divider>
 
     <v-card-actions class="ml-2">
         <v-btn
@@ -128,13 +141,26 @@ export default {
     },
     data: () => ({
       loadingState: false,
+      metrics: [],
     }),
+    mounted() {
+        this.loadMetrics();
+    },
     methods: {
         restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 console.log(response);
                 this.loadingState = true;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+        loadMetrics() {
+            axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
+            .then(response => {
+                this.metrics = response.data;
             })
             .catch(error => {
                 console.log(error);
