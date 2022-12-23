@@ -796,9 +796,9 @@ export default {
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
-            replicaCount: this.webreplicas || 1,
+            replicaCount: this.webreplicas || 0,
             autoscaling: {
-              minReplicas: this.webreplicasrange[0] || 1,
+              minReplicas: this.webreplicasrange[0] || 0,
               maxReplicas: this.webreplicasrange[1] || 0,
               targetCPUUtilizationPercentage : 80,
               targetMemoryUtilizationPercentage : 80,
