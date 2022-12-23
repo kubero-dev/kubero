@@ -410,23 +410,47 @@ export class Kubectl {
     }
 
     private normalizeCPU(resource: string): number {
-        const unit = resource.slice(-1);
-        const value = parseInt(resource.slice(0, -1));
+
+        const regex = /([0-9]+)([a-zA-Z]*)/;
+        const matches = resource.match(regex);
+
+        let value = 0;
+        let unit = '';
+        if (matches !== null && matches[1]) {
+            value = parseInt(matches[1])
+        }
+        if (matches !== null && matches[2]) {
+            unit = matches[2]
+        }
+
+        //console.log("CPU unit: " + unit + " value: " + value + " :: " +resource);
         switch (unit) {
             case 'm':
                 return value / 1;
             case 'n':
                 return Math.round(value / 1000);
             default:
-                return value;
+                return value * 1000;
         }
         return 0;
     }
 
 
     private normalizeMemory(resource: string): number {
-        const unit = resource.slice(-2);
-        const value = parseInt(resource.slice(0, -2));
+
+        const regex = /([0-9]+)([a-zA-Z]*)/;
+        const matches = resource.match(regex);
+
+        let value = 0;
+        let unit = '';
+        if (matches !== null && matches[1]) {
+            value = parseInt(matches[1])
+        }
+        if (matches !== null && matches[2]) {
+            unit = matches[2]
+        }
+        //console.log("CPU unit: " + unit + " value: " + value + " :: " +resource);
+
         switch (unit) {
             case 'Gi':
                 return value * 1000;
