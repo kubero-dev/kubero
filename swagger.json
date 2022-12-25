@@ -13,6 +13,9 @@
   "paths": {
     "/cli/addons": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -24,6 +27,9 @@
     },
     "/addons": {
       "get": {
+        "tags": [
+          "Addons"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -35,6 +41,9 @@
     },
     "/addons/operators": {
       "get": {
+        "tags": [
+          "Addons"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -46,6 +55,9 @@
     },
     "/cli/apps": {
       "post": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -55,6 +67,9 @@
         }
       },
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -66,6 +81,9 @@
     },
     "/apps": {
       "post": {
+        "tags": [
+          "Apps"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -75,6 +93,9 @@
         }
       },
       "get": {
+        "tags": [
+          "Apps"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -86,6 +107,9 @@
     },
     "/auth/github": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -93,6 +117,9 @@
     },
     "/auth/github/callback": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -100,6 +127,9 @@
     },
     "/auth/oauth2": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -107,6 +137,9 @@
     },
     "/auth/oauth2/callback": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {}
@@ -114,6 +147,9 @@
     },
     "/auth/methods": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -125,6 +161,9 @@
     },
     "/login": {
       "post": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -139,6 +178,9 @@
     },
     "/logout": {
       "get": {
+        "tags": [
+          "Auth"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -150,6 +192,9 @@
     },
     "/config": {
       "get": {
+        "tags": [
+          "Config"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -161,6 +206,9 @@
     },
     "/cli/config/podsize": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -172,6 +220,9 @@
     },
     "/config/podsize": {
       "get": {
+        "tags": [
+          "Config"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -183,6 +234,9 @@
     },
     "/cli/config/buildpacks": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -194,6 +248,9 @@
     },
     "/config/buildpacks": {
       "get": {
+        "tags": [
+          "Config"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -205,6 +262,9 @@
     },
     "/cli/config/k8s/context": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -216,6 +276,9 @@
     },
     "/config/k8s/context": {
       "get": {
+        "tags": [
+          "Config"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -227,6 +290,9 @@
     },
     "/cli/config/repositories": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -238,6 +304,9 @@
     },
     "/config/repositories": {
       "get": {
+        "tags": [
+          "Config"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -249,6 +318,9 @@
     },
     "/logs/{pipeline}/{phase}/{app}": {
       "get": {
+        "tags": [
+          "Logs"
+        ],
         "description": "",
         "parameters": [
           {
@@ -279,6 +351,9 @@
     },
     "/events": {
       "get": {
+        "tags": [
+          "Logs"
+        ],
         "description": "",
         "parameters": [
           {
@@ -296,6 +371,9 @@
     },
     "/metrics/{pipeline}/{phase}/{app}": {
       "get": {
+        "tags": [
+          "Logs"
+        ],
         "description": "",
         "parameters": [
           {
@@ -326,6 +404,9 @@
     },
     "/metrics": {
       "get": {
+        "tags": [
+          "Logs"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -337,6 +418,9 @@
     },
     "/cli/pipelines": {
       "post": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -380,6 +464,9 @@
         }
       },
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -391,6 +478,9 @@
     },
     "/pipelines": {
       "post": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -434,6 +524,9 @@
         }
       },
       "get": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -445,6 +538,9 @@
     },
     "/cli/pipelines/{pipeline}": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -461,6 +557,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -479,6 +578,9 @@
     },
     "/pipelines/{pipeline}": {
       "get": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -495,6 +597,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -513,6 +618,9 @@
     },
     "/pipelines/{pipeline}/{phase}/{app}": {
       "delete": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -541,6 +649,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -623,6 +734,9 @@
         }
       },
       "get": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -653,6 +767,9 @@
     },
     "/cli/pipelines/{pipeline}/{phase}/{app}": {
       "delete": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -681,6 +798,9 @@
         }
       },
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -711,6 +831,9 @@
     },
     "/cli/pipelines/{pipeline}/apps": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [
           {
@@ -729,6 +852,9 @@
     },
     "/pipelines/{pipeline}/apps": {
       "get": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -747,6 +873,9 @@
     },
     "/pipelines/{pipeline}/{phase}/{app}/restart": {
       "get": {
+        "tags": [
+          "Pipeline"
+        ],
         "description": "",
         "parameters": [
           {
@@ -777,6 +906,9 @@
     },
     "/repo/{repoprovider}/list": {
       "get": {
+        "tags": [
+          "Repositories"
+        ],
         "description": "",
         "parameters": [
           {
@@ -795,6 +927,9 @@
     },
     "/repo/{repoprovider}/connect": {
       "post": {
+        "tags": [
+          "Repositories"
+        ],
         "description": "",
         "parameters": [
           {
@@ -825,6 +960,9 @@
     },
     "/repo/{repoprovider}/{gitrepob64}/branches/list": {
       "get": {
+        "tags": [
+          "Repositories"
+        ],
         "description": "",
         "parameters": [
           {
@@ -849,6 +987,9 @@
     },
     "/cli/settings": {
       "get": {
+        "tags": [
+          "CLI"
+        ],
         "description": "",
         "parameters": [],
         "responses": {
@@ -860,6 +1001,9 @@
     },
     "/settings": {
       "get": {
+        "tags": [
+          "Settings"
+        ],
         "description": "",
         "parameters": [],
         "responses": {

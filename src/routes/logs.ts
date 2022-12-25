@@ -11,6 +11,7 @@ import debug from 'debug';
 debug('app:routes')
 
 Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Logs']
     req.app.locals.kubero.startLogging(
         req.params.pipeline,
         req.params.phase,
@@ -20,6 +21,7 @@ Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: R
 });
 
 Router.get('/events', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Logs']
     const namespace = req.query.namespace || process.env.KUBERO_NAMESPACE || 'kubero';
     console.log('namespace', namespace);
     const events = await req.app.locals.kubero.getEvents(namespace);
@@ -27,6 +29,7 @@ Router.get('/events', authMiddleware, async function (req: Request, res: Respons
 });
 
 Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Logs']
 
     const metrics = await req.app.locals.kubero.getPodMetrics(
         req.params.pipeline,
@@ -37,6 +40,7 @@ Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req
 });
 
 Router.get('/metrics', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Logs']
 
     const metrics = await req.app.locals.kubero.getNodeMetrics();
     res.send(metrics);

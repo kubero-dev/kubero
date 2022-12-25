@@ -9,24 +9,28 @@ export const authMiddleware = auth.getAuthMiddleware();
 
 // connect pipeline with repository
 Router.get('/repo/:repoprovider/list', async function (req: Request, res: Response) {
+    // #swagger.tags = ['Repositories']
     let repolist = await req.app.locals.kubero.listRepos(req.params.repoprovider);
     res.send(repolist);
 });
 
 // connect pipeline with repository
 Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
+    // #swagger.tags = ['Repositories']
     let con = await req.app.locals.kubero.connectRepo(req.params.repoprovider, req.body.gitrepo);
     res.send(con);
 });
 
 // connect pipeline with repository
 Router.get('/repo/:repoprovider/:gitrepob64/branches/list', async function (req: Request, res: Response) {
+    // #swagger.tags = ['Repositories']
     let branches = await req.app.locals.kubero.listRepoBranches(req.params.repoprovider, req.params.gitrepob64);
     res.send(branches);
 });
 
 // get github webhook events
 Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
+    // #swagger.tags = ['Repositories']
 
     let ret: string = 'ok';
     switch (req.params.repoprovider){

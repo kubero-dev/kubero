@@ -12,6 +12,7 @@ export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a app with CLI
 Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+  // #swagger.tags = ['CLI']
 
     const app = createApp(req);
     req.app.locals.kubero.newApp(app);
@@ -20,6 +21,7 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
 
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Apps']
     const app = createApp(req);
     req.app.locals.kubero.newApp(app);
     res.send("new");
@@ -77,10 +79,12 @@ function createApp(req: Request,) : IApp {
 
 // list all availabe apps
 Router.get('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['CLI']
     res.send(await req.app.locals.kubero.getAppStateList());
 });
 
 // list all availabe apps
 Router.get('/apps', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Apps']
     res.send(await req.app.locals.kubero.getAppStateList());
 });
