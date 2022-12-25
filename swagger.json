@@ -3,14 +3,25 @@
   "info": {
     "title": "Kubero",
     "description": "Description",
-    "version": "1.0.0"
+    "version": "1.5.0"
   },
-  "host": "localhost:3000",
+  "host": "localhost:2000",
   "basePath": "/",
   "schemes": [
     "http"
   ],
   "paths": {
+    "/cli/addons": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/addons": {
       "get": {
         "description": "",
@@ -33,89 +44,10 @@
         }
       }
     },
-    "/apps": {
+    "/cli/apps": {
       "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "appname": {
-                  "example": "any"
-                },
-                "pipeline": {
-                  "example": "any"
-                },
-                "phase": {
-                  "example": "any"
-                },
-                "buildpack": {
-                  "example": "any"
-                },
-                "deploymentstrategy": {
-                  "example": "any"
-                },
-                "gitrepo": {
-                  "example": "any"
-                },
-                "branch": {
-                  "example": "any"
-                },
-                "autodeploy": {
-                  "example": "any"
-                },
-                "domain": {
-                  "example": "any"
-                },
-                "podsize": {
-                  "example": "any"
-                },
-                "autoscale": {
-                  "example": "any"
-                },
-                "envvars": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                },
-                "webreplicas": {
-                  "example": "any"
-                },
-                "webreplicasrange": {
-                  "example": "any"
-                },
-                "webtargetCPUUtilizationPercentage": {
-                  "example": "any"
-                },
-                "webtargetMemoryUtilizationPercentage": {
-                  "example": "any"
-                },
-                "workerreplicas": {
-                  "example": "any"
-                },
-                "workerreplicasrange": {
-                  "example": "any"
-                },
-                "workertargetCPUUtilizationPercentage": {
-                  "example": "any"
-                },
-                "workertargetMemoryUtilizationPercentage": {
-                  "example": "any"
-                },
-                "cronjobs": {
-                  "example": "any"
-                },
-                "addons": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -132,7 +64,16 @@
         }
       }
     },
-    "/cli/apps": {
+    "/apps": {
+      "post": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
       "get": {
         "description": "",
         "parameters": [],
@@ -336,6 +277,118 @@
         }
       }
     },
+    "/events": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "namespace",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/metrics/{pipeline}/{phase}/{app}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/metrics": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/pipelines": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "git": {
+                  "example": "any"
+                },
+                "buildpack": {
+                  "example": "any"
+                },
+                "pipelineName": {
+                  "example": "any"
+                },
+                "domain": {
+                  "example": "any"
+                },
+                "phases": {
+                  "example": "any"
+                },
+                "reviewapps": {
+                  "example": "any"
+                },
+                "dockerimage": {
+                  "example": "any"
+                },
+                "deploymentstrategy": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/pipelines": {
       "post": {
         "description": "",
@@ -347,6 +400,9 @@
               "type": "object",
               "properties": {
                 "pipelineName": {
+                  "example": "any"
+                },
+                "domain": {
                   "example": "any"
                 },
                 "phases": {
@@ -387,19 +443,24 @@
         }
       }
     },
-    "/cli/pipelines": {
+    "/cli/pipelines/{pipeline}": {
       "get": {
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
           }
         }
-      }
-    },
-    "/cli/pipelines/{pipeline}": {
-      "get": {
+      },
+      "delete": {
         "description": "",
         "parameters": [
           {
@@ -536,28 +597,10 @@
                 "image": {
                   "example": "any"
                 },
-                "webreplicas": {
+                "web": {
                   "example": "any"
                 },
-                "webreplicasrange": {
-                  "example": "any"
-                },
-                "webtargetCPUUtilizationPercentage": {
-                  "example": "any"
-                },
-                "webtargetMemoryUtilizationPercentage": {
-                  "example": "any"
-                },
-                "workerreplicas": {
-                  "example": "any"
-                },
-                "workerreplicasrange": {
-                  "example": "any"
-                },
-                "workertargetCPUUtilizationPercentage": {
-                  "example": "any"
-                },
-                "workertargetMemoryUtilizationPercentage": {
+                "worker": {
                   "example": "any"
                 },
                 "cronjobs": {
@@ -596,6 +639,82 @@
           },
           {
             "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/pipelines/{pipeline}/{phase}/{app}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/pipelines/{pipeline}/apps": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
             "in": "path",
             "required": true,
             "type": "string"
@@ -704,8 +823,8 @@
         }
       }
     },
-    "/repo/webhooks/{repoprovider}": {
-      "post": {
+    "/repo/{repoprovider}/{gitrepob64}/branches/list": {
+      "get": {
         "description": "",
         "parameters": [
           {
@@ -715,28 +834,9 @@
             "type": "string"
           },
           {
-            "name": "x-github-event",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-github-delivery",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-hub-signature-256",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-gitea-event",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "x-gitea-delivery",
-            "in": "header",
+            "name": "gitrepob64",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
