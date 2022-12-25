@@ -17,4 +17,5 @@ swaggerAutogen('./swagger.json', [
   './dist/routes/logs.js',
   './dist/routes/pipelines.js',
   './dist/routes/repo.js',
+  './dist/routes/settings.js',
 ], doc);

@@ -3,9 +3,9 @@
   "info": {
     "title": "Kubero",
     "description": "Description",
-    "version": "1.5.0"
+    "version": "1.0.0"
   },
-  "host": "localhost:2000",
+  "host": "localhost:3000",
   "basePath": "/",
   "schemes": [
     "http"
@@ -840,6 +840,28 @@
             "type": "string"
           }
         ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/cli/settings": {
+      "get": {
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/settings": {
+      "get": {
+        "description": "",
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
