@@ -8,6 +8,7 @@ export const authMiddleware = auth.getAuthMiddleware();
 
 Router.all("/session", (req: Request, res: Response) => {
     // #swagger.tags = ['Auth']
+    // #swagger.summary = 'Get the session status'
 
     let status = 200
     let isAuthenticated = false
@@ -27,11 +28,13 @@ Router.all("/session", (req: Request, res: Response) => {
 })
 
 Router.get('/auth/github',
-// #swagger.tags = ['Auth']
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Authenticate with github'
   auth.passport.authenticate('github', { scope: [ 'user:email' ] }));
 
 Router.get('/auth/github/callback',
   // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Github Authentication Callback'
   auth.passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -39,11 +42,13 @@ Router.get('/auth/github/callback',
   });
 
 Router.get('/auth/oauth2',
-// #swagger.tags = ['Auth']
+  // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Authenticate with oauth2'
   auth.passport.authenticate('oauth2', { scope: [ 'user:email' ] }));
 
 Router.get('/auth/oauth2/callback',
   // #swagger.tags = ['Auth']
+  // #swagger.summary = 'Oauth2 Authentication Callback'
   auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
@@ -53,12 +58,14 @@ Router.get('/auth/oauth2/callback',
 // Send auth methods to display in the login page
 Router.get('/auth/methods', function (req: Request, res: Response, next: NextFunction) {
     // #swagger.tags = ['Auth']
+    // #swagger.summary = 'Get the available authentication methods'
     res.send(auth.authmethods);
 })
 
 // Login user
 Router.post('/login', function(req: Request, res: Response, next: NextFunction) {
     // #swagger.tags = ['Auth']
+    // #swagger.summary = 'Login with username and password'
     auth.passport.authenticate("local", function (err: Error, user: Express.User, info: string) {
         if (err) {
             return next(err);
@@ -79,6 +86,7 @@ Router.post('/login', function(req: Request, res: Response, next: NextFunction) 
 // Logout user
 Router.get('/logout', authMiddleware, function (req: Request, res: Response, next: NextFunction) {
     // #swagger.tags = ['Auth']
+    // #swagger.summary = 'Logout and destroy the session'
     req.logout({}, function (err: Error) {
         if (err) {
             return next(err);

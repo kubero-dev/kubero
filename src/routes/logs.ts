@@ -12,6 +12,12 @@ debug('app:routes')
 
 Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get logs for a specific app'
+    // #swagger.description = 'Get logs for a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
+
     req.app.locals.kubero.startLogging(
         req.params.pipeline,
         req.params.phase,
@@ -22,6 +28,7 @@ Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: R
 
 Router.get('/events', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get the Kubero Kubernetes events'
     const namespace = req.query.namespace || process.env.KUBERO_NAMESPACE || 'kubero';
     console.log('namespace', namespace);
     const events = await req.app.locals.kubero.getEvents(namespace);
@@ -30,6 +37,11 @@ Router.get('/events', authMiddleware, async function (req: Request, res: Respons
 
 Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get metrics for a specific app'
+    // #swagger.description = 'Get metrics for a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
 
     const metrics = await req.app.locals.kubero.getPodMetrics(
         req.params.pipeline,
@@ -41,6 +53,7 @@ Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req
 
 Router.get('/metrics', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Logs']
+    // #swagger.summary = 'Get node metrics and metrics for all apps'
 
     const metrics = await req.app.locals.kubero.getNodeMetrics();
     res.send(metrics);

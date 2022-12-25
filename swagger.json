@@ -1,14 +1,14 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.0",
   "info": {
+    "version": "1.5.0",
     "title": "Kubero",
-    "description": "Description",
-    "version": "1.0.0"
+    "description": "Kubero is a web-based tool deploy applications on a Kubernetes clusters. It provides a simple and intuitive interface to manage your clusters, applications, and pipelines."
   },
-  "host": "localhost:3000",
-  "basePath": "/",
-  "schemes": [
-    "http"
+  "servers": [
+    {
+      "url": "http://localhost:2000/api"
+    }
   ],
   "paths": {
     "/cli/addons": {
@@ -16,13 +16,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get a list of available addons",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/addons": {
@@ -30,6 +40,7 @@
         "tags": [
           "Addons"
         ],
+        "summary": "Get a list of available addons",
         "description": "",
         "parameters": [],
         "responses": {
@@ -44,6 +55,7 @@
         "tags": [
           "Addons"
         ],
+        "summary": "Get a list of installed operators",
         "description": "",
         "parameters": [],
         "responses": {
@@ -58,25 +70,45 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Create a new app",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       },
       "get": {
         "tags": [
           "CLI"
         ],
+        "summary": "Get a list of running apps",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/apps": {
@@ -84,6 +116,7 @@
         "tags": [
           "Apps"
         ],
+        "summary": "Create a new app",
         "description": "",
         "parameters": [],
         "responses": {
@@ -96,6 +129,7 @@
         "tags": [
           "Apps"
         ],
+        "summary": "Get a list of running apps",
         "description": "",
         "parameters": [],
         "responses": {
@@ -110,6 +144,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Authenticate with github",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -120,6 +155,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Github Authentication Callback",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -130,6 +166,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Authenticate with oauth2",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -140,6 +177,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Oauth2 Authentication Callback",
         "description": "",
         "parameters": [],
         "responses": {}
@@ -150,6 +188,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Get the available authentication methods",
         "description": "",
         "parameters": [],
         "responses": {
@@ -164,6 +203,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Login with username and password",
         "description": "",
         "parameters": [],
         "responses": {
@@ -181,6 +221,7 @@
         "tags": [
           "Auth"
         ],
+        "summary": "Logout and destroy the session",
         "description": "",
         "parameters": [],
         "responses": {
@@ -195,6 +236,7 @@
         "tags": [
           "Config"
         ],
+        "summary": "Get the config",
         "description": "",
         "parameters": [],
         "responses": {
@@ -209,13 +251,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get the podsize list",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/config/podsize": {
@@ -223,6 +275,7 @@
         "tags": [
           "Config"
         ],
+        "summary": "Get the podsize list",
         "description": "",
         "parameters": [],
         "responses": {
@@ -237,13 +290,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get the buildpacks list",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/config/buildpacks": {
@@ -251,6 +314,7 @@
         "tags": [
           "Config"
         ],
+        "summary": "Get the buildpacks list",
         "description": "",
         "parameters": [],
         "responses": {
@@ -265,13 +329,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get the available Kubernetes contexts",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/config/k8s/context": {
@@ -279,6 +353,7 @@
         "tags": [
           "Config"
         ],
+        "summary": "Get the available k8s context list",
         "description": "",
         "parameters": [],
         "responses": {
@@ -293,13 +368,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get the available repositories",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/config/repositories": {
@@ -307,6 +392,7 @@
         "tags": [
           "Config"
         ],
+        "summary": "Get the available repositories",
         "description": "",
         "parameters": [],
         "responses": {
@@ -321,25 +407,35 @@
         "tags": [
           "Logs"
         ],
-        "description": "",
+        "summary": "Get logs for a specific app",
+        "description": "Get logs for a specific app",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pipeline name"
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Phase name"
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "App name"
           }
         ],
         "responses": {
@@ -354,12 +450,15 @@
         "tags": [
           "Logs"
         ],
+        "summary": "Get the Kubero Kubernetes events",
         "description": "",
         "parameters": [
           {
             "name": "namespace",
             "in": "query",
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -374,25 +473,35 @@
         "tags": [
           "Logs"
         ],
-        "description": "",
+        "summary": "Get metrics for a specific app",
+        "description": "Get metrics for a specific app",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pipeline name"
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Phase name"
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "App name"
           }
         ],
         "responses": {
@@ -407,6 +516,7 @@
         "tags": [
           "Logs"
         ],
+        "summary": "Get node metrics and metrics for all apps",
         "description": "",
         "parameters": [],
         "responses": {
@@ -421,45 +531,56 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Create a new pipeline",
         "description": "",
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "git": {
-                  "example": "any"
-                },
-                "buildpack": {
-                  "example": "any"
-                },
-                "pipelineName": {
-                  "example": "any"
-                },
-                "domain": {
-                  "example": "any"
-                },
-                "phases": {
-                  "example": "any"
-                },
-                "reviewapps": {
-                  "example": "any"
-                },
-                "dockerimage": {
-                  "example": "any"
-                },
-                "deploymentstrategy": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
+        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "git": {
+                    "example": "any"
+                  },
+                  "buildpack": {
+                    "example": "any"
+                  },
+                  "pipelineName": {
+                    "example": "any"
+                  },
+                  "domain": {
+                    "example": "any"
+                  },
+                  "phases": {
+                    "example": "any"
+                  },
+                  "reviewapps": {
+                    "example": "any"
+                  },
+                  "dockerimage": {
+                    "example": "any"
+                  },
+                  "deploymentstrategy": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -467,13 +588,23 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get a list of available pipelines",
         "description": "",
         "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/pipelines": {
@@ -481,6 +612,7 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Create a new pipeline",
         "description": "",
         "parameters": [
           {
@@ -514,12 +646,49 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "Pipeline object",
+            "required": true
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "pipelineName": {
+                    "example": "any"
+                  },
+                  "domain": {
+                    "example": "any"
+                  },
+                  "phases": {
+                    "example": "any"
+                  },
+                  "buildpack": {
+                    "example": "any"
+                  },
+                  "reviewapps": {
+                    "example": "any"
+                  },
+                  "git": {
+                    "example": "any"
+                  },
+                  "dockerimage": {
+                    "example": "any"
+                  },
+                  "deploymentstrategy": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -527,6 +696,7 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Get a list of available pipelines",
         "description": "",
         "parameters": [],
         "responses": {
@@ -541,39 +711,63 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       },
       "delete": {
         "tags": [
           "CLI"
         ],
+        "summary": "Delete a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/pipelines/{pipeline}": {
@@ -581,13 +775,16 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Get a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -600,13 +797,16 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Delete a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -621,25 +821,32 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Delete an app",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -652,25 +859,32 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Update an app in a specific pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "body",
@@ -724,12 +938,70 @@
                   "example": "any"
                 }
               }
-            }
+            },
+            "description": "App object",
+            "required": true
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "buildpack": {
+                    "example": "any"
+                  },
+                  "deploymentstrategy": {
+                    "example": "any"
+                  },
+                  "gitrepo": {
+                    "example": "any"
+                  },
+                  "branch": {
+                    "example": "any"
+                  },
+                  "autodeploy": {
+                    "example": "any"
+                  },
+                  "domain": {
+                    "example": "any"
+                  },
+                  "podsize": {
+                    "example": "any"
+                  },
+                  "autoscale": {
+                    "example": "any"
+                  },
+                  "envvars": {
+                    "example": "any"
+                  },
+                  "image": {
+                    "example": "any"
+                  },
+                  "web": {
+                    "example": "any"
+                  },
+                  "worker": {
+                    "example": "any"
+                  },
+                  "cronjobs": {
+                    "example": "any"
+                  },
+                  "addons": {
+                    "example": "any"
+                  },
+                  "resourceVersion": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       },
@@ -737,25 +1009,32 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Get app details",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -770,63 +1049,95 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Delete an app",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       },
       "get": {
         "tags": [
           "CLI"
         ],
+        "summary": "Get app details",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/cli/pipelines/{pipeline}/apps": {
@@ -834,20 +1145,32 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get all apps in a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
       }
     },
     "/pipelines/{pipeline}/apps": {
@@ -855,13 +1178,16 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Get all apps in a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -876,25 +1202,32 @@
         "tags": [
           "Pipeline"
         ],
+        "summary": "Restart an app",
         "description": "",
         "parameters": [
           {
             "name": "pipeline",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "phase",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "app",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -909,13 +1242,16 @@
         "tags": [
           "Repositories"
         ],
+        "summary": "Get a list of available repositories",
         "description": "",
         "parameters": [
           {
             "name": "repoprovider",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -930,30 +1266,35 @@
         "tags": [
           "Repositories"
         ],
+        "summary": "Connect a repository to a pipeline",
         "description": "",
         "parameters": [
           {
             "name": "repoprovider",
             "in": "path",
             "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "gitrepo": {
-                  "example": "any"
-                }
-              }
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "gitrepo": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -963,19 +1304,33 @@
         "tags": [
           "Repositories"
         ],
+        "summary": "Get a list of available branches",
         "description": "",
         "parameters": [
           {
             "name": "repoprovider",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string",
+              "enum": [
+                "github",
+                "gitlab",
+                "bitbucket",
+                "gitea",
+                "gogs"
+              ]
+            },
+            "description": "Repository provider"
           },
           {
             "name": "gitrepob64",
             "in": "path",
             "required": true,
-            "type": "string"
+            "schema": {
+              "type": "string"
+            },
+            "description": "Base64 encoded git repository url"
           }
         ],
         "responses": {
@@ -990,6 +1345,31 @@
         "tags": [
           "CLI"
         ],
+        "summary": "Get the Kubero settings",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+            }
+          }
+        ]
+      }
+    },
+    "/settings": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "Get the Kubero settings",
         "description": "",
         "parameters": [],
         "responses": {
@@ -998,19 +1378,14 @@
           }
         }
       }
-    },
-    "/settings": {
-      "get": {
-        "tags": [
-          "Settings"
-        ],
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
