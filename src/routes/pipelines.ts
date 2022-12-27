@@ -151,6 +151,11 @@ Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async fu
             }
     }] */
     await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+
+    // sanityze params
+    req.params.pipeline = encodeURI(req.params.pipeline);
+    req.params.phase = encodeURI(req.params.phase);
+    req.params.app = encodeURI(req.params.app);
     res.send("deleted "+req.params.pipeline+" "+req.params.phase+" "+req.params.app);
 });
 
