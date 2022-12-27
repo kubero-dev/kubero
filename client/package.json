@@ -10,29 +10,29 @@
   },
   "dependencies": {
     "ansi-regex": ">=5.0.1",
-    "axios": "^0.21.4",
-    "core-js": "^3.18.3",
+    "axios": "^1.2.1",
+    "core-js": "^3.27.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.20",
     "nth-check": ">=2.0.1",
     "set-value": ">=4.0.1",
     "socket.io-client": "^3.1.1",
-    "vue": "^2.6.11",
+    "vue": "^2.7.14",
     "vue-socket.io-extended": "^4.0.6",
-    "vuetify": "^2.5.10"
+    "vuetify": "^2.6.13"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.19.1",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
-    "babel-eslint": "^10.1.0",
-    "eslint": "7.32.0",
-    "eslint-plugin-vue": "^6.2.2",
+    "eslint": "^8.30.0",
+    "eslint-plugin-vue": "^9.8.0",
     "sass": "1.32.13",
     "sass-loader": "^10.0.0",
     "vue-cli-plugin-vuetify": "~2.1.0",
     "vue-router": "^3.5.2",
-    "vue-template-compiler": "^2.6.11",
+    "vue-template-compiler": "^2.7.14",
     "vuetify-loader": "^1.7.0"
   },
   "eslintConfig": {
@@ -45,9 +45,12 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "off",
+      "vue/no-mutating-props": "off"
+    }
   },
   "browserslist": [
     "> 1%",
