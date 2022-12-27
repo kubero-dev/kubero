@@ -8,21 +8,21 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 
 Router.get('/repo/:repoprovider/list', async function (req: Request, res: Response) {
-    // #swagger.tags = ['Repositories']
+    // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a list of available repositories'
     let repolist = await req.app.locals.kubero.listRepos(req.params.repoprovider);
     res.send(repolist);
 });
 
 Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
-    // #swagger.tags = ['Repositories']
+    // #swagger.tags = ['UI']
     // #swagger.summary = 'Connect a repository to a pipeline'
     let con = await req.app.locals.kubero.connectRepo(req.params.repoprovider, req.body.gitrepo);
     res.send(con);
 });
 
 Router.get('/repo/:repoprovider/:gitrepob64/branches/list', async function (req: Request, res: Response) {
-    // #swagger.tags = ['Repositories']
+    // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a list of available branches'
     // #swagger.parameters['gitrepob64'] = { description: 'Base64 encoded git repository url' }
     // #swagger.parameters['repoprovider'] = { description: 'Repository provider', schema: { '@enum': ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'] }}
@@ -31,7 +31,7 @@ Router.get('/repo/:repoprovider/:gitrepob64/branches/list', async function (req:
 });
 
 Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
-    // #swagger.tags = ['Repositories']
+    // #swagger.tags = ['UI']
     // #swagger.summary = 'Webhooks endpoint for repository providers'
     // #swagger.parameters['repoprovider'] = { description: 'Repository provider' }
     // #swagger.parameters['repoprovider'] = { description: 'Repository provider', schema: { '@enum': ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'] }}

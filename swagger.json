@@ -10,11 +10,37 @@
       "url": "http://localhost:2000/api"
     }
   ],
+  "tags": [
+    {
+      "name": "Apps",
+      "description": "Application management"
+    },
+    {
+      "name": "Addons",
+      "description": "Addons management"
+    },
+    {
+      "name": "Config",
+      "description": "Configuration management"
+    },
+    {
+      "name": "Pipeline",
+      "description": "Pipeline management"
+    },
+    {
+      "name": "Settings",
+      "description": "Settings management"
+    },
+    {
+      "name": "UI",
+      "description": "UI endpoints - require session"
+    }
+  ],
   "paths": {
     "/cli/addons": {
       "get": {
         "tags": [
-          "CLI"
+          "Addons"
         ],
         "summary": "Get a list of available addons",
         "description": "",
@@ -38,7 +64,7 @@
     "/addons": {
       "get": {
         "tags": [
-          "Addons"
+          "UI"
         ],
         "summary": "Get a list of available addons",
         "description": "",
@@ -53,7 +79,7 @@
     "/addons/operators": {
       "get": {
         "tags": [
-          "Addons"
+          "UI"
         ],
         "summary": "Get a list of installed operators",
         "description": "",
@@ -68,7 +94,7 @@
     "/cli/apps": {
       "post": {
         "tags": [
-          "CLI"
+          "Apps"
         ],
         "summary": "Create a new app",
         "description": "",
@@ -86,11 +112,137 @@
               "bearerFormat": "JWT"
             }
           }
-        ]
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "myapp"
+                  },
+                  "pipeline": {
+                    "type": "string",
+                    "example": "example"
+                  },
+                  "phase": {
+                    "type": "string",
+                    "example": "Test"
+                  },
+                  "buildpack": {
+                    "type": "string",
+                    "example": "NodeJS"
+                  },
+                  "deploymentstrategy": {
+                    "type": "string"
+                  },
+                  "gitrepo": {
+                    "type": "object"
+                  },
+                  "branch": {
+                    "type": "string",
+                    "example": "main"
+                  },
+                  "autodeploy": {
+                    "type": "boolean"
+                  },
+                  "domain": {
+                    "type": "string",
+                    "example": "myapp.lacolhost.com"
+                  },
+                  "ssl": {
+                    "type": "boolean"
+                  },
+                  "podsize": {
+                    "type": "string",
+                    "example": "small"
+                  },
+                  "autoscale": {
+                    "type": "boolean"
+                  },
+                  "envVars": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "myenvvar"
+                        },
+                        "value": {
+                          "type": "string",
+                          "example": "myvalue"
+                        }
+                      }
+                    }
+                  },
+                  "image": {
+                    "type": "object",
+                    "properties": {
+                      "containerPort": {
+                        "type": "number",
+                        "example": 8080
+                      },
+                      "repository": {
+                        "type": "string"
+                      },
+                      "tag": {
+                        "type": "string",
+                        "example": "latest"
+                      },
+                      "fetch": {
+                        "type": "object"
+                      },
+                      "build": {
+                        "type": "object"
+                      },
+                      "run": {
+                        "type": "object"
+                      }
+                    }
+                  },
+                  "addons": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "myaddon"
+                        },
+                        "version": {
+                          "type": "string",
+                          "example": "1.0.0"
+                        },
+                        "config": {
+                          "type": "object"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "name",
+                  "pipeline",
+                  "phase",
+                  "buildpack",
+                  "branch",
+                  "autodeploy",
+                  "domain",
+                  "ssl",
+                  "podsize"
+                ]
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": [
-          "CLI"
+          "Apps"
         ],
         "summary": "Get a list of running apps",
         "description": "",
@@ -114,7 +266,7 @@
     "/apps": {
       "post": {
         "tags": [
-          "Apps"
+          "UI"
         ],
         "summary": "Create a new app",
         "description": "",
@@ -127,7 +279,7 @@
       },
       "get": {
         "tags": [
-          "Apps"
+          "UI"
         ],
         "summary": "Get a list of running apps",
         "description": "",
@@ -142,7 +294,7 @@
     "/auth/github": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Authenticate with github",
         "description": "",
@@ -153,7 +305,7 @@
     "/auth/github/callback": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Github Authentication Callback",
         "description": "",
@@ -164,7 +316,7 @@
     "/auth/oauth2": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Authenticate with oauth2",
         "description": "",
@@ -175,7 +327,7 @@
     "/auth/oauth2/callback": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Oauth2 Authentication Callback",
         "description": "",
@@ -186,7 +338,7 @@
     "/auth/methods": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Get the available authentication methods",
         "description": "",
@@ -201,7 +353,7 @@
     "/login": {
       "post": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Login with username and password",
         "description": "",
@@ -219,7 +371,7 @@
     "/logout": {
       "get": {
         "tags": [
-          "Auth"
+          "UI"
         ],
         "summary": "Logout and destroy the session",
         "description": "",
@@ -234,7 +386,7 @@
     "/config": {
       "get": {
         "tags": [
-          "Config"
+          "UI"
         ],
         "summary": "Get the config",
         "description": "",
@@ -249,7 +401,7 @@
     "/cli/config/podsize": {
       "get": {
         "tags": [
-          "CLI"
+          "Config"
         ],
         "summary": "Get the podsize list",
         "description": "",
@@ -273,7 +425,7 @@
     "/config/podsize": {
       "get": {
         "tags": [
-          "Config"
+          "UI"
         ],
         "summary": "Get the podsize list",
         "description": "",
@@ -288,7 +440,7 @@
     "/cli/config/buildpacks": {
       "get": {
         "tags": [
-          "CLI"
+          "Config"
         ],
         "summary": "Get the buildpacks list",
         "description": "",
@@ -312,7 +464,7 @@
     "/config/buildpacks": {
       "get": {
         "tags": [
-          "Config"
+          "UI"
         ],
         "summary": "Get the buildpacks list",
         "description": "",
@@ -327,7 +479,7 @@
     "/cli/config/k8s/context": {
       "get": {
         "tags": [
-          "CLI"
+          "Config"
         ],
         "summary": "Get the available Kubernetes contexts",
         "description": "",
@@ -351,7 +503,7 @@
     "/config/k8s/context": {
       "get": {
         "tags": [
-          "Config"
+          "UI"
         ],
         "summary": "Get the available k8s context list",
         "description": "",
@@ -366,7 +518,7 @@
     "/cli/config/repositories": {
       "get": {
         "tags": [
-          "CLI"
+          "Config"
         ],
         "summary": "Get the available repositories",
         "description": "",
@@ -390,7 +542,7 @@
     "/config/repositories": {
       "get": {
         "tags": [
-          "Config"
+          "UI"
         ],
         "summary": "Get the available repositories",
         "description": "",
@@ -405,7 +557,7 @@
     "/logs/{pipeline}/{phase}/{app}": {
       "get": {
         "tags": [
-          "Logs"
+          "UI"
         ],
         "summary": "Get logs for a specific app",
         "description": "Get logs for a specific app",
@@ -448,7 +600,7 @@
     "/events": {
       "get": {
         "tags": [
-          "Logs"
+          "UI"
         ],
         "summary": "Get the Kubero Kubernetes events",
         "description": "",
@@ -471,7 +623,7 @@
     "/metrics/{pipeline}/{phase}/{app}": {
       "get": {
         "tags": [
-          "Logs"
+          "UI"
         ],
         "summary": "Get metrics for a specific app",
         "description": "Get metrics for a specific app",
@@ -514,7 +666,7 @@
     "/metrics": {
       "get": {
         "tags": [
-          "Logs"
+          "UI"
         ],
         "summary": "Get node metrics and metrics for all apps",
         "description": "",
@@ -529,7 +681,7 @@
     "/cli/pipelines": {
       "post": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Create a new pipeline",
         "description": "",
@@ -586,7 +738,7 @@
       },
       "get": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Get a list of available pipelines",
         "description": "",
@@ -610,7 +762,7 @@
     "/pipelines": {
       "post": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Create a new pipeline",
         "description": "",
@@ -694,7 +846,7 @@
       },
       "get": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Get a list of available pipelines",
         "description": "",
@@ -709,7 +861,7 @@
     "/cli/pipelines/{pipeline}": {
       "get": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Get a pipeline",
         "description": "",
@@ -740,7 +892,7 @@
       },
       "delete": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Delete a pipeline",
         "description": "",
@@ -773,7 +925,7 @@
     "/pipelines/{pipeline}": {
       "get": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Get a pipeline",
         "description": "",
@@ -795,7 +947,7 @@
       },
       "delete": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Delete a pipeline",
         "description": "",
@@ -819,7 +971,7 @@
     "/pipelines/{pipeline}/{phase}/{app}": {
       "delete": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Delete an app",
         "description": "",
@@ -857,7 +1009,7 @@
       },
       "put": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Update an app in a specific pipeline",
         "description": "",
@@ -1007,7 +1159,7 @@
       },
       "get": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Get app details",
         "description": "",
@@ -1047,7 +1199,7 @@
     "/cli/pipelines/{pipeline}/{phase}/{app}": {
       "delete": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Delete an app",
         "description": "",
@@ -1094,7 +1246,7 @@
       },
       "get": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Get app details",
         "description": "",
@@ -1143,7 +1295,7 @@
     "/cli/pipelines/{pipeline}/apps": {
       "get": {
         "tags": [
-          "CLI"
+          "Pipeline"
         ],
         "summary": "Get all apps in a pipeline",
         "description": "",
@@ -1176,7 +1328,7 @@
     "/pipelines/{pipeline}/apps": {
       "get": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Get all apps in a pipeline",
         "description": "",
@@ -1200,7 +1352,7 @@
     "/pipelines/{pipeline}/{phase}/{app}/restart": {
       "get": {
         "tags": [
-          "Pipeline"
+          "UI"
         ],
         "summary": "Restart an app",
         "description": "",
@@ -1240,7 +1392,7 @@
     "/repo/{repoprovider}/list": {
       "get": {
         "tags": [
-          "Repositories"
+          "UI"
         ],
         "summary": "Get a list of available repositories",
         "description": "",
@@ -1264,7 +1416,7 @@
     "/repo/{repoprovider}/connect": {
       "post": {
         "tags": [
-          "Repositories"
+          "UI"
         ],
         "summary": "Connect a repository to a pipeline",
         "description": "",
@@ -1302,7 +1454,7 @@
     "/repo/{repoprovider}/{gitrepob64}/branches/list": {
       "get": {
         "tags": [
-          "Repositories"
+          "UI"
         ],
         "summary": "Get a list of available branches",
         "description": "",
@@ -1343,7 +1495,7 @@
     "/cli/settings": {
       "get": {
         "tags": [
-          "CLI"
+          "Settings"
         ],
         "summary": "Get the Kubero settings",
         "description": "",
@@ -1367,7 +1519,7 @@
     "/settings": {
       "get": {
         "tags": [
-          "Settings"
+          "UI"
         ],
         "summary": "Get the Kubero settings",
         "description": "",

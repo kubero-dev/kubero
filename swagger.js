@@ -10,6 +10,33 @@ const doc = {
     basePath: '/api',
     schemes: ['http'],
 
+    tags: [
+      {
+        name: 'Apps',
+        description: 'Application management',
+      },
+      {
+        name: 'Addons',
+        description: 'Addons management',
+      },
+      {
+        name: 'Config',
+        description: 'Configuration management',
+      },
+      {
+        name: 'Pipeline',
+        description: 'Pipeline management',
+      },
+      {
+        name: 'Settings',
+        description: 'Settings management',
+      },
+      {
+        name: 'UI',
+        description: 'UI endpoints - require session',
+      },
+    ],
+
     securityDefinitions: {
       bearerAuth: {
         type: 'http',
