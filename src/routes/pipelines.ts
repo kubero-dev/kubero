@@ -12,6 +12,17 @@ export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
 Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Create a new pipeline'
+    // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
+
     let con = await req.app.locals.kubero.connectRepo(
         req.body.git.repository.provider.toLowerCase(),
         req.body.git.repository.ssh_url);
@@ -38,8 +49,10 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
     res.send(pipeline);
 });
 
-// create a pipeline
 Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Create a new pipeline'
+    // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
     let pipeline: IPipeline = {
         name: req.body.pipelineName,
         domain: req.body.domain,
@@ -54,14 +67,23 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
     res.send("new");
 });
 
-// get a list of pipelines
 Router.get('/cli/pipelines', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Get a list of available pipelines'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     let pipelines = await req.app.locals.kubero.listPipelines();
     res.send(pipelines);
 });
 
-// get a list of pipelines
 Router.get('/pipelines', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of available pipelines'
     let pipelines = await req.app.locals.kubero.listPipelines()
     .catch((err: any) => {
         console.log(err)
@@ -69,45 +91,84 @@ Router.get('/pipelines', authMiddleware, async function (req: Request, res: Resp
     res.send(pipelines);
 });
 
-// get a pipeline
 Router.get('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Get a pipeline'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     let pipeline = await req.app.locals.kubero.getPipeline(req.params.pipeline);
     res.send(pipeline);
 });
 
-// get a pipeline
 Router.get('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a pipeline'
     let pipeline = await req.app.locals.kubero.getPipeline(req.params.pipeline);
     res.send(pipeline);
 });
 
-// delete a pipeline
 Router.delete('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Delete a pipeline'
     await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
     res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
 });
 
-
-// delete a pipeline
 Router.delete('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Delete a pipeline'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
     res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
 });
 
-// delete an app
 Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Delete an app'
     await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("deleted");
 });
 
-// delete an app
 Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Delete an app'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send("deleted "+req.params.pipeline+" "+req.params.phase+" "+req.params.app);
+
+    // sanityze params
+    const pipeline = encodeURI(req.params.pipeline);
+    const phase = encodeURI(req.params.phase);
+    const app = encodeURI(req.params.app);
+    const response = {
+        message: "deleted "+pipeline+" "+phase+" "+app,
+        pipeline: pipeline,
+        phase: phase,
+        app: app
+    };
+    res.send(response);
 });
 
-// update a app in a specific pipeline
 Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Update an app in a specific pipeline'
+    // #swagger.parameters['body'] = { in: 'body', description: 'App object', required: true, type: 'object' }
 
     let appconfig: IApp = {
         name: req.params.app,
@@ -165,32 +226,51 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     res.send("updated");
 });
 
-// get app details
 Router.get('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Get app details'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send(app.body);
 });
 
-// get app details
 Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get app details'
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send(app.body);
 });
 
-// get all apps in a pipeline
 Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Pipeline']
+    // #swagger.summary = 'Get all apps in a pipeline'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
     res.send(apps);
 });
 
-// get all apps in a pipeline
 Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get all apps in a pipeline'
     let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
     res.send(apps);
 });
 
-//restart app
 Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Restart an app'
     req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
     res.send("restarted");
 });

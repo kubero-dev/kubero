@@ -1,12 +1,12 @@
 <template>
-    <v-container style="height: 800px">
+    <v-container>
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                 <h1>Logs for {{ this.app }}</h1>
                 <p></p>
             </v-col>
         </v-row>
-        <v-row style="height: 100%">
+        <v-row style="height: 1100px">
             <v-col cols="12" sm="12" md="12">
                 <div class="console" id="console">
                     <div v-for="line in loglines" :key="line.id">

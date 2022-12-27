@@ -28,7 +28,7 @@
                                 color="blue"
                                 content="beta"
                                 >
-                            {{ addon.kind }}
+                            <a :href="addon.artifact_url">{{ addon.kind }}</a>
                             </v-badge>
                         </v-card-title>
                         <v-card-subtitle>
@@ -36,7 +36,8 @@
                             <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
                         </v-card-subtitle>
                         <v-card-text>
-                            Operator: {{ addon.id }}
+                            {{ addon.description }}
+                            <!--Operator: <a :href="addon.artifact_url">{{ addon.id }}</a>-->
                         </v-card-text>
                     </v-list-item-content>
                 </v-card>
@@ -58,8 +59,21 @@
             >
             <v-card>
                 <v-card-title class="text-h5">
-                {{clickedAddon.kind}}
+                    {{clickedAddon.display_name}} ({{clickedAddon.kind}})
                 </v-card-title>
+                <v-card-text>
+                    {{clickedAddon.description}}
+                    <br/>
+                    <h3>Maintainers</h3>
+                    <ul>
+                        <li v-for="maintainer in clickedAddon.maintainers" :key="maintainer.name">{{ maintainer.name }} <a :href="maintainer.url">{{ maintainer.url }}</a></li>
+                    </ul>
+                    <br/>
+                    <h3>Links</h3>
+                    <ul>
+                        <li v-for="link in clickedAddon.links" :key="link.url"><a :href="link.url">{{ link.name }}</a></li>
+                    </ul>
+                </v-card-text>
                 <v-card-text>
                     <pre>{{clickedAddon.install}}</pre>
                     <v-btn

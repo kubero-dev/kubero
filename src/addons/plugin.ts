@@ -37,7 +37,10 @@ export abstract class Plugin {
             'latest': '0.0.0', // version fetched from artifacthub
             'installed': '0.0.0', // loaded if avialable from local operators
         };
+    public display_name: string = '';
     public description: string = '';
+    public maintainers: Object[] = [];
+    public links: Object[] = [];
     public readme: string = '';
     //public crd: KubernetesObject = {}; // ExampleCRD which will be used as template
     protected additionalResourceDefinitions: Object = {};
@@ -58,7 +61,10 @@ export abstract class Plugin {
         // load data from artifacthub
         axios.get(this.artifact_url)
             .then(response => {
+                this.display_name = response.data.display_name;
                 this.description = response.data.description;
+                this.maintainers = response.data.maintainers;
+                this.links = response.data.links;
                 this.readme = response.data.readme;
                 this.version.latest = response.data.version;
             })

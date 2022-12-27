@@ -12,6 +12,133 @@ export const bearerMiddleware = auth.getBearerMiddleware();
 
 // create a app with CLI
 Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Apps']
+    // #swagger.summary = 'Create a new app'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+        }],
+        #swagger.requestBody = {
+            required: true,
+            "@content": {
+                "application/json": {
+                    schema: {
+                        type: "object",
+                        properties: {
+                            name: {
+                                type: "string",
+                                example: "myapp"
+                            },
+                            pipeline: {
+                                type: "string",
+                                example: "example"
+                            },
+                            phase: {
+                                type: "string",
+                                example: "Test"
+                            },
+                            buildpack: {
+                                type: "string",
+                                example: "NodeJS"
+                            },
+                            deploymentstrategy: {
+                                type: "string"
+                            },
+                            gitrepo: {
+                                type: "object",
+                            },
+                            branch: {
+                                type: "string",
+                                example: "main"
+                            },
+                            autodeploy: {
+                                type: "boolean"
+                            },
+                            domain: {
+                                type: "string",
+                                example: "myapp.lacolhost.com"
+                            },
+                            ssl: {
+                                type: "boolean"
+                            },
+                            podsize: {
+                                type: "string",
+                                example: "small"
+                            },
+                            autoscale: {
+                                type: "boolean"
+                            },
+                            envVars: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        name: {
+                                            type: "string",
+                                            example: "myenvvar"
+                                        },
+                                        value: {
+                                            type: "string",
+                                            example: "myvalue"
+                                        }
+                                    }
+                                }
+                            },
+                            image: {
+                                type: "object",
+                                properties: {
+                                    containerPort: {
+                                        type: "number",
+                                        example: 8080
+                                    },
+                                    repository: {
+                                        type: "string",
+                                    },
+                                    tag: {
+                                        type: "string",
+                                        example: "latest"
+                                    },
+                                    fetch: {
+                                        type: "object",
+                                    },
+                                    build: {
+                                        type: "object",
+                                    },
+                                    run: {
+                                        type: "object",
+                                    }
+                                }
+                            },
+                            addons: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        name: {
+                                            type: "string",
+                                            example: "myaddon"
+                                        },
+                                        version: {
+                                            type: "string",
+                                            example: "1.0.0"
+                                        },
+                                        config: {
+                                            type: "object"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        required: ["name", "pipeline", "phase", "buildpack",  "branch", "autodeploy", "domain", "ssl", "podsize"]
+                    }
+                }
+            }
+        }
+    */
+
 
     const app = createApp(req);
     req.app.locals.kubero.newApp(app);
@@ -20,6 +147,8 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
 
 // create a app
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Create a new app'
     const app = createApp(req);
     req.app.locals.kubero.newApp(app);
     res.send("new");
@@ -28,18 +157,30 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
 function createApp(req: Request,) : IApp {
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
-    const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack);
+    let selectedBuildpack: any;
+    const buildpackConfig = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack.name);
+    if (buildpackConfig == req.body.buildpack) {
+        selectedBuildpack = buildpackConfig;
+    } else {
+        selectedBuildpack = {
+            name: "custom",
+            fetch: req.body.buildpack.fetch,
+            build: req.body.buildpack.build,
+            run: req.body.buildpack.run,
+        };
+    }
 
     let appconfig: IApp = {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
-        buildpack: req.body.buildpack,
+        buildpack: selectedBuildpack.name,
         deploymentstrategy: req.body.deploymentstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
         domain: req.body.domain,
+        ssl: req.body.ssl,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
@@ -65,10 +206,21 @@ function createApp(req: Request,) : IApp {
 
 // list all availabe apps
 Router.get('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Apps'']
+    // #swagger.summary = 'Get a list of running apps'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
     res.send(await req.app.locals.kubero.getAppStateList());
 });
 
 // list all availabe apps
 Router.get('/apps', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of running apps'
     res.send(await req.app.locals.kubero.getAppStateList());
 });

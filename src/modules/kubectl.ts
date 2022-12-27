@@ -17,6 +17,10 @@ import {
     CoreV1EventList,
     V1ConfigMap,
     V1Namespace,
+    Metrics,
+    PodMetric,
+    PodMetricsList,
+    NodeMetric,
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -29,6 +33,7 @@ export class Kubectl {
     private versionApi: VersionApi;
     private coreV1Api: CoreV1Api;
     private appsV1Api: AppsV1Api;
+    private metricsApi: Metrics;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
@@ -61,6 +66,7 @@ export class Kubectl {
         this.versionApi = this.kc.makeApiClient(VersionApi);
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
+        this.metricsApi = new Metrics(this.kc);
         this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
 
@@ -344,5 +350,122 @@ export class Kubectl {
     public async getEvents(namespace: string): Promise<CoreV1Event[]> {
         let events = await this.coreV1Api.listNamespacedEvent(namespace);
         return events.body.items;
+    }
+
+    public async getPodMetrics(namespace: string): Promise<any> { //TODO make this a real type
+        const ret = [];
+
+        try {
+            const metrics = await this.metricsApi.getPodMetrics(namespace);
+
+            for (let i = 0; i < metrics.items.length; i++) {
+                const metric = metrics.items[i];
+                const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
+                const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
+                const requestMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.requests?.memory || '0');
+                const limitsCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.limits?.cpu || '0');
+                const limitsMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.limits?.memory || '0');
+                const usageCPU = this.normalizeCPU(metric.containers[0].usage.cpu);
+                const usageMemory = this.normalizeMemory(metric.containers[0].usage.memory);
+                const percentageCPU = Math.round(usageCPU / limitsCPU * 100);
+                const percentageMemory = Math.round(usageMemory / limitsMemory * 100);
+
+                /* debug caclulation *//*
+                console.log("resource CPU    : " + requestCPU, pod.body.spec?.containers[0].resources?.requests?.cpu)
+                console.log("limits CPU      : " + limitsCPU, pod.body.spec?.containers[0].resources?.limits?.cpu)
+                console.log("usage CPU       : " + usageCPU, metric.containers[0].usage.cpu)
+                console.log("percent CPU     : " + percentageCPU + "%")
+                console.log("resource Memory : " + requestMemory, pod.body.spec?.containers[0].resources?.limits?.cpu)
+                console.log("limits Memory   : " + limitsMemory, pod.body.spec?.containers[0].resources?.limits?.memory)
+                console.log("usage Memory    : " + usageMemory, metric.containers[0].usage.memory)
+                console.log("percent Memory  : " + percentageMemory + "%")
+                console.log("------------------------------------")
+                /* end debug calculations*/
+
+                const m = {
+                    name: metric.metadata.name,
+                    namespace: metric.metadata.namespace,
+                    memory : {
+                        unit: 'Mi',
+                        request: requestMemory,
+                        limit: limitsMemory,
+                        usage: usageMemory,
+                        percentage: percentageMemory
+                    },
+                    cpu : {
+                        unit: 'm',
+                        request: requestCPU,
+                        limit: limitsCPU,
+                        usage: usageCPU,
+                        percentage: percentageCPU
+                    }
+                }
+                ret.push(m);
+            }
+        } catch (error: any) {
+            debug.log('ERROR fetching metrics: '+ error);
+        }
+
+        return ret;
+    }
+
+    private normalizeCPU(resource: string): number {
+
+        const regex = /([0-9]+)([a-zA-Z]*)/;
+        const matches = resource.match(regex);
+
+        let value = 0;
+        let unit = '';
+        if (matches !== null && matches[1]) {
+            value = parseInt(matches[1])
+        }
+        if (matches !== null && matches[2]) {
+            unit = matches[2]
+        }
+
+        //console.log("CPU unit: " + unit + " value: " + value + " :: " +resource);
+        switch (unit) {
+            case 'm':
+                return value / 1;
+            case 'n':
+                return Math.round(value / 1000000);
+            default:
+                return value * 1000;
+        }
+        return 0;
+    }
+
+
+    private normalizeMemory(resource: string): number {
+
+        const regex = /([0-9]+)([a-zA-Z]*)/;
+        const matches = resource.match(regex);
+
+        let value = 0;
+        let unit = '';
+        if (matches !== null && matches[1]) {
+            value = parseInt(matches[1])
+        }
+        if (matches !== null && matches[2]) {
+            unit = matches[2]
+        }
+        //console.log("CPU unit: " + unit + " value: " + value + " :: " +resource);
+
+        switch (unit) {
+            case 'Gi':
+                return value * 1000;
+            case 'Mi':
+                return value / 1;
+            case 'Ki':
+                return Math.round(value / 1000);
+            default:
+                return value;
+        }
+        return 0;
+    }
+
+    public async getNodeMetrics(): Promise<NodeMetric[]> {
+        const metrics = await this.metricsApi.getNodeMetrics();
+        return metrics.items;
     }
 }

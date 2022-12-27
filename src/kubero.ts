@@ -678,4 +678,13 @@ export class Kubero {
     public getEvents(namespace: string) {
         return this.kubectl.getEvents(namespace);
     }
+
+    public getPodMetrics(pipelineName: string, phaseName: string, appName: string) {
+        const namespace = pipelineName+'-'+phaseName;
+        return this.kubectl.getPodMetrics(namespace);
+    }
+
+    public getNodeMetrics() {
+        return this.kubectl.getNodeMetrics();
+    }
 }
