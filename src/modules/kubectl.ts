@@ -371,14 +371,14 @@ export class Kubectl {
                 const percentageMemory = Math.round(usageMemory / limitsMemory * 100);
 
                 /* debug caclulation *//*
-                console.log("resource CPU    : " + requestCPU)
-                console.log("limits CPU      : " + limitsCPU)
-                console.log("usage CPU       : " + usageCPU)
-                console.log("percent CPU     : " + percentageCPU)
-                console.log("resource Memory : " + requestMemory)
-                console.log("limits Memory   : " + limitsMemory)
-                console.log("usage Memory    : " + usageMemory)
-                console.log("percent Memory  : " + percentageMemory)
+                console.log("resource CPU    : " + requestCPU, pod.body.spec?.containers[0].resources?.requests?.cpu)
+                console.log("limits CPU      : " + limitsCPU, pod.body.spec?.containers[0].resources?.limits?.cpu)
+                console.log("usage CPU       : " + usageCPU, metric.containers[0].usage.cpu)
+                console.log("percent CPU     : " + percentageCPU + "%")
+                console.log("resource Memory : " + requestMemory, pod.body.spec?.containers[0].resources?.limits?.cpu)
+                console.log("limits Memory   : " + limitsMemory, pod.body.spec?.containers[0].resources?.limits?.memory)
+                console.log("usage Memory    : " + usageMemory, metric.containers[0].usage.memory)
+                console.log("percent Memory  : " + percentageMemory + "%")
                 console.log("------------------------------------")
                 /* end debug calculations*/
 
@@ -428,7 +428,7 @@ export class Kubectl {
             case 'm':
                 return value / 1;
             case 'n':
-                return Math.round(value / 1000);
+                return Math.round(value / 1000000);
             default:
                 return value * 1000;
         }
