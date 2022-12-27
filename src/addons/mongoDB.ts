@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class MongoDB extends Plugin implements IPlugin {
     public id: string = 'mongodb-operator';//same as operator name
     public install: string = 'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml'
-    public artifact_url = 'https://artifacthub.io/packages/olm/community-operators/mongodb-operator'
+    public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/mongodb-operator'
     public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
