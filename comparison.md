@@ -32,8 +32,6 @@
 \* Work in progress
 
 
-
-
 ### User interface
 The app needs to be easy to use. It should be possible to deploy an app with a view clicks. The user should be able to see the status of the app and the logs.
 
@@ -77,3 +75,17 @@ The app should have built in services like Wordpress, Nextcloud, CachetHQ, etc.
 
 ### Any language
 The app should be able to build and run any language.
+
+
+## Application close up
+
+### Covery
+- No CLI
+- No API
+- Only Gihub
+- No Cronjobs
+- No Auto scaling
+- No Multi Kubernetes
+
+Devtron
+Tsuru
