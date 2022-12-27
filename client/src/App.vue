@@ -44,30 +44,40 @@
 
             <template v-slot:append>
                 <v-list nav dense>
-                    <v-list-item link href="https://github.com/kubero-dev/kubero/discussions">
+                    <v-list-item link href="/api/docs" target="_blank">
+                        <v-list-item-icon>
+                        <v-icon>mdi-api</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Kubero API</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link href="https://github.com/kubero-dev/kubero/discussions" target="_blank">
                         <v-list-item-icon>
                         <v-icon>mdi-github</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Github</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link href="https://www.reddit.com/r/kubero/">
+                    <!--
+                    <v-list-item link href="https://www.reddit.com/r/kubero/" target="_blank">
                         <v-list-item-icon>
                         <v-icon>mdi-reddit</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Reddit</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link href="https://discord.gg/tafRPMWS4r">
+                    -->
+                    <v-list-item link href="https://discord.gg/tafRPMWS4r" target="_blank">
                         <v-list-item-icon>
                         <v-icon class="discord">mdi-discord</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Discord</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link href="https://join.slack.com/t/kubero/shared_invite/zt-1leocjhrm-kYwk_dcwHUcEkcjUgQCFaA">
+                    <!--
+                    <v-list-item link href="https://join.slack.com/t/kubero/shared_invite/zt-1leocjhrm-kYwk_dcwHUcEkcjUgQCFaA" target="_blank">
                         <v-list-item-icon>
                         <v-icon>mdi-slack</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Slack</v-list-item-title>
                     </v-list-item>
+                    -->
                     <v-list-item>
                         <v-list-item-icon>
                         <v-icon>mdi-star</v-icon>

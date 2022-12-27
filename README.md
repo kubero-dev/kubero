@@ -57,11 +57,10 @@ https://github.com/kubero-dev/buildpacks
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on an new or your existing cluster
 
-## How it works
+## Usage
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">Screenshots</a><p>
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank"><img src="docs/screenshots/youtube-screen.png"></a>
 
-## Usage
 1. Create a pipeline with all your phases
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
@@ -72,6 +71,9 @@ https://github.com/kubero-dev/kubero/wiki
 ## Roadmap
 https://github.com/orgs/kubero-dev/projects/1/views/3
 
+## Community
+<a href="https://discord.gg/tafRPMWS4r" target="_blank"><img src="docs/logo/discord.svg" width="200px"></a>
+
 ## Contributing
 All contributions are welcome!
  - Open an issue
@@ -81,7 +83,7 @@ All contributions are welcome!
  - Contribute code
  - Write articles
 
-## Support
-Starring this projects helps a lot. ⭐ Thank you!
+## Supporting this project
+Starring this project is a huge motivation. ⭐ Thank you!
 
 [![Stargazers over time](https://starchart.cc/kubero-dev/kubero.svg)](https://starchart.cc/kubero-dev/kubero)
