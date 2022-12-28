@@ -719,6 +719,9 @@ export default {
 
       loadPodsizeList() {
         axios.get('/api/config/podsize').then(response => {
+          if (response.data.length > 0 && this.app == 'new') {
+            this.podsize = response.data[0];
+          }
           for (let i = 0; i < response.data.length; i++) {
             this.podsizes.push({
               text: response.data[i].description,
