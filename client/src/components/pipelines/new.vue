@@ -21,6 +21,7 @@
             :rules="nameRules"
             :counter="60"
             label="Pipeline name *"
+            :disabled="!newPipeline"
             required
           ></v-text-field>
         </v-col>
@@ -43,12 +44,12 @@
           md="8"
         >
         <v-tabs icons-and-text v-model="repotab" color="#8560A9" @change="loadRepository">
-            <v-tab href="#github" :disabled="this.repositoriesList.github == false">Github <v-icon>mdi-github</v-icon> </v-tab>
-            <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false">Gitea <v-icon class="gitea"></v-icon></v-tab>
-            <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
+            <v-tab href="#github" :disabled="this.repositoriesList.github == false || !newPipeline">Github <v-icon>mdi-github</v-icon> </v-tab>
+            <v-tab href="#gitea" :disabled="this.repositoriesList.gitea == false || !newPipeline">Gitea <v-icon class="gitea"></v-icon></v-tab>
+            <v-tab href="#gitlab" :disabled="this.repositoriesList.gitlab == false || !newPipeline">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
             <!--<v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>-->
-            <v-tab href="#gogs" :disabled="this.repositoriesList.gogs == false">Gogs <v-icon class="gogs"></v-icon></v-tab>
-            <v-tab href="#bitbucket" :disabled="this.repositoriesList.bitbucket == false">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+            <v-tab href="#gogs" :disabled="this.repositoriesList.gogs == false || !newPipeline">Gogs <v-icon class="gogs"></v-icon></v-tab>
+            <v-tab href="#bitbucket" :disabled="this.repositoriesList.bitbucket == false || !newPipeline">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
         </v-tabs>
         </v-col>
       </v-row>
@@ -64,7 +65,7 @@
             :counter="60"
             :items="gitrepoItems"
             label="Repository *"
-            :disabled="repository_status.connected"
+            :disabled="repository_status.connected || !newPipeline"
             required
           ></v-combobox>
         </v-col>
@@ -160,12 +161,22 @@
         >
             <v-btn
                 color="primary"
+                v-if="newPipeline"
                 elevation="2"
-                @click="saveForm()"
+                @click="createPipeline()"
                 :disabled="!valid
                         || !gitrepo
                         || !buildpack"
-                >Sumbit</v-btn>
+                >Create</v-btn>
+            <v-btn
+                color="primary"
+                v-if="!newPipeline"
+                elevation="2"
+                @click="updatePipeline()"
+                :disabled="!valid
+                        || !gitrepo
+                        || !buildpack"
+                >Update</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -175,7 +186,14 @@
 <script>
 import axios from "axios";
 export default {
+    props: {
+      pipeline: {
+        type: String,
+        default: "new"
+      }
+    },
     data: () => ({
+      newPipeline: true,
       repotab: 'github', //selected tab
       buildpack: undefined,
       buildpackList: [],
@@ -270,6 +288,7 @@ export default {
       this.listRepositories();
       this.listBuildpacks();
       this.loadRepository();
+      this.loadPipeline();
     },
     methods: {
       updateBuildpack(buildpack) {
@@ -412,7 +431,27 @@ export default {
           this.repository_status.statusTxt = "Failed to connect to repository API";
         });
       },
-      saveForm() {
+      loadPipeline() {
+        if (this.pipeline !== 'new') {
+          axios.get(`/api/pipelines/${this.pipeline}`)
+          .then(response => {
+            this.newPipeline = false;
+            const p = response.data;
+            this.pipelineName = p.name;
+            this.domain = p.domain;
+            this.gitrepo = p.git.repository.ssh_url;
+            this.phases = p.phases;
+            this.reviewapps = p.reviewapps;
+            this.git = p.git;
+            this.dockerimage = p.dockerimage;
+            this.deploymentstrategy = p.deploymentstrategy;
+            this.buildpack = p.buildpack;
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+      },
+      createPipeline() {
 
         // fake the minimal requirements to create a pipeline if the repo is not connectedd
         if (!this.repository_status.connected) {
@@ -448,7 +487,28 @@ export default {
         .catch(error => {
           console.log(error);
         });
-      }
+      },
+      updatePipeline() {
+        axios.put(`/api/pipelines/${this.pipeline}`, {
+          pipelineName: this.pipelineName,
+          domain: this.domain,
+          gitrepo: this.gitrepo,
+          phases: this.phases,
+          reviewapps: this.reviewapps,
+          git: this.git,
+          dockerimage: '',
+          deploymentstrategy: "git",
+          buildpack: this.buildpack,
+        })
+        .then(response => {
+          this.pipelineName = '';
+          console.log(response);
+          this.$router.push({path: '/'});
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      },
     },
 }
 </script>

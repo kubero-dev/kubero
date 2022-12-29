@@ -58,10 +58,25 @@
                                         <v-btn
                                         elevation="2"
                                         fab
+                                        small
+                                        class="ma-2"
+                                        color="grey lighten-2"
                                         @click="deletePipeline(item.name)"
                                         >
                                             <v-icon dark>
                                                 mdi-delete
+                                            </v-icon>
+                                        </v-btn>
+                                        <v-btn
+                                        elevation="2"
+                                        fab
+                                        small
+                                        class="ma-2"
+                                        color="grey lighten-2"
+                                        :href="'#/pipeline/'+item.name"
+                                        >
+                                            <v-icon dark>
+                                                mdi-pencil
                                             </v-icon>
                                         </v-btn>
                                     </v-col>
@@ -111,6 +126,9 @@ export default {
         .catch(error => {
             console.log(error);
         });
+      },
+      editPipeline(app) {
+        this.$router.push({ name: 'Edit Pipeline', params: { name: app } });
       },
     },
 }
