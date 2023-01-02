@@ -194,6 +194,7 @@ export default {
     },
     data: () => ({
       newPipeline: true,
+      resourceVersion: undefined,
       repotab: 'github', //selected tab
       buildpack: undefined,
       buildpackList: [],
@@ -437,6 +438,8 @@ export default {
           .then(response => {
             this.newPipeline = false;
             const p = response.data;
+
+            this.resourceVersion = p.resourceVersion;
             this.pipelineName = p.name;
             this.domain = p.domain;
             this.gitrepo = p.git.repository.ssh_url;
@@ -490,6 +493,7 @@ export default {
       },
       updatePipeline() {
         axios.put(`/api/pipelines/${this.pipeline}`, {
+          resourceVersion: this.resourceVersion,
           pipelineName: this.pipelineName,
           domain: this.domain,
           gitrepo: this.gitrepo,

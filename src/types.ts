@@ -145,6 +145,7 @@ export interface IPipeline {
     };
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
+    resourceVersion?: string; // required to update resource, not part of spec
 }
 
 export interface IPipelineList {
