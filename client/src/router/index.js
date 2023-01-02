@@ -34,6 +34,12 @@ export default new VueRouter({
       props: true
     },
     {
+      path: "/pipeline/:pipeline",
+      name: "Edit Pipeline",
+      component: PipelineNew,
+      props: true
+    },
+    {
       path: "/pipeline/:pipeline/:phase/:app",
       name: "Edit App",
       component: AppsNew,

@@ -67,6 +67,25 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
     res.send("new");
 });
 
+
+Router.put('/pipelines/:pipeline',authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Edit a pipeline'
+    // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
+    let pipeline: IPipeline = {
+        name: req.body.pipelineName,
+        domain: req.body.domain,
+        phases: req.body.phases,
+        buildpack: req.body.buildpack,
+        reviewapps: req.body.reviewapps,
+        git: req.body.git,
+        dockerimage: req.body.dockerimage,
+        deploymentstrategy: req.body.deploymentstrategy,
+    };
+    req.app.locals.kubero.updatePipeline(pipeline, req.body.resourceVersion);
+    res.send("new");
+});
+
 Router.get('/cli/pipelines', bearerMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Pipeline']
     // #swagger.summary = 'Get a list of available pipelines'

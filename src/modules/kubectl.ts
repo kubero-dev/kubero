@@ -103,7 +103,6 @@ export class Kubectl {
         return pipelines.body as IKubectlPipelineList;
     }
 
-
     public async createPipeline(pl: IPipeline) {
         debug.log("create pipeline: " + pl.name);
         let pipeline = new KubectlPipeline(pl);
@@ -114,6 +113,24 @@ export class Kubectl {
             "v1alpha1",
             process.env.KUBERO_NAMESPACE || 'kubero',
             "kuberopipelines",
+            pipeline
+        ).catch(error => {
+            debug.log(error);
+        });
+    }
+
+    public async updatePipeline(pl: IPipeline, resourceVersion: string ) {
+        debug.log("update pipeline: " + pl.name);
+        let pipeline = new KubectlPipeline(pl);
+        pipeline.metadata.resourceVersion = resourceVersion;
+
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
+        await this.customObjectsApi.replaceNamespacedCustomObject(
+            "application.kubero.dev",
+            "v1alpha1",
+            process.env.KUBERO_NAMESPACE || 'kubero',
+            "kuberopipelines",
+            pl.name,
             pipeline
         ).catch(error => {
             debug.log(error);

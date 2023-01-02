@@ -128,7 +128,7 @@ export class Kubero {
 
     // creates a new pipeline in the same namespace as the kubero app
     public async newPipeline(pipeline: IPipeline) {
-        debug.debug('create newPipeline: '+pipeline.name);
+        debug.debug('create Pipeline: '+pipeline.name);
 
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
@@ -139,6 +139,21 @@ export class Kubero {
         // update agents
         this._io.emit('updatedPipelines', "created");
     }
+
+    // updates a new pipeline in the same namespace as the kubero app
+    public async updatePipeline(pipeline: IPipeline, resourceVersion: string) {
+        debug.debug('update Pipeline: '+pipeline.name);
+
+        // Create the Pipeline CRD
+        await this.kubectl.updatePipeline(pipeline, resourceVersion);
+        this.updateState();
+
+        this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
+
+        // update agents
+        this._io.emit('updatedPipelines', "updated");
+    }
+
 
     public async listPipelines(): Promise<IPipelineList> {
         debug.debug('listPipelines');
@@ -162,6 +177,7 @@ export class Kubero {
         });
 
         if (pipeline) {
+            pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
             return pipeline.spec;
         }
     }
