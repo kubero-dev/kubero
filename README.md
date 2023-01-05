@@ -8,7 +8,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
-Kubero brings the convenience of Heroku to your Kubernetes cluster. Your developers should not need to worry about the underlying infrastructure or deployment. It enables you to deploy your applications with a few clicks. It also provides a dashboard and CLI to manage your applications.
+Kubero is a Internal Developer Platform (IDP) that brings the convenience of Heroku to your Kubernetes cluster. Your developers should not need to worry about the underlying infrastructure or deployment. It enables you to deploy your applications with a few clicks. It also provides a dashboard and CLI to manage your applications.
 <br>
 <br>
 Kubero is Kubernetes native and runs on any Kubernetes instance.
