@@ -1,7 +1,7 @@
 kubero:
   context: kind-kubero
   namespace: kubero
-  port: 3000
+  port: 2000
 buildpacks:
   - name: NodeJS
     language: JavaScript
@@ -85,7 +85,7 @@ buildpacks:
       repository: webdevops/nginx
       tag: alpine
       command: "supervisord"
-podSizeList: 
+podSizeList:
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
   default: true
