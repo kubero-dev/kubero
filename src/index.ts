@@ -12,7 +12,7 @@ debug('app:server')
 
 const app: Express = express();
 const server = http.createServer(app)
-const port: String = process.env.PORT || "3000";
+const port: String = process.env.PORT || "2000";
 
 // API
 before(app);
