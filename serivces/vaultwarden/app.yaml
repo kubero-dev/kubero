@@ -3,8 +3,8 @@ kind: KuberoApp
 metadata:
   labels:
     manager: kubero
-  name: kuma
-  namespace: kuma-production
+  name: vaultwarden
+  namespace: vaultwarden-production
 spec:
   addons: []
   affinity: {}
@@ -16,14 +16,14 @@ spec:
   buildpack: custom
   cronjobs: []
   deploymentstrategy: docker
-  domain: kuma.lacolhost.com
+  domain: vaultwarden.lacolhost.com
   envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /app/data
-    name: kuma-data
+    mountPath: /data
+    name: vaultwarden-data
     size: 1Gi
     storageClass: standard
   fullnameOverride: ""
@@ -46,12 +46,12 @@ spec:
       command: npm install
       repository: node
       tag: latest
-    containerPort: 8080
+    containerPort: "80"
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     pullPolicy: Always
-    repository: louislam/uptime-kuma
+    repository: vaultwarden/server
     run:
       command: node index.js
       repository: node
@@ -63,16 +63,16 @@ spec:
     className: ""
     enabled: true
     hosts:
-    - host: kuma.lacolhost.com
+    - host: vaultwarden.lacolhost.com
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls: []
-  name: kuma
+  name: vaultwarden
   nameOverride: ""
   nodeSelector: {}
-  phase: stage
-  pipeline: kuma
+  phase: production
+  pipeline: vaultwarden
   podAnnotations: {}
   podSecurityContext: {}
   podsize:
