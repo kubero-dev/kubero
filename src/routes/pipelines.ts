@@ -201,6 +201,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         domain: req.body.domain,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
+        extraVolumes: req.body.extraVolumes,
         envVars: req.body.envvars,
         image: {
             containerPort: req.body.image.containerport,
