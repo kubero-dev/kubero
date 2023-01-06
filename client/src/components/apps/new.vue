@@ -368,16 +368,6 @@
 
       <v-divider class="ma-5"></v-divider>
       <!-- EXTRAVOLUMES -->
-
-      <!--
-#  - name: "test-volume"
-#    emptyDir: false
-#    storageClass: "standard"
-#    size: "1Gi"
-#    accessModes:
-#      - "ReadWriteMany"
-#    mountPath: "/test-volume"
-      -->
       <h4 class="text-uppercase">Volumes</h4>
       <div v-for="volume in extraVolumes" v-bind:key="volume.id">
         <v-row>
@@ -422,10 +412,11 @@
             cols="12"
             md="3"
           >
-            <v-text-field
+            <v-select
               v-model="volume.storageClass"
+              :items="storageclasses"
               label="Storage Class"
-            ></v-text-field>
+            ></v-select>
           </v-col>
           <v-col
             cols="12"
@@ -705,6 +696,12 @@ export default {
         },
         */
       ],
+      storageclasses : [
+/*
+        'standard',
+        'standard-fast',
+*/
+      ],
       extraVolumes: [
         /*
         {
@@ -762,6 +759,7 @@ export default {
       }
     },
     mounted() {
+      this.loadStorageClasses();
       this.loadPipeline();
       this.loadPodsizeList();
       this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
@@ -803,6 +801,13 @@ export default {
             */
           }
 
+        });
+      },
+      loadStorageClasses() {
+        axios.get('/api/config/storageclasses').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.storageclasses.push(response.data[i].name);
+          }
         });
       },
       loadBranches() {

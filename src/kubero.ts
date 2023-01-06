@@ -704,4 +704,8 @@ export class Kubero {
     public getNodeMetrics() {
         return this.kubectl.getNodeMetrics();
     }
+
+    public getStorageglasses() {
+        return this.kubectl.getStorageglasses();
+    }
 }
