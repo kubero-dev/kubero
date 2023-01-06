@@ -1,0 +1,352 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  creationTimestamp: "2023-01-06T22:24:46Z"
+  finalizers:
+  - helm.sdk.operatorframework.io/uninstall-release
+  generation: 2
+  labels:
+    manager: kubero
+  name: shiori
+  namespace: asdf-production
+  resourceVersion: "10210565"
+  uid: ed5d1e56-696c-4f68-9bd3-ba21161a38d9
+spec:
+  addons: []
+  affinity: {}
+  autodeploy: true
+  autoscale: false
+  autoscaling:
+    enabled: false
+  branch: main
+  cronjobs: []
+  deploymentstrategy: docker
+  domain: shiori.lacolhost.com
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /shiori
+    name: shiori-data
+    size: 1Gi
+    storageClass: standard
+  fullnameOverride: ""
+  gitrepo:
+    admin: true
+    clone_url: https://github.com/kubero-dev/template-nodeapp.git
+    default_branch: main
+    description: Simple example Node app
+    homepage: ""
+    id: 501665730
+    language: JavaScript
+    name: template-nodeapp
+    node_id: R_kgDOHebPwg
+    owner: kubero-dev
+    private: false
+    push: true
+    ssh_url: git@github.com:kubero-dev/template-nodeapp.git
+    visibility: public
+  image:
+    build:
+      command: npm install
+      repository: node
+      tag: latest
+    containerPort: 8080
+    fetch:
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
+      tag: main
+    pullPolicy: Always
+    repository: ghcr.io/go-shiori/shiori
+    run:
+      command: node index.js
+      repository: node
+      tag: latest
+    tag: latest
+  imagePullSecrets: []
+  ingress:
+    annotations: {}
+    className: ""
+    enabled: true
+    hosts:
+    - host: shiori.lacolhost.com
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+    tls: []
+  name: shiori
+  nameOverride: ""
+  nodeSelector: {}
+  phase: production
+  pipeline: asdf
+  podAnnotations: {}
+  podSecurityContext: {}
+  podsize:
+    default: true
+    description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
+    name: small
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 0.5Gi
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 0.5Gi
+  service:
+    port: 80
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ""
+  tolerations: []
+  web:
+    autoscaling:
+      maxReplicas: 3
+      minReplicas: 1
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 1
+  worker:
+    autoscaling:
+      maxReplicas: 0
+      minReplicas: 0
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 0
+status:
+  conditions:
+  - lastTransitionTime: "2023-01-06T22:24:46Z"
+    status: "True"
+    type: Initialized
+  - lastTransitionTime: "2023-01-06T22:24:47Z"
+    message: |
+      1. Get the application URL by running these commands:
+        http://shiori.lacolhost.com/
+    reason: UpgradeSuccessful
+    status: "True"
+    type: Deployed
+  deployedRelease:
+    manifest: |
+      ---
+      # Source: kuberoapp/templates/serviceaccount.yaml
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: shiori-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      ---
+      # Source: kuberoapp/templates/pvc.yaml
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: shiori-data
+      spec:
+        storageClassName: standard
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      ---
+      # Source: kuberoapp/templates/service.yaml
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: shiori-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        type: ClusterIP
+        ports:
+          - port: 80
+            targetPort: http
+            protocol: TCP
+            name: http
+        selector:
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori-web
+      ---
+      # Source: kuberoapp/templates/deployment-web.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: shiori-kuberoapp-web
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: shiori-web
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: shiori-web
+          spec:
+            serviceAccountName: shiori-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-web
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "ghcr.io/go-shiori/shiori:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: web
+                  - name: PORT
+                    value: "8080"
+                ports:
+                  - name: http
+                    containerPort: 8080
+                    protocol: TCP
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /shiori
+                    name: shiori-data
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: shiori-data
+              persistentVolumeClaim:
+                claimName: shiori-data
+      ---
+      # Source: kuberoapp/templates/deployment-worker.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: shiori-kuberoapp-worker
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 0
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: shiori-worker
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: shiori-worker
+          spec:
+            serviceAccountName: shiori-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-worker
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "ghcr.io/go-shiori/shiori:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: worker
+                  - name: PORT
+                    value: "8080"
+                ports:
+                  - name: http
+                    containerPort: 8080
+                    protocol: TCP
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /shiori
+                    name: shiori-data
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: shiori-data
+              persistentVolumeClaim:
+                claimName: shiori-data
+      ---
+      # Source: kuberoapp/templates/ingress.yaml
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: shiori-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: shiori
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        rules:
+          - host: "shiori.lacolhost.com"
+            http:
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+                  backend:
+                    service:
+                      name: shiori-kuberoapp
+                      port:
+                        number: 80
+    name: shiori

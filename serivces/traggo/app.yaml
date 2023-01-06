@@ -1,0 +1,353 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  creationTimestamp: "2023-01-06T22:31:01Z"
+  finalizers:
+  - helm.sdk.operatorframework.io/uninstall-release
+  generation: 1
+  labels:
+    manager: kubero
+  name: traggo
+  namespace: asdf-production
+  resourceVersion: "10216837"
+  uid: 31346b7f-c6d8-4584-a89c-d50c612945a2
+spec:
+  addons: []
+  affinity: {}
+  autodeploy: true
+  autoscale: false
+  autoscaling:
+    enabled: false
+  branch: main
+  buildpack: custom
+  cronjobs: []
+  deploymentstrategy: docker
+  domain: traggo.lacolhost.com
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /opt/traggo/data
+    name: traggo-data
+    size: 1Gi
+    storageClass: standard
+  fullnameOverride: ""
+  gitrepo:
+    admin: true
+    clone_url: https://github.com/kubero-dev/template-nodeapp.git
+    default_branch: main
+    description: Simple example Node app
+    homepage: ""
+    id: 501665730
+    language: JavaScript
+    name: template-nodeapp
+    node_id: R_kgDOHebPwg
+    owner: kubero-dev
+    private: false
+    push: true
+    ssh_url: git@github.com:kubero-dev/template-nodeapp.git
+    visibility: public
+  image:
+    build:
+      command: npm install
+      repository: node
+      tag: latest
+    containerPort: "3030"
+    fetch:
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
+      tag: main
+    pullPolicy: Always
+    repository: traggo/server
+    run:
+      command: node index.js
+      repository: node
+      tag: latest
+    tag: latest
+  imagePullSecrets: []
+  ingress:
+    annotations: {}
+    className: ""
+    enabled: true
+    hosts:
+    - host: traggo.lacolhost.com
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+    tls: []
+  name: traggo
+  nameOverride: ""
+  nodeSelector: {}
+  phase: production
+  pipeline: asdf
+  podAnnotations: {}
+  podSecurityContext: {}
+  podsize:
+    default: true
+    description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
+    name: small
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 0.5Gi
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 0.5Gi
+  service:
+    port: 80
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ""
+  tolerations: []
+  web:
+    autoscaling:
+      maxReplicas: 3
+      minReplicas: 1
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 1
+  worker:
+    autoscaling:
+      maxReplicas: 0
+      minReplicas: 0
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 0
+status:
+  conditions:
+  - lastTransitionTime: "2023-01-06T22:31:01Z"
+    status: "True"
+    type: Initialized
+  - lastTransitionTime: "2023-01-06T22:31:02Z"
+    message: |
+      1. Get the application URL by running these commands:
+        http://traggo.lacolhost.com/
+    reason: InstallSuccessful
+    status: "True"
+    type: Deployed
+  deployedRelease:
+    manifest: |
+      ---
+      # Source: kuberoapp/templates/serviceaccount.yaml
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: traggo-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      ---
+      # Source: kuberoapp/templates/pvc.yaml
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: traggo-data
+      spec:
+        storageClassName: standard
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      ---
+      # Source: kuberoapp/templates/service.yaml
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: traggo-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        type: ClusterIP
+        ports:
+          - port: 80
+            targetPort: http
+            protocol: TCP
+            name: http
+        selector:
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo-web
+      ---
+      # Source: kuberoapp/templates/deployment-web.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: traggo-kuberoapp-web
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: traggo-web
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: traggo-web
+          spec:
+            serviceAccountName: traggo-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-web
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "traggo/server:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: web
+                  - name: PORT
+                    value: "3030"
+                ports:
+                  - name: http
+                    containerPort: 3030
+                    protocol: TCP
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /opt/traggo/data
+                    name: traggo-data
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: traggo-data
+              persistentVolumeClaim:
+                claimName: traggo-data
+      ---
+      # Source: kuberoapp/templates/deployment-worker.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: traggo-kuberoapp-worker
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 0
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: traggo-worker
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: traggo-worker
+          spec:
+            serviceAccountName: traggo-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-worker
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "traggo/server:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: worker
+                  - name: PORT
+                    value: "3030"
+                ports:
+                  - name: http
+                    containerPort: 3030
+                    protocol: TCP
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /opt/traggo/data
+                    name: traggo-data
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: traggo-data
+              persistentVolumeClaim:
+                claimName: traggo-data
+      ---
+      # Source: kuberoapp/templates/ingress.yaml
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: traggo-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: traggo
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        rules:
+          - host: "traggo.lacolhost.com"
+            http:
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+                  backend:
+                    service:
+                      name: traggo-kuberoapp
+                      port:
+                        number: 80
+    name: traggo
