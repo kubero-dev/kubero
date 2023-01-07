@@ -3,7 +3,7 @@ kind: KuberoApp
 metadata:
   labels:
     manager: kubero
-  name: vaultwarden
+  name: homarr
 spec:
   addons: []
   affinity: {}
@@ -15,15 +15,22 @@ spec:
   buildpack: custom
   cronjobs: []
   deploymentstrategy: docker
-  domain: vaultwarden.lacolhost.com
+  domain: homarr.lacolhost.com
   envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
-    mountPath: /data
-    name: vaultwarden-data
-    size: 1Gi
+    mountPath: /app/data/configs
+    name: homar-config
+    size: 10Mi
+    storageClass: standard
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/public/icons
+    name: homarr-icons
+    size: 200Mi
     storageClass: standard
   fullnameOverride: ""
   gitrepo:
@@ -32,6 +39,7 @@ spec:
     default_branch: main
     description: Simple example Node app
     homepage: ""
+    id: 501665730
     language: JavaScript
     name: template-nodeapp
     node_id: R_kgDOHebPwg
@@ -45,12 +53,12 @@ spec:
       command: npm install
       repository: node
       tag: latest
-    containerPort: "80"
+    containerPort: "7575"
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
     pullPolicy: Always
-    repository: vaultwarden/server
+    repository: ghcr.io/ajnart/homarr
     run:
       command: node index.js
       repository: node
@@ -62,16 +70,16 @@ spec:
     className: ""
     enabled: true
     hosts:
-    - host: vaultwarden.lacolhost.com
+    - host: homarr.lacolhost.com
       paths:
       - path: /
         pathType: ImplementationSpecific
     tls: []
-  name: vaultwarden
+  name: homarr
   nameOverride: ""
   nodeSelector: {}
-  phase: production
-  pipeline: vaultwarden
+  phase: stage
+  pipeline: asdf
   podAnnotations: {}
   podSecurityContext: {}
   podsize:

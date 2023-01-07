@@ -4,7 +4,6 @@ metadata:
   labels:
     manager: kubero
   name: kuma
-  namespace: kuma-production
 spec:
   addons: []
   affinity: {}
