@@ -367,6 +367,89 @@
       </v-row>
 
       <v-divider class="ma-5"></v-divider>
+      <!-- EXTRAVOLUMES -->
+      <h4 class="text-uppercase">Volumes</h4>
+      <div v-for="volume in extraVolumes" v-bind:key="volume.id">
+        <v-row>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-text-field
+              v-model="volume.name"
+              label="name"
+              :readonly="app!='new'"
+            ></v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="2"
+          >
+            <v-text-field
+              v-model="volume.size"
+              label="size"
+              :readonly="app!='new'"
+            ></v-text-field>
+          </v-col>
+          <v-col
+            cols="12"
+            md="1"
+          >
+            <v-btn
+            elevation="2"
+            icon
+            small
+            @click="removeVolumeLine(volume.name)"
+            >
+                <v-icon dark >
+                    mdi-minus
+                </v-icon>
+            </v-btn>
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-select
+              v-model="volume.storageClass"
+              :items="storageclasses"
+              label="Storage Class"
+              :readonly="app!='new'"
+            ></v-select>
+          </v-col>
+          <v-col
+            cols="12"
+            md="3"
+          >
+            <v-text-field
+              v-model="volume.mountPath"
+              label="Mount Path"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </div>
+
+      <v-row>
+        <v-col
+          cols="12"
+        >
+          <v-btn
+          elevation="2"
+          icon
+          small
+          @click="addVolumeLine()"
+          >
+              <v-icon dark >
+                  mdi-plus
+              </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+
+      <v-divider class="ma-5"></v-divider>
       <!-- CRONJOBS -->
       <h4 class="text-uppercase">Cronjobs</h4>
       <div v-for="variable in cronjobs" v-bind:key="variable.id">
@@ -615,6 +698,24 @@ export default {
         },
         */
       ],
+      storageclasses : [
+/*
+        'standard',
+        'standard-fast',
+*/
+      ],
+      extraVolumes: [
+        /*
+        {
+          name: 'example-volume',
+          emptyDir: false,
+          storageClass: 'standard',
+          size: '1Gi',
+          accessMode: ['ReadWriteOnce']
+          mountPath: '/example/path',
+        },
+        */
+      ],
       addons: [
         /*
         {
@@ -660,6 +761,7 @@ export default {
       }
     },
     mounted() {
+      this.loadStorageClasses();
       this.loadPipeline();
       this.loadPodsizeList();
       this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
@@ -701,6 +803,13 @@ export default {
             */
           }
 
+        });
+      },
+      loadStorageClasses() {
+        axios.get('/api/config/storageclasses').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.storageclasses.push(response.data[i].name);
+          }
         });
       },
       loadBranches() {
@@ -786,6 +895,7 @@ export default {
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
+            this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
             this.autoscale = response.data.spec.autoscale;
@@ -838,6 +948,7 @@ export default {
               targetMemoryUtilizationPercentage : 80,
             },
           },
+          extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
 
@@ -899,6 +1010,7 @@ export default {
               targetMemoryUtilizationPercentage : 80,
             },
           },
+          extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
         })
@@ -921,6 +1033,25 @@ export default {
         for (let i = 0; i < this.envvars.length; i++) {
           if (this.envvars[i].name === index) {
             this.envvars.splice(i, 1);
+          }
+        }
+      },
+      addVolumeLine() {
+        this.extraVolumes.push({
+          name: 'example-volume',
+          emptyDir: false,
+          storageClass: 'standard',
+          size: '1Gi',
+          accessModes: [
+            'ReadWriteOnce',
+          ],
+          mountPath: '/example/path',
+        });
+      },
+      removeVolumeLine(index) {
+        for (let i = 0; i < this.extraVolumes.length; i++) {
+          if (this.extraVolumes[i].name === index) {
+            this.extraVolumes.splice(i, 1);
           }
         }
       },

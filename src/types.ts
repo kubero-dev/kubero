@@ -78,6 +78,7 @@ export interface IApp {
         }
     }
 
+    extraVolumes: IExtraVolume[],
     cronjobs: ICronjob[]
     addons: IAddon[]
 /*
@@ -121,6 +122,15 @@ export interface IApp {
     },
     tolerations: [],
 */
+}
+
+export interface IExtraVolume {
+    name: string,
+    mountPath: string,
+    emptyDir: boolean,
+    size: string,
+    storageClass: string,
+    accessModes: string[],
 }
 
 export interface ICronjob {
