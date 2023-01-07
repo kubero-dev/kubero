@@ -1,0 +1,353 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  creationTimestamp: "2023-01-07T07:59:02Z"
+  finalizers:
+  - helm.sdk.operatorframework.io/uninstall-release
+  generation: 1
+  labels:
+    manager: kubero
+  name: trilium
+  namespace: asdf-production
+  resourceVersion: "10967026"
+  uid: 2ec82049-89aa-4516-8901-fda9d4a1affb
+spec:
+  addons: []
+  affinity: {}
+  autodeploy: true
+  autoscale: false
+  autoscaling:
+    enabled: false
+  branch: main
+  buildpack: custom
+  cronjobs: []
+  deploymentstrategy: docker
+  domain: trilium.lacolhost.com
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /home/node/trilium-data
+    name: example-volume
+    size: 1Gi
+    storageClass: standard
+  fullnameOverride: ""
+  gitrepo:
+    admin: true
+    clone_url: https://github.com/kubero-dev/template-nodeapp.git
+    default_branch: main
+    description: Simple example Node app
+    homepage: ""
+    id: 501665730
+    language: JavaScript
+    name: template-nodeapp
+    node_id: R_kgDOHebPwg
+    owner: kubero-dev
+    private: false
+    push: true
+    ssh_url: git@github.com:kubero-dev/template-nodeapp.git
+    visibility: public
+  image:
+    build:
+      command: npm install
+      repository: node
+      tag: latest
+    containerPort: 8080
+    fetch:
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
+      tag: main
+    pullPolicy: Always
+    repository: zadam/trilium
+    run:
+      command: node index.js
+      repository: node
+      tag: latest
+    tag: latest
+  imagePullSecrets: []
+  ingress:
+    annotations: {}
+    className: ""
+    enabled: true
+    hosts:
+    - host: trilium.lacolhost.com
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+    tls: []
+  name: trilium
+  nameOverride: ""
+  nodeSelector: {}
+  phase: production
+  pipeline: asdf
+  podAnnotations: {}
+  podSecurityContext: {}
+  podsize:
+    default: true
+    description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
+    name: small
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 0.5Gi
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 0.5Gi
+  service:
+    port: 80
+    type: ClusterIP
+  serviceAccount:
+    annotations: {}
+    create: true
+    name: ""
+  tolerations: []
+  web:
+    autoscaling:
+      maxReplicas: 3
+      minReplicas: 1
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 1
+  worker:
+    autoscaling:
+      maxReplicas: 0
+      minReplicas: 0
+      targetCPUUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 80
+    replicaCount: 0
+status:
+  conditions:
+  - lastTransitionTime: "2023-01-07T07:59:02Z"
+    status: "True"
+    type: Initialized
+  - lastTransitionTime: "2023-01-07T07:59:03Z"
+    message: |
+      1. Get the application URL by running these commands:
+        http://trilium.lacolhost.com/
+    reason: InstallSuccessful
+    status: "True"
+    type: Deployed
+  deployedRelease:
+    manifest: |
+      ---
+      # Source: kuberoapp/templates/serviceaccount.yaml
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: trilium-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      ---
+      # Source: kuberoapp/templates/pvc.yaml
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: example-volume
+      spec:
+        storageClassName: standard
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      ---
+      # Source: kuberoapp/templates/service.yaml
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: trilium-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        type: ClusterIP
+        ports:
+          - port: 80
+            targetPort: http
+            protocol: TCP
+            name: http
+        selector:
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium-web
+      ---
+      # Source: kuberoapp/templates/deployment-web.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: trilium-kuberoapp-web
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: trilium-web
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: trilium-web
+          spec:
+            serviceAccountName: trilium-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-web
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "zadam/trilium:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: web
+                  - name: PORT
+                    value: "8080"
+                ports:
+                  - name: http
+                    containerPort: 8080
+                    protocol: TCP
+                livenessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                readinessProbe:
+                  httpGet:
+                    path: /
+                    port: http
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /home/node/trilium-data
+                    name: example-volume
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: example-volume
+              persistentVolumeClaim:
+                claimName: example-volume
+      ---
+      # Source: kuberoapp/templates/deployment-worker.yaml
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: trilium-kuberoapp-worker
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        replicas: 0
+        selector:
+          matchLabels:
+            app.kubernetes.io/name: kuberoapp
+            app.kubernetes.io/instance: trilium-worker
+        template:
+          metadata:
+            labels:
+              app.kubernetes.io/name: kuberoapp
+              app.kubernetes.io/instance: trilium-worker
+          spec:
+            serviceAccountName: trilium-kuberoapp
+            securityContext:
+              {}
+            containers:
+              - name: kuberoapp-worker
+                securityContext:
+                  readOnlyRootFilesystem: true
+                image: "zadam/trilium:latest"
+                imagePullPolicy: Always
+                env:
+                  - name: PROC_TYPE
+                    value: worker
+                  - name: PORT
+                    value: "8080"
+                ports:
+                  - name: http
+                    containerPort: 8080
+                    protocol: TCP
+                volumeMounts:
+                  - mountPath: /tmp
+                    name: tmp-storage
+                    readOnly: false
+                  - mountPath: /home/node/trilium-data
+                    name: example-volume
+                resources:
+                  limits:
+                    cpu: 500m
+                    memory: 1Gi
+                  requests:
+                    cpu: 250m
+                    memory: 0.5Gi
+            volumes:
+            - name: deployment-keys
+              secret:
+                defaultMode: 0600
+                secretName: deployment-keys
+            - name: app-storage
+              emptyDir: {}
+            - name: tmp-storage
+              emptyDir: {}
+            - name: example-volume
+              persistentVolumeClaim:
+                claimName: example-volume
+      ---
+      # Source: kuberoapp/templates/ingress.yaml
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: trilium-kuberoapp
+        labels:
+          helm.sh/chart: kuberoapp-0.1.0
+          app.kubernetes.io/name: kuberoapp
+          app.kubernetes.io/instance: trilium
+          app.kubernetes.io/version: "1.16.0"
+          app.kubernetes.io/managed-by: Helm
+      spec:
+        rules:
+          - host: "trilium.lacolhost.com"
+            http:
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+                  backend:
+                    service:
+                      name: trilium-kuberoapp
+                      port:
+                        number: 80
+    name: trilium
