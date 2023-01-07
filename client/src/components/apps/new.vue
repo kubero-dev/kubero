@@ -388,6 +388,7 @@
             <v-text-field
               v-model="volume.size"
               label="size"
+              :readonly="app!='new'"
             ></v-text-field>
           </v-col>
           <v-col
@@ -416,6 +417,7 @@
               v-model="volume.storageClass"
               :items="storageclasses"
               label="Storage Class"
+              :readonly="app!='new'"
             ></v-select>
           </v-col>
           <v-col
