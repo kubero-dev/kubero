@@ -1,0 +1,105 @@
+services:
+- name: traggo
+  description: 'Traggo is a self-hosted time tracking tool. It is designed to be
+    easy to use and to be self-hosted. It is written in Go and uses Vue.js for the
+    frontend. '
+  tags:
+  - time tracking
+  - time management
+  source: https://github.com/traggo/server
+  website: https://traggo.org
+  icon: https://raw.githubusercontent.com/traggo/logo/master/logo.png
+  screenshots:
+  - https://github.com/traggo/server/raw/master/.github/traggo_list.png
+  - https://github.com/traggo/server/raw/master/.github/traggo_calendar.png
+  - https://github.com/traggo/server/raw/master/.github/traggo_dashboard.png
+- name: vaultwarden
+  description: 'A Bitwarden compatible server written in Rust. '
+  tags:
+  - password manager
+  - password storage
+  source: https://github.com/dani-garcia/vaultwarden
+  website: https://github.com/dani-garcia/vaultwarden
+  icon: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svgr
+- name: trilium
+  description: 'Trilium Notes is a hierarchical note taking application with focus
+    on building large personal knowledge bases. '
+  tags:
+  - note taking
+  - knowledge base
+  source: https://github.com/zadam/trilium
+  website: https://github.com/zadam/trilium
+  icon: https://github.com/zadam/trilium/blob/master/images/app-icons/png/256x256.png
+  screenshots:
+  - https://raw.githubusercontent.com/wiki/zadam/trilium/images/screenshot.png
+- name: wikijs
+  description: 'Wiki.js is a modern, lightweight and powerful wiki app built on Node.js,
+    Git and Markdown. '
+  tags:
+  - wiki
+  source: https://github.com/Requarks/wiki
+  website: https://js.wiki/
+  icon: https://github.com/requarks/wiki/blob/main/client/static/favicons/android-chrome-256x256.png
+#- name: synapse
+#  description: 'Synapse is a decentralized, open source, secure, private, and scalable
+#    communication platform. '
+#  tags:
+#  - chat
+#  - communication
+#  source: https://github.com/matrix-org/synapse
+#  website: https://matrix.org/
+#  icon:
+#  screenshots:
+- name: shiori
+  description: 'Shiori is a simple bookmark manager. '
+  tags:
+  - bookmark manager
+  source: https://github.com/go-shiori/shiori
+  website: https://github.com/go-shiori/shiori
+  icon: https://github.com/go-shiori/shiori/blob/master/internal/view/res/apple-touch-icon-152x152.png
+  screenshots:
+  - https://raw.githubusercontent.com/go-shiori/shiori/master/docs/readme/cover.png
+  - https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/02-home.png
+  - https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/04-options.png
+#- name: miniflux
+#  description: 'Miniflux is a minimalist and opinionated feed reader. '
+#  tags:
+#  - rss
+#  - feed reader
+#  source:
+- name: memos
+  description: 'Memos is a simple note taking app. '
+  tags:
+  - note taking
+  source: https://github.com/usememos/memos
+  website: https://usememos.com/
+  icon: https://usememos.com/logo.png
+  screenshots:
+  - https://github.com/usememos/memos/raw/main/resources/demo.webp
+- name: kuma
+  description: 'It is a self-hosted monitoring tool like "Uptime Robot". '
+  tags:
+  - monitoring
+  source: https://github.com/louislam/uptime-kuma
+  website: https://louislam.net/uptime-kuma/
+  icon: https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg
+  screenshots:
+  - https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067
+- name: homarr
+  description: 'Homarr is a simple and lightweight homepage for your server, that helps you easily access all of your services in one place.'
+  tags:
+  - homepage
+  source: https://github.com/ajnart/homarr
+  website: homarr.dev
+  icon: https://github.com/ajnart/homarr/raw/dev/public/imgs/logo/logo-color.svg
+  screenshots:
+  - https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif
+- name: gatus
+  description: 'Gatus is a highly configurable service that allows you to monitor the availability and latency of your services and expose this information through a REST API and a beautiful dashboard.'
+  tags:
+  - monitoring
+  source: https://github.com/TwiN/gatus
+  website: https://gatus.io/
+  icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
+  screenshots:
+  - https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png
