@@ -184,6 +184,7 @@ function createApp(req: Request,) : IApp {
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
+        extraVolumes: req.body.extraVolumes,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,

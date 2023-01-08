@@ -78,6 +78,7 @@ export interface IApp {
         }
     }
 
+    extraVolumes: IExtraVolume[],
     cronjobs: ICronjob[]
     addons: IAddon[]
 /*
@@ -123,6 +124,15 @@ export interface IApp {
 */
 }
 
+export interface IExtraVolume {
+    name: string,
+    mountPath: string,
+    emptyDir: boolean,
+    size: string,
+    storageClass: string,
+    accessModes: string[],
+}
+
 export interface ICronjob {
     name: string,
     schedule: string,
@@ -145,6 +155,7 @@ export interface IPipeline {
     };
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
+    resourceVersion?: string; // required to update resource, not part of spec
 }
 
 export interface IPipelineList {

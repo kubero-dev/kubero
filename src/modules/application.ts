@@ -1,4 +1,4 @@
-import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize} from '../types';
+import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize, IExtraVolume} from '../types';
 import { IAddon } from './addons';
 
 export class KubectlApp implements IKubectlApp{
@@ -34,6 +34,7 @@ export class App implements IApp{
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
     public envVars: {}[] = []
+    public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
     public addons: IAddon[] = []
 
@@ -155,6 +156,8 @@ export class App implements IApp{
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
 
         this.envVars =  app.envVars
+
+        this.extraVolumes =  app.extraVolumes
 
         this.cronjobs = app.cronjobs
 

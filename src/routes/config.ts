@@ -99,3 +99,10 @@ Router.get('/config/repositories', authMiddleware, async function (req: Request,
     // #swagger.summary = 'Get the available repositories'
     res.send(await req.app.locals.kubero.getRepositories());
 });
+
+
+Router.get('/config/storageclasses', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the available storageclasses'
+    res.send(await req.app.locals.kubero.getStorageglasses());
+});

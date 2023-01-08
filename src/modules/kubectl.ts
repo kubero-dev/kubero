@@ -21,6 +21,7 @@ import {
     PodMetric,
     PodMetricsList,
     NodeMetric,
+    StorageV1Api
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -34,6 +35,7 @@ export class Kubectl {
     private coreV1Api: CoreV1Api;
     private appsV1Api: AppsV1Api;
     private metricsApi: Metrics;
+    private storageV1Api: StorageV1Api;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
@@ -66,6 +68,7 @@ export class Kubectl {
         this.versionApi = this.kc.makeApiClient(VersionApi);
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
+        this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
         this.metricsApi = new Metrics(this.kc);
         this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
@@ -103,7 +106,6 @@ export class Kubectl {
         return pipelines.body as IKubectlPipelineList;
     }
 
-
     public async createPipeline(pl: IPipeline) {
         debug.log("create pipeline: " + pl.name);
         let pipeline = new KubectlPipeline(pl);
@@ -114,6 +116,24 @@ export class Kubectl {
             "v1alpha1",
             process.env.KUBERO_NAMESPACE || 'kubero',
             "kuberopipelines",
+            pipeline
+        ).catch(error => {
+            debug.log(error);
+        });
+    }
+
+    public async updatePipeline(pl: IPipeline, resourceVersion: string ) {
+        debug.log("update pipeline: " + pl.name);
+        let pipeline = new KubectlPipeline(pl);
+        pipeline.metadata.resourceVersion = resourceVersion;
+
+        this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
+        await this.customObjectsApi.replaceNamespacedCustomObject(
+            "application.kubero.dev",
+            "v1alpha1",
+            process.env.KUBERO_NAMESPACE || 'kubero',
+            "kuberopipelines",
+            pl.name,
             pipeline
         ).catch(error => {
             debug.log(error);
@@ -473,5 +493,23 @@ export class Kubectl {
     public async getNodeMetrics(): Promise<NodeMetric[]> {
         const metrics = await this.metricsApi.getNodeMetrics();
         return metrics.items;
+    }
+
+    public async getStorageglasses(): Promise<Object[]> {
+        const storageClasses = await this.storageV1Api.listStorageClass();
+        let ret = [];
+        for (let i = 0; i < storageClasses.body.items.length; i++) {
+            const sc = storageClasses.body.items[i];
+            const storageClass = {
+                name: sc.metadata?.name,
+                provisioner: sc.provisioner,
+                reclaimPolicy: sc.reclaimPolicy,
+                volumeBindingMode: sc.volumeBindingMode,
+                //allowVolumeExpansion: sc.allowVolumeExpansion,
+                //parameters: sc.parameters
+            }
+            ret.push(storageClass);
+        }
+        return ret;
     }
 }

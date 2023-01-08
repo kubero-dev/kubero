@@ -128,7 +128,7 @@ export class Kubero {
 
     // creates a new pipeline in the same namespace as the kubero app
     public async newPipeline(pipeline: IPipeline) {
-        debug.debug('create newPipeline: '+pipeline.name);
+        debug.debug('create Pipeline: '+pipeline.name);
 
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
@@ -139,6 +139,21 @@ export class Kubero {
         // update agents
         this._io.emit('updatedPipelines', "created");
     }
+
+    // updates a new pipeline in the same namespace as the kubero app
+    public async updatePipeline(pipeline: IPipeline, resourceVersion: string) {
+        debug.debug('update Pipeline: '+pipeline.name);
+
+        // Create the Pipeline CRD
+        await this.kubectl.updatePipeline(pipeline, resourceVersion);
+        this.updateState();
+
+        this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
+
+        // update agents
+        this._io.emit('updatedPipelines', "updated");
+    }
+
 
     public async listPipelines(): Promise<IPipelineList> {
         debug.debug('listPipelines');
@@ -162,6 +177,7 @@ export class Kubero {
         });
 
         if (pipeline) {
+            pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
             return pipeline.spec;
         }
     }
@@ -481,6 +497,7 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
+                    extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
                     image: {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
@@ -686,5 +703,9 @@ export class Kubero {
 
     public getNodeMetrics() {
         return this.kubectl.getNodeMetrics();
+    }
+
+    public getStorageglasses() {
+        return this.kubectl.getStorageglasses();
     }
 }
