@@ -1,5 +1,5 @@
 
-# Quickstart with kubero CLI installation
+# Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` and follow the instructions
 
