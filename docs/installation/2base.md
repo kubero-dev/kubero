@@ -9,7 +9,7 @@ All these steps can be performed with the Kubero CLI. You can download the lates
 
 ## Components
 
-### Install Ingress Controller
+### Ingress Controller
 The Installation of the Ingress Controller depends on your Kubernetes provider. For example, if you are using Kind, you can use the following command:
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
@@ -19,7 +19,7 @@ https://github.com/kubernetes/ingress-nginx/tree/main/deploy/static/provider
 
 
 
-## Install the Kubero Operator
+## Kubero Operator
 
 There are two ways to install Kubero:
 1) Minimal installation
@@ -35,25 +35,25 @@ kubectl apply -f hhttps://raw.githubusercontent.com/kubero-dev/kubero-operator/m
 ### Option 2) Full installation with OLM
 The OLM installation will install the Operator Lifecycle Manager and the Kubero Operator. The Kubero UI will be installed on a later step.
 
-**Install OLM (Operator Lifecycle Manager)**
+**OLM (Operator Lifecycle Manager)**
 ```
 kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/crds.yaml
 
 kubectl create -f https://raw.githubusercontent.com/operator-framework/operator-lifecycle-manager/master/deploy/upstream/quickstart/olm.yaml
 ```
 
-**Install the Kubero Operator**
+**Kubero Operator**
 ```bash
 kubectl create -f https://operatorhub.io/install/kubero-operator.yaml
 ```
 
-## Install the Kubero UI
+## Kubero UI
 The Kubero UI provides an API and a web interface to manage your Kubero installation. Without the Kubero UI, you can still use the Kubero Operator to manage your applications but you will need to use the kubectl to apply the rescources.
 ```
 kubectl create namespace kubero
 ```
 
-## Create and deploy the secrets
+### Create and deploy the secrets
 ```bash
 kubectl create secret generic kubero-secrets \
     --from-literal=KUBERO_WEBHOOK_SECRET=$(openssl rand -hex 20) \
@@ -72,11 +72,12 @@ kubectl create secret generic kubero-secrets \
 | GITHUB_PERSONAL_ACCESS_TOKEN | optional | Personal access token for GitHub API |
 | GITEA_PERSONAL_ACCESS_TOKEN | optional | Personal access token for Gitea API |
 
-
+### Deploy the Kubero
+```
 kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/config/samples/application_v1alpha1_kubero.yaml -n kubero
 ```
 
-## Configure Kubero
+### Configure Kubero
 ```bash
 kubectl edit configmap kubero-config -n kubero
 ```
