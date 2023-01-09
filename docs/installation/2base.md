@@ -72,7 +72,8 @@ kubectl create secret generic kubero-secrets \
 | GITHUB_PERSONAL_ACCESS_TOKEN | optional | Personal access token for GitHub API |
 | GITEA_PERSONAL_ACCESS_TOKEN | optional | Personal access token for Gitea API |
 
-### Deploy the Kubero
+### Deploy the Kubero UI
+```
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/config/samples/application_v1alpha1_kubero.yaml -n kubero
 ```

@@ -1,4 +1,4 @@
-# Customisation
+# Configuration
 
 Kubero has 3 sections so far:
 1) kubero: configures the UI
