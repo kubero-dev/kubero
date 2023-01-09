@@ -15,6 +15,19 @@ The Pipeline does not build a container image. It only pulls your code and runs 
 
 You can run everything that runs in a container. Kubero uses default images to build and run your app. But you can build your own builder if required. And create your custom deployment packs.
 
+- GoLang (including Hugo, gin-gonic)
+- Python (including Flask)
+- JavaScript/NodeJS
+- PHP (including Laravel)
+- Ruby (including Rails)
+- Static HTML
+- Rust (including Rocket)
+- ...
+
+
+You find the preconfigured buildpacks and examples here:
+https://github.com/kubero-dev/buildpacks
+
 ## Addons/Plugins
 Addons are deployed with Kubernetes Operators which are configurable over the UI.
 
