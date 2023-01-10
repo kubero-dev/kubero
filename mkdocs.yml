@@ -15,21 +15,21 @@ markdown_extensions:
       base_path: .
   - admonition
 nav:
-    - Home: 'index.md'
+    - 'Home': 'index.md'
     - '1quickstart.md'
     - '2screenshots.md'
     - '3comparison.md'
-    - Installation:
-      - 'prerequisites.md'
-      - 'base.md'
-      - 3authentication.md
-      - configuration.md
+    - 'Installation':
+      - 'Prerequisites': '1prerequisites.md'
+      - 'Getting Started': '2base.md'
+      - 'Authentication': 3authentication.md
+      - 'Configuration': 4configuration.md
     - 'User manual':
-      - 'buildpacks.md'
-      - deployment.md
-      - services.md
+      - 'Buildpacks': 'buildpacks.md'
+      - 'Deployment': deployment.md
+      - 'Services': services.md
     - 'Developer manual':
-      - 'setup.md'
+      - 'Setup': 'setup.md'
       #- 'architecture.md'
       #- 'development.md'
       #- 'testing.md'
