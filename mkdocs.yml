@@ -14,3 +14,25 @@ markdown_extensions:
   - markdown_include.include:
       base_path: .
   - admonition
+nav:
+    - Home: 'index.md'
+    - '1quickstart.md'
+    - '2screenshots.md'
+    - '3comparison.md'
+    - Installation:
+      - 'prerequisites.md'
+      - 'base.md'
+      - 3authentication.md
+      - configuration.md
+    - 'User manual':
+      - 'buildpacks.md'
+      - deployment.md
+      - services.md
+    - 'Developer manual':
+      - 'setup.md'
+      #- 'architecture.md'
+      #- 'development.md'
+      #- 'testing.md'
+      #- 'release.md'
+      #- 'deployment.md'
+      #- 'changelog.md'

@@ -1,4 +1,4 @@
-# competitors to Kubero
+# Comparison to alternatives
 
 - Coolify https://coolify.io/
 - Capover https://caprover.com/

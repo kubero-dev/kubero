@@ -1,7 +1,7 @@
 # Authentication
 The UI has a built-in authentication to restrict access. All methods can be used simultaneously.
 
-## local
+## Local
 This may fit for single users and very small teams. The authentication credentials are stored in the environment variable KUBERO_USERS as a base64 encoded string.
 
 > ⚠️ **Warning** <br>
@@ -60,7 +60,7 @@ stringData:
 kubectl apply -f secrets.yaml -n kubero
 ```
 
-## github
+## Github
 If you have already have a Github team and want to grant access to them, use this section.
 
 ## Oauth2 (gitea)
