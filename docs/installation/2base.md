@@ -14,8 +14,7 @@ The Installation of the Ingress Controller depends on your Kubernetes provider. 
 ```
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml
 ```
-For other Kubernetes providers, please use one of the following resources:
-https://github.com/kubernetes/ingress-nginx/tree/main/deploy/static/provider
+For other Kubernetes providers, please use one of the following [resources](https://github.com/kubernetes/ingress-nginx/tree/main/deploy/static/provider)
 
 ### Metrics Server
 The Metrics Server is required for the Kubero UI to display CPU and Memory usage. You can install it with the following command:
