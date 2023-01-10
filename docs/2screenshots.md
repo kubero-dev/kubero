@@ -1,9 +1,9 @@
 # Screenshots
-<img src="screensots/pipelinelist.png">
-<img src="screensots/pipeline.png">
-<img src="screensots/logs.png">
-<img src="screensots/appoverview.png">
-<img src="screensots/app.png">
-<img src="screensots/addons.png">
-<img src="screensots/login.png">
-<img src="screensots/cli.png">
+<img src="screenshots/pipelinelist.png">
+<img src="screenshots/pipeline.png">
+<img src="screenshots/logs.png">
+<img src="screenshots/appoverview.png">
+<img src="screenshots/app.png">
+<img src="screenshots/addons.png">
+<img src="screenshots/login.png">
+<img src="screenshots/cli.png">
