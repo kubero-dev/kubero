@@ -33,6 +33,7 @@ Kubero is Kubernetes native and runs on any Kubernetes instance.
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea
 - Forgejo (WIP)
+- OneDev (WIP)
 - Gogs
 - Github
 - Gitlab
@@ -58,7 +59,7 @@ https://github.com/kubero-dev/buildpacks
 2) Run `kubero install` to install all components on an new or your existing cluster
 
 ## Usage
-<a href="https://github.com/kubero-dev/kubero/tree/main/docs/screenshots">Screenshots</a><p>
+<a href="https://github.com/kubero-dev/kubero/tree/main/docs/2screenshots.md">Screenshots</a><p>
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank"><img src="docs/screenshots/youtube-screen.png"></a>
 
 1. Create a pipeline with all your phases
