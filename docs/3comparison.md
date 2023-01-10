@@ -11,25 +11,24 @@
 
 |              | Heroku <br>Private Space | kubero              | coolify            | dokku              | Caprover           | piku               | Cuber              | Acorn              |
 |-------------------|:-------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:------------------:|:-------------------:|
-| User Interface    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x: PRO            | :white_check_mark: | :x:                | :x:                | :x:                |
-| Multi User        | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | N/A                | N/A                | N/A                |
-| Kubernetes        | N/A                 | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :white_check_mark: | :white_check_mark: |
-| Multi Kubernetes  | N/A                 | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
-| Scaling           | :white_check_mark:  | :white_check_mark:  | :x:                | :x:                | :white_check_mark: | vertically         | :x:                | :x:                |
-| Autoscaling       | :white_check_mark:  | :white_check_mark:  | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
-| Cronjobs          | :white_check_mark:  | :white_check_mark:  | :x:                | :white_check_mark: | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| CLI               | :white_check_mark:  | :white_check_mark:* | :x:                | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
-| API               | :white_check_mark:  | :white_check_mark:  | :x:                | :x: PRO            | :white_check_mark: | :x:                | :x:                | :white_check_mark: |
-| Autodeployment    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                |
-| Pull-Request-Apps | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :x:                | :x:                | :x:                | :x:                | :x:                |
-| Dataclips         | :white_check_mark:  | :x:                 | :x:                | :x:                | :x:                | :x:                | :x:                | :x:                |
-| CI/CD             | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                |
-| Builtin Addons    | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | plugin             | :white_check_mark: | :x:                | :x:                | :x:                |
-| Builtin Services  | :white_check_mark:  | :x:                 | :white_check_mark: | :x:                | :white_check_mark: | :x:                | :x:                | :x:                |
-| Any language      | :white_check_mark:  | :white_check_mark:  | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
+| User Interface    | ✅                 | ✅                 | ✅                | ❌ PRO            | ✅                | ❌                | ❌                | ❌                |
+| Multi User        | ✅                 | ✅                 | ✅                | ✅                | ❌                | N/A               | N/A               | N/A               |
+| Kubernetes        | N/A                | ✅                 | ❌                | ❌                | ❌                | ❌                | ✅                | ✅                |
+| Multi Kubernetes  | N/A                | ✅                 | ❌                | ❌                | ❌                | ❌                | ❌                | ❌                |
+| Scaling           | ✅                 | ✅                 | ❌                | ❌                | ✅                | vertically        | ❌                | ❌                |
+| Autoscaling       | ✅                 | ✅                 | ❌                | ❌                | ❌                | ❌                | ❌                | ❌                |
+| Cronjobs          | ✅                 | ✅                 | ❌                | ✅                | ❌                | ✅                | ✅                | ✅                |
+| CLI               | ✅                 | ✅                 | ❌                | ✅                | ✅                | ✅                | ✅                | ✅                |
+| API               | ✅                 | ✅                 | ❌                | ❌ PRO            | ✅                | ❌                | ❌                | ✅                |
+| Autodeployment    | ✅                 | ✅                 | ✅                | ❌                | ✅                | ❌                | ❌                | ❌                |
+| Pull-Request-Apps | ✅                 | ✅                 | ✅                | ❌                | ❌                | ❌                | ❌                | ❌                |
+| Dataclips         | ✅                 | ❌                 | ❌                | ❌                | ❌                | ❌                | ❌                | ❌                |
+| CI/CD             | ✅                 | ✅                 | ✅                | ✅                | ❌                | ✅                | ❌                | ❌                |
+| Builtin Addons    | ✅                 | ✅                 | ✅                | plugin            | ✅                | ❌                | ❌                | ❌                |
+| Builtin Services  | ✅                 | ❌                 | ✅                | ❌                | ✅                | ❌                | ❌                | ❌                |
+| Any language      | ✅                 | ✅                 | ✅                | ✅                | ✅                | ✅                | ✅                | ✅                |
 
 
-\* Work in progress
 
 
 ### User interface
