@@ -1,9 +1,5 @@
 # Buildpacks
 
-<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/7.0.11/mermaid.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/7.0.11/mermaid.js"></script>
-<script>mermaid.initialize({startOnLoad:true});</script>
-
 Kubero buildpack-images rely on public available images.
 
 Examples of Kubero Buildpacks can be found here: https://github.com/kubero-dev/buildpacks/tree/main/packs
@@ -13,15 +9,6 @@ Examples of Kubero Buildpacks can be found here: https://github.com/kubero-dev/b
 
 
 Buildpacks are defined as a set of three containers:
-
-```mermaid
-stateDiagram-v2
-direction LR
-    [*] --> fetcher
-    fetcher --> builder
-    builder --> runner
-    runner --> [*]
-```
 
 ## Fetch (init container)
 Fetches the code from a Git repository.
