@@ -496,19 +496,24 @@ export class Kubectl {
     }
 
     public async getStorageglasses(): Promise<Object[]> {
-        const storageClasses = await this.storageV1Api.listStorageClass();
         let ret = [];
-        for (let i = 0; i < storageClasses.body.items.length; i++) {
-            const sc = storageClasses.body.items[i];
-            const storageClass = {
-                name: sc.metadata?.name,
-                provisioner: sc.provisioner,
-                reclaimPolicy: sc.reclaimPolicy,
-                volumeBindingMode: sc.volumeBindingMode,
-                //allowVolumeExpansion: sc.allowVolumeExpansion,
-                //parameters: sc.parameters
+        try {
+            const storageClasses = await this.storageV1Api.listStorageClass();
+            for (let i = 0; i < storageClasses.body.items.length; i++) {
+                const sc = storageClasses.body.items[i];
+                const storageClass = {
+                    name: sc.metadata?.name,
+                    provisioner: sc.provisioner,
+                    reclaimPolicy: sc.reclaimPolicy,
+                    volumeBindingMode: sc.volumeBindingMode,
+                    //allowVolumeExpansion: sc.allowVolumeExpansion,
+                    //parameters: sc.parameters
+                }
+                ret.push(storageClass);
             }
-            ret.push(storageClass);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching storageclasses');
         }
         return ret;
     }
