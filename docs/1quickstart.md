@@ -10,6 +10,7 @@ kubero install -c kubero-operator
 ```
 
 List of all components:
+
 - kubernetes
 - olm
 - ingress

@@ -22,6 +22,12 @@ The Metrics Server is required for the Kubero UI to display CPU and Memory usage
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
+### Cert Manager
+The Certmanager is requirede to generate and manage TLS certificates.
+```
+kubectl apply -f https://operatorhub.io/install/cert-manager.yaml
+```
+
 ## Kubero Operator
 
 There are two ways to install Kubero:
