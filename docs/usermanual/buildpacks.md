@@ -30,3 +30,7 @@ You can define which image will be used by selecting the buildpack. The buildpac
 ## Run (container)
 Run the final container
 In the run stage, there are two options: worker and web. Only the web pod is attached to the ingress and will be accessible from outside the cluster.
+
+<link rel="stylesheet" type="text/css" href="mermaid.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.3.0/mermaid.min.js"></script>
+<script>mermaid.initialize({startOnLoad:true});</script>
