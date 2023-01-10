@@ -17,7 +17,11 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main
 For other Kubernetes providers, please use one of the following resources:
 https://github.com/kubernetes/ingress-nginx/tree/main/deploy/static/provider
 
-
+### Metrics Server
+The Metrics Server is required for the Kubero UI to display CPU and Memory usage. You can install it with the following command:
+```
+kubectl apply -f
+```
 
 ## Kubero Operator
 
@@ -53,7 +57,7 @@ The Kubero UI provides an API and a web interface to manage your Kubero installa
 kubectl create namespace kubero
 ```
 
-### Create and deploy the secrets
+### Create the secrets
 ```bash
 kubectl create secret generic kubero-secrets \
     --from-literal=KUBERO_WEBHOOK_SECRET=$(openssl rand -hex 20) \
@@ -74,11 +78,10 @@ kubectl create secret generic kubero-secrets \
 
 ### Deploy the Kubero UI
 ```
-```
 kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/config/samples/application_v1alpha1_kubero.yaml -n kubero
 ```
 
-### Configure Kubero
+### Customize the Kubero configuration
 ```bash
 kubectl edit configmap kubero-config -n kubero
 ```

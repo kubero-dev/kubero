@@ -1,9 +1,9 @@
-site_name: Basic MkDocs Example Project
+site_name: Kubero Documentation
 theme:
   name: readthedocs
   highlightjs: true
 plugins:
-  - search
+  #- search
   - mkdocstrings:
       handlers:
         # See: https://mkdocstrings.github.io/python/usage/
