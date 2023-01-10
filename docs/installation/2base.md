@@ -19,7 +19,7 @@ For other Kubernetes providers, please use one of the following [resources](http
 ### Metrics Server
 The Metrics Server is required for the Kubero UI to display CPU and Memory usage. You can install it with the following command:
 ```
-kubectl apply -f
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 ```
 
 ## Kubero Operator

@@ -4,7 +4,7 @@ The UI has a built-in authentication to restrict access. All methods can be used
 ## local
 This may fit for single users and very small teams. The authentication credentials are stored in the environment variable KUBERO_USERS as a base64 encoded string.
 
-> :warning: **Warning** <br>
+> ⚠️ **Warning** <br>
 > Do not use this example credentials
 
 **1) create an encrypted password**
