@@ -1,7 +1,7 @@
 # Buildpacks
 
-<link rel="stylesheet" type="text/css" href="mermaid.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.3.0/mermaid.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/7.0.11/mermaid.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/7.0.11/mermaid.js"></script>
 <script>mermaid.initialize({startOnLoad:true});</script>
 
 Kubero buildpack-images rely on public available images.
