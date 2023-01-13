@@ -328,6 +328,25 @@ export class Kubectl {
         return operators.items;
     }
 
+    public async getCustomresources() {
+        // TODO list operators from all clusters
+        let operators = { items: [] };
+        try {
+            let response = await this.customObjectsApi.listClusterCustomObject(
+                'apiextensions.k8s.io',
+                'v1',
+                'customresourcedefinitions'
+            )
+            //let operators = response.body as KubernetesListObject<KubernetesObject>;
+            operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work
+        } catch (error) {
+            debug.log(error);
+            debug.log("error getting customresources");
+        }
+
+        return operators.items;
+    }
+
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;

@@ -46,6 +46,14 @@
               </v-col>
 
               <v-col cols="12" v-for="field in selectedAddon.formfields" v-bind:key="field.name">
+                <v-select
+                    v-if="field.type === 'select-storageclass'"
+                    :items="availableStorageClasses"
+                    :label="field.label"
+                    :required="field.required"
+                    dense
+                    v-model="field.default"
+                ></v-select>
                 <v-text-field
                     v-if="field.type === 'text'"
                     v-model="field.default"
@@ -109,6 +117,7 @@ export default {
     },
     data: () => ({
         dialog: false,
+        availableStorageClasses: [],
         availableAddons: [],
         selectedAddon: {
             id: '',
@@ -120,15 +129,31 @@ export default {
         },
     }),
     mounted() {
+        this.loadStorageClasses();
         this.loadAddons();
     },
     methods: {
+        loadStorageClasses() {
+            axios.get(`/api/config/storageclasses`)
+            .then(response => {
+                for (let storageClass of response.data) {
+                    this.availableStorageClasses.push({
+                        text: storageClass.name,
+                        value: storageClass.name
+                    });
+                }
+                console.log(this.availableStorageClasses);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         loadAddons() {
             axios.get(`/api/addons`)
             .then(response => {
                 for (let addon of response.data) {
                     this.availableAddons.push({
-                        text: addon.kind,
+                        text: addon.displayName,
                         value: addon
                     });
                 }
@@ -153,6 +178,7 @@ export default {
                 kind: this.selectedAddon.kind,
                 version: this.selectedAddon.version,
                 env: this.selectedAddon.env,
+                icon: this.selectedAddon.icon,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
             this.$emit('addon-added', addon);

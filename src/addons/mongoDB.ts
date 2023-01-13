@@ -3,6 +3,8 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class MongoDB extends Plugin implements IPlugin {
     public id: string = 'mongodb-operator';//same as operator name
+    public displayName = 'Percona MongoDB'
+    public icon = '/img/addons/MongoDB.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/mongodb-operator'
     public beta: boolean = true;

@@ -3,6 +3,8 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class Minio extends Plugin implements IPlugin {
     public id: string = 'minio-operator';//same as operator name
+    public displayName = 'Minio'
+    public icon = '/img/addons/Minio.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/minio-operator.yaml -n operators'
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/minio-operator'
     public beta: boolean = true;
