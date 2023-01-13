@@ -1,4 +1,5 @@
 <template>
+  <v-form v-model="valid">
   <v-row>
     <v-dialog
       v-model="dialog"
@@ -40,6 +41,7 @@
               <v-col cols="12">
                 <v-text-field
                 label="Instance Name"
+                :rules="baseRule"
                 v-model="selectedAddon.id"
                 outlined
                 ></v-text-field>
@@ -50,6 +52,7 @@
                     v-if="field.type === 'select-storageclass'"
                     :items="availableStorageClasses"
                     :label="field.label"
+                    :rules="field.required ? baseRule : []"
                     :required="field.required"
                     dense
                     v-model="field.default"
@@ -58,6 +61,7 @@
                     v-if="field.type === 'text'"
                     v-model="field.default"
                     :label="field.label"
+                    :rules="field.required ? baseRule : []"
                     :required="field.required"
                     dense
                 ></v-text-field>
@@ -65,12 +69,14 @@
                     v-if="field.type === 'number'"
                     v-model="field.default"
                     :label="field.label"
+                    :rules="field.required ? baseRule : []"
                     :required="field.required"
                     dense
                     type="number"
                 ></v-text-field>
                 <v-switch
                     v-model="field.default"
+                    :rules="field.required ? baseRule : []"
                     v-if="field.type === 'switch'"
                     :label="field.label"
                     :required="field.required"
@@ -94,6 +100,7 @@
           <v-btn
             color="blue darken-1"
             text
+            :disabled="!valid"
             @click="submitForm"
           >
             Save
@@ -102,6 +109,7 @@
       </v-card>
     </v-dialog>
   </v-row>
+  </v-form>
 </template>
 
 
@@ -116,6 +124,7 @@ export default {
         }
     },
     data: () => ({
+        valid: false,
         dialog: false,
         availableStorageClasses: [],
         availableAddons: [],
@@ -127,6 +136,9 @@ export default {
             formfields: {},
             resourceDefinitions: {}
         },
+        baseRule: [
+          v => !!v || 'Name is required',
+        ],
     }),
     mounted() {
         this.loadStorageClasses();
