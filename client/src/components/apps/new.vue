@@ -547,7 +547,7 @@
                   size="57"
                   rounded
                 ><img
-                :src="'/img/addons/'+addon.kind+'.png'"
+                :src="addon.icon"
                 :alt="addon.name"
                 >
                 </v-avatar>

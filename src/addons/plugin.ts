@@ -2,7 +2,7 @@ import axios from 'axios';
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 
 export interface IPluginFormFields {
-    type: 'text' | 'number' |'switch',
+    type: 'text' | 'number' |'switch' | 'select' | 'select-storageclass',
     label: string,
     name: string,
     required: boolean,
@@ -37,7 +37,7 @@ export abstract class Plugin {
             'latest': '0.0.0', // version fetched from artifacthub
             'installed': '0.0.0', // loaded if avialable from local operators
         };
-    public display_name: string = '';
+    public displayName: string = '';
     public description: string = '';
     public maintainers: Object[] = [];
     public links: Object[] = [];
@@ -47,33 +47,33 @@ export abstract class Plugin {
     public resourceDefinitions: any = {}; // List of CRD to apply
 
     public artifact_url: string = ''; // Example: https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql
-
+    public artefact_data: any = {};
     public kind: string;
 
     constructor() {
         this.kind = this.constructor.name;
     }
 
-    public init(availableOperators: any) {
+    public async init(availableCRDs: any) {
 
         console.log("init : "+this.id, this.constructor.name)
 
         // load data from artifacthub
-        axios.get(this.artifact_url)
-            .then(response => {
-                this.display_name = response.data.display_name;
-                this.description = response.data.description;
-                this.maintainers = response.data.maintainers;
-                this.links = response.data.links;
-                this.readme = response.data.readme;
-                this.version.latest = response.data.version;
-            })
+        const response = await axios.get(this.artifact_url)
             .catch(error => {
                 console.log('Error loading data from artifacthub')
                 //console.log(error);
             }
         );
 
+        //this.displayName = response?.data.displayName;
+        this.description = response?.data.description;
+        this.maintainers = response?.data.maintainers;
+        this.links = response?.data.links;
+        this.readme = response?.data.readme;
+        this.version.latest = response?.data.version;
+        this.artefact_data = response?.data;
+/*
         // Load data from local Operators
         for (const operator of availableOperators) {
             const operatorName = operator.metadata.name.split(".")[0]
@@ -95,6 +95,28 @@ export abstract class Plugin {
                     this.resourceDefinitions[key] = value;
                 }
 
+
+            }
+        }
+*/
+
+        for (const crd of availableCRDs) {
+            if (crd.spec.names.kind === this.constructor.name) {
+                this.enabled = true;
+                this.version.installed = this.artefact_data.version;
+
+                for (const artefactCRD of this.artefact_data.crds) {
+                    if (artefactCRD.kind === crd.spec.names.kind) {
+                        // search in artefact data for the crd
+                        const exampleCRD = this.artefact_data.crds_examples.find((crd: any) => crd.kind === artefactCRD.kind);
+
+                        this.resourceDefinitions[crd.spec.names.kind] = exampleCRD;
+
+                        this.displayName = artefactCRD.displayName;
+                        this.description = artefactCRD.description;
+                        break;
+                    }
+                }
 
             }
         }
