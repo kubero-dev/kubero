@@ -1,60 +1,68 @@
 import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 
 // Classname must be same as the CRD's Name
-export class KuberoMysql extends Plugin implements IPlugin {
+export class KuberoPostgresql extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
-    public displayName = 'Kubero MySQL'
-    public icon = '/img/addons/MySQL.png'
+    public displayName = 'Kubero Postgresql'
+    public icon = '/img/addons/Postgresql.png'
     public install: string = ''
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator'
     public beta: boolean = false;
 
     public formfields: {[key: string]: IPluginFormFields} = {
-        'KuberoMysql.metadata.name':{
+        'KuberoPostgresql.metadata.name':{
             type: 'text',
-            label: 'MySQL DB Name',
+            label: 'PostgreSQL DB Name',
             name: 'metadata.name',
             required: true,
-            default: 'mysql',
-            description: 'The name of the MySQL instance'
+            default: 'postgresql',
+            description: 'The name of the PostgreSQL instance'
         },
-        'KuberoMysql.spec.mysql.global.storageClass':{
+        'KuberoPostgresql.spec.postgresql.global.storageClass':{
             type: 'select-storageclass',
             label: 'Storage Class',
             // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
-            name: 'spec.mysql.global.storageClass',
+            name: 'spec.postgresql.global.storageClass',
             default: 'default',
             required: true
         },
-        'KuberoMysql.spec.mysql.primary.persistence.size':{
+        'KuberoPostgresql.spec.postgresql.primary.persistence.size':{
             type: 'text',
             label: 'Sorage Size*',
-            name: 'spec.mysql.primary.persistence.size',
+            name: 'spec.postgresql.primary.persistence.size',
             default: '1Gi',
             required: true,
             description: 'Size of the storage'
         },
-        'KuberoMysql.spec.mysql.auth.rootPassword':{
+        'KuberoPostgresql.spec.postgresql.global.postgresql.auth.postgresPassword':{
             type: 'text',
-            label: 'Root Password*',
-            name: 'spec.mysql.auth.rootPassword',
+            label: 'Postgresql Password*',
+            name: 'spec.postgresql.global.postgresql.auth.postgresPassword',
             default: '',
             required: true,
             description: 'Root Password'
         },
-        'KuberoMysql.spec.mysql.auth.username':{
+        'KuberoPostgresql.spec.postgresql.global.postgresql.auth.username':{
             type: 'text',
             label: 'Username*',
-            name: 'spec.mysql.auth.username',
+            name: 'spec.postgresql.global.postgresql.auth.username',
             default: '',
             required: true,
             description: 'Additional username'
         },
-        'KuberoMysql.spec.mysql.auth.password':{
+        'KuberoPostgresql.spec.postgresql.global.postgresql.auth.password':{
             type: 'text',
             label: 'User Password*',
-            name: 'spec.mysql.auth.password',
+            name: 'spec.postgresql.global.postgresql.auth.password',
             default: '',
+            required: true,
+            description: 'Password for the additional user'
+        },
+        'KuberoPostgresql.spec.postgresql.global.postgresql.auth.database':{
+            type: 'text',
+            label: 'User Password*',
+            name: 'spec.postgresql.global.postgresql.auth.database',
+            default: 'postgresql',
             required: true,
             description: 'Password for the additional user'
         },
