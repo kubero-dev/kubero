@@ -6,6 +6,7 @@ export interface IPluginFormFields {
     label: string,
     name: string,
     required: boolean,
+    options?: string[],
     default: string | number | boolean,
     description?: string,
 }
