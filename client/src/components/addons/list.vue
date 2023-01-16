@@ -32,10 +32,12 @@
                             </v-badge>
                             <a v-else :href="addon.artifact_url">{{ addon.displayName }}</a>
                         </v-card-title>
+                        <!--
                         <v-card-subtitle>
                             <span v-if="addon.enabled">{{ addon.version.installed }}</span>
                             <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
                         </v-card-subtitle>
+                        -->
                         <v-card-text>
                             {{ addon.description }}
                             <!--Operator: <a :href="addon.artifact_url">{{ addon.id }}</a>-->

@@ -10,6 +10,7 @@ import { KuberoMysql } from '../addons/kuberoMysql';
 import { KuberoRedis } from '../addons/kuberoRedis';
 import { KuberoPostgresql } from '../addons/kuberoPostgresql';
 import { KuberoMongoDB } from '../addons/kuberoMongoDB';
+import { KuberoElasticsearch } from '../addons/kuberoElasticsearch';
 import { MongoDB } from '../addons/mongoDB';
 import { Minio } from '../addons/minio';
 import { IPlugin } from '../addons/plugin';
@@ -85,6 +86,8 @@ export class Addons {
         const kuberoMongoDB = new KuberoMongoDB(this.CRDList)
         this.addonsList.push(kuberoMongoDB)
 
+        const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList)
+        this.addonsList.push(kuberoElasticsearch)
 
         const postgresCluster = new PostgresCluster(this.CRDList)
         this.addonsList.push(postgresCluster)
