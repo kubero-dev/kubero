@@ -9,6 +9,7 @@ import { Redis } from '../addons/redis';
 import { KuberoMysql } from '../addons/kuberoMysql';
 import { KuberoRedis } from '../addons/kuberoRedis';
 import { KuberoPostgresql } from '../addons/kuberoPostgresql';
+import { KuberoMongoDB } from '../addons/kuberoMongoDB';
 import { MongoDB } from '../addons/mongoDB';
 import { Minio } from '../addons/minio';
 import { IPlugin } from '../addons/plugin';
@@ -78,9 +79,11 @@ export class Addons {
         const kuberoRedis = new KuberoRedis(this.CRDList)
         this.addonsList.push(kuberoRedis)
 
-
         const kuberoPostgresql = new KuberoPostgresql(this.CRDList)
         this.addonsList.push(kuberoPostgresql)
+
+        const kuberoMongoDB = new KuberoMongoDB(this.CRDList)
+        this.addonsList.push(kuberoMongoDB)
 
 
         const postgresCluster = new PostgresCluster(this.CRDList)
