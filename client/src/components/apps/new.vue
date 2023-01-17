@@ -545,10 +545,10 @@
                   rounded
                 ><img
                 :src="addon.icon"
-                :alt="addon.name"
+                :alt="addon.displayName"
                 >
                 </v-avatar>
-                <h3>{{ addon.name }}</h3>
+                <h3>{{ addon.displayName }}</h3>
                 <p class="text-caption mt-1">
                   {{ addon.version.installed }}
                 </p>

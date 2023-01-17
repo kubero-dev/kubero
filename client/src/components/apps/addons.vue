@@ -196,6 +196,7 @@ export default {
                 version: this.selectedAddon.version,
                 env: this.selectedAddon.env,
                 icon: this.selectedAddon.icon,
+                displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
             this.$emit('addon-added', addon);

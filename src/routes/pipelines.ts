@@ -214,26 +214,6 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         },
         web: req.body.web,
         worker: req.body.worker,
-        /*
-        web: {
-            replicaCount: req.body.webreplicas,
-            autoscaling: {
-                minReplicas: req.body.webreplicasrange[0] || 1,
-                maxReplicas: req.body.webreplicasrange[1] || 0,
-                targetCPUUtilizationPercentage: req.body.webtargetCPUUtilizationPercentage || 80,
-                targetMemoryUtilizationPercentage: req.body.webtargetMemoryUtilizationPercentage || 0
-            }
-        },
-        worker: {
-            replicaCount: req.body.workerreplicas,
-            autoscaling: {
-                minReplicas: req.body.workerreplicasrange[0] || 0,
-                maxReplicas: req.body.workerreplicasrange[1] || 0,
-                targetCPUUtilizationPercentage: req.body.workertargetCPUUtilizationPercentage || 80,
-                targetMemoryUtilizationPercentage: req.body.workertargetMemoryUtilizationPercentage || 0
-            }
-        },
-        */
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,

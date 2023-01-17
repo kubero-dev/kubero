@@ -48,6 +48,7 @@ export interface IAddon {
     name: string,
     CRDkind: string,
     icon: string,
+    displayName: string,
     version: string
     plural: string;
     description?: string,
