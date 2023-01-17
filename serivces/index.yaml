@@ -103,3 +103,24 @@ services:
   icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
   screenshots:
   - https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png
+- name: timetagger
+  description: 'TimeTagger is a simple time tracking tool for your terminal.'
+  tags:
+  - Time tracking
+  source: https://github.com/almarklein/timetagger
+  website: https://timetagger.app/
+  icon: https://timetagger.app/timetagger_sl.svg
+  screenshots:
+  - https://timetagger.app/screenshot1.png
+  - https://timetagger.app/screenshot2.png
+  - https://timetagger.app/screenshot3.png
+- name: whoogle
+  description: 'Whoogle is a self-hosted, ad-free, privacy-respecting metasearch engine.'
+  tags:
+  - Search
+  source: https://github.com/benbusby/whoogle-search
+  website: https://github.com/benbusby/whoogle-search
+  icon: https://www.freeiconspng.com/uploads/question-answer-icon-14.png
+  screenshots:
+  - https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.png
+  - https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.png
