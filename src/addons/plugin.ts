@@ -110,9 +110,6 @@ export abstract class Plugin {
                     if (artefactCRD.kind === crd.spec.names.kind) {
                         // search in artefact data for the crd
                         let exampleCRD = this.artefact_data.crds_examples.find((crd: any) => crd.kind === artefactCRD.kind);
-                        exampleCRD.metadata = {
-                            displayName: artefactCRD.displayName,
-                        }
 
                         this.resourceDefinitions[crd.spec.names.kind] = exampleCRD;
 

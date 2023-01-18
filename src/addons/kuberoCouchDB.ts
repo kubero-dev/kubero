@@ -74,6 +74,14 @@ export class KuberoCouchDB extends Plugin implements IPlugin {
             required: true,
             description: 'Random character string'
         },
+        'KuberoCouchDB.spec.couchdb.couchdbConfig.couchdb.uuid':{
+            type: 'text',
+            label: 'instance UUID*',
+            name: 'spec.couchdb.couchdbConfig.couchdb.uuid',
+            default: '',
+            required: true,
+            description: 'Random character string'
+        },
     };
 
     public env: any[] = []

@@ -53,14 +53,14 @@
                     :items="availableStorageClasses"
                     :label="field.label"
                     dense
-                    v-model="availableStorageClasses[0]"
+                    v-model="field.default"
                 ></v-select>
                 <v-select
                     v-if="field.type === 'select'"
                     :items="field.options"
                     :label="field.label"
                     dense
-                    v-model="field.options[0]"
+                    v-model="field.default"
                 ></v-select>
                 <v-text-field
                     v-if="field.type === 'text'"
