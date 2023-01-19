@@ -875,7 +875,7 @@ export default {
       deleteAddon(addon) {
           // remove addon from local view and kuberoapp yaml
           for (let i = 0; i < this.addons.length; i++) {
-            if (this.addons[i].id == addon.id) {
+            if (this.addons[i].kind == addon.kind) {
               this.addons.splice(i, 1);
               break;
             }
