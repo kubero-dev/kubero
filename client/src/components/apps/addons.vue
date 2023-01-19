@@ -126,7 +126,7 @@ export default {
         addons: {
             type: Array,
             default: () => []
-        }
+        },
     },
     data: () => ({
         valid: false,
@@ -187,6 +187,12 @@ export default {
 
             // replace the formfields with the form value
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+
+                // Cast number fields to int
+                if (value.type === 'number') {
+                    value.default = parseInt(value.default);
+                }
+
                 set(this.selectedAddon.resourceDefinitions, field, value.default);
             });
 
