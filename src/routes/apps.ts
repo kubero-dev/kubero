@@ -219,6 +219,50 @@ function normalizeAddonName(app: IApp) {
     });
 }
 
+
+Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Update an app in a specific pipeline'
+    // #swagger.parameters['body'] = { in: 'body', description: 'App object', required: true, type: 'object' }
+
+    let appconfig: IApp = {
+        name: req.params.app,
+        pipeline: req.params.pipeline,
+        phase: req.params.phase,
+        buildpack: req.body.buildpack.name,
+        deploymentstrategy: req.body.deploymentstrategy,
+        gitrepo: req.body.gitrepo,
+        branch: req.body.branch,
+        autodeploy: req.body.autodeploy,
+        domain: req.body.domain,
+        podsize: req.body.podsize,
+        autoscale: req.body.autoscale,
+        extraVolumes: req.body.extraVolumes,
+        envVars: req.body.envvars,
+        image: {
+            containerPort: req.body.image.containerport,
+            repository: req.body.image.repository,
+            tag: req.body.image.tag || "main",
+            pullPolicy: "Always",
+            fetch: req.body.image.fetch,
+            build: req.body.image.build,
+            run: req.body.image.run,
+        },
+        web: req.body.web,
+        worker: req.body.worker,
+        cronjobs: req.body.cronjobs,
+        addons: req.body.addons,
+        resources: req.body.podsize.resources,
+    };
+    normalizeAddonName(appconfig);
+
+    let app = new App(appconfig);
+
+    req.app.locals.kubero.updateApp(app, req.body.resourceVersion);
+
+    res.send("updated");
+});
+
 // list all availabe apps
 Router.get('/cli/apps', bearerMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Apps'']
