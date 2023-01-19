@@ -406,7 +406,7 @@ export class Kubectl {
             for (let i = 0; i < metrics.items.length; i++) {
                 const metric = metrics.items[i];
 
-                if ( !metric.metadata.name.startsWith(appName) ) continue;
+                if ( !metric.metadata.name.startsWith(appName+"-") ) continue;
 
                 const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
                 const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
