@@ -39,7 +39,7 @@ export class KuberoMysql extends Plugin implements IPlugin {
             label: 'Create a Database*',
             name: 'spec.mysql.auth.createDatabase',
             default: false,
-            required: true,
+            required: false,
             description: 'Create a database on MySQL startup'
         },
         'KuberoMysql.spec.mysql.auth.database':{

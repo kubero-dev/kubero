@@ -52,6 +52,7 @@
                     v-if="field.type === 'select-storageclass'"
                     :items="availableStorageClasses"
                     :label="field.label"
+                    :rules="baseSelectRule"
                     dense
                     v-model="field.default"
                 ></v-select>
@@ -142,7 +143,10 @@ export default {
             resourceDefinitions: {}
         },
         baseRule: [
-          v => !!v || 'Name is required',
+          v => !!v || 'Field is required',
+        ],
+        baseSelectRule: [
+          v => v!=='default' || 'Select a value',
         ],
     }),
     mounted() {
