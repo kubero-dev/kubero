@@ -532,7 +532,7 @@
       <!-- ADDONS -->
       <h4 class="text-uppercase pb-3">Addons</h4>
       <v-row>
-        <v-col v-for="addon in addons" v-bind:key="addon.id"
+        <v-col v-for="addon in addons" v-bind:key="addon.kind"
           cols="12"
           md="2"
         >
