@@ -200,9 +200,23 @@ function createApp(req: Request,) : IApp {
         addons: req.body.addons,
         resources: req.body.podsize.resources,
     };
+    normalizeAddonName(appconfig);
 
     let app = new App(appconfig);
     return app;
+}
+
+// rename addons to match the name of the app
+function normalizeAddonName(app: IApp) {
+    app.addons.forEach((addon: any) => {
+        console.log(addon);
+        for (const key in addon.resourceDefinitions) {
+            if (addon.resourceDefinitions.hasOwnProperty(key)) {
+                const element = addon.resourceDefinitions[key];
+                element.metadata.name = app.name + "-" + element.metadata.name;
+            }
+        }
+    });
 }
 
 // list all availabe apps

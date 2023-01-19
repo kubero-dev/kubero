@@ -530,7 +530,7 @@
 
       <v-divider class="ma-5"></v-divider>
       <!-- ADDONS -->
-      <h4 class="text-uppercase">Addons</h4>
+      <h4 class="text-uppercase pb-3">Addons</h4>
       <v-row>
         <v-col v-for="addon in addons" v-bind:key="addon.id"
           cols="12"
@@ -573,7 +573,7 @@
       <Addons :addons="addons"/>
 
       <!-- SUBMIT -->
-      <v-row>
+      <v-row class="pt-5">
         <v-col
           cols="12"
           md="4"
