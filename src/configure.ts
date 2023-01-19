@@ -11,6 +11,7 @@ import { RouterLogs } from "./routes/logs";
 import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
+import { Router as RouterServices } from "./routes/services";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
@@ -64,6 +65,7 @@ export const after = (app: Express, server: Server) => {
     app.use('/api', RouterPipelines);
     app.use('/api', RouterRepo);
     app.use('/api', RouterSettings);
+    app.use('/api', RouterServices);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 }

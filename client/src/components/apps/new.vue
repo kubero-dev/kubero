@@ -758,6 +758,9 @@ export default {
       }
     },
     mounted() {
+      if (this.$route.query.service) {
+        this.loadService(this.$route.query.service);
+      }
       this.loadStorageClasses();
       this.loadPipeline();
       this.loadPodsizeList();
@@ -767,6 +770,29 @@ export default {
         Addons,
     },
     methods: {
+      loadService(service) {
+        axios.get('/api/services/'+service).then(response => {
+          console.log(response.data);
+          this.appname = response.data.name;
+          this.containerPort = response.data.image.containerPort;
+          this.deploymentstrategy = response.data.deploymentstrategy;
+
+          if (response.data.deploymentstrategy == 'git') {
+            this.deploymentstrategyGit = true;
+            this.gitrepo.ssh_url = response.data.git.repository.ssh_url;
+            this.branch = response.data.git.branch;
+          } else {
+            this.deploymentstrategyGit = false;
+            this.docker.image = response.data.image.repository;
+            this.docker.tag = response.data.image.tag;
+          }
+
+          this.envvars = response.data.envVars;
+          this.extraVolumes = response.data.extraVolumes;
+          this.cronjobs = response.data.cronjobs;
+          this.addons = response.data.addons;
+        });
+      },
       changeName(name) {
         this.domain = name+"."+this.pipelineData.domain;
       },
