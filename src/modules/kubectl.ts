@@ -397,7 +397,7 @@ export class Kubectl {
         return events.body.items;
     }
 
-    public async getPodMetrics(namespace: string): Promise<any> { //TODO make this a real type
+    public async getPodMetrics(namespace: string, appName: string): Promise<any> { //TODO make this a real type
         const ret = [];
 
         try {
@@ -405,6 +405,9 @@ export class Kubectl {
 
             for (let i = 0; i < metrics.items.length; i++) {
                 const metric = metrics.items[i];
+
+                if ( !metric.metadata.name.startsWith(appName) ) continue;
+
                 const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
                 const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
                 const requestMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.requests?.memory || '0');

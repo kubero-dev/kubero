@@ -184,9 +184,18 @@ export default {
         },
         submitForm() {
             this.dialog = false;
+            const appName = this.$route.params.app;
 
             // replace the formfields with the form value
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+
+                // make sure every addon starts with the appname
+                if (value.name === 'metadata.name') {
+                    if (!value.default.startsWith(appName)) {
+                        value.default = appName+"-"+value.default
+                    }
+                }
+
                 set(this.selectedAddon.resourceDefinitions, field, value.default);
             });
 
