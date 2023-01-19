@@ -211,8 +211,10 @@ function normalizeAddonName(app: IApp) {
     app.addons.forEach((addon: any) => {
         console.log(addon);
         for (const key in addon.resourceDefinitions) {
-            if (addon.resourceDefinitions.hasOwnProperty(key)) {
-                const element = addon.resourceDefinitions[key];
+
+            const element = addon.resourceDefinitions[key];
+            if ( !element.metadata.name.startsWith(app.name + "-") ) {
+                console.log("renaming " + element.metadata.name + " to " + app.name + "-" + element.metadata.name);
                 element.metadata.name = app.name + "-" + element.metadata.name;
             }
         }
