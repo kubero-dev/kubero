@@ -169,7 +169,6 @@ export default {
             axios.get(`/api/addons`)
             .then(response => {
                 for (let addon of response.data) {
-                    console.log(addon);
                     if (addon.enabled) {
                         this.availableAddons.push({
                             text: addon.displayName,

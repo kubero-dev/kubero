@@ -772,7 +772,7 @@ export default {
     methods: {
       loadService(service) {
         axios.get('/api/services/'+service).then(response => {
-          console.log(response.data);
+
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;
           this.deploymentstrategy = response.data.deploymentstrategy;
