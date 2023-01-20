@@ -256,7 +256,8 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         addons: req.body.addons,
         resources: req.body.podsize.resources,
     };
-    normalizeAddonName(appconfig);
+    // WARNING: renaming the addon will cause dataloss !!!
+    //normalizeAddonName(appconfig);
 
     let app = new App(appconfig);
 

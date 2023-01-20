@@ -570,7 +570,7 @@
         </v-col>
       </v-row>
 
-      <Addons :addons="addons"/>
+      <Addons :addons="addons" :appname="appname"/>
 
       <!-- SUBMIT -->
       <v-row class="pt-5">

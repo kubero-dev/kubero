@@ -128,6 +128,10 @@ export default {
             type: Array,
             default: () => []
         },
+        appname: {
+            type: String,
+            default: ''
+        },
     },
     data: () => ({
         valid: false,
@@ -197,6 +201,12 @@ export default {
                 // Cast number fields to int
                 if (value.type === 'number') {
                     value.default = parseInt(value.default);
+                }
+
+                if (value.name === 'metadata.name') {
+                    if (!value.default.startsWith(this.appname)) {
+                        value.default = this.appname+"-"+value.default
+                    }
                 }
 
                 set(this.selectedAddon.resourceDefinitions, field, value.default);
