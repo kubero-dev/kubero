@@ -19,7 +19,7 @@
                             size="57"
                             rounded
                             ><img
-                            :src="'/img/addons/'+addon.kind+'.png'"
+                            :src="addon.icon"
                             :alt="addon.name"
                             ></v-avatar>
                         <v-card-title>
@@ -28,13 +28,16 @@
                                 color="blue"
                                 content="beta"
                                 >
-                            <a :href="addon.artifact_url">{{ addon.kind }}</a>
+                            <a :href="addon.artifact_url">{{ addon.displayName }}</a>
                             </v-badge>
+                            <a v-else :href="addon.artifact_url">{{ addon.displayName }}</a>
                         </v-card-title>
+                        <!--
                         <v-card-subtitle>
                             <span v-if="addon.enabled">{{ addon.version.installed }}</span>
                             <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
                         </v-card-subtitle>
+                        -->
                         <v-card-text>
                             {{ addon.description }}
                             <!--Operator: <a :href="addon.artifact_url">{{ addon.id }}</a>-->
@@ -59,7 +62,7 @@
             >
             <v-card>
                 <v-card-title class="text-h5">
-                    {{clickedAddon.display_name}} ({{clickedAddon.kind}})
+                    {{clickedAddon.displayName}} ({{clickedAddon.kind}})
                 </v-card-title>
                 <v-card-text>
                     {{clickedAddon.description}}

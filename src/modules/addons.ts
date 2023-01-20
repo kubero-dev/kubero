@@ -6,6 +6,13 @@ import { PostgresCluster } from '../addons/postgresCluster';
 import { RedisCluster } from '../addons/redisCluster';
 import { Redis } from '../addons/redis';
 //import { PerconaServerMongoDB } from '../addons/perconaServerMongoDB';
+import { KuberoMysql } from '../addons/kuberoMysql';
+import { KuberoRedis } from '../addons/kuberoRedis';
+import { KuberoPostgresql } from '../addons/kuberoPostgresql';
+import { KuberoMongoDB } from '../addons/kuberoMongoDB';
+import { KuberoElasticsearch } from '../addons/kuberoElasticsearch';
+import { KuberoCouchDB } from '../addons/kuberoCouchDB';
+import { KuberoKafka } from '../addons/kuberoKafka';
 import { MongoDB } from '../addons/mongoDB';
 import { Minio } from '../addons/minio';
 import { IPlugin } from '../addons/plugin';
@@ -41,6 +48,7 @@ export interface IAddon {
     name: string,
     CRDkind: string,
     icon: string,
+    displayName: string,
     version: string
     plural: string;
     description?: string,
@@ -56,8 +64,8 @@ interface IUniqueAddons {
 export class Addons {
     private kubectl: Kubectl;
     private operatorsAvailable: string[] = [];
-    public addonsList: IPlugin[] = []
-    private operatorsList: any;
+    public addonsList: IPlugin[] = [] // List or possibly installed operators
+    private CRDList: any; //List of installed CRDs from kubectl
 
     constructor(
         options: AddonOptions
@@ -67,21 +75,42 @@ export class Addons {
 
     public async loadOperators(): Promise<void> {
 
-        this.operatorsList = await this.kubectl.getOperators()
+        this.CRDList = await this.kubectl.getCustomresources()
 
-        const postgresCluster = new PostgresCluster(this.operatorsList)
+        const kuberoMysql = new KuberoMysql(this.CRDList)
+        this.addonsList.push(kuberoMysql)
+
+        const kuberoRedis = new KuberoRedis(this.CRDList)
+        this.addonsList.push(kuberoRedis)
+
+        const kuberoPostgresql = new KuberoPostgresql(this.CRDList)
+        this.addonsList.push(kuberoPostgresql)
+
+        const kuberoMongoDB = new KuberoMongoDB(this.CRDList)
+        this.addonsList.push(kuberoMongoDB)
+
+        const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList)
+        this.addonsList.push(kuberoElasticsearch)
+
+        const kuberoCouchDB = new KuberoCouchDB(this.CRDList)
+        this.addonsList.push(kuberoCouchDB)
+
+        const kuberoKafka = new KuberoKafka(this.CRDList)
+        this.addonsList.push(kuberoKafka)
+
+        const postgresCluster = new PostgresCluster(this.CRDList)
         this.addonsList.push(postgresCluster)
 
-        const redisCluster = new RedisCluster(this.operatorsList)
+        const redisCluster = new RedisCluster(this.CRDList)
         this.addonsList.push(redisCluster)
 
-        const redis = new Redis(this.operatorsList)
+        const redis = new Redis(this.CRDList)
         this.addonsList.push(redis)
 
-        const mongoDB = new MongoDB(this.operatorsList)
+        const mongoDB = new MongoDB(this.CRDList)
         this.addonsList.push(mongoDB)
 
-        const minio = new Minio(this.operatorsList)
+        const minio = new Minio(this.CRDList)
         this.addonsList.push(minio)
     }
 

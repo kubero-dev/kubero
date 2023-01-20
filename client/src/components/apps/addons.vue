@@ -1,4 +1,5 @@
 <template>
+  <v-form v-model="valid">
   <v-row>
     <v-dialog
       v-model="dialog"
@@ -40,16 +41,33 @@
               <v-col cols="12">
                 <v-text-field
                 label="Instance Name"
+                :rules="baseRule"
                 v-model="selectedAddon.id"
                 outlined
                 ></v-text-field>
               </v-col>
 
               <v-col cols="12" v-for="field in selectedAddon.formfields" v-bind:key="field.name">
+                <v-select
+                    v-if="field.type === 'select-storageclass'"
+                    :items="availableStorageClasses"
+                    :label="field.label"
+                    :rules="baseSelectRule"
+                    dense
+                    v-model="field.default"
+                ></v-select>
+                <v-select
+                    v-if="field.type === 'select'"
+                    :items="field.options"
+                    :label="field.label"
+                    dense
+                    v-model="field.default"
+                ></v-select>
                 <v-text-field
                     v-if="field.type === 'text'"
                     v-model="field.default"
                     :label="field.label"
+                    :rules="field.required ? baseRule : []"
                     :required="field.required"
                     dense
                 ></v-text-field>
@@ -57,12 +75,14 @@
                     v-if="field.type === 'number'"
                     v-model="field.default"
                     :label="field.label"
+                    :rules="field.required ? baseRule : []"
                     :required="field.required"
                     dense
                     type="number"
                 ></v-text-field>
                 <v-switch
                     v-model="field.default"
+                    :rules="field.required ? baseRule : []"
                     v-if="field.type === 'switch'"
                     :label="field.label"
                     :required="field.required"
@@ -86,6 +106,7 @@
           <v-btn
             color="blue darken-1"
             text
+            :disabled="!valid"
             @click="submitForm"
           >
             Save
@@ -94,6 +115,7 @@
       </v-card>
     </v-dialog>
   </v-row>
+  </v-form>
 </template>
 
 
@@ -105,10 +127,16 @@ export default {
         addons: {
             type: Array,
             default: () => []
-        }
+        },
+        appname: {
+            type: String,
+            default: ''
+        },
     },
     data: () => ({
+        valid: false,
         dialog: false,
+        availableStorageClasses: [],
         availableAddons: [],
         selectedAddon: {
             id: '',
@@ -118,19 +146,43 @@ export default {
             formfields: {},
             resourceDefinitions: {}
         },
+        baseRule: [
+          v => !!v || 'Field is required',
+        ],
+        baseSelectRule: [
+          v => v!=='default' || 'Select a value',
+        ],
     }),
     mounted() {
+        this.loadStorageClasses();
         this.loadAddons();
     },
     methods: {
+        loadStorageClasses() {
+            axios.get(`/api/config/storageclasses`)
+            .then(response => {
+                for (let storageClass of response.data) {
+                    this.availableStorageClasses.push({
+                        text: storageClass.name,
+                        value: storageClass.name
+                    });
+                }
+                console.log(this.availableStorageClasses);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         loadAddons() {
             axios.get(`/api/addons`)
             .then(response => {
                 for (let addon of response.data) {
-                    this.availableAddons.push({
-                        text: addon.kind,
-                        value: addon
-                    });
+                    if (addon.enabled) {
+                        this.availableAddons.push({
+                            text: addon.displayName,
+                            value: addon
+                        });
+                    }
                 }
             })
             .catch(error => {
@@ -145,6 +197,18 @@ export default {
 
             // replace the formfields with the form value
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+
+                // Cast number fields to int
+                if (value.type === 'number') {
+                    value.default = parseInt(value.default);
+                }
+
+                if (value.name === 'metadata.name') {
+                    if (!value.default.startsWith(this.appname)) {
+                        value.default = this.appname+"-"+value.default
+                    }
+                }
+
                 set(this.selectedAddon.resourceDefinitions, field, value.default);
             });
 
@@ -153,6 +217,8 @@ export default {
                 kind: this.selectedAddon.kind,
                 version: this.selectedAddon.version,
                 env: this.selectedAddon.env,
+                icon: this.selectedAddon.icon,
+                displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
             this.$emit('addon-added', addon);

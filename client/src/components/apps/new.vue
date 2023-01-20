@@ -378,7 +378,6 @@
             <v-text-field
               v-model="volume.name"
               label="name"
-              :readonly="app!='new'"
             ></v-text-field>
           </v-col>
           <v-col
@@ -388,7 +387,6 @@
             <v-text-field
               v-model="volume.size"
               label="size"
-              :readonly="app!='new'"
             ></v-text-field>
           </v-col>
           <v-col
@@ -417,7 +415,6 @@
               v-model="volume.storageClass"
               :items="storageclasses"
               label="Storage Class"
-              :readonly="app!='new'"
             ></v-select>
           </v-col>
           <v-col
@@ -533,9 +530,9 @@
 
       <v-divider class="ma-5"></v-divider>
       <!-- ADDONS -->
-      <h4 class="text-uppercase">Addons</h4>
+      <h4 class="text-uppercase pb-3">Addons</h4>
       <v-row>
-        <v-col v-for="addon in addons" v-bind:key="addon.id"
+        <v-col v-for="addon in addons" v-bind:key="addon.kind"
           cols="12"
           md="2"
         >
@@ -547,11 +544,11 @@
                   size="57"
                   rounded
                 ><img
-                :src="'/img/addons/'+addon.kind+'.png'"
-                :alt="addon.name"
+                :src="addon.icon"
+                :alt="addon.displayName"
                 >
                 </v-avatar>
-                <h3>{{ addon.name }}</h3>
+                <h3>{{ addon.displayName }}</h3>
                 <p class="text-caption mt-1">
                   {{ addon.version.installed }}
                 </p>
@@ -573,10 +570,10 @@
         </v-col>
       </v-row>
 
-      <Addons :addons="addons"/>
+      <Addons :addons="addons" :appname="appname"/>
 
       <!-- SUBMIT -->
-      <v-row>
+      <v-row class="pt-5">
         <v-col
           cols="12"
           md="4"
@@ -761,6 +758,9 @@ export default {
       }
     },
     mounted() {
+      if (this.$route.query.service) {
+        this.loadService(this.$route.query.service);
+      }
       this.loadStorageClasses();
       this.loadPipeline();
       this.loadPodsizeList();
@@ -770,6 +770,29 @@ export default {
         Addons,
     },
     methods: {
+      loadService(service) {
+        axios.get('/api/services/'+service).then(response => {
+
+          this.appname = response.data.name;
+          this.containerPort = response.data.image.containerPort;
+          this.deploymentstrategy = response.data.deploymentstrategy;
+
+          if (response.data.deploymentstrategy == 'git') {
+            this.deploymentstrategyGit = true;
+            this.gitrepo.ssh_url = response.data.git.repository.ssh_url;
+            this.branch = response.data.git.branch;
+          } else {
+            this.deploymentstrategyGit = false;
+            this.docker.image = response.data.image.repository;
+            this.docker.tag = response.data.image.tag;
+          }
+
+          this.envvars = response.data.envVars;
+          this.extraVolumes = response.data.extraVolumes;
+          this.cronjobs = response.data.cronjobs;
+          this.addons = response.data.addons;
+        });
+      },
       changeName(name) {
         this.domain = name+"."+this.pipelineData.domain;
       },
@@ -852,7 +875,7 @@ export default {
       deleteAddon(addon) {
           // remove addon from local view and kuberoapp yaml
           for (let i = 0; i < this.addons.length; i++) {
-            if (this.addons[i].id == addon.id) {
+            if (this.addons[i].kind == addon.kind) {
               this.addons.splice(i, 1);
               break;
             }

@@ -328,6 +328,25 @@ export class Kubectl {
         return operators.items;
     }
 
+    public async getCustomresources() {
+        // TODO list operators from all clusters
+        let operators = { items: [] };
+        try {
+            let response = await this.customObjectsApi.listClusterCustomObject(
+                'apiextensions.k8s.io',
+                'v1',
+                'customresourcedefinitions'
+            )
+            //let operators = response.body as KubernetesListObject<KubernetesObject>;
+            operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work
+        } catch (error) {
+            debug.log(error);
+            debug.log("error getting customresources");
+        }
+
+        return operators.items;
+    }
+
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;
@@ -378,7 +397,7 @@ export class Kubectl {
         return events.body.items;
     }
 
-    public async getPodMetrics(namespace: string): Promise<any> { //TODO make this a real type
+    public async getPodMetrics(namespace: string, appName: string): Promise<any> { //TODO make this a real type
         const ret = [];
 
         try {
@@ -386,6 +405,9 @@ export class Kubectl {
 
             for (let i = 0; i < metrics.items.length; i++) {
                 const metric = metrics.items[i];
+
+                if ( !metric.metadata.name.startsWith(appName+"-") ) continue;
+
                 const pod = await this.coreV1Api.readNamespacedPod(metric.metadata.name, namespace);
                 const requestCPU = this.normalizeCPU(pod.body.spec?.containers[0].resources?.requests?.cpu || '0');
                 const requestMemory = this.normalizeMemory(pod.body.spec?.containers[0].resources?.requests?.memory || '0');

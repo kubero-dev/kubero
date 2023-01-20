@@ -698,7 +698,7 @@ export class Kubero {
 
     public getPodMetrics(pipelineName: string, phaseName: string, appName: string) {
         const namespace = pipelineName+'-'+phaseName;
-        return this.kubectl.getPodMetrics(namespace);
+        return this.kubectl.getPodMetrics(namespace, appName);
     }
 
     public getNodeMetrics() {
