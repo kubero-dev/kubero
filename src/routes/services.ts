@@ -16,7 +16,7 @@ Router.get('/services', authMiddleware, async function (req: Request, res: Respo
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get all services'
 
-    axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/serivces/index.yaml')
+    axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/services/index.yaml')
 });
 
 
@@ -27,7 +27,7 @@ Router.get('/services/:name', authMiddleware, async function (req: Request, res:
 
     const serviceName = req.params.name.replace(/[^\w.]+/g, '');
 
-    const service = await axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/serivces/' + serviceName + '/app.yaml')
+    const service = await axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/services/' + serviceName + '/app.yaml')
     .catch((err) => {
         res
             .status(500)
