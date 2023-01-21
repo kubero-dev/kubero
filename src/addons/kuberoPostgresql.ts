@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class KuberoPostgresql extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
     public displayName = 'Kubero Postgresql'
-    public icon = '/img/addons/Postgresql.png'
+    public icon = '/img/addons/postgresql.png'
     public install: string = ''
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator'
     public beta: boolean = false;

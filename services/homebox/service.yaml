@@ -1,0 +1,8 @@
+name: homebox
+description: 'Homebox is the inventory and organization system built for the Home User'
+tags:
+- Search
+source: https://github.com/hay-kot/homebox
+website: hay-kot.github.io/homebox/
+icon: https://raw.githubusercontent.com/hay-kot/homebox/main/docs/docs/assets/img/lilbox.svg
+screenshots:

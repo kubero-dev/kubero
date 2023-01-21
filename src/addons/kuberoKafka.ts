@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class KuberoKafka extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
     public displayName = 'Kubero Kafka'
-    public icon = '/img/addons/kafka.png'
+    public icon = '/img/addons/Kafka.png'
     public install: string = ''
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator'
     public beta: boolean = false;
