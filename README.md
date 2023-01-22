@@ -32,12 +32,12 @@ Kubero is Kubernetes native and runs on any Kubernetes instance.
 
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea
-- Forgejo (WIP)
-- OneDev (WIP)
 - Gogs
 - Github
 - Gitlab
 - Bitbucket
+- Forgejo (WIP)
+- OneDev (WIP)
 
 ## Tested languages/frameworks
 Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -53,6 +53,20 @@ Basicly *everything* that can be shipped in a single container. Kubero uses offi
 
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
+
+## Preconfigured addons
+- MySQL
+- PostgreSQL
+- Redis
+- MongoDB
+- Elasticsearch
+- Kafka
+- Memcached
+- CouchDB
+- RabbitMQ (WIP, ~v1.8.0)
+- Minio (WIP, ~v1.8.0)
+- InfluxDB (WIP, ~v1.8.0)
+- CockroachDB (WIP)
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
