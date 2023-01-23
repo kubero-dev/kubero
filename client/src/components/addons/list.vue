@@ -28,9 +28,9 @@
                                 color="blue"
                                 content="beta"
                                 >
-                            <a :href="addon.artifact_url">{{ addon.displayName }}</a>
+                            <a :href="addon.url">{{ addon.displayName }}</a>
                             </v-badge>
-                            <a v-else :href="addon.artifact_url">{{ addon.displayName }}</a>
+                            <a v-else :href="addon.url">{{ addon.displayName }}</a>
                         </v-card-title>
                         <!--
                         <v-card-subtitle>
@@ -40,7 +40,7 @@
                         -->
                         <v-card-text>
                             {{ addon.description }}
-                            <!--Operator: <a :href="addon.artifact_url">{{ addon.id }}</a>-->
+                            <!--Operator: <a :href="addon.url">{{ addon.id }}</a>-->
                         </v-card-text>
                     </v-list-item-content>
                 </v-card>

@@ -3,9 +3,15 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class PostgresCluster extends Plugin implements IPlugin {
     public id: string = 'postgresoperator';//same as operator name
-    public displayName = 'Crunchbase Postgres Cluster'
+    public displayName = 'Crunchy Postgres Cluster'
     public icon = '/img/addons/postgresql.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/v5/postgresql.yaml'
+    public url = 'https://artifacthub.io/packages/olm/community-operators/postgresql'
+    public docs = [
+        {
+            title: 'Kubero Docs', url: ''
+        }
+    ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql'
     public beta: boolean = true;
 

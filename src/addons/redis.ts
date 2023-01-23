@@ -4,9 +4,15 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class Redis extends Plugin implements IPlugin {
     public id: string = 'redis-operator';//same as operator name
-    public displayName = 'Redis'
+    public displayName = 'Opstree Redis'
     public icon = '/img/addons/Redis.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml'
+    public url = 'https://artifacthub.io/packages/olm/community-operators/redis-operator'
+    public docs = [
+        {
+            title: 'Kubero Docs', url: ''
+        }
+    ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/redis-operator'
     public beta: boolean = true;
 
