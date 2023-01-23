@@ -6,6 +6,12 @@ export class Minio extends Plugin implements IPlugin {
     public displayName = 'Minio'
     public icon = '/img/addons/Minio.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/stable/minio-operator.yaml -n operators'
+    public url = 'https://artifacthub.io/packages/olm/community-operators/minio-operator'
+    public docs = [
+        {
+            title: 'Kubero Docs', url: ''
+        }
+    ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/minio-operator'
     public beta: boolean = true;
 

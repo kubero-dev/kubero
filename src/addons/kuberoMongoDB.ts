@@ -6,6 +6,12 @@ export class KuberoMongoDB extends Plugin implements IPlugin {
     public displayName = 'Kubero MongoDB'
     public icon = '/img/addons/MongoDB.png'
     public install: string = ''
+    public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'
+    public docs = [
+        {
+            title: 'Kubero Docs', url: ''
+        }
+    ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator'
     public beta: boolean = false;
 

@@ -6,6 +6,12 @@ export class MongoDB extends Plugin implements IPlugin {
     public displayName = 'Percona MongoDB'
     public icon = '/img/addons/MongoDB.png'
     public install: string = 'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml'
+    public url = 'https://artifacthub.io/packages/olm/community-operators/mongodb-operator'
+    public docs = [
+        {
+            title: 'Kubero Docs', url: ''
+        }
+    ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/community-operators/mongodb-operator'
     public beta: boolean = true;
 
