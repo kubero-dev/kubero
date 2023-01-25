@@ -22,7 +22,7 @@ spec:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /home/node/trilium-data
-    name: example-volume
+    name: trilium-data
     size: 1Gi
     storageClass: standard
   fullnameOverride: ""

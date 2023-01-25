@@ -6,51 +6,18 @@ metadata:
   name: memos
 spec:
   name: memos
-  phase: production
-  pipeline: asdf
-  autoscale: false
-  buildpack: custom
   deploymentstrategy: docker
   domain: memos.lacolhost.com
-  replicaCount: 1
   image:
-    pullPolicy: Always
     repository: neosmemo/memos
     tag: latest
+    containerPort: "5230"
   ingress:
-    annotations: {}
-    className: ""
-    enabled: true
     hosts:
     - host: memos.lacolhost.com
       paths:
       - path: /
         pathType: ImplementationSpecific
-    tls: []
-  resources:
-    limits:
-      cpu: 500m
-      memory: 1Gi
-    requests:
-      cpu: 250m
-      memory: 0.5Gi
-  service:
-    port: 80
-    type: ClusterIP
-  web:
-    autoscaling:
-      maxReplicas: 3
-      minReplicas: 1
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
-    replicaCount: 1
-  worker:
-    autoscaling:
-      maxReplicas: 0
-      minReplicas: 0
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
-    replicaCount: 0
   addons: []
   envVars: []
   cronjobs: []
@@ -62,3 +29,7 @@ spec:
     name: memos-data
     size: 1Gi
     storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
