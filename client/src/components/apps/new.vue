@@ -228,7 +228,7 @@
 
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Environment vars</v-expansion-panel-header>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Environment Variables</v-expansion-panel-header>
         <v-expansion-panel-content>
           <v-row v-for="variable in envvars" v-bind:key="variable.id">
             <v-col
@@ -647,7 +647,7 @@ export default {
       }
     },
     data: () => ({
-      panel: [0, 2],
+      panel: [0],
       valid: false,
       buildpack: {
         run: {
@@ -920,6 +920,17 @@ export default {
               this.ssl = true;
             } else {
               this.ssl = false;
+            }
+
+            // Open Panel if there is some data to show
+            if (response.data.spec.envVars.length > 0) {
+              this.panel.push(1)
+            }
+            if (response.data.spec.extraVolumes.length > 0) {
+              this.panel.push(3)
+            }
+            if (response.data.spec.cronjobs.length > 0) {
+              this.panel.push(4)
             }
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
