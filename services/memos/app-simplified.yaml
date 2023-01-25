@@ -1,8 +1,6 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-  labels:
-    manager: kubero
   name: memos
 spec:
   name: memos
