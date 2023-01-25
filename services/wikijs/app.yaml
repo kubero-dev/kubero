@@ -1,25 +1,28 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-  labels:
-    manager: kubero
   name: wikijs
 spec:
-  addons: []
-  affinity: {}
-  autodeploy: true
-  autoscale: false
-  autoscaling:
-    enabled: false
-  branch: main
-  cronjobs: []
-  deploymentstrategy: docker
+  name: wikijs
   domain: wikijs.lacolhost.com
+  deploymentstrategy: docker
+  image:
+    repository: ghcr.io/requarks/wiki
+    tag: latest
+    containerPort: "3000"
+  ingress:
+    hosts:
+    - host: wikijs.lacolhost.com
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  addons: []
   envVars:
   - name: DB_TYPE
     value: sqlite
   - name: DB_FILEPATH
     value: /wiki/data/wikisj.db
+  cronjobs: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -28,94 +31,7 @@ spec:
     name: wikijs-data
     size: 1Gi
     storageClass: standard
-  fullnameOverride: ""
-  gitrepo:
-    admin: true
-    clone_url: https://github.com/kubero-dev/template-nodeapp.git
-    default_branch: main
-    description: Simple example Node app
-    homepage: ""
-    id: 501665730
-    language: JavaScript
-    name: template-nodeapp
-    node_id: R_kgDOHebPwg
-    owner: kubero-dev
-    private: false
-    push: true
-    ssh_url: git@github.com:kubero-dev/template-nodeapp.git
-    visibility: public
-  image:
-    build:
-      command: npm install
-      repository: node
-      tag: latest
-    containerPort: "3000"
-    fetch:
-      repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
-    pullPolicy: Always
-    repository: ghcr.io/requarks/wiki
-    run:
-      command: node index.js
-      repository: node
-      tag: latest
-    tag: latest
-  imagePullSecrets: []
-  ingress:
-    annotations: {}
-    className: ""
-    enabled: true
-    hosts:
-    - host: wikijs.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
-    tls: []
-  name: wikijs
-  nameOverride: ""
-  nodeSelector: {}
-  phase: stage
-  pipeline: asdf
-  podAnnotations: {}
-  podSecurityContext: {}
-  podsize:
-    default: true
-    description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
-    name: small
-    resources:
-      limits:
-        cpu: 500m
-        memory: 1Gi
-      requests:
-        cpu: 250m
-        memory: 0.5Gi
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 500m
-      memory: 1Gi
-    requests:
-      cpu: 250m
-      memory: 0.5Gi
-  service:
-    port: 80
-    type: ClusterIP
-  serviceAccount:
-    annotations: {}
-    create: true
-    name: ""
-  tolerations: []
   web:
-    autoscaling:
-      maxReplicas: 3
-      minReplicas: 1
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
     replicaCount: 1
   worker:
-    autoscaling:
-      maxReplicas: 0
-      minReplicas: 0
-      targetCPUUtilizationPercentage: 80
-      targetMemoryUtilizationPercentage: 80
     replicaCount: 0
