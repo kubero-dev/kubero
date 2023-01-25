@@ -6,8 +6,8 @@ metadata:
   name: memos
 spec:
   name: memos
-  deploymentstrategy: docker
   domain: memos.lacolhost.com
+  deploymentstrategy: docker
   image:
     repository: neosmemo/memos
     tag: latest
