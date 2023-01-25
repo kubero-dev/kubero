@@ -100,8 +100,8 @@
       >
       <!-- DEPLOYMENT -->
       <v-expansion-panel v-if="appDeploymentStrategy == 'git'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">GitOps Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium" color="#fafafa">GitOps Deployment</v-expansion-panel-header>
+        <v-expansion-panel-content color="#fafafa">
 <!--
           <v-row>
             <v-col
@@ -1139,4 +1139,10 @@ export default {
 </script>
 
 <style lang="scss">
+.v-expansion-panel-content {
+    background: #fafafa;
+}
+.v-expansion-panel-header {
+    background: #fafafa;
+}
 </style>
