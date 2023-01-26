@@ -1,0 +1,8 @@
+name: wikijs
+description: 'Wiki.js is a modern, lightweight and powerful wiki app built on Node.js, Git and Markdown.'
+tags:
+- wiki
+source: https://github.com/Requarks/wiki
+website: https://js.wiki/
+icon: https://github.com/requarks/wiki/blob/main/client/static/favicons/android-chrome-256x256.png
+screenshots:
