@@ -8,15 +8,17 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
 
 <br>
-Kubero is a Internal Developer Platform (IDP) that brings the convenience of Heroku to your Kubernetes cluster. Your developers should not need to worry about the underlying infrastructure or deployment. It enables you to deploy your applications with a few clicks. It also provides a dashboard and CLI to manage your applications.
+Kubero is a fully self-hosted Internal Developer Platform (IDP) that brings the convenience of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
 <br>
 <br>
-Kubero is Kubernetes native and runs on any Kubernetes instance.
+Kubero is Kubernetes native and runs with two containers on any Kubernetes instance.
 <br>
 <br>
 
+<img src="docs/img/highlevel.png">
+
 ## What can Kubero do for you?
-- Create a CI pipeline with up to 4 separate environments for all your applications: review apps -> testing -> stageing -> production
+- Create a CI pipeline with up to 4 separate staging environments for all your applications
 - Build, start and cleanup review-apps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create scheduled tasks (cronjobs)
@@ -74,7 +76,8 @@ https://github.com/kubero-dev/buildpacks
 
 ## Usage
 <a href="https://github.com/kubero-dev/kubero/tree/main/docs/2screenshots.md">Screenshots</a><p>
-<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank"><img src="docs/screenshots/youtube-screen.png"></a>
+<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
+<img src="docs/screenshots/createapp.gif">
 
 1. Create a pipeline with all your phases
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
