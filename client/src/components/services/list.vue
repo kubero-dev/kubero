@@ -7,11 +7,11 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" sm="12" md="4"
-            v-for="addon in addons" :key="addon.kind">
+            <v-col cols="12" sm="12" md="3"
+            v-for="addon in services.services" :key="addon.name">
                 <v-card
-                    :disabled="!addon.enabled"
                     style="padding-bottom: 40px;"
+                    height="280px"
                     color="#fafafa">
                     <v-list-item-content class="justify-center">
 
@@ -28,9 +28,9 @@
                                 color="blue"
                                 content="beta"
                                 >
-                            <a :href="addon.url">{{ addon.displayName }}</a>
+                            <a :href="addon.url">{{ addon.name }}</a>
                             </v-badge>
-                            <a v-else :href="addon.url">{{ addon.displayName }}</a>
+                            <a v-else :href="addon.url">{{ addon.name }}</a>
                         </v-card-title>
                         <!--
                         <v-card-subtitle>
@@ -51,7 +51,7 @@
                     dark
                     @click="openInstallDialog(addon)"
                     >
-                    Installation
+                    Install
                 </v-btn>
                 </div>
             </v-col>
@@ -105,10 +105,10 @@ export default {
     sockets: {
     },
     mounted() {
-        this.loadAddonsList();
+        this.loadServicesList();
     },
     data: () => ({
-        addons: [],
+        services: [],
         dialog: false,
         clickedAddon: {},
     }),
@@ -127,11 +127,11 @@ export default {
             this.clickedAddon = addon;
             this.dialog = true;
         },
-        loadAddonsList() {
+        loadServicesList() {
             const self = this;
-            axios.get(`/api/addons`)
+            axios.get(`https://services.kubero.dev`)
             .then(response => {
-                self.addons = response.data;
+                self.services = response.data;
             })
             .catch(error => {
                 console.log(error);

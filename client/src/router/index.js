@@ -71,7 +71,7 @@ export default new VueRouter({
       path: "/events",
       name: "Events",
       component: EventsView
-    },,
+    },
     {
       path: "/services",
       name: "Services",
