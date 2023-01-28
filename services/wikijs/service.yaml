@@ -4,5 +4,5 @@ tags:
 - wiki
 source: https://github.com/Requarks/wiki
 website: https://js.wiki/
-icon: https://github.com/requarks/wiki/blob/main/client/static/favicons/android-chrome-256x256.png
+icon: https://raw.githubusercontent.com/requarks/wiki/main/client/static/favicons/android-chrome-256x256.png
 screenshots:

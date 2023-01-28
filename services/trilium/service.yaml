@@ -6,6 +6,6 @@ tags:
 - knowledge base
 source: https://github.com/zadam/trilium
 website: https://github.com/zadam/trilium
-icon: https://github.com/zadam/trilium/blob/master/images/app-icons/png/256x256.png
+icon: https://raw.githubusercontent.com/zadam/trilium/master/images/app-icons/png/256x256.png
 screenshots:
 - https://raw.githubusercontent.com/wiki/zadam/trilium/images/screenshot.png
