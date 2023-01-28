@@ -4,7 +4,7 @@ tags:
 - bookmark manager
 source: https://github.com/go-shiori/shiori
 website: https://github.com/go-shiori/shiori
-icon: https://github.com/go-shiori/shiori/blob/master/internal/view/res/apple-touch-icon-152x152.png
+icon: https://raw.githubusercontent.com/go-shiori/shiori/master/internal/view/res/apple-touch-icon-152x152.png
 screenshots:
 - https://raw.githubusercontent.com/go-shiori/shiori/master/docs/readme/cover.png
 - https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/02-home.png
