@@ -424,7 +424,7 @@
             <v-row>
               <v-col
                 cols="12"
-                md="3"
+                md="2"
               >
                 <v-select
                   v-model="volume.storageClass"
@@ -440,6 +440,17 @@
                   v-model="volume.mountPath"
                   label="Mount Path"
                 ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-switch
+                  v-model="volume.accessModes[0]"
+                  label="Read/Write Many"
+                  true-value="ReadWriteMany"
+                  false-value="ReadWriteOnce"
+                ></v-switch>
               </v-col>
             </v-row>
           </div>
@@ -1109,7 +1120,7 @@ export default {
           storageClass: 'standard',
           size: '1Gi',
           accessModes: [
-            'ReadWriteOnce',
+            'ReadWriteMany',
           ],
           mountPath: '/example/path',
         });
