@@ -1,5 +1,5 @@
 name: wordpress
-description: 'WordPress is a free and open-source content management system written in hypertext preprocessor language and paired with a MySQL or MariaDB database with supported HTTPS.'
+description: 'WordPress is a free and open-source content management system written in hypertext preprocessor language.'
 tags:
 - Search
 source: https://github.com/WordPress/WordPress
