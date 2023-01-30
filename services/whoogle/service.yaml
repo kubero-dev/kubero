@@ -4,7 +4,8 @@ tags:
 - Search
 source: https://github.com/benbusby/whoogle-search
 website: https://github.com/benbusby/whoogle-search
-icon: https://www.freeiconspng.com/uploads/question-answer-icon-14.png
+#icon: https://www.freeiconspng.com/uploads/question-answer-icon-14.png
+icon: https://preview.redd.it/4alqumb2xqi81.png?width=192&format=png&auto=webp&s=05f078627d3b9d7f1f82e002d5388efc6ee3c63a
 screenshots:
 - https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.png
 - https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.png
