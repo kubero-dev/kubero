@@ -811,6 +811,18 @@ export default {
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
+
+
+          // Open Panel if there is some data to show
+          if (this.envvars.length > 0) {
+            this.panel.push(1)
+          }
+          if (this.extraVolumes.length > 0) {
+            this.panel.push(3)
+          }
+          if (this.cronjobs.length > 0) {
+            this.panel.push(4)
+          }
         });
       },
       changeName(name) {

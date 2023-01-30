@@ -23,14 +23,7 @@
                             :alt="addon.name"
                             ></v-avatar>
                         <v-card-title>
-                            <v-badge
-                                v-if="addon.spdx_idxxx"
-                                color="blue"
-                                :content=addon.spdx_id
-                                >
-                            <a :href="addon.website">{{ addon.name }}</a>
-                            </v-badge>
-                            <a v-else :href="addon.website">{{ addon.name }}</a>
+                            <a :href="addon.website" target="_blank">{{ addon.name }}</a>
                         </v-card-title>
 
                         <v-card-subtitle>
@@ -61,7 +54,7 @@
                     dark
                     @click="openInstallDialog(addon)"
                     >
-                    Install
+                    details
                 </v-btn>
                 </div>
             </v-col>
@@ -77,8 +70,8 @@
                 <v-card-text>
                     {{clickedAddon.description}}
                 </v-card-text>
-                <v-card-text>
-                    <v-carousel v-if="clickedAddon.screenshots && clickedAddon.screenshots.length > 0">
+                <v-card-text v-if="clickedAddon.screenshots && clickedAddon.screenshots.length > 0">
+                    <v-carousel>
                         <v-carousel-item
                         v-for="(screenshot, i) in clickedAddon.screenshots"
                         :key="i"
@@ -86,7 +79,26 @@
                         >
                         </v-carousel-item>
                     </v-carousel>
-
+                </v-card-text>
+                <v-card-text>
+                    <v-select
+                        :items="pipelines"
+                        label="Pipeline"
+                        v-model="pipeline"
+                    ></v-select>
+                    <v-select
+                        :items="phases[pipeline]"
+                        label="Phase"
+                        v-model="phase"
+                    ></v-select>
+                    <v-btn
+                        color="primary"
+                        dark
+                        :disabled="!pipeline || !phase"
+                        @click="openInstall(clickedAddon.name, pipeline, phase)"
+                        >
+                        Install
+                    </v-btn>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -101,8 +113,13 @@ export default {
     },
     mounted() {
         this.loadServicesList();
+        this.loadPipelinesList();
     },
     data: () => ({
+        pipeline: undefined,
+        phase: undefined,
+        pipelines: [],
+        phases: {},
         services: [],
         dialog: false,
         clickedAddon: {},
@@ -118,6 +135,12 @@ export default {
             }
             this.dialog = false;
         },
+        openInstall(servicename, pipeline, phase) {
+            // redirect to install page
+            console.log(`/#/pipeline/${pipeline}/${phase}/apps/new?service=${servicename}`);
+            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?service=${servicename}`;
+
+        },
         openInstallDialog(addon) {
             this.clickedAddon = addon;
             this.dialog = true;
@@ -127,6 +150,28 @@ export default {
             axios.get(`https://services.kubero.dev`)
             .then(response => {
                 self.services = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+        loadPipelinesList() {
+            const self = this;
+            axios.get(`/api/pipelines`)
+            .then(response => {
+                for (let i = 0; i < response.data.items.length; i++) {
+                    const pipeline = response.data.items[i];
+                    let p = [];
+                    for (let j = 0; j < pipeline.phases.length; j++) {
+                        const phase = pipeline.phases[j];
+                        if (phase.enabled == true) {
+                            p.push(phase.name);
+                        }
+                    }
+                    self.pipelines.push(pipeline.name);
+                    self.phases[pipeline.name] = p;
+
+                }
             })
             .catch(error => {
                 console.log(error);
