@@ -95,7 +95,7 @@
                         color="primary"
                         dark
                         :disabled="!pipeline || !phase"
-                        @click="openInstall(clickedAddon.name, pipeline, phase)"
+                        @click="openInstall(clickedAddon.dirname, pipeline, phase)"
                         >
                         Install
                     </v-btn>
