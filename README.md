@@ -84,13 +84,13 @@ https://github.com/kubero-dev/buildpacks
 3. Create your apps with cronjobs and addons
 
 ## Documentation
-https://github.com/kubero-dev/kubero/wiki
+https://docs.kubero.dev/
 
 ## Roadmap
 https://github.com/orgs/kubero-dev/projects/1/views/3
 
 ## Community
-<a href="https://discord.gg/tafRPMWS4r" target="_blank"><img src="docs/logo/discord.svg" width="200px"></a>
+[![kubero Discord server Banner](https://discordapp.com/api/guilds/1051249947472826408/widget.png?style=banner2)](https://discord.gg/tafRPMWS4r)
 
 ## Contributing
 All contributions are welcome!

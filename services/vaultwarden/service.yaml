@@ -1,5 +1,5 @@
-name: vaultwarden
-description: 'A Bitwarden compatible server written in Rust. '
+name: Vaultwarden
+description: 'A Bitwarden compatible paswordsafe server written in Rust. '
 tags:
 - password manager
 - password storage
