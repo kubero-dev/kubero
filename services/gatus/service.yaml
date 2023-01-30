@@ -1,5 +1,5 @@
 name: gatus
-description: 'Gatus is a highly configurable service that allows you to monitor the availability and latency of your services and expose this information through a REST API and a beautiful dashboard.'
+description: 'Gatus is a service that allows you to monitor the availability and latency of your services and expose this information a beautiful dashboard.'
 tags:
 - monitoring
 source: https://github.com/TwiN/gatus
