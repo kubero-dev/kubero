@@ -11,7 +11,7 @@
             v-for="addon in services.services" :key="addon.name">
                 <v-card
                     style="padding-bottom: 40px;"
-                    height="280px"
+                    height="320px"
                     color="#fafafa">
                     <v-list-item-content class="justify-center">
 
@@ -24,20 +24,30 @@
                             ></v-avatar>
                         <v-card-title>
                             <v-badge
-                                v-if="addon.beta"
+                                v-if="addon.spdx_idxxx"
                                 color="blue"
-                                content="beta"
+                                :content=addon.spdx_id
                                 >
-                            <a :href="addon.url">{{ addon.name }}</a>
+                            <a :href="addon.website">{{ addon.name }}</a>
                             </v-badge>
-                            <a v-else :href="addon.url">{{ addon.name }}</a>
+                            <a v-else :href="addon.website">{{ addon.name }}</a>
                         </v-card-title>
-                        <!--
+
                         <v-card-subtitle>
-                            <span v-if="addon.enabled">{{ addon.version.installed }}</span>
-                            <span v-if="!addon.enabled">{{ addon.version.latest }}</span>
+                            <v-chip
+                                color="#ddd"
+                                label
+                                small
+                                class="mr-2"
+                            ><v-icon left small>mdi-star</v-icon>{{ addon.stars }}</v-chip>
+                            <v-chip
+                                color="#ddd"
+                                label
+                                small
+                                v-if="addon.spdx_id && addon.spdx_id !== 'NOASSERTION'"
+                            ><v-icon left small>mdi-file-certificate</v-icon>{{ addon.spdx_id }}</v-chip>
                         </v-card-subtitle>
-                        -->
+
                         <v-card-text>
                             {{ addon.description }}
                             <!--Operator: <a :href="addon.url">{{ addon.id }}</a>-->
@@ -62,35 +72,20 @@
             >
             <v-card>
                 <v-card-title class="text-h5">
-                    {{clickedAddon.displayName}} ({{clickedAddon.kind}})
+                    {{clickedAddon.name}}
                 </v-card-title>
                 <v-card-text>
                     {{clickedAddon.description}}
-                    <br/>
-                    <h3>Maintainers</h3>
-                    <ul>
-                        <li v-for="maintainer in clickedAddon.maintainers" :key="maintainer.name">{{ maintainer.name }} <a :href="maintainer.url">{{ maintainer.url }}</a></li>
-                    </ul>
-                    <br/>
-                    <h3>Links</h3>
-                    <ul>
-                        <li v-for="link in clickedAddon.links" :key="link.url"><a :href="link.url">{{ link.name }}</a></li>
-                    </ul>
                 </v-card-text>
                 <v-card-text>
-                    <pre>{{clickedAddon.install}}</pre>
-                    <v-btn
-                        color="grey lighten-2"
-                        @click="copyInstall(clickedAddon.install)"
+                    <v-carousel v-if="clickedAddon.screenshots && clickedAddon.screenshots.length > 0">
+                        <v-carousel-item
+                        v-for="(screenshot, i) in clickedAddon.screenshots"
+                        :key="i"
+                        :src="screenshot"
                         >
-                        copy
-                        <v-icon
-                            right
-                            dark
-                        >
-                            mdi-content-copy
-                        </v-icon>
-                    </v-btn>
+                        </v-carousel-item>
+                    </v-carousel>
 
                 </v-card-text>
             </v-card>
