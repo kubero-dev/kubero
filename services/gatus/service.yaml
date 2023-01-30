@@ -1,4 +1,4 @@
-name: gatus
+name: Gatus
 description: 'Gatus is a service that allows you to monitor the availability and latency of your services and expose this information a beautiful dashboard.'
 tags:
 - monitoring
