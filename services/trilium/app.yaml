@@ -21,7 +21,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /home/node/trilium-data
     name: trilium-data

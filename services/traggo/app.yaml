@@ -21,7 +21,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /opt/traggo/data
     name: traggo-data

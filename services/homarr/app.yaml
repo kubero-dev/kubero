@@ -21,14 +21,14 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/data/configs
     name: homar-config
     size: 10Mi
     storageClass: standard
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/icons
     name: homarr-icons
