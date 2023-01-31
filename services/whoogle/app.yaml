@@ -21,14 +21,14 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/lib
     name: whoogle-tor
     size: 1Gi
     storageClass: standard
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /whoogle/app/static/build
     name: whoogle-build

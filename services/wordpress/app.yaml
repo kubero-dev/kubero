@@ -41,7 +41,7 @@ spec:
             primary:
               persistence:
                 accessModes:
-                - ReadWriteOnce
+                - ReadWriteMany
                 size: 1Gi
   envVars:
   - name: WORDPRESS_DATABASE_HOST
@@ -55,7 +55,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /bitnami/wordpress
     name: wordpress-data
