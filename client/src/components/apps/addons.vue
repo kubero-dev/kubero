@@ -53,15 +53,15 @@
       persistent
       max-width="600px"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ on }">
 
         <v-col cols="12">
             <v-btn
             elevation="2"
             icon
             small
-            v-bind="attrs"
             v-on="on"
+            @click="openNewDialog()"
             >
                 <v-icon dark >
                     mdi-plus
@@ -81,6 +81,7 @@
                 :items="availableAddons"
                 label="Addon"
                 outlined
+                v-if="mode==='create'"
                 @change="addonChange($event)"
                 ></v-select>
               </v-col>
@@ -207,6 +208,10 @@ export default {
         this.loadAddons();
     },
     methods: {
+        openNewDialog() {
+            this.mode = 'create';
+            this.dialog = true;
+        },
         loadStorageClasses() {
             axios.get(`/api/config/storageclasses`)
             .then(response => {
@@ -310,7 +315,6 @@ export default {
                 this.addAddon(addon);
             } else {
                 this.updateAddon(addon);
-                this.mode = 'create';
             }
 
         },
