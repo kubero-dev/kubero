@@ -564,7 +564,7 @@
       <v-row class="pt-5">
         <v-col v-for="addon in addons" v-bind:key="addon.kind"
           cols="12"
-          md="2"
+          md="3"
         >
 
           <v-card color="#F7F8FB">
@@ -580,12 +580,19 @@
                 </v-avatar>
                 <h3>{{ addon.displayName }}</h3>
                 <p class="text-caption mt-1">
-                  {{ addon.version.installed }}
+                  {{ addon.id }}
                 </p>
                 <v-divider class="my-3"></v-divider>
                 <v-btn
                   depressed
-                  rounded
+                  text
+                  color="green"
+                  @click="editAddon(addon)"
+                >
+                  edit
+                </v-btn>
+                <v-btn
+                  depressed
                   text
                   color="red"
                   @click="deleteAddon(addon)"
@@ -915,6 +922,11 @@ export default {
         this.buildpack = buildpack;
       },
       */
+
+      editAddon(addon) {
+        alert("edit Addon is not implemented yet!");
+        console.log(addon);
+      },
       deleteAddon(addon) {
           // remove addon from local view and kuberoapp yaml
           for (let i = 0; i < this.addons.length; i++) {
