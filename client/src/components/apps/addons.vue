@@ -1,5 +1,52 @@
 <template>
   <v-form v-model="valid">
+
+  <v-row class="pt-5">
+      <v-col v-for="addon in addons" v-bind:key="addon.kind"
+        cols="12"
+        md="3"
+      >
+
+        <v-card color="#F7F8FB">
+          <v-list-item-content class="justify-center">
+            <div class="mx-auto text-center">
+              <v-avatar
+                size="57"
+                rounded
+              ><img
+              :src="addon.icon"
+              :alt="addon.displayName"
+              >
+              </v-avatar>
+              <h3>{{ addon.displayName }}</h3>
+              <p class="text-caption mt-1">
+                {{ addon.id }}
+              </p>
+              <v-divider class="my-3"></v-divider>
+              <v-btn
+                depressed
+                text
+                color="primary"
+                @click="editAddon(addon)"
+              >
+                edit
+              </v-btn>
+              <v-btn
+                depressed
+                text
+                color="red"
+                @click="deleteAddon(addon)"
+              >
+                delete
+              </v-btn>
+            </div>
+          </v-list-item-content>
+        </v-card>
+
+
+      </v-col>
+    </v-row>
+
   <v-row>
     <v-dialog
       v-model="dialog"
@@ -122,6 +169,7 @@
 <script>
 import axios from "axios";
 import set from 'lodash.set';
+import get from 'lodash.get';
 export default {
     props: {
         addons: {
@@ -173,6 +221,37 @@ export default {
                 console.log(error);
             });
         },
+        deleteAddon(addon) {
+            // remove addon from local view and kuberoapp yaml
+            for (let i = 0; i < this.addons.length; i++) {
+              if (this.addons[i].kind == addon.kind) {
+                this.addons.splice(i, 1);
+                break;
+              }
+            }
+        },
+        editAddon(addon){
+            console.log(addon);
+
+            // search in available addons for the selected addon
+            for (let i = 0; i < this.availableAddons.length; i++) {
+              if (this.availableAddons[i].value.kind == addon.kind) {
+                this.selectedAddon = this.availableAddons[i].value;
+                break;
+              }
+            }
+
+            // set the formfields to the values from the yaml
+            console.log(this.selectedAddon.formfields);
+            Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+                const fieldvalue = get(addon.resourceDefinitions, field, value.default)
+                //console.log(field, value, fieldvalue);
+                value.default = fieldvalue;
+            });
+            console.log(this.selectedAddon.formfields);
+
+            this.dialog = true;
+        },
         loadAddons() {
             axios.get(`/api/addons`)
             .then(response => {
@@ -190,6 +269,7 @@ export default {
             });
         },
         addonChange(event) {
+            console.log(event);
             this.selectedAddon = event;
         },
         submitForm() {

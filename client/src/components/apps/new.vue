@@ -561,52 +561,6 @@
 
       <!-- ADDONS -->
       <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
-      <v-row class="pt-5">
-        <v-col v-for="addon in addons" v-bind:key="addon.kind"
-          cols="12"
-          md="3"
-        >
-
-          <v-card color="#F7F8FB">
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  size="57"
-                  rounded
-                ><img
-                :src="addon.icon"
-                :alt="addon.displayName"
-                >
-                </v-avatar>
-                <h3>{{ addon.displayName }}</h3>
-                <p class="text-caption mt-1">
-                  {{ addon.id }}
-                </p>
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  depressed
-                  text
-                  color="green"
-                  @click="editAddon(addon)"
-                >
-                  edit
-                </v-btn>
-                <v-btn
-                  depressed
-                  text
-                  color="red"
-                  @click="deleteAddon(addon)"
-                >
-                  delete
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
-
-
-        </v-col>
-      </v-row>
-
       <Addons :addons="addons" :appname="appname"/>
 
       <!-- SUBMIT -->
@@ -923,19 +877,6 @@ export default {
       },
       */
 
-      editAddon(addon) {
-        alert("edit Addon is not implemented yet!");
-        console.log(addon);
-      },
-      deleteAddon(addon) {
-          // remove addon from local view and kuberoapp yaml
-          for (let i = 0; i < this.addons.length; i++) {
-            if (this.addons[i].kind == addon.kind) {
-              this.addons.splice(i, 1);
-              break;
-            }
-          }
-      },
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
           .then(response => {
