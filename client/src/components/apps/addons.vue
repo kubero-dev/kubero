@@ -184,6 +184,7 @@ export default {
     data: () => ({
         valid: false,
         dialog: false,
+        mode: 'create',
         availableStorageClasses: [],
         availableAddons: [],
         selectedAddon: {
@@ -232,6 +233,7 @@ export default {
         },
         editAddon(addon){
             console.log(addon);
+            this.mode = 'edit';
 
             // search in available addons for the selected addon
             for (let i = 0; i < this.availableAddons.length; i++) {
@@ -248,7 +250,7 @@ export default {
                 //console.log(field, value, fieldvalue);
                 value.default = fieldvalue;
             });
-            console.log(this.selectedAddon.formfields);
+            //console.log(this.selectedAddon.formfields);
 
             this.dialog = true;
         },
@@ -301,12 +303,30 @@ export default {
                 displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
-            this.$emit('addon-added', addon);
 
             console.log(addon);
 
+            if (this.mode === 'create') {
+                this.addAddon(addon);
+            } else {
+                this.updateAddon(addon);
+                this.mode = 'create';
+            }
+
+        },
+        addAddon(addon) {
             this.addons.push(addon);
-        }
+            this.$emit('addon-added', addon);
+        },
+        updateAddon(addon) {
+            for (let i = 0; i < this.addons.length; i++) {
+              if (this.addons[i].kind == addon.kind) {
+                this.addons[i] = addon;
+                break;
+              }
+            }
+            this.$emit('addon-updated', addon);
+        },
     }
 }
 </script>
