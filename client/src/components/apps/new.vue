@@ -26,6 +26,24 @@
         </v-tabs>
       </template>
       -->
+
+      <v-row
+       v-if="app==='new' && $route.query.service != undefined">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            outlined
+            type="warning"
+            prominent
+            border="left"
+          >
+            Please change all passwords, tokens and select the correct storageClass for your cluster.
+          </v-alert>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col
           cols="12"
