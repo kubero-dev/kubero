@@ -1,0 +1,32 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: homer
+spec:
+  name: homer
+  deploymentstrategy: docker
+  image:
+    repository: b4bz/homer
+    tag: latest
+    containerPort: "8080"
+  ingress:
+    hosts:
+    - host: homer.lacolhost.com
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /www/assets
+    name: homer-data
+    size: 300Mi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

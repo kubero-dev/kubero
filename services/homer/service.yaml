@@ -1,0 +1,10 @@
+name: Homer
+description: 'A dead simple static HOMepage for your servER to keep your services on hand, from a simple yaml configuration file.'
+tags:
+- homepage
+- dashboard
+source: https://github.com/TwiN/gatus
+website: https://gatus.io/
+icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
+screenshots:
+- https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png
