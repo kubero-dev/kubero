@@ -3,8 +3,8 @@ description: 'A dead simple static HOMepage for your servER to keep your service
 tags:
 - homepage
 - dashboard
-source: https://github.com/TwiN/gatus
-website: https://gatus.io/
-icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
+source: https://github.com/bastienwirtz/homer
+website: https://github.com/bastienwirtz/homer
+icon: https://raw.githubusercontent.com/bastienwirtz/homer/main/public/logo.png
 screenshots:
-- https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png
+- https://camo.githubusercontent.com/22f0b90b2c9ec4f1c9ec9ed920bb7b794bc1f1ac93bf61099ef298369b8850e5/68747470733a2f2f7261772e6769746875622e636f6d2f6261737469656e776972747a2f686f6d65722f6d61696e2f646f63732f73637265656e73686f742e706e67
