@@ -65,10 +65,20 @@ https://github.com/kubero-dev/buildpacks
 - Kafka
 - Memcached
 - CouchDB
-- RabbitMQ (WIP, ~v1.8.0)
-- Minio (WIP, ~v1.8.0)
-- InfluxDB (WIP, ~v1.8.0)
+- RabbitMQ (WIP)
+- Minio (WIP)
+- InfluxDB (WIP)
 - CockroachDB (WIP)
+
+## One Click Apps (similar to Heroku Buttons)
+- Wordpress
+- Grafana
+- Kuma
+- Trilium Notes
+... and growing
+
+Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/services/README.md) how to do it.
+
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
