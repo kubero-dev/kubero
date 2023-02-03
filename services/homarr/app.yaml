@@ -4,18 +4,11 @@ metadata:
   name: homarr
 spec:
   name: homarr
-  domain: homarr.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: ghcr.io/ajnart/homarr
     tag: latest
     containerPort: "7575"
-  ingress:
-    hosts:
-    - host: homarr.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons: []
   envVars: []
   cronjobs: []

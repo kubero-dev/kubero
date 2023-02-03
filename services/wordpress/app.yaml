@@ -4,18 +4,11 @@ metadata:
   name: wordpress
 spec:
   name: wordpress
-  domain: wordpress.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: zadam/trilium
     tag: latest
     containerPort: "8080"
-  ingress:
-    hosts:
-    - host: wordpress.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons:
   - displayName: Kubero Mysql
     env: []

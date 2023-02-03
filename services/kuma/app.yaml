@@ -4,18 +4,11 @@ metadata:
   name: kuma
 spec:
   name: kuma
-  domain: kuma.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: louislam/uptime-kuma
     tag: latest
     containerPort: "8080"
-  ingress:
-    hosts:
-    - host: kuma.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons: []
   envVars: []
   cronjobs: []

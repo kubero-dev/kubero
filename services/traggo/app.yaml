@@ -4,18 +4,11 @@ metadata:
   name: traggo
 spec:
   name: traggo
-  domain: traggo.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: traggo/server
     tag: latest
     containerPort: "3030"
-  ingress:
-    hosts:
-    - host: traggo.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons: []
   envVars: []
   cronjobs: []

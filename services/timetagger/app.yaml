@@ -4,18 +4,11 @@ metadata:
   name: timetagger
 spec:
   name: timetagger
-  domain: timetagger.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: ghcr.io/almarklein/timetagger
     tag: latest
     containerPort: "8080"
-  ingress:
-    hosts:
-    - host: timetagger.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons: []
   envVars:
   - name: TIMETAGGER_BIND

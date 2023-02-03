@@ -4,18 +4,11 @@ metadata:
   name: homebox
 spec:
   name: homebox
-  domain: homebox.lacolhost.com
   deploymentstrategy: docker
   image:
     repository: ghcr.io/hay-kot/homebox
     tag: latest
     containerPort: "7745"
-  ingress:
-    hosts:
-    - host: homebox.lacolhost.com
-      paths:
-      - path: /
-        pathType: ImplementationSpecific
   addons: []
   envVars: []
   cronjobs: []
