@@ -26,6 +26,24 @@
         </v-tabs>
       </template>
       -->
+
+      <v-row
+       v-if="app==='new' && $route.query.service != undefined">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            outlined
+            type="warning"
+            prominent
+            border="left"
+          >
+            Please change all passwords, tokens and select the correct storageClass for your cluster.
+          </v-alert>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col
           cols="12"
@@ -561,45 +579,6 @@
 
       <!-- ADDONS -->
       <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
-      <v-row class="pt-5">
-        <v-col v-for="addon in addons" v-bind:key="addon.kind"
-          cols="12"
-          md="2"
-        >
-
-          <v-card color="#F7F8FB">
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  size="57"
-                  rounded
-                ><img
-                :src="addon.icon"
-                :alt="addon.displayName"
-                >
-                </v-avatar>
-                <h3>{{ addon.displayName }}</h3>
-                <p class="text-caption mt-1">
-                  {{ addon.version.installed }}
-                </p>
-                <v-divider class="my-3"></v-divider>
-                <v-btn
-                  depressed
-                  rounded
-                  text
-                  color="red"
-                  @click="deleteAddon(addon)"
-                >
-                  delete
-                </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
-
-
-        </v-col>
-      </v-row>
-
       <Addons :addons="addons" :appname="appname"/>
 
       <!-- SUBMIT -->
@@ -915,15 +894,7 @@ export default {
         this.buildpack = buildpack;
       },
       */
-      deleteAddon(addon) {
-          // remove addon from local view and kuberoapp yaml
-          for (let i = 0; i < this.addons.length; i++) {
-            if (this.addons[i].kind == addon.kind) {
-              this.addons.splice(i, 1);
-              break;
-            }
-          }
-      },
+
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
           .then(response => {
