@@ -42,14 +42,14 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/www/html
     name: joomla-volume
     size: 1Gi
     storageClass: standard
   - accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
     emptyDir: false
     mountPath: /var/run/apache2
     name: joomla-rundir
