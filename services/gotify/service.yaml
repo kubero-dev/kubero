@@ -1,0 +1,9 @@
+name: Gotify
+description: 'Gotify is a simple server for sending and receiving messages (in real time per WebSocket)'
+tags:
+- monitoring
+source: https://github.com/gotify/server
+website: https://gotify-net
+icon: https://raw.githubusercontent.com/gotify/logo/master/gotify-logo.png
+screenshots:
+- https://github.com/gotify/server/raw/master/ui.png
