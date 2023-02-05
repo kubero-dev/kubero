@@ -1,0 +1,11 @@
+name: Gatus
+description: 'Ghost is a powerful app for new-media creators to publish, share, and grow a business around their content.'
+tags:
+- CMS
+- Blogging
+- Publishing
+source: https://github.com/TryGhost/Ghost
+website: https://ghost.org/
+icon: https://ghost.org/images/logos/ghost-logo-orb.png
+screenshots:
+- https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png
