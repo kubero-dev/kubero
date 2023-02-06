@@ -21,14 +21,12 @@
                     </v-list-item-icon>
                     <v-list-item-title>Addons</v-list-item-title>
                 </v-list-item>
-                <!--
                 <v-list-item link to="/services">
                     <v-list-item-icon>
                     <v-icon>mdi-palette-outline</v-icon>
                     </v-list-item-icon>
                     <v-list-item-title>Services</v-list-item-title>
                 </v-list-item>
-                -->
                 <v-list-item link to="/events">
                     <v-list-item-icon>
                     <v-icon>mdi-file-document-check-outline</v-icon>
