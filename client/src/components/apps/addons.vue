@@ -1,20 +1,67 @@
 <template>
   <v-form v-model="valid">
+
+  <v-row class="pt-5">
+      <v-col v-for="addon in addons" v-bind:key="addon.kind"
+        cols="12"
+        md="3"
+      >
+
+        <v-card color="#F7F8FB">
+          <v-list-item-content class="justify-center">
+            <div class="mx-auto text-center">
+              <v-avatar
+                size="57"
+                rounded
+              ><img
+              :src="addon.icon"
+              :alt="addon.displayName"
+              >
+              </v-avatar>
+              <h3>{{ addon.displayName }}</h3>
+              <p class="text-caption mt-1">
+                {{ addon.id }}
+              </p>
+              <v-divider class="my-3"></v-divider>
+              <v-btn
+                depressed
+                text
+                color="primary"
+                @click="editAddon(addon)"
+              >
+                edit
+              </v-btn>
+              <v-btn
+                depressed
+                text
+                color="red"
+                @click="deleteAddon(addon)"
+              >
+                delete
+              </v-btn>
+            </div>
+          </v-list-item-content>
+        </v-card>
+
+
+      </v-col>
+    </v-row>
+
   <v-row>
     <v-dialog
       v-model="dialog"
       persistent
       max-width="600px"
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template v-slot:activator="{ on }">
 
         <v-col cols="12">
             <v-btn
             elevation="2"
             icon
             small
-            v-bind="attrs"
             v-on="on"
+            @click="openNewDialog()"
             >
                 <v-icon dark >
                     mdi-plus
@@ -34,6 +81,7 @@
                 :items="availableAddons"
                 label="Addon"
                 outlined
+                v-if="mode==='create'"
                 @change="addonChange($event)"
                 ></v-select>
               </v-col>
@@ -122,6 +170,7 @@
 <script>
 import axios from "axios";
 import set from 'lodash.set';
+import get from 'lodash.get';
 export default {
     props: {
         addons: {
@@ -136,6 +185,7 @@ export default {
     data: () => ({
         valid: false,
         dialog: false,
+        mode: 'create',
         availableStorageClasses: [],
         availableAddons: [],
         selectedAddon: {
@@ -158,6 +208,10 @@ export default {
         this.loadAddons();
     },
     methods: {
+        openNewDialog() {
+            this.mode = 'create';
+            this.dialog = true;
+        },
         loadStorageClasses() {
             axios.get(`/api/config/storageclasses`)
             .then(response => {
@@ -172,6 +226,38 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+        },
+        deleteAddon(addon) {
+            // remove addon from local view and kuberoapp yaml
+            for (let i = 0; i < this.addons.length; i++) {
+              if (this.addons[i].kind == addon.kind) {
+                this.addons.splice(i, 1);
+                break;
+              }
+            }
+        },
+        editAddon(addon){
+            console.log(addon);
+            this.mode = 'edit';
+
+            // search in available addons for the selected addon
+            for (let i = 0; i < this.availableAddons.length; i++) {
+              if (this.availableAddons[i].value.kind == addon.kind) {
+                this.selectedAddon = this.availableAddons[i].value;
+                break;
+              }
+            }
+
+            // set the formfields to the values from the yaml
+            console.log(this.selectedAddon.formfields);
+            Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+                const fieldvalue = get(addon.resourceDefinitions, field, value.default)
+                //console.log(field, value, fieldvalue);
+                value.default = fieldvalue;
+            });
+            //console.log(this.selectedAddon.formfields);
+
+            this.dialog = true;
         },
         loadAddons() {
             axios.get(`/api/addons`)
@@ -190,6 +276,7 @@ export default {
             });
         },
         addonChange(event) {
+            console.log(event);
             this.selectedAddon = event;
         },
         submitForm() {
@@ -221,12 +308,29 @@ export default {
                 displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
-            this.$emit('addon-added', addon);
 
             console.log(addon);
 
+            if (this.mode === 'create') {
+                this.addAddon(addon);
+            } else {
+                this.updateAddon(addon);
+            }
+
+        },
+        addAddon(addon) {
             this.addons.push(addon);
-        }
+            this.$emit('addon-added', addon);
+        },
+        updateAddon(addon) {
+            for (let i = 0; i < this.addons.length; i++) {
+              if (this.addons[i].kind == addon.kind) {
+                this.addons[i] = addon;
+                break;
+              }
+            }
+            this.$emit('addon-updated', addon);
+        },
     }
 }
 </script>

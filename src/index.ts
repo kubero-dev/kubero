@@ -19,7 +19,7 @@ before(app);
 after(app, server);
 
 const publicPath = resolve(__dirname, '../client/dist');
-const staticConf = { maxAge: '1s', etag: false };
+const staticConf = { maxAge: '1s', etag: true };
 
 app.use(history());
 app.use(express.static(publicPath, staticConf));

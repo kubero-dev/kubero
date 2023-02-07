@@ -26,6 +26,24 @@
         </v-tabs>
       </template>
       -->
+
+      <v-row
+       v-if="app==='new' && $route.query.service != undefined">
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-alert
+            outlined
+            type="warning"
+            prominent
+            border="left"
+          >
+            Please change all passwords, tokens and select the correct storageClass for your cluster.
+          </v-alert>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col
           cols="12"
@@ -68,9 +86,6 @@
         </v-col>
       </v-row>
 
-      <v-divider class="ma-5"></v-divider>
-      <!-- DEPLOYMENT-->
-      <h4 class="text-uppercase">Deployment</h4>
       <v-row>
         <v-col
           cols="12"
@@ -85,491 +100,485 @@
 
       <v-row>
         <v-col
-          cols="12"
-          md="6"
-        >
-          <v-switch
-            v-model="deploymentstrategyGit"
-            :label="`Deployment strategy: ${appDeploymentStrategy}`"
-            color="primary"
-            inset
-        ></v-switch>
-        </v-col>
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="deploymentstrategyGit"
+                :label="`Deployment strategy: ${appDeploymentStrategy}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
       </v-row>
 
-      <!-- DEPLOYMENT STRATEGY GIT -->
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="pipelineData.git.repository.ssh_url"
-            :rules="repositoryRules"
-            label="Repository"
-            required
-            disabled
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-combobox
-            v-model="branch"
-            :items="branchesList"
-            label="Branch"
-            required
-          ></v-combobox>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-switch
-            v-model="autodeploy"
-            :label="`Autodeploy: ${autodeploy.toString()}`"
-            inset
-          ></v-switch>
-        </v-col>
-      </v-row>
-
-      <v-divider class="ma-5"></v-divider>
-      <!-- DEPLOYMENT BUILDPACKS -->
-      <h4 class="text-uppercase">Buildpack</h4>
-
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="buildpack.build.command"
-            label="Build Command"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="appDeploymentStrategy == 'git'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="buildpack.run.command"
-            label="Run Command"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
-      <!-- DEPLOYMENT STRATEGY CONTAINER -->
-      <v-row
-        v-if="appDeploymentStrategy == 'docker'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="docker.image"
-            :counter="60"
-            label="Docker image"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="appDeploymentStrategy == 'docker'">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="docker.tag"
-            :counter="60"
-            label="Tag"
-            required
-          ></v-text-field>
-        </v-col>
-      </v-row>
-
+      <v-expansion-panels
+        v-model="panel"
+        multiple
+      >
+      <!-- DEPLOYMENT -->
+      <v-expansion-panel v-if="appDeploymentStrategy == 'git'">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium" color="#fafafa">GitOps Deployment</v-expansion-panel-header>
+        <v-expansion-panel-content color="#fafafa">
 <!--
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-select
-            v-model="buildpack"
-            :items="buildpackList"
-            label="Buildpack"
-            @change="updateBuildpack"
-            :disabled="buildpackDisabled"
-            :rules="buildpackRules"
-          ></v-select>
-        </v-col>
-      </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="deploymentstrategyGit"
+                :label="`Deployment strategy: ${appDeploymentStrategy}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+          </v-row>
 -->
-      <v-divider class="ma-5"></v-divider>
-      <!-- ENV VARS-->
-      <h4 class="text-uppercase">Environment vars</h4>
-      <v-row v-for="variable in envvars" v-bind:key="variable.id">
-        <v-col
-          cols="12"
-          md="2"
-        >
-          <v-text-field
-            v-model="variable.name"
-            label="name"
-            :counter="60"
-          ></v-text-field>
-        </v-col>
-        <v-col
-          cols="12"
-          md="3"
-        >
-          <v-text-field
-            v-model="variable.value"
-            label="value"
-          ></v-text-field>
-        </v-col>
-        <v-col
-          cols="12"
-          md="1"
-        >
-          <v-btn
-          elevation="2"
-          icon
-          small
-           @click="removeEnvLine(variable.name)"
-          >
-              <v-icon dark >
-                  mdi-minus
-              </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
 
-      <v-row>
-        <v-col
-          cols="12"
-        >
-          <v-btn
-          elevation="2"
-          icon
-          small
-           @click="addEnvLine()"
-          >
-              <v-icon dark >
-                  mdi-plus
-              </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-divider class="ma-5"></v-divider>
-      <!-- PROVISIONING -->
-      <h4 class="text-uppercase">Resources</h4>
-
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-select
-            v-model="podsize"
-            :items="podsizes"
-            label="Podsize"
-            @change="updatePodsize"
-          ></v-select>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-switch
-            v-model="autoscale"
-            :label="`Autoscale: ${autoscale.toString()}`"
-            inset
-          ></v-switch>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="!autoscale">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-slider
-            v-model="webreplicas"
-            label="Web Pods"
-            hint="Im a hint"
-            max="10"
-            min="0"
-            thumb-label="always"
-          ></v-slider>
-        </v-col>
-      </v-row>
-      <v-row v-if="!autoscale">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-slider
-            v-model="workerreplicas"
-            label="Worker Pods"
-            hint="Im a hint"
-            max="10"
-            min="0"
-            thumb-label="always"
-          ></v-slider>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="autoscale">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-range-slider
-            v-model="webreplicasrange"
-            label="Web Pods"
-            max="10"
-            min="0"
-            thumb-label="always"
-          ></v-range-slider>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="autoscale">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-range-slider
-            v-model="workerreplicasrange"
-            label="Worker Pods"
-            max="10"
-            min="0"
-            thumb-label="always"
-          ></v-range-slider>
-        </v-col>
-      </v-row>
-
-      <v-divider class="ma-5"></v-divider>
-      <!-- EXTRAVOLUMES -->
-      <h4 class="text-uppercase">Volumes</h4>
-      <div v-for="volume in extraVolumes" v-bind:key="volume.id">
-        <v-row>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-text-field
-              v-model="volume.name"
-              label="name"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="2"
-          >
-            <v-text-field
-              v-model="volume.size"
-              label="size"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="1"
-          >
-            <v-btn
-            elevation="2"
-            icon
-            small
-            @click="removeVolumeLine(volume.name)"
+          <!-- DEPLOYMENT STRATEGY GIT -->
+          <v-row
+            v-if="appDeploymentStrategy == 'git'">
+            <v-col
+              cols="12"
+              md="6"
             >
-                <v-icon dark >
-                    mdi-minus
-                </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
-
-        <v-row>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-select
-              v-model="volume.storageClass"
-              :items="storageclasses"
-              label="Storage Class"
-            ></v-select>
-          </v-col>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-text-field
-              v-model="volume.mountPath"
-              label="Mount Path"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </div>
-
-      <v-row>
-        <v-col
-          cols="12"
-        >
-          <v-btn
-          elevation="2"
-          icon
-          small
-          @click="addVolumeLine()"
-          >
-              <v-icon dark >
-                  mdi-plus
-              </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
-
-      <v-divider class="ma-5"></v-divider>
-      <!-- CRONJOBS -->
-      <h4 class="text-uppercase">Cronjobs</h4>
-      <div v-for="variable in cronjobs" v-bind:key="variable.id">
-        <v-row>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-text-field
-              v-model="variable.name"
-              label="name"
-              :readonly="app!='new'"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="2"
-          >
-            <v-text-field
-              v-model="variable.schedule"
-              label="schedule"
-              :rules="cronjobScheduleRules"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="1"
-          >
-            <v-btn
-            elevation="2"
-            icon
-            small
-            @click="removeCronjobLine(variable.name)"
+              <v-text-field
+                v-model="pipelineData.git.repository.ssh_url"
+                :rules="repositoryRules"
+                label="Repository"
+                required
+                disabled
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="appDeploymentStrategy == 'git'">
+            <v-col
+              cols="12"
+              md="6"
             >
-                <v-icon dark >
-                    mdi-minus
-                </v-icon>
-            </v-btn>
-          </v-col>
-        </v-row>
+              <v-combobox
+                v-model="branch"
+                :items="branchesList"
+                label="Branch"
+                required
+              ></v-combobox>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="appDeploymentStrategy == 'git'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="autodeploy"
+                :label="`Autodeploy: ${autodeploy.toString()}`"
+                inset
+              ></v-switch>
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-text-field
-              v-model="variable.image"
-              label="image"
-            ></v-text-field>
-          </v-col>
-          <v-col
-            cols="12"
-            md="3"
-          >
-            <v-text-field
-              v-model="variable.command"
-              label="command"
-            ></v-text-field>
-          </v-col>
-        </v-row>
-      </div>
+          <v-divider class="ma-5"></v-divider>
 
-      <v-row>
-        <v-col
-          cols="12"
-        >
-          <v-btn
-          elevation="2"
-          icon
-          small
-           @click="addCronjobLine()"
-          >
-              <v-icon dark >
-                  mdi-plus
-              </v-icon>
-          </v-btn>
-        </v-col>
-      </v-row>
+          <v-row
+            v-if="appDeploymentStrategy == 'git'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="buildpack.build.command"
+                label="Build Command"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="appDeploymentStrategy == 'git'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="buildpack.run.command"
+                label="Run Command"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
+      <v-expansion-panel v-if="appDeploymentStrategy == 'docker'">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Container Deployment</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <!-- DEPLOYMENT STRATEGY CONTAINER -->
+          <v-row
+            v-if="appDeploymentStrategy == 'docker'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="docker.image"
+                :counter="60"
+                label="Docker image"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row
+            v-if="appDeploymentStrategy == 'docker'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="docker.tag"
+                :counter="60"
+                label="Tag"
+                required
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-      <v-divider class="ma-5"></v-divider>
-      <!-- ADDONS -->
-      <h4 class="text-uppercase pb-3">Addons</h4>
-      <v-row>
-        <v-col v-for="addon in addons" v-bind:key="addon.kind"
-          cols="12"
-          md="2"
-        >
+      <!-- ENVIRONMENT VARS -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Environment Variables</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row v-for="variable in envvars" v-bind:key="variable.id">
+            <v-col
+              cols="12"
+              md="2"
+            >
+              <v-text-field
+                v-model="variable.name"
+                label="name"
+                :counter="60"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-text-field
+                v-model="variable.value"
+                label="value"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="1"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="removeEnvLine(variable.name)"
+              >
+                  <v-icon dark >
+                      mdi-minus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
 
-          <v-card color="#F7F8FB">
-            <v-list-item-content class="justify-center">
-              <div class="mx-auto text-center">
-                <v-avatar
-                  size="57"
-                  rounded
-                ><img
-                :src="addon.icon"
-                :alt="addon.displayName"
-                >
-                </v-avatar>
-                <h3>{{ addon.displayName }}</h3>
-                <p class="text-caption mt-1">
-                  {{ addon.version.installed }}
-                </p>
-                <v-divider class="my-3"></v-divider>
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addEnvLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <!-- RESOURCES -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Resources</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-select
+                v-model="podsize"
+                :items="podsizes"
+                label="Podsize"
+                @change="updatePodsize"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="autoscale"
+                :label="`Autoscale: ${autoscale.toString()}`"
+                inset
+              ></v-switch>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="!autoscale">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-slider
+                v-model="webreplicas"
+                label="Web Pods"
+                hint="Im a hint"
+                max="10"
+                min="0"
+                thumb-label="always"
+              ></v-slider>
+            </v-col>
+          </v-row>
+          <v-row v-if="!autoscale">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-slider
+                v-model="workerreplicas"
+                label="Worker Pods"
+                hint="Im a hint"
+                max="10"
+                min="0"
+                thumb-label="always"
+              ></v-slider>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="autoscale">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-range-slider
+                v-model="webreplicasrange"
+                label="Web Pods"
+                max="10"
+                min="0"
+                thumb-label="always"
+              ></v-range-slider>
+            </v-col>
+          </v-row>
+
+          <v-row v-if="autoscale">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-range-slider
+                v-model="workerreplicasrange"
+                label="Worker Pods"
+                max="10"
+                min="0"
+                thumb-label="always"
+              ></v-range-slider>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <!-- VOLUMES -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Volumes</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div v-for="volume in extraVolumes" v-bind:key="volume.id">
+            <v-row>
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-text-field
+                  v-model="volume.name"
+                  label="name"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="2"
+              >
+                <v-text-field
+                  v-model="volume.size"
+                  label="size"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
                 <v-btn
-                  depressed
-                  rounded
-                  text
-                  color="red"
-                  @click="deleteAddon(addon)"
+                elevation="2"
+                icon
+                small
+                @click="removeVolumeLine(volume.name)"
                 >
-                  delete
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
                 </v-btn>
-              </div>
-            </v-list-item-content>
-          </v-card>
+              </v-col>
+            </v-row>
 
+            <v-row>
+              <v-col
+                cols="12"
+                md="2"
+              >
+                <v-select
+                  v-model="volume.storageClass"
+                  :items="storageclasses"
+                  label="Storage Class"
+                ></v-select>
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-text-field
+                  v-model="volume.mountPath"
+                  label="Mount Path"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-switch
+                  v-model="volume.accessModes[0]"
+                  label="Read/Write Many"
+                  true-value="ReadWriteMany"
+                  false-value="ReadWriteOnce"
+                ></v-switch>
+              </v-col>
+            </v-row>
+          </div>
 
-        </v-col>
-      </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addVolumeLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
+      <!-- CRONJOBS -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Cronjobs</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <div v-for="variable in cronjobs" v-bind:key="variable.id">
+            <v-row>
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-text-field
+                  v-model="variable.name"
+                  label="name"
+                  :readonly="app!='new'"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="2"
+              >
+                <v-text-field
+                  v-model="variable.schedule"
+                  label="schedule"
+                  :rules="cronjobScheduleRules"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="removeCronjobLine(variable.name)"
+                >
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-text-field
+                  v-model="variable.image"
+                  label="image"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="3"
+              >
+                <v-text-field
+                  v-model="variable.command"
+                  label="command"
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </div>
+
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addCronjobLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+      <!-- ADDONS -->
+      <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
       <Addons :addons="addons" :appname="appname"/>
 
       <!-- SUBMIT -->
@@ -628,6 +637,7 @@ export default {
       }
     },
     data: () => ({
+      panel: [0],
       valid: false,
       buildpack: {
         run: {
@@ -661,7 +671,7 @@ export default {
       branchesList: [],
       docker: {
         image: 'ghcr.io/kubero-dev/template-nodeapp',
-        tag: 'main',
+        tag: 'latest',
       },
       autodeploy: true,
       domain: '',
@@ -791,6 +801,18 @@ export default {
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
+
+
+          // Open Panel if there is some data to show
+          if (this.envvars.length > 0) {
+            this.panel.push(1)
+          }
+          if (this.extraVolumes.length > 0) {
+            this.panel.push(3)
+          }
+          if (this.cronjobs.length > 0) {
+            this.panel.push(4)
+          }
         });
       },
       changeName(name) {
@@ -872,15 +894,7 @@ export default {
         this.buildpack = buildpack;
       },
       */
-      deleteAddon(addon) {
-          // remove addon from local view and kuberoapp yaml
-          for (let i = 0; i < this.addons.length; i++) {
-            if (this.addons[i].kind == addon.kind) {
-              this.addons.splice(i, 1);
-              break;
-            }
-          }
-      },
+
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
           .then(response => {
@@ -900,6 +914,17 @@ export default {
               this.ssl = true;
             } else {
               this.ssl = false;
+            }
+
+            // Open Panel if there is some data to show
+            if (response.data.spec.envVars.length > 0) {
+              this.panel.push(1)
+            }
+            if (response.data.spec.extraVolumes.length > 0) {
+              this.panel.push(3)
+            }
+            if (response.data.spec.cronjobs.length > 0) {
+              this.panel.push(4)
             }
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
@@ -1066,7 +1091,7 @@ export default {
           storageClass: 'standard',
           size: '1Gi',
           accessModes: [
-            'ReadWriteOnce',
+            'ReadWriteMany',
           ],
           mountPath: '/example/path',
         });
@@ -1119,4 +1144,10 @@ export default {
 </script>
 
 <style lang="scss">
+.v-expansion-panel-content {
+    background: #fafafa;
+}
+.v-expansion-panel-header {
+    background: #fafafa;
+}
 </style>

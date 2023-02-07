@@ -291,6 +291,84 @@
         }
       }
     },
+    "/pipelines/{pipeline}/{phase}/{app}": {
+      "delete": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Delete an app",
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get app details",
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/auth/github": {
       "get": {
         "tags": [
@@ -1079,240 +1157,6 @@
             }
           }
         ]
-      }
-    },
-    "/pipelines/{pipeline}/{phase}/{app}": {
-      "delete": {
-        "tags": [
-          "UI"
-        ],
-        "summary": "Delete an app",
-        "description": "",
-        "parameters": [
-          {
-            "name": "pipeline",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "app",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
-      "put": {
-        "tags": [
-          "UI"
-        ],
-        "summary": "Update an app in a specific pipeline",
-        "description": "",
-        "parameters": [
-          {
-            "name": "pipeline",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "app",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "buildpack": {
-                  "example": "any"
-                },
-                "deploymentstrategy": {
-                  "example": "any"
-                },
-                "gitrepo": {
-                  "example": "any"
-                },
-                "branch": {
-                  "example": "any"
-                },
-                "autodeploy": {
-                  "example": "any"
-                },
-                "domain": {
-                  "example": "any"
-                },
-                "podsize": {
-                  "example": "any"
-                },
-                "autoscale": {
-                  "example": "any"
-                },
-                "extraVolumes": {
-                  "example": "any"
-                },
-                "envvars": {
-                  "example": "any"
-                },
-                "image": {
-                  "example": "any"
-                },
-                "web": {
-                  "example": "any"
-                },
-                "worker": {
-                  "example": "any"
-                },
-                "cronjobs": {
-                  "example": "any"
-                },
-                "addons": {
-                  "example": "any"
-                },
-                "resourceVersion": {
-                  "example": "any"
-                }
-              }
-            },
-            "description": "App object",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "buildpack": {
-                    "example": "any"
-                  },
-                  "deploymentstrategy": {
-                    "example": "any"
-                  },
-                  "gitrepo": {
-                    "example": "any"
-                  },
-                  "branch": {
-                    "example": "any"
-                  },
-                  "autodeploy": {
-                    "example": "any"
-                  },
-                  "domain": {
-                    "example": "any"
-                  },
-                  "podsize": {
-                    "example": "any"
-                  },
-                  "autoscale": {
-                    "example": "any"
-                  },
-                  "extraVolumes": {
-                    "example": "any"
-                  },
-                  "envvars": {
-                    "example": "any"
-                  },
-                  "image": {
-                    "example": "any"
-                  },
-                  "web": {
-                    "example": "any"
-                  },
-                  "worker": {
-                    "example": "any"
-                  },
-                  "cronjobs": {
-                    "example": "any"
-                  },
-                  "addons": {
-                    "example": "any"
-                  },
-                  "resourceVersion": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "get": {
-        "tags": [
-          "UI"
-        ],
-        "summary": "Get app details",
-        "description": "",
-        "parameters": [
-          {
-            "name": "pipeline",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "phase",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "app",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
       }
     },
     "/cli/pipelines/{pipeline}/{phase}/{app}": {
