@@ -1,0 +1,9 @@
+name: Joomla
+description: 'Joomla is a free and open-source content management system for publishing web content on websites.'
+tags:
+- CMS
+source: https://github.com/joomla/joomla-cms
+website: https://joomla.org
+icon: https://docs.joomla.org/images/0/02/Joomla-flat-logo-en.png
+screenshots:
+- https://upload.wikimedia.org/wikipedia/commons/9/96/Backend_Joomla_4_en.png

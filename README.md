@@ -63,12 +63,11 @@ https://github.com/kubero-dev/buildpacks
 - MongoDB
 - Elasticsearch
 - Kafka
-- Memcached
 - CouchDB
 - RabbitMQ (WIP)
+- CockroachDB (WIP)
 - Minio (WIP)
 - InfluxDB (WIP)
-- CockroachDB (WIP)
 
 ## One Click Apps (similar to Heroku Buttons)
 - Wordpress
