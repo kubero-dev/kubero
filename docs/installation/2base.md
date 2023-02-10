@@ -38,7 +38,7 @@ There are two ways to install Kubero:
 
 The minimal installation will install the Kubero Operator and the required CRDs. The Kubero UI will be installed on a later step.
 ```
-kubectl apply -f hhttps://raw.githubusercontent.com/kubero-dev/kubero-operator/main/deploy/operator.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/deploy/operator.yaml
 ```
 
 ### Option 2) Full installation with OLM
