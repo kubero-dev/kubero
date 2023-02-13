@@ -1,0 +1,19 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: cyberchef
+spec:
+  name: cyberchef
+  deploymentstrategy: docker
+  image:
+    repository: mpepping/cyberchef
+    tag: latest
+    containerPort: "8000"
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
