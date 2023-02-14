@@ -69,14 +69,15 @@ https://github.com/kubero-dev/buildpacks
 - Minio (WIP)
 - InfluxDB (WIP)
 
-## One Click Apps (similar to Heroku Buttons)
+## 20+ Application templates (similar to Heroku Buttons)
 - Wordpress
 - Grafana
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
 - <a href="https://github.com/zadam/trilium" target="_blank">Trilium Notes</a>
+
 ... and growing
 
-Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/services/README.md) how to do it.
+Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
 
 
 ## Quickstart

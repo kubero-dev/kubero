@@ -1,0 +1,8 @@
+name: CyberChef
+description: 'CyberChef is a simple, intuitive web app for carrying out all manner of "cyber" operations within a web browser.'
+tags:
+- helper tools
+source: https://github.com/gchq/CyberChef
+website: https://github.com/gchq/CyberChef
+icon: https://www.freepnglogos.com/uploads/chef-png/chef-icon-33.png
+screenshots:
