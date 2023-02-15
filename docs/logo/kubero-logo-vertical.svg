@@ -24,27 +24,57 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="0.914906"
-     inkscape:cx="389.11101"
-     inkscape:cy="540.49268"
-     inkscape:window-width="1387"
-     inkscape:window-height="1205"
-     inkscape:window-x="0"
-     inkscape:window-y="82"
+     inkscape:zoom="0.457453"
+     inkscape:cx="-266.69406"
+     inkscape:cy="-173.78835"
+     inkscape:window-width="1582"
+     inkscape:window-height="1067"
+     inkscape:window-x="93"
+     inkscape:window-y="597"
      inkscape:window-maximized="0"
-     inkscape:current-layer="layer1" />
+     inkscape:current-layer="layer2" />
   <defs
-     id="defs4741" />
+     id="defs4741">
+    <rect
+       x="27.325212"
+       y="255.76398"
+       width="817.57033"
+       height="236.08983"
+       id="rect474" />
+    <rect
+       x="27.325212"
+       y="255.76398"
+       width="817.57031"
+       height="236.08983"
+       id="rect474-1" />
+    <rect
+       x="27.325212"
+       y="255.76398"
+       width="817.57031"
+       height="236.08983"
+       id="rect474-1-4" />
+    <rect
+       x="27.325212"
+       y="255.76398"
+       width="817.57031"
+       height="236.08983"
+       id="rect474-1-4-6" />
+    <rect
+       x="27.325212"
+       y="255.76398"
+       width="817.57031"
+       height="236.08983"
+       id="rect474-1-4-6-7" />
+  </defs>
   <g
      inkscape:label="Ebene 1"
      inkscape:groupmode="layer"
      id="layer1">
     <g
-       aria-label="
-Kubero"
+       aria-label=" Kubero"
        transform="matrix(1.1845867,0,0,1.0182113,-96.50892,-179.69897)"
        id="text317-6-5"
-       style="font-size:15.5223px;line-height:2.45;white-space:pre;inline-size:124.631;display:inline;fill:#48479b;stroke-width:0.264581"
+       style="font-size:15.5223px;line-height:2.45;white-space:pre;inline-size:124.631;display:none;fill:#48479b;stroke-width:0.264581"
        inkscape:label="kubero">
       <path
          d="m 107.82354,246.06386 0.81856,1.14447 q 0.16674,0.28801 0.16674,0.65939 h -0.16674 q 0.16674,0.31833 0.16674,0.49265 0,2.38746 -3.9412,5.73749 v 0.15917 q 1.21267,2.75884 3.28181,5.24484 v 1.47795 q 0,1.31879 -0.6594,2.12977 0,0.65939 -1.96302,1.47795 v 0.16674 q -1.9706,0 -1.9706,-0.82613 -2.81949,-5.03262 -3.766891,-5.89666 h -0.325908 q 0,0.28801 -1.31121,0.9853 0,0.48508 -0.166743,0.48508 l 0.166743,0.33348 q 0,2.01608 -1.477953,3.11507 -0.727608,0.49265 -1.477953,0.49265 -1.061095,-0.33348 -1.470374,-0.33348 v -0.49265 l 0.159164,-0.32591 q -0.447176,0 -1.470374,-3.60772 h -0.166744 q 0,-0.36381 0.166744,-0.65182 -0.166744,-0.65939 -0.659395,-0.65939 v -0.65182 q 0.20464,-0.26527 0.492651,-1.31121 l -0.166743,-0.33348 v -2.28894 q 0.219798,-3.94121 0.659394,-3.94121 0.447176,0 1.637118,-0.97772 1.690172,-0.9853 2.129769,-0.9853 h 0.818558 q 0.826138,0 0.826138,2.45567 v 0.6594 q 0,0.65181 -0.659394,2.12977 0.166743,0.31833 0.166743,0.49265 2.084293,-1.56133 2.78158,-2.29651 2.29652,-1.75839 2.29652,-2.62242 0.3259,0 3.77446,-1.47796 1.16721,-0.15916 1.31121,-0.15916 z"
@@ -70,6 +100,52 @@ Kubero"
          d="m 179.68997,244.75265 q 2.50873,0 3.60773,3.11507 v 0.65182 l -0.16675,1.47795 q 1.05352,0.37138 1.47796,1.31121 v 0.49265 l -0.16675,0.32591 h 0.32591 v 0.81856 h -0.32591 v 0.65939 q -0.88677,3.97911 -2.78916,5.57075 -0.38654,0.56086 -1.14447,0.81856 -0.69729,0.81856 -1.80386,0.81856 h -0.49265 q -0.37138,0 -0.65182,-0.15917 -0.28801,0.15917 -0.65939,0.15917 -1.97818,-0.23496 -4.25954,-2.28894 0,-0.52297 -1.47795,-4.26711 0,-2.97865 2.45568,-7.20787 0,-0.55328 0.9853,-0.82614 2.41778,-1.14446 5.08567,-1.47037 z m -2.62242,5.89665 -0.81856,0.82614 v 1.14447 q 1.16721,2.90285 2.62242,3.76689 h 0.65182 q 1.80386,-1.78113 1.80386,-3.76689 -0.16674,0 -0.16674,-0.16674 l -0.32591,0.16674 q -1.31121,-0.2577 -1.31121,-0.81856 -0.65182,0 -0.65182,-0.81856 -0.23495,-0.16674 -1.80386,-0.33349 z"
          style="font-family:shash;-inkscape-font-specification:shash"
          id="path8560" />
+    </g>
+    <g
+       inkscape:groupmode="layer"
+       id="layer2"
+       inkscape:label="kubero-letters"
+       style="display:inline">
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-47.625005,-8.9958326)"
+         id="text472"
+         style="font-style:normal;font-weight:normal;font-size:133.333px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect474);display:none;fill:#48479b;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+         x="117.03986"
+         y="0" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-47.709961,-10.361371)"
+         id="text472-8"
+         style="font-style:normal;font-weight:normal;font-size:146.667px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect474-1);display:none;fill:#48479b;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+         x="117.03986"
+         y="0" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-46.581422,-1.9555099)"
+         id="text472-8-6"
+         style="font-style:normal;font-weight:normal;font-size:100px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect474-1-4);display:none;fill:#48479b;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+         x="117.03986"
+         y="0" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-46.270933,-5.8773202)"
+         id="text472-8-6-1"
+         style="font-style:normal;font-weight:normal;font-size:120px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect474-1-4-6);display:none;fill:#48479b;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+         x="117.03986"
+         y="0" />
+      <text
+         xml:space="preserve"
+         transform="matrix(0.26458333,0,0,0.26458333,-46.533952,-4.7524298)"
+         id="text472-8-6-1-0"
+         style="font-style:normal;font-weight:normal;font-size:120px;line-height:1.25;font-family:sans-serif;text-align:center;white-space:pre;shape-inside:url(#rect474-1-4-6-7);display:inline;fill:#48479b;fill-opacity:1;stroke:none;stroke-width:1.00157;stroke-dasharray:none"
+         x="117.03986"
+         y="0"><tspan
+           x="199.09309"
+           y="366.76367"
+           id="tspan1994"><tspan
+             style="font-family:'Shree Devanagari 714';-inkscape-font-specification:'Shree Devanagari 714, Normal'"
+             id="tspan1992">KUBERO</tspan></tspan></text>
     </g>
     <path
        style="display:inline;fill:#7473bf;fill-opacity:1;stroke-width:0.679746"
