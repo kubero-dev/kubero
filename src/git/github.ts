@@ -275,7 +275,11 @@ export class GithubApi extends Repo {
     public async listRepos(): Promise<string[]> {
         let ret: string[] = [];
         try {
-            const repos = await this.octokit.request('GET /user/repos', {})
+            const repos = await this.octokit.request('GET /user/repos', {
+                visibility: 'all',
+                per_page: 100,
+                sort: 'updated'
+            })
             for (let repo of repos.data) {
                 ret.push(repo.ssh_url)
             }
