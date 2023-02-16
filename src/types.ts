@@ -170,6 +170,7 @@ export interface IGithubRepository {
     owner?: string,
     private?: boolean,
     ssh_url?: string
+    clone_url?: string,
 }
 
 export interface IPipelinePhase {

@@ -1,7 +1,5 @@
 import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
-import { IApp } from '../types';
-import { App } from '../modules/application';
 import axios from 'axios';
 import YAML from 'yaml'
 

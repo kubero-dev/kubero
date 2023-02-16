@@ -708,4 +708,32 @@ export class Kubero {
     public getStorageglasses() {
         return this.kubectl.getStorageglasses();
     }
+
+    public async startScan(pipeline: string, phase: string, appName: string) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+        const app = appresult?.body as IKubectlApp;
+
+
+        if (app?.spec?.deploymentstrategy === 'git') {
+
+            if (app?.spec.gitrepo?.clone_url) {
+                if (contextName) {
+                    this.kubectl.setCurrentContext(contextName);
+                    this.kubectl.createScanRepoJob(namespace, appName, app.spec.gitrepo.clone_url, app.spec.branch);
+                }
+            } else {
+                debug.log('no git repo found to run scan');
+            }
+        } else {
+            if (contextName) {
+                this.kubectl.setCurrentContext(contextName);
+                this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag);
+            }
+        }
+    }
 }

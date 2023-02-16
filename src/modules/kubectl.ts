@@ -21,7 +21,8 @@ import {
     PodMetric,
     PodMetricsList,
     NodeMetric,
-    StorageV1Api
+    StorageV1Api,
+    BatchV1Api
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -36,6 +37,7 @@ export class Kubectl {
     private appsV1Api: AppsV1Api;
     private metricsApi: Metrics;
     private storageV1Api: StorageV1Api;
+    private batchV1Api: BatchV1Api;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
@@ -69,6 +71,7 @@ export class Kubectl {
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
         this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
+        this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
         this.metricsApi = new Metrics(this.kc);
         this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
@@ -538,5 +541,104 @@ export class Kubectl {
             console.log('ERROR fetching storageclasses');
         }
         return ret;
+    }
+
+    private async deleteScanJob(namespace: string, name: string): Promise<any> {
+        try {
+            await this.batchV1Api.deleteNamespacedJob(name, namespace);
+            // wait for job to be deleted
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+            //console.log(error);
+            console.log('ERROR deleting job: '+name+' ' +namespace);
+        }
+    }
+
+    public async createScanRepoJob(namespace: string, app: string, gitrepo: string, branch: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-repo-scan');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-repo-scan',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 60,
+                completions: 1,
+                template: {
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "repo",
+                                    gitrepo,
+                                    "--branch",
+                                    branch,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Repo scan job: '+app+' ' +namespace);
+        }
+    }
+
+    public async createScanImageJob(namespace: string, app: string, image: string, tag: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-image-scan');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-image-scan',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 60,
+                completions: 1,
+                template: {
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "image",
+                                    image+":"+tag,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Image scan job');
+        }
     }
 }
