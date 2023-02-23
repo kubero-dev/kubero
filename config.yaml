@@ -95,9 +95,9 @@ buildpacks:
       tag: latest
       command: "echo 'Buildpack not required'"
     run:
-      repository: webdevops/nginx
-      tag: alpine
-      command: "supervisord"
+      repository: caddy
+      tag: latest
+      command: caddy file-server --listen :8080 --root /app
 podSizeList:
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
