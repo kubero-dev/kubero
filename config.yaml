@@ -59,6 +59,19 @@ buildpacks:
       repository: golang
       tag: alpine
       command: "./app"
+  - name: Hugo
+    language: GoLang
+    fetch:
+      repository: ghcr.io/kubero-dev/buildpacks/fetch
+      tag: main
+    build:
+      repository: klakegg/hugo
+      tag: latest
+      command: hugo -D
+    run:
+      repository: caddy
+      tag: latest
+      command: caddy file-server --listen :8080 --root /app/public
   - name: Ruby
     language: Ruby
     fetch:
