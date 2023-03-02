@@ -19,7 +19,7 @@
                     <v-list-item-icon>
                     <v-icon>mdi-bookshelf</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Addons</v-list-item-title>
+                    <v-list-item-title>Add-Ons</v-list-item-title>
                 </v-list-item>
                 <v-list-item link to="/services">
                     <v-list-item-icon>
