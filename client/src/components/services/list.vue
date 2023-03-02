@@ -3,12 +3,12 @@
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Services</h1>
+                <h1>Templates</h1>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="3"
-            v-for="addon in services.services" :key="addon.name">
+            v-for="template in services.services" :key="template.name">
                 <v-card
                     style="padding-bottom: 40px;"
                     height="320px"
@@ -19,11 +19,11 @@
                             size="57"
                             rounded
                             ><img
-                            :src="addon.icon"
-                            :alt="addon.name"
+                            :src="template.icon"
+                            :alt="template.name"
                             ></v-avatar>
                         <v-card-title>
-                            <a :href="addon.website" target="_blank">{{ addon.name }}</a>
+                            <a :href="template.website" target="_blank">{{ template.name }}</a>
                         </v-card-title>
 
                         <v-card-subtitle>
@@ -32,27 +32,27 @@
                                 label
                                 small
                                 class="mr-2"
-                            ><v-icon left small>mdi-star</v-icon>{{ addon.stars }}</v-chip>
+                            ><v-icon left small>mdi-star</v-icon>{{ template.stars }}</v-chip>
                             <v-chip
                                 color="#ddd"
                                 label
                                 small
-                                v-if="addon.spdx_id && addon.spdx_id !== 'NOASSERTION'"
-                            ><v-icon left small>mdi-file-certificate</v-icon>{{ addon.spdx_id }}</v-chip>
+                                v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"
+                            ><v-icon left small>mdi-file-certificate</v-icon>{{ template.spdx_id }}</v-chip>
                         </v-card-subtitle>
 
                         <v-card-text>
-                            {{ addon.description }}
-                            <!--Operator: <a :href="addon.url">{{ addon.id }}</a>-->
+                            {{ template.description }}
+                            <!--Operator: <a :href="template.url">{{ template.id }}</a>-->
                         </v-card-text>
                     </v-list-item-content>
                 </v-card>
-                <div class="text-center" style="height:0px" v-if="!addon.enabled">
+                <div class="text-center" style="height:0px" v-if="!template.enabled">
                 <v-btn
                     style="top: -50px;"
                     color="primary"
                     dark
-                    @click="openInstallDialog(addon)"
+                    @click="openInstallDialog(template)"
                     >
                     details
                 </v-btn>
@@ -65,15 +65,15 @@
             >
             <v-card>
                 <v-card-title class="text-h5">
-                    {{clickedAddon.name}}
+                    {{clickedTemplate.name}}
                 </v-card-title>
                 <v-card-text>
-                    {{clickedAddon.description}}
+                    {{clickedTemplate.description}}
                 </v-card-text>
-                <v-card-text v-if="clickedAddon.screenshots && clickedAddon.screenshots.length > 0">
+                <v-card-text v-if="clickedTemplate.screenshots && clickedTemplate.screenshots.length > 0">
                     <v-carousel>
                         <v-carousel-item
-                        v-for="(screenshot, i) in clickedAddon.screenshots"
+                        v-for="(screenshot, i) in clickedTemplate.screenshots"
                         :key="i"
                         :src="screenshot"
                         >
@@ -95,7 +95,7 @@
                         color="primary"
                         dark
                         :disabled="!pipeline || !phase"
-                        @click="openInstall(clickedAddon.dirname, pipeline, phase)"
+                        @click="openInstall(clickedTemplate.dirname, pipeline, phase)"
                         >
                         Install
                     </v-btn>
@@ -112,7 +112,7 @@ export default {
     sockets: {
     },
     mounted() {
-        this.loadServicesList();
+        this.loadTemplatesList();
         this.loadPipelinesList();
     },
     data: () => ({
@@ -122,7 +122,7 @@ export default {
         phases: {},
         services: [],
         dialog: false,
-        clickedAddon: {},
+        clickedTemplate: {},
     }),
     components: {
     },
@@ -135,17 +135,17 @@ export default {
             }
             this.dialog = false;
         },
-        openInstall(servicename, pipeline, phase) {
+        openInstall(templatename, pipeline, phase) {
             // redirect to install page
-            console.log(`/#/pipeline/${pipeline}/${phase}/apps/new?service=${servicename}`);
-            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?service=${servicename}`;
+            console.log(`/#/pipeline/${pipeline}/${phase}/apps/new?service=${templatename}`);
+            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?service=${templatename}`;
 
         },
-        openInstallDialog(addon) {
-            this.clickedAddon = addon;
+        openInstallDialog(template) {
+            this.clickedTemplate = template;
             this.dialog = true;
         },
-        loadServicesList() {
+        loadTemplatesList() {
             const self = this;
             axios.get(`https://services.kubero.dev`)
             .then(response => {
