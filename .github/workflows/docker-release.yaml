@@ -39,6 +39,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Set version
+        id: version
+        run: |
+          echo ${GITHUB_REF#refs/tags/v} > VERSION
+
       - name: build
         run: |
           yarn install
@@ -78,6 +83,7 @@ jobs:
         id: kubero-meta
         uses: docker/metadata-action@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           images: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
           tags: |
             type=semver,pattern=v{{version}}

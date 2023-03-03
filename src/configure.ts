@@ -18,10 +18,15 @@ import { Addons } from './modules/addons';
 import { Settings } from './modules/settings';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
+import * as fs from 'fs';
 
 const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
 export const before = (app: Express) => {
+
+    // Load Version from File
+    process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');;
+
     app.use(cors())
     app.use(session({
         name: 'KuberoSession',
