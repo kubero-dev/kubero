@@ -1,0 +1,9 @@
+name: changedetection.io
+description: 'A self-hosted free open source website change detection, monitor and notification service.'
+tags:
+- monitoring
+source: https://github.com/dgtlmoon/changedetection.io
+website: https://changedetection.io/
+icon: https://changedetection.io/assets/images/favicons/apple-touch-icon.png
+screenshots:
+- https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png
