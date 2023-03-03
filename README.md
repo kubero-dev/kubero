@@ -6,6 +6,7 @@
 
 ![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen)
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
+![Discord](https://img.shields.io/discord/1051249947472826408?style=flat-square)
 
 <br>
 Kubero is a fully self-hosted Internal Developer Platform (IDP) that brings the convenience of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
