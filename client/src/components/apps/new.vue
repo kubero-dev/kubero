@@ -859,6 +859,11 @@ export default {
       },
       loadBranches() {
 
+        // empty if not connected
+        if (!this.pipelineData.git.provider ) {
+          return;
+        }
+
         // encode string to base64 (for ssh url)
         const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
         const gitprovider = this.pipelineData.git.provider;
