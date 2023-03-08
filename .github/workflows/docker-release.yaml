@@ -39,11 +39,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set version
-        id: version
-        run: |
-          echo ${GITHUB_REF#refs/tags/v} > VERSION
-
       - name: build
         run: |
           yarn install
@@ -51,6 +46,11 @@ jobs:
           cd client
           npm install
           npm run build
+
+      - name: Set version
+        id: version
+        run: |
+          echo ${GITHUB_REF#refs/tags/v} > dist/VERSION
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
