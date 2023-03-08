@@ -244,7 +244,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
-            tag: req.body.image.tag || "main",
+            tag: req.body.image.tag || "latest",
             pullPolicy: "Always",
             fetch: req.body.image.fetch,
             build: req.body.image.build,
