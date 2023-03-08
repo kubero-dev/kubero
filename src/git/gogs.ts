@@ -258,8 +258,8 @@ export class GogsApi extends Repo {
         // https://try.gitea.io/api/swagger#/repository/repoListBranches
         let ret: string[] = [];
 
-        let repo = "template-nodeapp"
-        let owner = "gicara"
+        let {repo, owner} = this.parseRepo(gitrepo)
+
         try {
             const branches = await this.gitea.repos.repoListBranches(owner, repo)
             for (let branch of branches.data) {
