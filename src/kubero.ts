@@ -433,6 +433,8 @@ export class Kubero {
 
         const repo = Buffer.from(repoB64, 'base64').toString('ascii');
 
+        console.log('listRepoBranches: '+repoProvider+' '+repo);
+
         switch (repoProvider) {
             case 'github':
                 branches = this.githubApi.getBranches(repo);

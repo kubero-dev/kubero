@@ -832,7 +832,8 @@ export default {
           if (this.app == 'new') {
             this.domain = this.pipelineData.domain;
             this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
-            /*
+
+            /* TODO: auto select/sugest buildpack based on language
             switch (this.pipelineData.github.repository.language) {
               case "JavaScript":
                 this.buildpack = 'NodeJS';

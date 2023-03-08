@@ -294,8 +294,8 @@ export class BitbucketApi extends Repo {
     public async getBranches(gitrepo: string): Promise<string[]> {
         //https://bitbucketjs.netlify.app/#api-repositories-repositories_listBranches
 
-        let repo = "template-nodeapp"
-        let owner = "gicara"
+        let {repo, owner} = this.parseRepo(gitrepo)
+
         try {
             const branches = await this.bitbucket.repositories.listBranches({
                 repo_slug: repo,
