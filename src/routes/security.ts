@@ -17,11 +17,7 @@ Router.get('/security/:pipeline/:phase/:app/scan', authMiddleware, async functio
     let app = req.params.app;
 
     let ret = await req.app.locals.kubero.startScan(pipeline, phase, app);
-    let retXXXX = [
-        pipeline,
-        phase,
-        app
-    ]
+
     res.send(ret);
 
 });

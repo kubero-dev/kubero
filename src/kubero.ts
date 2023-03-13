@@ -735,5 +735,14 @@ export class Kubero {
                 this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag);
             }
         }
+
+        return {
+            status: 'ok',
+            message: 'scan started',
+            deploymentstrategy: app?.spec?.deploymentstrategy,
+            pipeline: pipeline,
+            phase: phase,
+            app: appName
+        };
     }
 }
