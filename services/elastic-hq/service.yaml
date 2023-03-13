@@ -1,0 +1,9 @@
+name: ElasticHQ
+description: 'Gatus is a service that allows you to monitor the availability and latency of your services and expose this information a beautiful dashboard.'
+tags:
+- Database Management
+source: https://github.com/ElasticHQ/elasticsearch-HQ
+website: http://www.elastichq.org
+icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
+screenshots:
+- https://raw.githubusercontent.com/ElasticHQ/elasticsearch-HQ/master/main_dashboard.png
