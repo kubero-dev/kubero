@@ -1,0 +1,9 @@
+name: Authorizer
+description: 'Authorizer is an open-source authentication and authorization solution for your applications.'
+tags:
+- authentication
+source: https://github.com/authorizerdev/authorizer
+website: https://authorizer.dev/
+icon: https://authorizer.dev/images/favicon_io/android-chrome-192x192.png
+screenshots:
+- https://docs.authorizer.dev/images/authorizer-arch.png
