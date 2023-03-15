@@ -8,40 +8,50 @@
         <v-layout class="flex-column">
                 <v-row>
                     <v-col cols="12" sm="12" md="12" lg="12" xl="12" v-if="this.renderVulnerabilities" >
-                        <v-card class="mb-6" v-for="target in this.vulnScanResult.logs.Results" :key="target.Target">
-                            <v-card-title>
-                                <h3 class="headline mb-0">{{ target.Target }}</h3>
-                            </v-card-title>
-                            <v-card-text>
-                                <v-simple-table>
-                                    <thead>
-                                        <tr>
-                                            <th>CVE</th>
-                                            <th>Package</th>
-                                            <th>Title</th>
-                                            <th>Score</th>
-                                            <th>CVSS</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="vuln in target.Vulnerabilities" :key="vuln.VulnerabilityID+vuln.PkgID">
-                                            <td><a :href=vuln.PrimaryURL target="_blank"><nobr>{{ vuln.VulnerabilityID }}</nobr></a></td>
-                                            <td>{{ vuln.PkgName }}</td>
-                                            <td>{{ vuln.Title }}</td>
-                                            <td>{{ vuln.Severity }}</td>
-                                            <td>
-                                                <v-chip
-                                                label
-                                                :class="'severity-' + vuln.Severity.toLowerCase()"
-                                                >
-                                                {{ getMaxCVSS(vuln.CVSS) }}
-                                                </v-chip>
+                        <span v-for="target in this.vulnScanResult.logs.Results" :key="target.Target">
+                            <v-card class="mb-6" v-if="target.Class != 'secret'">
+                                <v-card-title>
+                                    <h3 class="headline mb-0">{{ target.Target }}</h3>
+                                </v-card-title>
+                                <v-card-text>
+                                    <v-data-table
+                                        :headers="vulnHeaders"
+        :expanded.sync="vulnExpanded"
+        show-expand
+        single-expand
+        item-key="VulnerabilityID"
+                                        :items="target.Vulnerabilities"
+                                        :items-per-page=5
+                                        :footer-props="{
+                                            'items-per-page-options': [5, 10, 25, { text: 'ALL', value: -1 }]
+                                        }">
+                                        <!-- eslint-disable-next-line vue/valid-v-slot -->
+                                        <template v-slot:item.VulnerabilityID="{ item }">
+                                            <a :href="item.PrimaryURL" target="_blank"><nobr>{{ item.VulnerabilityID }}</nobr></a>
+                                        </template>
+
+                                        <!-- eslint-disable-next-line vue/valid-v-slot -->
+                                        <template v-slot:item.CVSS="{ item }">
+                                            <v-chip
+                                            label
+                                            :class="'severity-' + item.Severity.toLowerCase()"
+                                            >
+                                            {{ getMaxCVSS(item.CVSS) }}
+                                            </v-chip>
+                                        </template>
+
+                                        <template v-slot:expanded-item="{ headers, item }">
+                                            <td :colspan="headers.length">
+                                                <div class="row sp-details">
+                                                    {{ item }}
+                                                </div>
                                             </td>
-                                        </tr>
-                                    </tbody>
-                                </v-simple-table>
-                            </v-card-text>
-                        </v-card>
+                                        </template>
+
+                                    </v-data-table>
+                                </v-card-text>
+                            </v-card>
+                        </span>
                     </v-col>
                 </v-row>
         </v-layout>
@@ -51,7 +61,6 @@
 
 <script>
 import axios from "axios";
-import { forEach } from 'lodash';
 export default {
     sockets: {
     },
@@ -61,6 +70,14 @@ export default {
     data: () => ({
         vulnScanResult: {},
         renderVulnerabilities: false,
+        vulnExpanded: [],
+        vulnHeaders: [
+            { text: 'CVE', value: 'VulnerabilityID', filterable: false,},
+            { text: 'PGK', value: 'PkgName' },
+            { text: 'Title', value: 'Title' },
+            { text: 'Score', value: 'Severity' },
+            { text: 'CVSS', value: 'CVSS' },
+        ],
     }),
     components: {
     },
