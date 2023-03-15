@@ -641,4 +641,49 @@ export class Kubectl {
             console.log('ERROR creating Image scan job');
         }
     }
+
+    public async getVulnerabilityScanLogs(namespace: string, logPod: string): Promise<any> {
+
+        try {
+            const logs = await this.coreV1Api.readNamespacedPodLog(logPod, namespace, undefined, false);
+            return logs.body;
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching scan logs');
+        }
+    }
+
+    public async getLatestPodByLabel(namespace: string, label: string ): Promise<any> {
+
+        try {
+            const pods = await this.coreV1Api.listNamespacedPod(namespace, undefined, undefined, undefined, undefined, label);
+            let latestPod = null;
+            for (let i = 0; i < pods.body.items.length; i++) {
+                const pod = pods.body.items[i];
+                if (latestPod === null) {
+                    latestPod = pod;
+                } else {
+                    if (
+                        pod.metadata?.creationTimestamp && latestPod.metadata?.creationTimestamp &&
+                        pod.metadata?.creationTimestamp > latestPod.metadata?.creationTimestamp) {
+                        latestPod = pod;
+                    }
+                }
+            }
+
+            return {
+                name: latestPod?.metadata?.name,
+                status: latestPod?.status?.phase,
+                startTime: latestPod?.status?.startTime,
+                containerStatuses: latestPod?.status?.containerStatuses
+
+            };
+
+            //return latestPod?.metadata?.name
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching pod by label');
+        }
+    }
+
 }

@@ -745,4 +745,102 @@ export class Kubero {
             app: appName
         };
     }
+
+    public async getScanResult(pipeline: string, phase: string, appName: string, logdetails: boolean) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+        let scanResult = {
+            status: 'error',
+            message: 'unknown error',
+            deploymentstrategy: '',
+            pipeline: pipeline,
+            phase: phase,
+            app: appName,
+            namespace: namespace,
+            logsummary: {},
+            logs: {},
+            logPod: ''
+        }
+
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+        const app = appresult?.body as IKubectlApp;
+
+        const logPod = await this.kubectl.getLatestPodByLabel(namespace, `vulnerabilityscan=${appName}`);
+
+        if (!logPod.name) {
+            scanResult.status = 'error'
+            scanResult.message = 'no vulnerability scan pod found'
+            return scanResult;
+        }
+
+        let logs = '';
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            logs = await this.kubectl.getVulnerabilityScanLogs(namespace, logPod.name);
+        }
+
+        if (!logs) {
+            scanResult.status = 'error'
+            scanResult.message = 'no vulnerability scan logs found'
+            return scanResult;
+        }
+
+        const logsummary = this.getVulnSummary(logs);
+
+        scanResult.status = 'ok'
+        scanResult.message = 'vulnerability scan result'
+        scanResult.deploymentstrategy = app?.spec?.deploymentstrategy
+        scanResult.logsummary = logsummary
+        scanResult.logPod = logPod
+
+
+        if (logdetails) {
+            scanResult.logs = logs;
+        }
+
+        return scanResult;
+    }
+
+    private getVulnSummary(logs: any) {
+        let summary = {
+            total: 0,
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+            unknown: 0
+        }
+
+        logs.Results.forEach((target: any) => {
+            if (target.Vulnerabilities) {
+                target.Vulnerabilities.forEach((vuln: any) => {
+                    summary.total++;
+                    switch (vuln.Severity) {
+                        case 'CRITICAL':
+                            summary.critical++;
+                            break;
+                        case 'HIGH':
+                            summary.high++;
+                            break;
+                        case 'MEDIUM':
+                            summary.medium++;
+                            break;
+                        case 'LOW':
+                            summary.low++;
+                            break;
+                        case 'UNKNOWN':
+                            summary.unknown++;
+                            break;
+                        default:
+                            summary.unknown++;
+                    }
+                });
+            }
+        });
+
+        return summary;
+    }
 }
