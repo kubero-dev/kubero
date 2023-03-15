@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Vulnerabilities {{ this.app }}</h1>
+                <h1>Vulnerabilities in {{ this.app }}</h1>
             </v-col>
         </v-row>
         <v-layout class="flex-column">
@@ -34,7 +34,7 @@
                                                 label
                                                 :class="'severity-' + vuln.Severity.toLowerCase()"
                                                 >
-                                                {{ getCVSS(vuln.CVSS) }}
+                                                {{ getMaxCVSS(vuln.CVSS) }}
                                                 </v-chip>
                                             </td>
                                         </tr>
@@ -51,6 +51,7 @@
 
 <script>
 import axios from "axios";
+import { forEach } from 'lodash';
 export default {
     sockets: {
     },
@@ -93,11 +94,45 @@ export default {
         });
 
       },
+      /*
       getCVSS(cvss) {
+        let ret = "N/A";
         if (cvss == null) {
-            return "N/A";
+            return ret;
         }
-        return cvss;
+
+        // first try to fill the value with  the first occurence of V2 score
+        forEach(cvss, value => {
+            if (value["V2Score"]) {
+                ret = value["V2Score"];
+                return false;
+            }
+            return true;
+        });
+
+        // override with V3 score of the first occurence
+        forEach(cvss, value => {
+            if (value["V3Score"]) {
+                ret = value["V3Score"];
+                return false;
+            }
+            return true;
+        });
+
+        return ret;
+      },
+      */
+      getMaxCVSS(cvss) {
+        let ret = "N/A";
+
+        if (cvss != null) {
+            const scores = Object.values(cvss).map(value => value.V3Score || value.V2Score).filter(Boolean);
+            if (scores.length > 0) {
+                ret = Math.max(...scores);
+            }
+        }
+
+        return ret;
       },
     },
 }
