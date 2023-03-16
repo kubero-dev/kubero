@@ -564,9 +564,14 @@ export class Kubectl {
                 namespace: namespace,
             },
             spec: {
-                ttlSecondsAfterFinished: 60,
+                ttlSecondsAfterFinished: 86400,
                 completions: 1,
                 template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
                     spec: {
                         restartPolicy: 'Never',
                         containers: [
@@ -609,9 +614,14 @@ export class Kubectl {
                 namespace: namespace,
             },
             spec: {
-                ttlSecondsAfterFinished: 60,
+                ttlSecondsAfterFinished: 86400,
                 completions: 1,
                 template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
                     spec: {
                         restartPolicy: 'Never',
                         containers: [
