@@ -8,6 +8,9 @@ import router from './router';
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
+//https://www.npmjs.com/package/vue-css-donut-chart
+Vue.use(vcdonut.default);
+
 new Vue({
   vueSocketIoExtended,
   router,

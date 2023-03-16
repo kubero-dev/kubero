@@ -6,20 +6,93 @@
             </v-col>
         </v-row>
         <v-layout class="flex-column">
+
+                <v-row>
+                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
+                        <v-card elevation="2" outlined color="#fafafa">
+                            <v-card-title>
+                                <h3 class="headline mb-0">Metadata</h3>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-simple-table dense>
+                                    <tbody>
+                                        <tr>
+                                            <th>Last Scan</th>
+                                            <td>{{ this.vulnScanResult.logPod.startTime }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Arch</th>
+                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.architecture }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Created</th>
+                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.created }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>OS</th>
+                                            <td>{{ this.vulnScanResult.logs.Metadata.OS.Family }} {{ this.vulnScanResult.logs.Metadata.OS.Name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Layers</th>
+                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.rootfs.diff_ids.length }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Working Dir</th>
+                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Esposed Ports</th>
+                                            <td>
+                                                <v-chip
+                                                    v-for="(item, key, index) in this.vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="index"
+                                                    small
+                                                    label
+                                                    class="ma-1"
+                                                    color="green"
+                                                    text-color="white"
+                                                    >
+                                                    {{ key }}
+                                                </v-chip>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </v-simple-table>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
+                        <v-card elevation="2" outlined color="#fafafa">
+                            <v-card-title>
+                                <h3 class="headline mb-0">Summary</h3>
+                            </v-card-title>
+                            <v-card-text>
+                                <vc-donut
+                                    :size="50" unit="%" :thickness="60"
+                                    has-legend legend-placement="right"
+                                    :auto-adjust-text-size="true"
+                                    :total="this.vulnScanResult.logsummary.total"
+                                    :sections="vulnSummary">
+                                </vc-donut>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
                 <v-row>
                     <v-col cols="12" sm="12" md="12" lg="12" xl="12" v-if="this.renderVulnerabilities" >
                         <span v-for="target in this.vulnScanResult.logs.Results" :key="target.Target">
-                            <v-card class="mb-6" v-if="target.Class != 'secret'">
+                            <v-card class="mb-6" v-if="target.Class != 'secret'" elevation="2" outlined color="#fafafa">
                                 <v-card-title>
                                     <h3 class="headline mb-0">{{ target.Target }}</h3>
                                 </v-card-title>
                                 <v-card-text>
+                                    <!--
+                                        :expanded.sync="vulnExpanded"
+                                        show-expand
+                                        single-expand
+                                        item-key="VulnerabilityID"
+                                    -->
                                     <v-data-table
                                         :headers="vulnHeaders"
-        :expanded.sync="vulnExpanded"
-        show-expand
-        single-expand
-        item-key="VulnerabilityID"
                                         :items="target.Vulnerabilities"
                                         :items-per-page=5
                                         :footer-props="{
@@ -75,10 +148,30 @@ export default {
             { text: 'CVE', value: 'VulnerabilityID', filterable: false,},
             { text: 'PGK', value: 'PkgName' },
             { text: 'Title', value: 'Title' },
-            { text: 'Score', value: 'Severity' },
-            { text: 'CVSS', value: 'CVSS' },
+            //{ text: 'Score', value: 'Severity' },
+            { text: 'CVSS', value: 'CVSS', sortable: false, filterable: false,},
         ],
     }),
+    computed: {
+        // a computed getter
+        vulnSummary() {
+            let ret = [];
+            const color = {
+                "critical": "red",
+                "high": "#ff6329",
+                "medium": "orange",
+                "low": "yellow",
+                "unknown": "lightgrey",
+            }
+            for (const [severity, count]  of Object.entries(this.vulnScanResult.logsummary)) {
+                if (severity == "total") {
+                    continue;
+                }
+                ret.push({ label: count+" "+severity.toUpperCase(), value: count, color: color[severity] });
+            }
+            return ret;
+        }
+    },
     components: {
     },
     props: {
@@ -156,6 +249,10 @@ export default {
 </script>
 
 <style lang="scss">
+.theme--light.v-data-table {
+    background-color: unset;
+}
+
 .severity-critical {
     background-color: red !important;
     color: #fff !important;
