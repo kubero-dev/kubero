@@ -1,0 +1,32 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: authorizer
+spec:
+  name: authorizer
+  deploymentstrategy: docker
+  image:
+    repository: lakhansamani/authorizer
+    tag: latest
+    containerPort: "8080"
+  addons: []
+  envVars:
+  - name: DATABASE_TYPE
+    value: sqlite
+  - name: DATABASE_URL
+    value: /database/authorizer.db
+  - name: ADMIN_SECRET
+    value: changeMe
+  cronjobs: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /database
+    name: authorizer-data-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

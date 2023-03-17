@@ -275,7 +275,11 @@ export class GithubApi extends Repo {
     public async listRepos(): Promise<string[]> {
         let ret: string[] = [];
         try {
-            const repos = await this.octokit.request('GET /user/repos', {})
+            const repos = await this.octokit.request('GET /user/repos', {
+                visibility: 'all',
+                per_page: 100,
+                sort: 'updated'
+            })
             for (let repo of repos.data) {
                 ret.push(repo.ssh_url)
             }
@@ -289,8 +293,8 @@ export class GithubApi extends Repo {
 
         let ret: string[] = [];
 
-        let repo = "template-nodeapp"
-        let owner = "kubero-dev"
+        let {repo, owner} = this.parseRepo(gitrepo)
+
         try {
             const branches = await this.octokit.request('GET /repos/{owner}/{repo}/branches', {
                 owner: owner,

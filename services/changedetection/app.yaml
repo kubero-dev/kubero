@@ -1,0 +1,26 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: changedetection
+spec:
+  name: changedetection
+  deploymentstrategy: docker
+  image:
+    repository: dgtlmoon/changedetection.io
+    tag: latest
+    containerPort: "5000"
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /datastore
+    name: changedetection-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

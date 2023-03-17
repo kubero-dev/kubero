@@ -47,6 +47,11 @@ jobs:
           npm install
           npm run build
 
+      - name: Set version
+        id: version
+        run: |
+          echo ${GITHUB_REF#refs/tags/v} > dist/VERSION
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
@@ -78,6 +83,7 @@ jobs:
         id: kubero-meta
         uses: docker/metadata-action@v4
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           images: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
           tags: |
             type=semver,pattern=v{{version}}

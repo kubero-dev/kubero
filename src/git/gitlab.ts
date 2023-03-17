@@ -292,8 +292,8 @@ export class GitlabApi extends Repo {
         // not implemented yet
         let ret: string[] = [];
 
-        let repo = "template-nodeapp"
-        let owner = "gicara"
+        let {repo, owner} = this.parseRepo(gitrepo)
+
         try {
             const branches:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/branches`)
             .catch((error: any) => {

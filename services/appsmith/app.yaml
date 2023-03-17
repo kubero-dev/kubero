@@ -1,0 +1,29 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: appsmith
+spec:
+  name: appsmith
+  deploymentstrategy: docker
+  image:
+    repository: appsmith/appsmith-ce
+    tag: latest
+    containerPort: "80"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /appsmith-stacks
+    name: appsmith-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
