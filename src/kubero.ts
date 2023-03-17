@@ -814,6 +814,13 @@ export class Kubero {
             unknown: 0
         }
 
+        if (!logs || !logs.Results) {
+            console.log(logs);
+
+            console.log('no logs found or not able to parse results');
+            return summary;
+        }
+
         logs.Results.forEach((target: any) => {
             if (target.Vulnerabilities) {
                 target.Vulnerabilities.forEach((vuln: any) => {
