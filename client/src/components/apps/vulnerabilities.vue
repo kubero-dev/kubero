@@ -1,8 +1,27 @@
 <template>
     <v-container>
-        <v-row class="justify-space-between">
-            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+        <v-row class="justify-space-between mb-2">
+            <v-col cols="10" sm="10" md="10" lg="10" xl="10">
                 <h1>Vulnerabilities in {{ this.app }}</h1>
+            </v-col>
+            <v-col>
+                <v-btn
+                    block
+                    @click="startVulnScan()"
+                    :disabled="this.scanning"
+                    >
+                    <v-icon v-if="this.scanning == false">mdi-refresh</v-icon>
+
+                    <v-progress-circular
+                        v-if="this.scanning == true"
+                        indeterminate
+                        size="18"
+                        width="2"
+                        color="#8560A9"
+                        class="mr-1"
+                    ></v-progress-circular>
+                    <span>Refresh</span>
+                </v-btn>
             </v-col>
         </v-row>
         <v-layout class="flex-column">
@@ -141,6 +160,7 @@ export default {
         this.loadVulnerabilities();
     },
     data: () => ({
+        scanning: false,
         vulnScanResult: {},
         renderVulnerabilities: false,
         vulnExpanded: [],
@@ -203,6 +223,15 @@ export default {
             console.log(error);
         });
 
+      },
+      startVulnScan() {
+        axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/scan`)
+        .then(response => {
+            this.scanning = true;
+        })
+        .catch(error => {
+            console.log(error);
+        });
       },
       /*
       getCVSS(cvss) {
