@@ -587,6 +587,8 @@ export class Kubectl {
                                     "-q",
                                     "-f",
                                     "json",
+                                    "--scanners",
+                                    "vuln,secret,config",
                                     "--exit-code",
                                     "0"
                                 ],
@@ -635,6 +637,8 @@ export class Kubectl {
                                     "-q",
                                     "-f",
                                     "json",
+                                    "--scanners",
+                                    "vuln",
                                     "--exit-code",
                                     "0"
                                 ],

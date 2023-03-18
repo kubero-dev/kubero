@@ -105,6 +105,7 @@
                                 </v-card-title>
                                 <v-card-text>
                                     <!--
+                                        TODO : I was not able to get the expandable table to work
                                         :expanded.sync="vulnExpanded"
                                         show-expand
                                         single-expand
@@ -226,7 +227,7 @@ export default {
       },
       startVulnScan() {
         axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/scan`)
-        .then(response => {
+        .then(() => {
             this.scanning = true;
         })
         .catch(error => {
