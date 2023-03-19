@@ -528,6 +528,15 @@ export class Kubero {
                     cronjobs: [],
                     addons: [],
                     resources: {},
+                    vulnerabilityscan: {
+                        enabled: false,
+                        schedule: "0 0 * * *",
+                        image: {
+                            repository: "aquasec/trivy",
+                            tag: "latest"
+                        }
+                    }
+
 
                 }
                 let app = new App(appOptions);

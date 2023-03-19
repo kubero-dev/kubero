@@ -154,6 +154,23 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
     res.send("new");
 });
 
+function getVulnerabilityScan(enabled: boolean): any{
+
+    const date = new Date();
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes()+1;
+
+    let vulnerabilityscan = {
+        enabled: enabled,
+        schedule: `${minutes} ${hours} * * *`,
+        image: {
+            repository: "aquasec/trivy",
+            tag: "latest",
+        }
+    }
+    return vulnerabilityscan;
+}
+
 function createApp(req: Request,) : IApp {
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
@@ -199,6 +216,7 @@ function createApp(req: Request,) : IApp {
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
+        vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
     };
     normalizeAddonName(appconfig);
 
@@ -255,6 +273,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
+        vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
     };
     // WARNING: renaming the addon will cause dataloss !!!
     //normalizeAddonName(appconfig);
