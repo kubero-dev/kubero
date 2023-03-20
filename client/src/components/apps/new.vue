@@ -189,7 +189,7 @@
               md="6"
             >
               <v-text-field
-                v-model="buildpack.build.command"
+                v-model="image.build.command"
                 label="Build Command"
               ></v-text-field>
             </v-col>
@@ -201,7 +201,7 @@
               md="6"
             >
               <v-text-field
-                v-model="buildpack.run.command"
+                v-model="image.run.command"
                 label="Run Command"
               ></v-text-field>
             </v-col>
@@ -261,6 +261,7 @@
                 inset
             ></v-switch>
             </v-col>
+            <!--
             <v-col
               cols="12"
               md="6"
@@ -272,17 +273,19 @@
                 inset
             ></v-switch>
             </v-col>
+            -->
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
-                v-model="security.readOnlyRootFilesystem"
-                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
+                v-model="image.run.securityContext.readOnlyRootFilesystem"
+                :label="`Read only root filesystem: ${image.run.securityContext.readOnlyRootFilesystem}`"
                 color="primary"
                 inset
             ></v-switch>
             </v-col>
+            <!--
             <v-col
               cols="12"
               md="6"
@@ -294,6 +297,7 @@
                 inset
             ></v-switch>
             </v-col>
+            -->
           </v-row>
 
         </v-expansion-panel-content>
@@ -694,9 +698,13 @@ export default {
     data: () => ({
       panel: [0],
       valid: false,
-      buildpack: {
+      buildpack: '',
+      image: {
         run: {
           command: '',
+          securityContext: {
+            readOnlyRootFilesystem: true
+          },
         },
         build: {
           command: '',
@@ -791,7 +799,6 @@ export default {
       security: {
         vulnerabilityScans: true,
         allowPrivilegeEscalation: false,
-        readOnlyRootFilesystem: true,
         runAsNonRoot: false,
         /*
         runAsUser: 0,
@@ -1005,6 +1012,18 @@ export default {
               this.panel.push(4)
             }
 
+            if ( response.data.spec.image.run.securityContext == undefined) {
+              console.log("securityContext is undefined")
+              response.data.spec.image.run.securityContext = {
+                readOnlyRootFilesystem: true,
+                runAsNonRoot: true,
+              }
+            }
+            if (response.data.spec.image.run.securityContext.readOnlyRootFilesystem == undefined) {
+              response.data.spec.image.run.securityContext.readOnlyRootFilesystem = true;
+              response.data.spec.image.run.securityContext.runAsNonRoot = true;
+            }
+
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
             this.buildpack = {
@@ -1047,9 +1066,9 @@ export default {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.buildpack.fetch,
-            build: this.buildpack.build,
-            run: this.buildpack.run,
+            fetch: this.image.fetch,
+            build: this.image.build,
+            run: this.image.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain,
@@ -1095,9 +1114,6 @@ export default {
           this.buildpack.name = "custom";
         }
 
-        console.log(this.buildpack);
-        console.log(this.pipelineData.buildpack);
-
         axios.post(`/api/apps`, {
           pipeline: this.pipeline,
           buildpack: this.buildpack,
@@ -1110,9 +1126,9 @@ export default {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.buildpack.fetch,
-            build: this.buildpack.build,
-            run: this.buildpack.run,
+            fetch: this.image.fetch,
+            build: this.image.build,
+            run: this.image.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),
