@@ -86,7 +86,7 @@ Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/
 2) Run `kubero install` to install all components on an new or your existing cluster
 
 ## Usage
-<a href="https://github.com/kubero-dev/kubero/tree/main/docs/2screenshots.md">Screenshots</a><p>
+<a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a><p>
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
 <img src="docs/screenshots/createapp.gif">
 
