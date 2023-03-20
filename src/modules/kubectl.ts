@@ -555,12 +555,12 @@ export class Kubectl {
     }
 
     public async createScanRepoJob(namespace: string, app: string, gitrepo: string, branch: string): Promise<any> {
-        await this.deleteScanJob(namespace, app+'-repo-scan');
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
         const job = {
             apiVersion: 'batch/v1',
             kind: 'Job',
             metadata: {
-                name: app+'-repo-scan',
+                name: app+'-kuberoapp-vuln',
                 namespace: namespace,
             },
             spec: {
@@ -607,12 +607,12 @@ export class Kubectl {
     }
 
     public async createScanImageJob(namespace: string, app: string, image: string, tag: string): Promise<any> {
-        await this.deleteScanJob(namespace, app+'-image-scan');
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
         const job = {
             apiVersion: 'batch/v1',
             kind: 'Job',
             metadata: {
-                name: app+'-image-scan',
+                name: app+'-kuberoapp-vuln',
                 namespace: namespace,
             },
             spec: {

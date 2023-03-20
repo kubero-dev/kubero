@@ -20,7 +20,7 @@
                         color="#8560A9"
                         class="mr-1"
                     ></v-progress-circular>
-                    <span>Refresh</span>
+                    <span>Rescan</span>
                 </v-btn>
             </v-col>
         </v-row>
