@@ -39,27 +39,31 @@
                                             <th>Last Scan</th>
                                             <td>{{ this.vulnScanResult.logPod.startTime }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr>
+                                            <th>Artefact</th>
+                                            <td>{{ this.vulnScanResult.logs.ArtifactName }}</td>
+                                        </tr>
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Arch</th>
                                             <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.architecture }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Created</th>
                                             <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.created }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>OS</th>
                                             <td>{{ this.vulnScanResult.logs.Metadata.OS.Family }} {{ this.vulnScanResult.logs.Metadata.OS.Name }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Layers</th>
                                             <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.rootfs.diff_ids.length }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Working Dir</th>
                                             <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.Metadata == 'image'">
+                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Esposed Ports</th>
                                             <td>
                                                 <v-chip
