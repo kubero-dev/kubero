@@ -41,7 +41,20 @@
                                         </tr>
                                         <tr>
                                             <th>Artefact</th>
-                                            <td>{{ this.vulnScanResult.logs.ArtifactName }}</td>
+                                            <td>
+                                                <v-span
+                                                    v-if="this.vulnScanResult.logs.ArtifactType == 'repository'"
+                                                    class="mx-0"
+                                                >
+                                                    <v-icon left small>mdi-git</v-icon>
+                                                </v-span>
+                                                <v-span
+                                                    v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'"
+                                                    class="mx-0"
+                                                >
+                                                    <v-icon left small>mdi-docker</v-icon>
+                                                </v-span>
+                                                {{ this.vulnScanResult.logs.ArtifactName }}</td>
                                         </tr>
                                         <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Arch</th>
