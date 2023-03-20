@@ -4,11 +4,12 @@
 <hr>
 <br>
 
-![GitHub](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)
+<a href="https://github.com/kubero-dev/kubero/blob/main/LICENSE" target="_blank"><img alt="License" src="https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=brightgreen"></a>
+<a href="https://github.com/kubero-dev/kubero/releases/latest" target="_blank"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen"></a>
+<a href="https://discord.gg/tafRPMWS4r" target="_blank"><img alt="Discord" src="https://img.shields.io/discord/1051249947472826408?style=flat-square"></a>
 
 <br>
-Kubero is a fully self-hosted Internal Developer Platform (IDP) that brings the convenience of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
+Kubero is a fully self-hosted Internal Developer Platform (IDP) that brings the workflows of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
 <br>
 <br>
 Kubero is Kubernetes native and runs with two containers on any Kubernetes instance.

@@ -108,6 +108,15 @@ export class App implements IApp{
         }
     };
 
+    public vulnerabilityscan: {
+        enabled: boolean
+        schedule: string
+        image: {
+            repository: string
+            tag: string
+        }
+    }
+
     private imagePullSecrets: [];
     private ingress?: {
         annotations: Object,
@@ -176,11 +185,13 @@ export class App implements IApp{
             containerPort: app.image.containerPort,
             pullPolicy: 'Always',
             repository: app.image.repository || 'busybox',
-            tag: 'latest',
+            tag: app.image.tag || 'latest',
             fetch: app.image.fetch,
             build: app.image.build,
             run: app.image.run,
         }
+
+        this.vulnerabilityscan = app.vulnerabilityscan
 
         this.imagePullSecrets = []
 

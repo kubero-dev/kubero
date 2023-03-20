@@ -42,6 +42,17 @@
 
     </v-card-text>
 
+    <table style="width: 100%;" v-if="this.vulnSummary.unknown != undefined">
+      <tr>
+        <td title="UNKNOWN" class="vuln-summary" style="background-color: lightgrey;">{{ this.vulnSummary.unknown }} UNKNOWN</td>
+        <td title="LOW" class="vuln-summary" style="background-color: yellow;">{{ this.vulnSummary.low }} LOW</td>
+        <td title="MEDIUM" class="vuln-summary" style="background-color: orange;">{{ this.vulnSummary.medium }} MEDIUM</td>
+        <td title="HIGH" class="vuln-summary" style="background-color: #ff6329;">{{ this.vulnSummary.high }} HIGH</td>
+        <td title="CRITICAL" class="vuln-summary" style="background-color: red;">{{ this.vulnSummary.critical }} CRITICAL</td>
+        <td title="TOTAL" class="vuln-summary" style="background-color: grey; color: whitesmoke">{{ this.vulnSummary.total }} TOTAL</td>
+      </tr>
+    </table>
+
     <v-divider></v-divider>
     <v-card-text v-if="metricsDisplay == 'bars'">
       <v-row>
@@ -153,10 +164,19 @@ export default {
       loadingState: false,
       metrics: [],
       metricsDisplay: "dots",
+      vulnSummary: {
+        "total": undefined,
+        "critical": undefined,
+        "high": undefined,
+        "medium": undefined,
+        "low": undefined,
+        "unknown": undefined
+      },
     }),
     mounted() {
         this.loadMetrics();
         setInterval(this.loadMetrics, 10000);
+        this.loadVulnSummary();
     },
     methods: {
         restartApp() {
@@ -188,12 +208,33 @@ export default {
             .catch(error => {
                 console.log(error);
             });
-        }
+        },
+        loadVulnSummary() {
+            axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app.name}/scan/result`)
+            .then(response => {
+                this.vulnSummary = response.data.logsummary;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
     }
 }
 </script>
 
 <style>
+.vuln-summary {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.54);
+
+    width: 16%;
+    text-align: center;
+}
+
 .v-btn.v-size--default {
     font-size: 0.675rem;
 }

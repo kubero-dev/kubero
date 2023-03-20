@@ -1,0 +1,10 @@
+name: phpMyAdmin
+description: 'phpMyAdmin is a free software tool written in PHP, intended to handle the administration of MySQL and MariaDB over the Web.'
+tags:
+- database
+- administration
+source: https://github.com/phpmyadmin/phpmyadmin
+website: https://www.phpmyadmin.net/
+icon: https://www.phpmyadmin.net/static/images/logo.png
+screenshots:
+- https://upload.wikimedia.org/wikipedia/commons/1/13/PhpMyAdmin-main-en.png

@@ -12,16 +12,22 @@ import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
 import { Router as RouterServices } from "./routes/services";
+import { Router as RouterSecurity } from "./routes/security";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
 import { Settings } from './modules/settings';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
+import * as fs from 'fs';
 
 const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
 export const before = (app: Express) => {
+
+    // Load Version from File
+    process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');;
+
     app.use(cors())
     app.use(session({
         name: 'KuberoSession',
@@ -66,6 +72,7 @@ export const after = (app: Express, server: Server) => {
     app.use('/api', RouterRepo);
     app.use('/api', RouterSettings);
     app.use('/api', RouterServices);
+    app.use('/api', RouterSecurity);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 }

@@ -293,8 +293,8 @@ export class GithubApi extends Repo {
 
         let ret: string[] = [];
 
-        let repo = "template-nodeapp"
-        let owner = "kubero-dev"
+        let {repo, owner} = this.parseRepo(gitrepo)
+
         try {
             const branches = await this.octokit.request('GET /repos/{owner}/{repo}/branches', {
                 owner: owner,

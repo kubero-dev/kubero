@@ -26,9 +26,8 @@ buildpacks:
       tag: latest
       command: "composer install; chown -R 1000:1000 /app"
     run:
-      repository: webdevops/php-apache
-      tag: "8.1"
-      readOnlyAppStorage: false
+      repository: thecodingmachine/php
+      tag: "8.1-v4-apache"
       securityContext:
         allowPrivilegeEscalation: true
         readOnlyRootFilesystem: false

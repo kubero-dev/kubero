@@ -100,16 +100,16 @@
 
       <v-row>
         <v-col
-              cols="12"
-              md="6"
-            >
-              <v-switch
-                v-model="deploymentstrategyGit"
-                :label="`Deployment strategy: ${appDeploymentStrategy}`"
-                color="primary"
-                inset
-            ></v-switch>
-            </v-col>
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="deploymentstrategyGit"
+            :label="`Deployment strategy: ${appDeploymentStrategy}`"
+            color="primary"
+            inset
+          ></v-switch>
+        </v-col>
       </v-row>
 
       <v-expansion-panels
@@ -241,6 +241,61 @@
               ></v-text-field>
             </v-col>
           </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <!-- SECURITY -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Security</v-expansion-panel-header>
+        <v-expansion-panel-content>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.vulnerabilityScans"
+                :label="`Enable Trivy vulnerabfility scans: ${security.vulnerabilityScans}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.allowPrivilegeEscalation"
+                :label="`Allow privilege escalation: ${security.allowPrivilegeEscalation}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.readOnlyRootFilesystem"
+                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.runAsNonRoot"
+                :label="`Run as non root: ${security.runAsNonRoot}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+          </v-row>
+
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -733,6 +788,23 @@ export default {
         */
 
       ],
+      security: {
+        vulnerabilityScans: true,
+        allowPrivilegeEscalation: false,
+        readOnlyRootFilesystem: true,
+        runAsNonRoot: false,
+        /*
+        runAsUser: 0,
+        runAsGroup: 0,
+        capabilities: {
+          add: [],
+          drop: [],
+        },
+        seLinuxOptions: {
+          level: 's0:c0,c1',
+        },
+        */
+      },
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -832,7 +904,8 @@ export default {
           if (this.app == 'new') {
             this.domain = this.pipelineData.domain;
             this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
-            /*
+
+            /* TODO: auto select/sugest buildpack based on language
             switch (this.pipelineData.github.repository.language) {
               case "JavaScript":
                 this.buildpack = 'NodeJS';
@@ -858,6 +931,11 @@ export default {
         });
       },
       loadBranches() {
+
+        // empty if not connected
+        if (!this.pipelineData.git.provider ) {
+          return;
+        }
 
         // encode string to base64 (for ssh url)
         const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
@@ -953,6 +1031,7 @@ export default {
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
             this.addons= response.data.spec.addons || [];
+            this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
           });
         }
       },
@@ -999,6 +1078,7 @@ export default {
           extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
+          security: this.security,
 
         }).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
@@ -1061,6 +1141,7 @@ export default {
           extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
+          security: this.security,
         })
         .then(response => {
           this.appname = '';
