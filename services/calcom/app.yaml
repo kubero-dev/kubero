@@ -44,6 +44,10 @@ spec:
     value: production
   - name: NEXT_PUBLIC_LICENSE_CONSENT
     value: agree
+  - name: NEXTAUTH_SECRET
+    value: palimpalim
+  - name: CALENDSO_ENCRYPTION_KEY
+    value: bumpulum
   cronjobs: []
   extraVolumes: []
   web:
