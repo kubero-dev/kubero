@@ -189,7 +189,7 @@
               md="6"
             >
               <v-text-field
-                v-model="image.build.command"
+                v-model="buildpack.build.command"
                 label="Build Command"
               ></v-text-field>
             </v-col>
@@ -201,7 +201,7 @@
               md="6"
             >
               <v-text-field
-                v-model="image.run.command"
+                v-model="buildpack.run.command"
                 label="Run Command"
               ></v-text-field>
             </v-col>
@@ -279,8 +279,8 @@
               md="6"
             >
               <v-switch
-                v-model="image.run.securityContext.readOnlyRootFilesystem"
-                :label="`Read only root filesystem: ${image.run.securityContext.readOnlyRootFilesystem}`"
+                v-model="security.readOnlyRootFilesystem"
+                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
                 color="primary"
                 inset
             ></v-switch>
@@ -698,7 +698,14 @@ export default {
     data: () => ({
       panel: [0],
       valid: false,
-      buildpack: '',
+      buildpack: {
+        run: {
+          command: '',
+        },
+        build: {
+          command: '',
+        },
+      },
       image: {
         run: {
           command: '',
@@ -800,6 +807,7 @@ export default {
         vulnerabilityScans: true,
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
+        readOnlyRootFilesystem: true,
         /*
         runAsUser: 0,
         runAsGroup: 0,
@@ -1055,7 +1063,7 @@ export default {
         }
       },
       updateApp() {
-        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, {
+        let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
@@ -1066,9 +1074,9 @@ export default {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.image.fetch,
-            build: this.image.build,
-            run: this.image.run,
+            fetch: this.buildpack.fetch,
+            build: this.buildpack.build,
+            run: this.buildpack.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain,
@@ -1099,7 +1107,31 @@ export default {
           addons: this.addons,
           security: this.security,
 
-        }).then(response => {
+        }
+/*
+        if (this.security.vulnerabilityScans) {
+          postdata.vulnerabilityscan = {
+            enabled: true,
+            image: {
+              repository: "aquasec/trivy",
+              tag: "latest",
+            },
+          }
+        } else {
+          postdata.vulnerabilityscan = {
+            enabled: false,
+          }
+        }
+*/
+
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
           console.log(response);
         }).catch(error => {
@@ -1114,7 +1146,7 @@ export default {
           this.buildpack.name = "custom";
         }
 
-        axios.post(`/api/apps`, {
+        let postdata = {
           pipeline: this.pipeline,
           buildpack: this.buildpack,
           phase: this.phase,
@@ -1126,9 +1158,9 @@ export default {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.image.fetch,
-            build: this.image.build,
-            run: this.image.run,
+            fetch: this.buildpack.fetch,
+            build: this.buildpack.build,
+            run: this.buildpack.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),
@@ -1158,7 +1190,14 @@ export default {
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
-        })
+        }
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.post(`/api/apps`, postdata)
         .then(response => {
           this.appname = '';
           console.log(response);
