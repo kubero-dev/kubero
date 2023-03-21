@@ -887,10 +887,10 @@ export default {
             this.panel.push(1)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(3)
+            this.panel.push(4)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
         });
       },
