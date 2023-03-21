@@ -884,7 +884,7 @@ export default {
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(1)
+            this.panel.push(2)
           }
           if (this.extraVolumes.length > 0) {
             this.panel.push(4)
@@ -1003,13 +1003,13 @@ export default {
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(1)
+              this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(3)
+              this.panel.push(4)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(4)
+              this.panel.push(5)
             }
 
             if ( response.data.spec.image.run.securityContext == undefined) {
