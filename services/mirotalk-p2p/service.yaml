@@ -3,7 +3,7 @@ description: 'WebRTC - P2P - Simple, Secure, Fast, Real-Time Video Conferences U
 tags:
 - Video Conferencing
 source: https://github.com/miroslavpejic85/mirotalk
-website: p2p.mirotalk.com
+website: https://p2p.mirotalk.com
 icon: https://www.saashub.com/images/app/service_logos/213/pgzsasbgu5fr/large.png?1653219756
 screenshots:
 - https://github.com/miroslavpejic85/mirotalk/raw/master/public/images/mirotalk-header.gif
