@@ -1020,17 +1020,7 @@ export default {
               this.panel.push(5)
             }
 
-            if ( response.data.spec.image.run.securityContext == undefined) {
-              console.log("securityContext is undefined")
-              response.data.spec.image.run.securityContext = {
-                readOnlyRootFilesystem: true,
-                runAsNonRoot: true,
-              }
-            }
-            if (response.data.spec.image.run.securityContext.readOnlyRootFilesystem == undefined) {
-              response.data.spec.image.run.securityContext.readOnlyRootFilesystem = true;
-              response.data.spec.image.run.securityContext.runAsNonRoot = true;
-            }
+            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext.readOnlyRootFilesystem != false; // reversed since it is a boolean
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
