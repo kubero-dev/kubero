@@ -70,7 +70,7 @@ https://github.com/kubero-dev/buildpacks
 - Minio (WIP)
 - InfluxDB (WIP)
 
-## 20+ Application templates (similar to Heroku Buttons)
+## 30+ Application templates (similar to Heroku Buttons)
 - Wordpress
 - Grafana
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
