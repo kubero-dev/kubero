@@ -261,6 +261,7 @@
                 inset
             ></v-switch>
             </v-col>
+            <!--
             <v-col
               cols="12"
               md="6"
@@ -272,6 +273,7 @@
                 inset
             ></v-switch>
             </v-col>
+            -->
             <v-col
               cols="12"
               md="6"
@@ -283,6 +285,7 @@
                 inset
             ></v-switch>
             </v-col>
+            <!--
             <v-col
               cols="12"
               md="6"
@@ -294,6 +297,7 @@
                 inset
             ></v-switch>
             </v-col>
+            -->
           </v-row>
 
         </v-expansion-panel-content>
@@ -702,6 +706,17 @@ export default {
           command: '',
         },
       },
+      image: {
+        run: {
+          command: '',
+          securityContext: {
+            readOnlyRootFilesystem: true
+          },
+        },
+        build: {
+          command: '',
+        },
+      },
       deploymentstrategyGit: true,
       pipelineData: {
         git: {
@@ -791,8 +806,8 @@ export default {
       security: {
         vulnerabilityScans: true,
         allowPrivilegeEscalation: false,
-        readOnlyRootFilesystem: true,
         runAsNonRoot: false,
+        readOnlyRootFilesystem: true,
         /*
         runAsUser: 0,
         runAsGroup: 0,
@@ -877,13 +892,13 @@ export default {
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(1)
+            this.panel.push(2)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(3)
+            this.panel.push(4)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
         });
       },
@@ -996,13 +1011,25 @@ export default {
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(1)
+              this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(3)
+              this.panel.push(4)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(4)
+              this.panel.push(5)
+            }
+
+            if ( response.data.spec.image.run.securityContext == undefined) {
+              console.log("securityContext is undefined")
+              response.data.spec.image.run.securityContext = {
+                readOnlyRootFilesystem: true,
+                runAsNonRoot: true,
+              }
+            }
+            if (response.data.spec.image.run.securityContext.readOnlyRootFilesystem == undefined) {
+              response.data.spec.image.run.securityContext.readOnlyRootFilesystem = true;
+              response.data.spec.image.run.securityContext.runAsNonRoot = true;
             }
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
@@ -1036,7 +1063,7 @@ export default {
         }
       },
       updateApp() {
-        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, {
+        let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
@@ -1080,7 +1107,31 @@ export default {
           addons: this.addons,
           security: this.security,
 
-        }).then(response => {
+        }
+/*
+        if (this.security.vulnerabilityScans) {
+          postdata.vulnerabilityscan = {
+            enabled: true,
+            image: {
+              repository: "aquasec/trivy",
+              tag: "latest",
+            },
+          }
+        } else {
+          postdata.vulnerabilityscan = {
+            enabled: false,
+          }
+        }
+*/
+
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
           console.log(response);
         }).catch(error => {
@@ -1095,10 +1146,7 @@ export default {
           this.buildpack.name = "custom";
         }
 
-        console.log(this.buildpack);
-        console.log(this.pipelineData.buildpack);
-
-        axios.post(`/api/apps`, {
+        let postdata = {
           pipeline: this.pipeline,
           buildpack: this.buildpack,
           phase: this.phase,
@@ -1142,7 +1190,14 @@ export default {
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
-        })
+        }
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.post(`/api/apps`, postdata)
         .then(response => {
           this.appname = '';
           console.log(response);
