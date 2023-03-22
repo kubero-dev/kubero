@@ -804,7 +804,7 @@ export default {
 
       ],
       security: {
-        vulnerabilityScans: true,
+        vulnerabilityScans: false,
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
         readOnlyRootFilesystem: true,
