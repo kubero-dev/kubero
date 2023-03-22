@@ -1,0 +1,12 @@
+name: MongoDB Express
+description: 'Web-based MongoDB admin interface written with Node.js, Express and Bootstrap3'
+tags:
+- database administration
+source: https://github.com/mongo-express/mongo-express
+website: https://github.com/mongo-express/mongo-express
+icon: https://avatars.githubusercontent.com/u/17328297?s=200&v=4
+screenshots:
+- http://i.imgur.com/XiYhblA.png
+- http://i.imgur.com/XWcIgY1.png
+- https://imgur.com/UmGSr3x.png
+- https://imgur.com/lL38abn.png

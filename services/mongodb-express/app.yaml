@@ -1,0 +1,21 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mongodb-express
+spec:
+  name: mongodb-express
+  deploymentstrategy: docker
+  image:
+    repository: mongo-express
+    tag: latest
+    containerPort: "8081"
+  addons: []
+  envVars:
+  - name: ME_CONFIG_MONGODB_URL
+    value: mongodb://root:rootpassword@miro-mongodb:27017
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
