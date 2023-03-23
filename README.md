@@ -24,13 +24,13 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 - Automatic deployment of the app based on a branch or tag
 - Create scheduled tasks (cronjobs)
 - Easy deployment of your apps on Kubernetes without helm charts
-- Deploy addons (PostgreSQL, Redis, more to come)
+- Deploy add-ons for your application (PostgreSQL, Redis, more to come)
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
+- Periodic vulnerability scans of your running apps
 
 ## What Kubero won't do for you
 - Manage your Kubernetes cluster
-- Install and manage your operators
 - Give access to your container CLI
 
 ## How it Works
@@ -69,7 +69,7 @@ Basicly *everything* that can be shipped in a single container. Kubero uses offi
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
-## Preconfigured addons
+## Preconfigured add-ons
 The Kubero Operator ships with several basic addons that can be used in your apps.
 - MySQL
 - PostgreSQL
