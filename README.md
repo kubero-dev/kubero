@@ -96,23 +96,12 @@ Check out the full [list here](https://www.kubero.dev/templates/) or submit your
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on an new or your existing cluster
 
-<<<<<<< Updated upstream
-## Usage
-<a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a><p>
-<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
-<img src="docs/screenshots/createapp.gif">
-
-1. Create a pipeline with all your phases
-2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
-3. Create your apps with cronjobs and addons
-=======
 You can bring your own cluster or create one with the kubero install on one of the following providers:
 - GKE
 - Scaleway
 - DigitalOcean
 - Linode
 - Kind (local)
->>>>>>> Stashed changes
 
 ## Documentation
 https://docs.kubero.dev/
