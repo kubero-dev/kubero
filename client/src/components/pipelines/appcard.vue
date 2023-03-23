@@ -44,12 +44,12 @@
 
     <table style="width: 100%;" v-if="this.vulnSummary.unknown != undefined">
       <tr>
-        <td title="UNKNOWN" class="vuln-summary" style="background-color: lightgrey;">{{ this.vulnSummary.unknown }} UNKNOWN</td>
-        <td title="LOW" class="vuln-summary" style="background-color: yellow;">{{ this.vulnSummary.low }} LOW</td>
-        <td title="MEDIUM" class="vuln-summary" style="background-color: orange;">{{ this.vulnSummary.medium }} MEDIUM</td>
-        <td title="HIGH" class="vuln-summary" style="background-color: #ff6329;">{{ this.vulnSummary.high }} HIGH</td>
-        <td title="CRITICAL" class="vuln-summary" style="background-color: red;">{{ this.vulnSummary.critical }} CRITICAL</td>
-        <td title="TOTAL" class="vuln-summary" style="background-color: grey; color: whitesmoke">{{ this.vulnSummary.total }} TOTAL</td>
+        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ this.vulnSummary.unknown }} UNKNOWN</td>
+        <td title="LOW" class="vuln-summary severity-low">{{ this.vulnSummary.low }} LOW</td>
+        <td title="MEDIUM" class="vuln-summary severity-medium">{{ this.vulnSummary.medium }} MEDIUM</td>
+        <td title="HIGH" class="vuln-summary severity-high">{{ this.vulnSummary.high }} HIGH</td>
+        <td title="CRITICAL" class="vuln-summary severity-critical">{{ this.vulnSummary.critical }} CRITICAL</td>
+        <td title="TOTAL" class="vuln-summary severity-total">{{ this.vulnSummary.total }} TOTAL</td>
       </tr>
     </table>
 

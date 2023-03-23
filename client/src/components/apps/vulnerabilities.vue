@@ -195,10 +195,10 @@ export default {
         vulnSummary() {
             let ret = [];
             const color = {
-                "critical": "red",
-                "high": "#ff6329",
-                "medium": "orange",
-                "low": "yellow",
+                "critical": "#ff8080",
+                "high": "#ff946d",
+                "medium": "#ffd07a",
+                "low": "#fdfda0",
                 "unknown": "lightgrey",
             }
             for (const [severity, count]  of Object.entries(this.vulnScanResult.logsummary)) {
@@ -300,25 +300,5 @@ export default {
     background-color: unset;
 }
 
-.severity-critical {
-    background-color: red !important;
-    color: #fff !important;
-}
-.severity-high {
-    background-color: rgb(255, 99, 41) !important;
-    color: #fff;
-}
-.severity-medium {
-    background-color: orange !important;
-    color: #fff;
-}
-.severity-low {
-    background-color: yellow !important;
-    color: #fff;
-}
-.severity-unknown {
-    background-color: lightgrey !important;
-    color: #fff;
-}
 
 </style>

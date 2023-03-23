@@ -109,13 +109,6 @@
     </v-app>
 </template>
 
-<style>
-.v-icon {
-  color: #8560A9;
-}
-</style>
-
-
 <script>
 import axios from "axios";
 //import Appfooter from "./components/appfooter.vue";
@@ -193,5 +186,25 @@ export default {
     width: 23px;
     visibility: hidden;
     content: "";
+}
+
+.severity-unknown {
+    background-color: lightgrey !important;
+}
+.severity-low {
+    background-color: #fdfda0 !important;
+}
+.severity-medium {
+    background-color: #ffd07a !important;
+}
+.severity-high {
+    background-color: #ff946d !important;
+}
+.severity-critical {
+    background-color: #ff8080 !important;
+}
+.severity-total {
+    background-color: gray !important;
+    color: whitesmoke!important;
 }
 </style>
