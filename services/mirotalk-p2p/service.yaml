@@ -1,0 +1,10 @@
+name: MiroTalk P2P
+description: 'WebRTC - P2P - Simple, Secure, Fast, Real-Time Video Conferences Up to 4k and 60fps, compatible with all browsers and platforms.'
+tags:
+- Video Conferencing
+source: https://github.com/miroslavpejic85/mirotalk
+website: https://p2p.mirotalk.com
+icon: https://www.saashub.com/images/app/service_logos/213/pgzsasbgu5fr/large.png?1653219756
+screenshots:
+- https://github.com/miroslavpejic85/mirotalk/raw/master/public/images/mirotalk-header.gif
+installationnotes: "Make sure to to change all the secrets and Passwords."
