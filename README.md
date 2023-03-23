@@ -33,6 +33,18 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 - Install and manage your operators
 - Give access to your container CLI
 
+## How it Works
+1. Create a pipeline with the phases you need (dev, staging, production)
+2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
+3. Create your apps with cronjobs and addons
+
+Kubero will then start an init container that will clone your repository and and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
+
+<img src="docs/screenshots/createapp.gif">
+
+More <a href="https://github.com/kubero-dev/kubero/tree/main/docs/2screenshots.md">Screenshots</a> and a full video on
+<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
+
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea
 - Gogs
@@ -75,16 +87,16 @@ https://github.com/kubero-dev/buildpacks
 - Grafana
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
 - <a href="https://github.com/zadam/trilium" target="_blank">Trilium Notes</a>
+- ...
 
-... and growing
-
-Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
+Check out the full [list here](https://www.kubero.dev/templates/) or submit your own app! [Read here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
 
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
 2) Run `kubero install` to install all components on an new or your existing cluster
 
+<<<<<<< Updated upstream
 ## Usage
 <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a><p>
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
@@ -93,6 +105,14 @@ Submit your own app! Read [here](https://github.com/kubero-dev/kubero/blob/main/
 1. Create a pipeline with all your phases
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
+=======
+You can bring your own cluster or create one with the kubero install on one of the following providers:
+- GKE
+- Scaleway
+- DigitalOcean
+- Linode
+- Kind (local)
+>>>>>>> Stashed changes
 
 ## Documentation
 https://docs.kubero.dev/
