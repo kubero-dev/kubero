@@ -38,7 +38,7 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
 
-Kubero will then start an init container that will clone your repository and and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
+Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
 
 <img src="docs/screenshots/createapp.gif">
 
@@ -70,6 +70,7 @@ You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
 ## Preconfigured addons
+The Kubero Operator ships with several basic addons that can be used in your apps.
 - MySQL
 - PostgreSQL
 - Redis
