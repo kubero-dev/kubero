@@ -42,7 +42,7 @@ Kubero will then start an init container that will clone your repository and ano
 
 <img src="docs/screenshots/createapp.gif">
 
-More <a href="https://github.com/kubero-dev/kubero/tree/main/docs/2screenshots.md">Screenshots</a> and a full video on
+More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a> and a full video on
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
 
 ## Supported GIT repositories (hosted and self-hosted)
