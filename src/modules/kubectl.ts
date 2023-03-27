@@ -21,7 +21,8 @@ import {
     PodMetric,
     PodMetricsList,
     NodeMetric,
-    StorageV1Api
+    StorageV1Api,
+    BatchV1Api
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -36,6 +37,7 @@ export class Kubectl {
     private appsV1Api: AppsV1Api;
     private metricsApi: Metrics;
     private storageV1Api: StorageV1Api;
+    private batchV1Api: BatchV1Api;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
@@ -69,6 +71,7 @@ export class Kubectl {
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
         this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
+        this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
         this.metricsApi = new Metrics(this.kc);
         this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
@@ -539,4 +542,162 @@ export class Kubectl {
         }
         return ret;
     }
+
+    private async deleteScanJob(namespace: string, name: string): Promise<any> {
+        try {
+            await this.batchV1Api.deleteNamespacedJob(name, namespace);
+            // wait for job to be deleted
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+            //console.log(error);
+            console.log('ERROR deleting job: '+name+' ' +namespace);
+        }
+    }
+
+    public async createScanRepoJob(namespace: string, app: string, gitrepo: string, branch: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-vuln',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "repo",
+                                    gitrepo,
+                                    "--branch",
+                                    branch,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--scanners",
+                                    "vuln,secret,config",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Repo scan job: '+app+' ' +namespace);
+        }
+    }
+
+    public async createScanImageJob(namespace: string, app: string, image: string, tag: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-vuln',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "image",
+                                    image+":"+tag,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--scanners",
+                                    "vuln",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Image scan job');
+        }
+    }
+
+    public async getVulnerabilityScanLogs(namespace: string, logPod: string): Promise<any> {
+
+        try {
+            const logs = await this.coreV1Api.readNamespacedPodLog(logPod, namespace, undefined, false);
+            return logs.body;
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching scan logs');
+        }
+    }
+
+    public async getLatestPodByLabel(namespace: string, label: string ): Promise<any> {
+
+        try {
+            const pods = await this.coreV1Api.listNamespacedPod(namespace, undefined, undefined, undefined, undefined, label);
+            let latestPod = null;
+            for (let i = 0; i < pods.body.items.length; i++) {
+                const pod = pods.body.items[i];
+                if (latestPod === null) {
+                    latestPod = pod;
+                } else {
+                    if (
+                        pod.metadata?.creationTimestamp && latestPod.metadata?.creationTimestamp &&
+                        pod.metadata?.creationTimestamp > latestPod.metadata?.creationTimestamp) {
+                        latestPod = pod;
+                    }
+                }
+            }
+
+            return {
+                name: latestPod?.metadata?.name,
+                status: latestPod?.status?.phase,
+                startTime: latestPod?.status?.startTime,
+                containerStatuses: latestPod?.status?.containerStatuses
+
+            };
+
+            //return latestPod?.metadata?.name
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching pod by label');
+        }
+    }
+
 }

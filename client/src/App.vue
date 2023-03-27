@@ -19,13 +19,13 @@
                     <v-list-item-icon>
                     <v-icon>mdi-bookshelf</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Addons</v-list-item-title>
+                    <v-list-item-title>Add-Ons</v-list-item-title>
                 </v-list-item>
-                <v-list-item link to="/services">
+                <v-list-item link to="/templates">
                     <v-list-item-icon>
                     <v-icon>mdi-palette-outline</v-icon>
                     </v-list-item-icon>
-                    <v-list-item-title>Services</v-list-item-title>
+                    <v-list-item-title>Templates</v-list-item-title>
                 </v-list-item>
                 <v-list-item link to="/events">
                     <v-list-item-icon>
@@ -109,13 +109,6 @@
     </v-app>
 </template>
 
-<style>
-.v-icon {
-  color: #8560A9;
-}
-</style>
-
-
 <script>
 import axios from "axios";
 //import Appfooter from "./components/appfooter.vue";
@@ -193,5 +186,25 @@ export default {
     width: 23px;
     visibility: hidden;
     content: "";
+}
+
+.severity-unknown {
+    background-color: lightgrey !important;
+}
+.severity-low {
+    background-color: #fdfda0 !important;
+}
+.severity-medium {
+    background-color: #ffd07a !important;
+}
+.severity-high {
+    background-color: #ff946d !important;
+}
+.severity-critical {
+    background-color: #ff8080 !important;
+}
+.severity-total {
+    background-color: gray !important;
+    color: whitesmoke!important;
 }
 </style>

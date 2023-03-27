@@ -8,6 +8,11 @@ import router from './router';
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
+// vcdount is created in index.html by loadin js from CDN
+//https://www.npmjs.com/package/vue-css-donut-chart
+// eslint-disable-next-line no-undef
+Vue.use(vcdonut.default);
+
 new Vue({
   vueSocketIoExtended,
   router,

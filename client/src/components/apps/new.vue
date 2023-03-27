@@ -100,16 +100,16 @@
 
       <v-row>
         <v-col
-              cols="12"
-              md="6"
-            >
-              <v-switch
-                v-model="deploymentstrategyGit"
-                :label="`Deployment strategy: ${appDeploymentStrategy}`"
-                color="primary"
-                inset
-            ></v-switch>
-            </v-col>
+          cols="12"
+          md="6"
+        >
+          <v-switch
+            v-model="deploymentstrategyGit"
+            :label="`Deployment strategy: ${appDeploymentStrategy}`"
+            color="primary"
+            inset
+          ></v-switch>
+        </v-col>
       </v-row>
 
       <v-expansion-panels
@@ -241,6 +241,65 @@
               ></v-text-field>
             </v-col>
           </v-row>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+      <!-- SECURITY -->
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Security</v-expansion-panel-header>
+        <v-expansion-panel-content>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.vulnerabilityScans"
+                :label="`Enable Trivy vulnerabfility scans: ${security.vulnerabilityScans}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            <!--
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.allowPrivilegeEscalation"
+                :label="`Allow privilege escalation: ${security.allowPrivilegeEscalation}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            -->
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.readOnlyRootFilesystem"
+                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            <!--
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.runAsNonRoot"
+                :label="`Run as non root: ${security.runAsNonRoot}`"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+            -->
+          </v-row>
+
         </v-expansion-panel-content>
       </v-expansion-panel>
 
@@ -647,6 +706,17 @@ export default {
           command: '',
         },
       },
+      image: {
+        run: {
+          command: '',
+          securityContext: {
+            readOnlyRootFilesystem: true
+          },
+        },
+        build: {
+          command: '',
+        },
+      },
       deploymentstrategyGit: true,
       pipelineData: {
         git: {
@@ -733,6 +803,23 @@ export default {
         */
 
       ],
+      security: {
+        vulnerabilityScans: false,
+        allowPrivilegeEscalation: false,
+        runAsNonRoot: false,
+        readOnlyRootFilesystem: true,
+        /*
+        runAsUser: 0,
+        runAsGroup: 0,
+        capabilities: {
+          add: [],
+          drop: [],
+        },
+        seLinuxOptions: {
+          level: 's0:c0,c1',
+        },
+        */
+      },
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -805,13 +892,13 @@ export default {
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(1)
+            this.panel.push(2)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(3)
+            this.panel.push(4)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
         });
       },
@@ -924,14 +1011,16 @@ export default {
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(1)
+              this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(3)
-            }
-            if (response.data.spec.cronjobs.length > 0) {
               this.panel.push(4)
             }
+            if (response.data.spec.cronjobs.length > 0) {
+              this.panel.push(5)
+            }
+
+            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext.readOnlyRootFilesystem != false; // reversed since it is a boolean
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
@@ -959,11 +1048,12 @@ export default {
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
             this.addons= response.data.spec.addons || [];
+            this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
           });
         }
       },
       updateApp() {
-        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, {
+        let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
@@ -1005,8 +1095,33 @@ export default {
           extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
+          security: this.security,
 
-        }).then(response => {
+        }
+/*
+        if (this.security.vulnerabilityScans) {
+          postdata.vulnerabilityscan = {
+            enabled: true,
+            image: {
+              repository: "aquasec/trivy",
+              tag: "latest",
+            },
+          }
+        } else {
+          postdata.vulnerabilityscan = {
+            enabled: false,
+          }
+        }
+*/
+
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
           console.log(response);
         }).catch(error => {
@@ -1021,10 +1136,7 @@ export default {
           this.buildpack.name = "custom";
         }
 
-        console.log(this.buildpack);
-        console.log(this.pipelineData.buildpack);
-
-        axios.post(`/api/apps`, {
+        let postdata = {
           pipeline: this.pipeline,
           buildpack: this.buildpack,
           phase: this.phase,
@@ -1067,7 +1179,15 @@ export default {
           extraVolumes: this.extraVolumes,
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
-        })
+          security: this.security,
+        }
+
+        postdata.image.run.securityContext = {
+            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
+            //runAsNonRoot: true,
+        }
+
+        axios.post(`/api/apps`, postdata)
         .then(response => {
           this.appname = '';
           console.log(response);

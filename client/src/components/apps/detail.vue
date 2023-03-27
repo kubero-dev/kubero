@@ -13,6 +13,7 @@
         <v-tabs v-model="tab">
             <v-tab>Logs</v-tab>
             <v-tab>Events</v-tab>
+            <v-tab>Vulnerabilities</v-tab>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
@@ -21,6 +22,9 @@
             </v-tab-item>
             <v-tab-item transition="false">
                 <events :pipeline="pipeline" :phase="phase" :app="app"/>
+            </v-tab-item>
+            <v-tab-item transition="false">
+                <vulnerabilities :pipeline="pipeline" :phase="phase" :app="app"/>
             </v-tab-item>
         </v-tabs-items>
     </v-container>
@@ -58,6 +62,7 @@ export default {
     components: {
         events : () => import('./events.vue'),
         logs : () => import('./logs.vue'),
+        vulnerabilities : () => import('./vulnerabilities.vue'),
     },
     props: {
       pipeline: {

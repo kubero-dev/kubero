@@ -154,7 +154,25 @@ Router.post('/apps', authMiddleware, async function (req: Request, res: Response
     res.send("new");
 });
 
-function createApp(req: Request,) : IApp {
+function getVulnerabilityScan(enabled: boolean): any{
+
+    const date = new Date();
+    const hours = date.getUTCHours();
+    const minutes = date.getUTCMinutes()+1;
+
+    let vulnerabilityscan = {
+        enabled: enabled,
+        schedule: `${minutes} ${hours} * * *`,
+        image: {
+            repository: "aquasec/trivy",
+            tag: "latest",
+        }
+    }
+    return vulnerabilityscan;
+}
+
+function configureBuildpack(req: Request): any {
+
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
     let selectedBuildpack: any;
@@ -164,11 +182,14 @@ function createApp(req: Request,) : IApp {
     } else {
         selectedBuildpack = {
             name: "custom",
-            fetch: req.body.buildpack.fetch,
-            build: req.body.buildpack.build,
-            run: req.body.buildpack.run,
         };
     }
+    return selectedBuildpack;
+}
+
+function createApp(req: Request,) : IApp {
+
+    const selectedBuildpack = configureBuildpack(req);
 
     let appconfig: IApp = {
         name: req.body.appname,
@@ -190,15 +211,16 @@ function createApp(req: Request,) : IApp {
             repository: req.body.image.repository,
             tag: req.body.image.tag || "main",
             pullPolicy: "Always",
-            fetch: selectedBuildpack.fetch,
-            build: selectedBuildpack.build,
-            run: selectedBuildpack.run,
+            fetch: req.body.image.fetch,
+            build: req.body.image.build,
+            run: req.body.image.run,
         },
         web: req.body.web,
         worker: req.body.worker,
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
+        vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
     };
     normalizeAddonName(appconfig);
 
@@ -255,6 +277,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         cronjobs: req.body.cronjobs,
         addons: req.body.addons,
         resources: req.body.podsize.resources,
+        vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
     };
     // WARNING: renaming the addon will cause dataloss !!!
     //normalizeAddonName(appconfig);
