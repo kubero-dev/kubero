@@ -287,12 +287,17 @@ export interface IBuildpack {
     tag: string;
 }
 export interface IKuberoConfig {
-    name: string;
-    version: string;
     podSizeList: IPodSize[];
-    namespace: string;
-    port: number;
     buildpacks: IBuildpack[];
+    kubero: {
+        namespace: string; // deprecated v1.9.0
+        readonly: boolean;
+        banner: {
+            message: string;
+            bgcolor: string;
+            fontcolor: string;
+        }
+    }
 }
 
 export interface IDeployKeyPair {
