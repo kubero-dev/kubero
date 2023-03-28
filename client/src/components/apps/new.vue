@@ -856,7 +856,7 @@ export default {
     },
     mounted() {
       if (this.$route.query.service) {
-        this.loadService(this.$route.query.service);
+        this.loadTemplate(this.$route.query.service);
       }
       this.loadStorageClasses();
       this.loadPipeline();
@@ -867,7 +867,7 @@ export default {
         Addons,
     },
     methods: {
-      loadService(service) {
+      loadTemplate(service) {
         axios.get('/api/services/'+service).then(response => {
 
           this.appname = response.data.name;
@@ -1020,7 +1020,7 @@ export default {
               this.panel.push(5)
             }
 
-            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext.readOnlyRootFilesystem != false; // reversed since it is a boolean
+            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext?.readOnlyRootFilesystem != false; // reversed since it is a boolean
 
             this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
             this.appname = response.data.spec.name;
