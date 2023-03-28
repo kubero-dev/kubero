@@ -34,6 +34,14 @@ Router.get('/settings', authMiddleware, async function (req: Request, res: Respo
 Router.get('/banner', async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero Dashboad banner'
-    let addonslist = await req.app.locals.kubero.config.kubero.banner;
-    res.send(addonslist)
+
+    const defaultbanner = {
+        show: false,
+        text: "",
+        bgcolor: "white",
+        fontcolor: "white"
+    }
+
+    let banner = await req.app.locals.kubero.config.kubero?.banner || defaultbanner;
+    res.send(banner)
 });
