@@ -1,9 +1,10 @@
 kubero:
   readonly: false
   banner:
+    show: false
     message: "Welcome to Kubero!"
-    bgcolor: "#FFFFFF"
-    fontcolor: "#000000"
+    bgcolor: "#8560A9"
+    fontcolor: "azure"
   defaultannotations:
     apps:
     pipelines:

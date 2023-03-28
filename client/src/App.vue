@@ -1,5 +1,9 @@
 <template>
     <v-app>
+
+        <v-app-bar dense max-height="50" :color="banner.bgcolor" v-if="banner.show">
+            <v-toolbar-title style="width: 100%; text-align: center; color: azure;">{{ banner.message }}</v-toolbar-title>
+        </v-app-bar>
         <v-navigation-drawer
             app
             color="#F7F8FB"
@@ -122,6 +126,7 @@ export default {
     */
     mounted() {
         this.checkSession()
+        this.loadBanner()
     },
     updated() {
         this.checkSession();
@@ -129,7 +134,13 @@ export default {
     data: () => ({
         session: false,
         isAuthenticated: false,
-        version: "dev"
+        version: "dev",
+        banner: {
+            show: false,
+            message: "",
+            bgcolor: "white",
+            fontcolor: "white"
+        }
     }),
     methods: {
         logout: () => {
@@ -163,6 +174,16 @@ export default {
                         }
                     });
             }
+        },
+        loadBanner() {
+            axios
+                .get("/api/banner")
+                .then((result) => {
+                    this.banner = result.data;
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         }
     },
 };
