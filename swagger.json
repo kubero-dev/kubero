@@ -1494,6 +1494,21 @@
         }
       }
     },
+    "/banner": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get the Kubero Dashboad banner",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/services": {
       "get": {
         "tags": [
