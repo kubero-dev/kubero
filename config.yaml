@@ -1,7 +1,14 @@
 kubero:
-  context: kind-kubero
-  namespace: kubero
-  port: 2000
+  readonly: false
+  banner:
+    show: false
+    message: "Welcome to Kubero!"
+    bgcolor: "#8560A9"
+    fontcolor: "azure"
+  defaultannotations:
+    apps:
+    pipelines:
+      - janitor/ttl=5m
 buildpacks:
   - name: NodeJS
     language: JavaScript
