@@ -35,7 +35,7 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 - Manage your Kubernetes cluster
 - Give access to your container CLI
 
-## How it Works
+## How it Works ([DEMO](https://demo.kubero.dev))
 1. Create a pipeline with the phases you need (dev, staging, production)
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Create your apps with cronjobs and addons
