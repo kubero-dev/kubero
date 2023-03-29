@@ -25,6 +25,23 @@ Router.get('/cli/settings', bearerMiddleware, async function (req: Request, res:
 Router.get('/settings', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero settings'
-    let addonslist = await req.app.locals.settings.getSettings();
-    res.send(addonslist)
+    let settings = await req.app.locals.settings.getSettings();
+    res.send(settings)
+});
+
+
+// get the dashboard banner
+Router.get('/banner', async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the Kubero Dashboad banner'
+
+    const defaultbanner = {
+        show: false,
+        text: "",
+        bgcolor: "white",
+        fontcolor: "white"
+    }
+
+    let banner = await req.app.locals.kubero.config.kubero?.banner || defaultbanner;
+    res.send(banner)
 });
