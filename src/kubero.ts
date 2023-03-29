@@ -130,6 +130,11 @@ export class Kubero {
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create Pipeline: '+pipeline.name);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
         this.updateState();
@@ -143,6 +148,11 @@ export class Kubero {
     // updates a new pipeline in the same namespace as the kubero app
     public async updatePipeline(pipeline: IPipeline, resourceVersion: string) {
         debug.debug('update Pipeline: '+pipeline.name);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
 
         // Create the Pipeline CRD
         await this.kubectl.updatePipeline(pipeline, resourceVersion);
@@ -186,6 +196,11 @@ export class Kubero {
     public deletePipeline(pipelineName: string) {
         debug.debug('deletePipeline: '+pipelineName);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         this.kubectl.getPipeline(pipelineName).then(async pipeline =>{
             if (pipeline) {
                 await this.kubectl.deletePipeline(pipelineName);
@@ -205,6 +220,12 @@ export class Kubero {
     // create a new app in a specified pipeline and phase
     public async newApp(app: App) {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
@@ -221,6 +242,11 @@ export class Kubero {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.setContext(app.pipeline, app.phase);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
@@ -233,6 +259,12 @@ export class Kubero {
     // delete a app in a pipeline and phase
     public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
@@ -567,6 +599,17 @@ export class Kubero {
     private loadConfig(path:string): IKuberoConfig {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
+
+            // override env vars with config values
+            if (config.kubero) {
+                if (config.kubero.namespace && process.env.KUBERO_NAMESPACE === undefined) {
+                    process.env.KUBERO_NAMESPACE = config.kubero.namespace;
+                }
+                if (config.kubero.readonly && process.env.KUBERO_READONLY === undefined) {
+                    process.env.KUBERO_READONLY = config.kubero.readonly.toString();
+                }
+            }
+
             return config;
         } catch (error) {
             debug.log('FATAL ERROR: could not load config file: '+path);
