@@ -991,8 +991,11 @@ export default {
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
           .then(response => {
-            this.$router.push(`/pipeline/${this.pipeline}/apps`);
-            console.log(response);
+            // wait for 1 second and redirect to apps page
+            // this avoids a race condition with the backend
+            setTimeout(() => {
+              this.$router.push(`/pipeline/${this.pipeline}/apps`);
+            }, 1000);
           })
           .catch(error => {
             console.log(error);
