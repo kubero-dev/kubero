@@ -18,8 +18,10 @@ const port: String = process.env.PORT || "2000";
 before(app);
 after(app, server);
 
+const maxAge = process.env.NODE_ENV === 'development' ? '1s' : '1h';
+
 const publicPath = resolve(__dirname, '../client/dist');
-const staticConf = { maxAge: '1s', etag: true };
+const staticConf = { maxAge: maxAge, etag: true };
 
 app.use(history());
 app.use(express.static(publicPath, staticConf));
