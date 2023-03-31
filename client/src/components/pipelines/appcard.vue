@@ -179,7 +179,7 @@ export default {
         this.loadVulnSummary();
     },
     methods: {
-        restartApp() {
+        async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 console.log(response);
@@ -188,6 +188,10 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+
+            // TODO - this is a hack to wait for the restart to complete. It is not so easy to get the status of the restart.
+            await new Promise(r => setTimeout(r, 15000));
+            this.loadingState = false;
         },
         loadMetrics() {
             axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
