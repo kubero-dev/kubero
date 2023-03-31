@@ -5,9 +5,9 @@
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
                         <p><span class="text-uppercase">{{phase.name}}</span><br /><span class="caption">[{{phase.context}}]</span></p>
-                        
 
-                        <Appcard v-for="app in phase.apps" :key="app.name" 
+
+                        <Appcard v-for="app in phase.apps" :key="app.name"
                             :pipeline="pipeline"
                             :phase="phase.name"
                             :app="app" />
@@ -35,13 +35,6 @@ import axios from "axios";
 import Appcard from "./appcard.vue";
 
 export default {
-    sockets: {
-        async updatedApps(instances) {
-            console.log("updatedApps", instances);
-            let _phases = await this.loadPipeline();
-            this.phases = _phases;
-        },
-    },
     mounted() {
         this.loadPipeline();
     },

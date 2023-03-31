@@ -269,12 +269,14 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
-            this._io.emit('updatedApps', "deleted");
             this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+            this._io.emit('deleteApp',appName, pipelineName, phaseName);
         }
     }
 
     private removeAppFromState(pipelineName: string, phaseName: string, appName: string) {
+        //console.log('removeAppFromState: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
         for (let i = 0; i < this.appStateList.length; i++) {
             if (this.appStateList[i].name == appName &&
                 this.appStateList[i].pipeline == pipelineName &&
