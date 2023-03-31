@@ -5,6 +5,7 @@
     outlined
     elevation="2"
     color="#fafafa"
+    v-if="this.deleted === false"
     >
 
     <template slot="progress">
@@ -110,6 +111,18 @@
                 >mdi-open-in-new
             </v-icon>
         </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+            title="Delete App"
+            depressed
+            color="deep-purple lighten-3"
+            @click="deleteApp()"
+        >
+            <v-icon
+              color="white"
+                >mdi-delete
+            </v-icon>
+        </v-btn>
     </v-card-actions>
 </v-card>
 </template>
@@ -117,6 +130,14 @@
 <script>
 import axios from "axios";
 export default {
+    sockets: {
+        async deleteApp(appName, pipelineName, phaseName) {
+            console.log("deleteApp", appName);
+            if (this.app.name == appName && this.pipeline == pipelineName && this.phase == phaseName) {
+                this.deleted = true;
+            }
+        },
+    },
     props: {
       pipeline: {
         type: String,
@@ -161,6 +182,7 @@ export default {
       }
     },
     data: () => ({
+      deleted: false,
       loadingState: false,
       metrics: [],
       metricsDisplay: "dots",
@@ -179,7 +201,21 @@ export default {
         this.loadVulnSummary();
     },
     methods: {
-        restartApp() {
+        deleteApp() {
+
+          axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
+            .then(response => {
+              //this.$router.push(`/pipeline/${this.pipeline}/apps`);
+              console.log("deleteApp");
+              this.deleted = true;
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+        },
+        async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 console.log(response);
@@ -188,6 +224,10 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+
+            // TODO - this is a hack to wait for the restart to complete. It is not so easy to get the status of the restart.
+            await new Promise(r => setTimeout(r, 15000));
+            this.loadingState = false;
         },
         loadMetrics() {
             axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)

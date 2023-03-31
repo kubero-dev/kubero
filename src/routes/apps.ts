@@ -259,6 +259,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
         domain: req.body.domain,
+        ssl: req.body.ssl,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         extraVolumes: req.body.extraVolumes,
