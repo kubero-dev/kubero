@@ -6,7 +6,7 @@
         </v-app-bar>
         <v-navigation-drawer
             app
-            color="#F7F8FB"
+            color="navBG"
             expand-on-hover
             permanent
             mini-variant
@@ -54,6 +54,12 @@
 
             <template v-slot:append>
                 <v-list nav dense>
+                    <v-list-item @click="toggleTheme()" >
+                        <v-list-item-icon>
+                        <v-icon>mdi-theme-light-dark</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Theme</v-list-item-title>
+                    </v-list-item>
                     <v-list-item link href="/api/docs" target="_blank">
                         <v-list-item-icon>
                         <v-icon>mdi-api</v-icon>
@@ -143,6 +149,15 @@ export default {
         }
     }),
     methods: {
+        toggleTheme() {
+            if (this.$vuetify.theme.dark) {
+                this.$vuetify.theme.dark = false;
+                localStorage.setItem("theme", "light");
+            } else {
+                this.$vuetify.theme.dark = true;
+                localStorage.setItem("theme", "dark");
+            }
+        },
         logout: () => {
             axios.get("/api/logout")
             .then((response) => {
