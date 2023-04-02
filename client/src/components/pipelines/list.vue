@@ -60,7 +60,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         @click="deletePipeline(item.name)"
                                         >
                                             <v-icon dark>
@@ -72,7 +72,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         :href="'#/pipeline/'+item.name"
                                         >
                                             <v-icon dark>
