@@ -1,19 +1,28 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib/framework';
-//import colors from 'vuetify/es5/util/colors'
+import colors from 'vuetify/es5/util/colors'
 
 Vue.use(Vuetify);
 
+// selct theme by time of day
+function getTheme() {
+  const hours = new Date().getHours();
+  return hours > 7 && hours < 19 ? 'false' : 'true';
+}
+
+
 export default new Vuetify({
   theme: {
-    dark: false,
+    dark: getTheme(),
     themes: {
       dark: {
         primary: '#8560A9',
         //cardBackground: '#', // use default
         navBG: '#262626',
+        secondary: colors.grey.darken3,
+        background: '#121212',
 
-        secondary: '#b0bec5',
+        //secondary: '#b0bec5',
         accent: '#8c9eff',
         error: '#b71c1c',
       },
@@ -22,7 +31,7 @@ export default new Vuetify({
         cardBackground: '#FAFAFA',
         navBG: '#F7F8FB',
 
-        secondary: '#424242',
+        secondary: colors.grey.lighten2,
         accent: '#82B1FF',
         error: '#FF5252',
         info: '#2196F3',
