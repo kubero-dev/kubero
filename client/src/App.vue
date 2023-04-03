@@ -130,6 +130,9 @@ export default {
         Appfooter
     },
     */
+    created() {
+        this.$vuetify.theme.dark = this.getTheme();
+    },
     mounted() {
         this.checkSession()
         this.loadBanner()
@@ -149,6 +152,27 @@ export default {
         }
     }),
     methods: {
+        getTheme() {
+            const theme = localStorage.getItem("theme");
+            console.log('theme: ' + theme);
+            if (theme) {
+                if (theme === "dark") {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                this.$vuetify.theme.dark = false;
+                return true;
+            }
+/*
+            const hours = new Date().getHours();
+            const darkmode = hours > 6 && hours < 19 ? 'true' : 'false';
+            console.log('darkmode: ' + darkmode);
+            console.log('hours: ' + hours);
+            return darkmode;
+*/
+        },
         toggleTheme() {
             if (this.$vuetify.theme.dark) {
                 this.$vuetify.theme.dark = false;
