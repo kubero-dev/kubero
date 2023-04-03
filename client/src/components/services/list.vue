@@ -12,7 +12,7 @@
                 <v-card
                     style="padding-bottom: 40px;"
                     height="320px"
-                    color="#fafafa">
+                    color="cardBackground">
                     <v-list-item-content class="justify-center">
 
                         <v-avatar
@@ -28,13 +28,11 @@
 
                         <v-card-subtitle>
                             <v-chip
-                                color="#ddd"
                                 label
                                 small
                                 class="mr-2"
                             ><v-icon left small>mdi-star</v-icon>{{ template.stars }}</v-chip>
                             <v-chip
-                                color="#ddd"
                                 label
                                 small
                                 v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"

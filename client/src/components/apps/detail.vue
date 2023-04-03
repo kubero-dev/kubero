@@ -10,20 +10,21 @@
             </v-breadcrumbs-item>
             </template>
         </v-breadcrumbs>
-        <v-tabs v-model="tab">
-            <v-tab>Logs</v-tab>
-            <v-tab>Events</v-tab>
-            <v-tab>Vulnerabilities</v-tab>
+        <v-tabs v-model="tab"  class="background">
+            <v-tab class="background">Logs</v-tab>
+            <v-tab class="background">Events</v-tab>
+            <v-tab class="background">Vulnerabilities</v-tab>
+            <v-spacer  class="background"></v-spacer>
         </v-tabs>
 
         <v-tabs-items v-model="tab">
-            <v-tab-item transition="false">
+            <v-tab-item transition="false" class="background">
                 <logs :pipeline="pipeline" :phase="phase" :app="app"/>
             </v-tab-item>
-            <v-tab-item transition="false">
+            <v-tab-item transition="false" class="background">
                 <events :pipeline="pipeline" :phase="phase" :app="app"/>
             </v-tab-item>
-            <v-tab-item transition="false">
+            <v-tab-item transition="false" class="background">
                 <vulnerabilities :pipeline="pipeline" :phase="phase" :app="app"/>
             </v-tab-item>
         </v-tabs-items>

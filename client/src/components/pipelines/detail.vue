@@ -17,9 +17,9 @@
                         icon
                         large
                         :to="{ name: 'New App', params: { phase: phase.name }}"
-                        class="mt-5"
+                        class="mt-5 navBG"
                         >
-                            <v-icon dark>
+                            <v-icon>
                                 mdi-plus
                             </v-icon>
                         </v-btn>
@@ -80,6 +80,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss">
-</style>

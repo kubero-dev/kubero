@@ -118,8 +118,8 @@
       >
       <!-- DEPLOYMENT -->
       <v-expansion-panel v-if="appDeploymentStrategy == 'git'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium" color="#fafafa">GitOps Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content color="#fafafa">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">GitOps Deployment</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
 <!--
           <v-row>
             <v-col
@@ -210,8 +210,8 @@
       </v-expansion-panel>
 
       <v-expansion-panel v-if="appDeploymentStrategy == 'docker'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Container Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Container Deployment</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
           <!-- DEPLOYMENT STRATEGY CONTAINER -->
           <v-row
             v-if="appDeploymentStrategy == 'docker'">
@@ -246,8 +246,8 @@
 
       <!-- SECURITY -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Security</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Security</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
 
           <v-row>
             <v-col
@@ -305,8 +305,8 @@
 
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Environment Variables</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Environment Variables</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
           <v-row v-for="variable in envvars" v-bind:key="variable.id">
             <v-col
               cols="12"
@@ -365,8 +365,8 @@
 
       <!-- RESOURCES -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Resources</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Resources</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
           <v-row>
             <v-col
               cols="12"
@@ -459,8 +459,8 @@
 
       <!-- VOLUMES -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Volumes</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Volumes</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
           <div v-for="volume in extraVolumes" v-bind:key="volume.id">
             <v-row>
               <v-col
@@ -553,8 +553,8 @@
 
       <!-- CRONJOBS -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium">Cronjobs</v-expansion-panel-header>
-        <v-expansion-panel-content>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Cronjobs</v-expansion-panel-header>
+        <v-expansion-panel-content class="cardBackground">
           <div v-for="variable in cronjobs" v-bind:key="variable.id">
             <v-row>
               <v-col
@@ -1274,9 +1274,9 @@ export default {
 
 <style lang="scss">
 .v-expansion-panel-content {
-    background: #fafafa;
+    background: cardBackground;
 }
 .v-expansion-panel-header {
-    background: #fafafa;
+    background: cardBackground;
 }
 </style>

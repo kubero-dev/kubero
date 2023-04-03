@@ -24,7 +24,7 @@
 
                 <v-row v-for="item in apps" :key="item.name">
                     <v-col cols="12">
-                        <v-card elevation="2" outlined color="#fafafa">
+                        <v-card elevation="2" outlined color="cardBackground">
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" sm="12" md="6">
@@ -60,7 +60,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         @click="deletePipeline(item.name)"
                                         >
                                             <v-icon dark>
@@ -72,7 +72,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         :href="'#/pipeline/'+item.name"
                                         >
                                             <v-icon dark>

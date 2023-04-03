@@ -24,15 +24,15 @@
                             :color=event.color
                             :icon=event.icon
                             fill-dot>
-                            <v-card class="grey lighten-2">
-                            <v-card-title class="grey lighten-2">
-                                [{{ event.reason }}] {{ event.message }}
-                            </v-card-title>
-                            <v-card-text class="white text--primary">
-                                {{ event.eventTime }}
+                            <v-card class="cardBackground darken-2">
+                                <v-card-title class="cardBackground darken-2">
+                                    [{{ event.reason }}] {{ event.message }}
+                                </v-card-title>
+                                <v-card-text class="cardBackground text--primary">
+                                    {{ event.eventTime }}
 
-                                {{ event.type }}
-                            </v-card-text>
+                                    {{ event.type }}
+                                </v-card-text>
                             </v-card>
                         </v-timeline-item>
 
