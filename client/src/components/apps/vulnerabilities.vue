@@ -28,7 +28,7 @@
 
                 <v-row>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
-                        <v-card elevation="2" outlined color="#fafafa">
+                        <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Metadata</h3>
                             </v-card-title>
@@ -97,7 +97,7 @@
                         </v-card>
                     </v-col>
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
-                        <v-card elevation="2" outlined color="#fafafa">
+                        <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Summary</h3>
                             </v-card-title>
@@ -116,7 +116,7 @@
                 <v-row>
                     <v-col cols="12" sm="12" md="12" lg="12" xl="12" v-if="this.renderVulnerabilities" >
                         <span v-for="target in this.vulnScanResult.logs.Results" :key="target.Target">
-                            <v-card class="mb-6" v-if="target.Class != 'secret'" elevation="2" outlined color="#fafafa">
+                            <v-card class="mb-6" v-if="target.Class != 'secret'" elevation="2" outlined color="cardBackground">
                                 <v-card-title>
                                     <h3 class="headline mb-0">{{ target.Target }}</h3>
                                 </v-card-title>

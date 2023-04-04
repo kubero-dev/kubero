@@ -4,7 +4,7 @@
     class="mt-5"
     outlined
     elevation="2"
-    color="#fafafa"
+    color="cardBackground"
     v-if="this.deleted === false"
     >
 
@@ -115,7 +115,7 @@
         <v-btn
             title="Delete App"
             depressed
-            color="deep-purple lighten-3"
+            color="primary lighten-2"
             @click="deleteApp()"
         >
             <v-icon
