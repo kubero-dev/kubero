@@ -162,8 +162,7 @@ export default {
                     return false;
                 }
             } else {
-                this.$vuetify.theme.dark = false;
-                return true;
+                return false;
             }
 /*
             const hours = new Date().getHours();
