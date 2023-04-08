@@ -81,7 +81,7 @@
         >
           <v-switch
             v-model="ssl"
-            :label="`SSL`"
+            label="SSL"
           ></v-switch>
         </v-col>
       </v-row>
@@ -95,6 +95,20 @@
               v-model="containerPort"
               label="Container Port"
             ></v-text-field>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+        <v-switch
+            v-model="advanced"
+            label="Advanced App Configuration"
+            color="primary"
+            inset
+          ></v-switch>
         </v-col>
       </v-row>
 
@@ -188,16 +202,15 @@
             >
               <v-switch
                 v-model="autodeploy"
-                :label="`Autodeploy: ${autodeploy.toString()}`"
-                inset
+                label="Autodeploy"
               ></v-switch>
             </v-col>
           </v-row>
 
-          <v-divider class="ma-5"></v-divider>
+          <v-divider class="ma-5" v-if="advanced === true"></v-divider>
 
           <v-row
-            v-if="deploymentstrategy == 'git'">
+            v-if="deploymentstrategy == 'git' && advanced === true">
             <v-col
               cols="12"
               md="6"
@@ -209,7 +222,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="deploymentstrategy == 'git'">
+            v-if="deploymentstrategy == 'git' && advanced === true">
             <v-col
               cols="12"
               md="6"
@@ -224,7 +237,7 @@
       </v-expansion-panel>
 
       <v-expansion-panel v-if="deploymentstrategy == 'docker'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Container Deployment</v-expansion-panel-header>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Docker Image Deployment</v-expansion-panel-header>
         <v-expansion-panel-content class="cardBackground">
           <!-- DEPLOYMENT STRATEGY CONTAINER -->
           <v-row
@@ -259,7 +272,7 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel>
+      <v-expansion-panel v-if="advanced">
         <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Security</v-expansion-panel-header>
         <v-expansion-panel-content class="cardBackground">
 
@@ -270,7 +283,7 @@
             >
               <v-switch
                 v-model="security.vulnerabilityScans"
-                :label="`Enable Trivy vulnerabfility scans: ${security.vulnerabilityScans}`"
+                label="Enable Trivy vulnerabfility scans"
                 color="primary"
                 inset
             ></v-switch>
@@ -294,7 +307,7 @@
             >
               <v-switch
                 v-model="security.readOnlyRootFilesystem"
-                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
+                label="Read only root filesystem"
                 color="primary"
                 inset
             ></v-switch>
@@ -402,8 +415,7 @@
             >
               <v-switch
                 v-model="autoscale"
-                :label="`Autoscale: ${autoscale.toString()}`"
-                inset
+                label="Autoscale"
               ></v-switch>
             </v-col>
           </v-row>
@@ -710,6 +722,7 @@ export default {
       }
     },
     data: () => ({
+      advanced: false,
       panel: [0],
       valid: false,
       buildpack: {
