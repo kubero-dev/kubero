@@ -112,57 +112,42 @@
         </v-col>
       </v-row>
 
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-        <v-radio-group
-          v-model="deploymentstrategy"
-          row
-          label="Deployment strategy"
-        >
-          <v-radio
-            label="GitOps"
-            value="git"
-          ></v-radio>
-          <v-radio
-            label="Docker Image"
-            value="docker"
-          ></v-radio>
-          <!--
-          <v-radio
-            label="Build"
-            value="build"
-          ></v-radio>
-          -->
-        </v-radio-group>
-        </v-col>
-      </v-row>
-
       <v-expansion-panels
         v-model="panel"
         multiple
       >
       <!-- DEPLOYMENT -->
-      <v-expansion-panel v-if="deploymentstrategy == 'git'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">GitOps Deployment</v-expansion-panel-header>
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Deployment</v-expansion-panel-header>
         <v-expansion-panel-content class="cardBackground">
-<!--
+
           <v-row>
             <v-col
               cols="12"
               md="6"
             >
-              <v-switch
-                v-model="deploymentstrategyGit"
-                :label="`Deployment strategy: ${appDeploymentStrategy}`"
-                color="primary"
-                inset
-            ></v-switch>
+            <v-radio-group
+              v-model="deploymentstrategy"
+              row
+              label="Deployment strategy"
+            >
+              <v-radio
+                label="GitOps"
+                value="git"
+              ></v-radio>
+              <v-radio
+                label="Docker Image"
+                value="docker"
+              ></v-radio>
+              <!--
+              <v-radio
+                label="Build"
+                value="build"
+              ></v-radio>
+              -->
+            </v-radio-group>
             </v-col>
           </v-row>
--->
 
           <!-- DEPLOYMENT STRATEGY GIT -->
           <v-row
@@ -207,7 +192,7 @@
             </v-col>
           </v-row>
 
-          <v-divider class="ma-5" v-if="advanced === true"></v-divider>
+          <v-divider class="ma-5" v-if="deploymentstrategy == 'git' && advanced === true"></v-divider>
 
           <v-row
             v-if="deploymentstrategy == 'git' && advanced === true">
@@ -233,12 +218,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
 
-      <v-expansion-panel v-if="deploymentstrategy == 'docker'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Docker Image Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
           <!-- DEPLOYMENT STRATEGY CONTAINER -->
           <v-row
             v-if="deploymentstrategy == 'docker'">
