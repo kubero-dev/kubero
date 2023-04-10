@@ -303,7 +303,7 @@
           <v-row v-for="variable in envvars" v-bind:key="variable.id">
             <v-col
               cols="12"
-              md="2"
+              md="5"
             >
               <v-text-field
                 v-model="variable.name"
@@ -313,7 +313,7 @@
             </v-col>
             <v-col
               cols="12"
-              md="3"
+              md="6"
             >
               <v-text-field
                 v-model="variable.value"
