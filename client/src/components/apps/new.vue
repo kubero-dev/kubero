@@ -14,18 +14,6 @@
             </p>
         </v-col>
       </v-row>
-      <!-- not sure if i will split into tabs or expandable panels
-      <template>
-        <v-tabs>
-          <v-tab>Appliccation</v-tab>
-          <v-tab>Deployment</v-tab>
-          <v-tab>Resources</v-tab>
-          <v-tab>Cronjobs</v-tab>
-          <v-tab>Env Vars</v-tab>
-          <v-tab>Addons</v-tab>
-        </v-tabs>
-      </template>
-      -->
 
       <v-row
        v-if="app==='new' && $route.query.service != undefined">
@@ -81,7 +69,7 @@
         >
           <v-switch
             v-model="ssl"
-            :label="`SSL`"
+            label="SSL"
           ></v-switch>
         </v-col>
       </v-row>
@@ -103,9 +91,9 @@
           cols="12"
           md="6"
         >
-          <v-switch
-            v-model="deploymentstrategyGit"
-            :label="`Deployment strategy: ${appDeploymentStrategy}`"
+        <v-switch
+            v-model="advanced"
+            label="Advanced App Configuration"
             color="primary"
             inset
           ></v-switch>
@@ -117,28 +105,41 @@
         multiple
       >
       <!-- DEPLOYMENT -->
-      <v-expansion-panel v-if="appDeploymentStrategy == 'git'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">GitOps Deployment</v-expansion-panel-header>
+      <v-expansion-panel>
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Deployment</v-expansion-panel-header>
         <v-expansion-panel-content class="cardBackground">
-<!--
+
           <v-row>
             <v-col
               cols="12"
               md="6"
             >
-              <v-switch
-                v-model="deploymentstrategyGit"
-                :label="`Deployment strategy: ${appDeploymentStrategy}`"
-                color="primary"
-                inset
-            ></v-switch>
+            <v-radio-group
+              v-model="deploymentstrategy"
+              row
+              label="Strategy"
+            >
+              <v-radio
+                label="GitOps"
+                value="git"
+              ></v-radio>
+              <v-radio
+                label="Docker Image"
+                value="docker"
+              ></v-radio>
+              <!--
+              <v-radio
+                label="Build"
+                value="build"
+              ></v-radio>
+              -->
+            </v-radio-group>
             </v-col>
           </v-row>
--->
 
           <!-- DEPLOYMENT STRATEGY GIT -->
           <v-row
-            v-if="appDeploymentStrategy == 'git'">
+            v-if="deploymentstrategy == 'git'">
             <v-col
               cols="12"
               md="6"
@@ -153,7 +154,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="appDeploymentStrategy == 'git'">
+            v-if="deploymentstrategy == 'git'">
             <v-col
               cols="12"
               md="6"
@@ -167,23 +168,20 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="appDeploymentStrategy == 'git'">
+            v-if="deploymentstrategy == 'git'">
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
                 v-model="autodeploy"
-                :label="`Autodeploy: ${autodeploy.toString()}`"
-                inset
+                label="Autodeploy"
               ></v-switch>
             </v-col>
           </v-row>
 
-          <v-divider class="ma-5"></v-divider>
-
           <v-row
-            v-if="appDeploymentStrategy == 'git'">
+            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -195,7 +193,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="appDeploymentStrategy == 'git'">
+            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -206,15 +204,10 @@
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
 
-      <v-expansion-panel v-if="appDeploymentStrategy == 'docker'">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Container Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
           <!-- DEPLOYMENT STRATEGY CONTAINER -->
           <v-row
-            v-if="appDeploymentStrategy == 'docker'">
+            v-if="deploymentstrategy == 'docker'">
             <v-col
               cols="12"
               md="6"
@@ -228,7 +221,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="appDeploymentStrategy == 'docker'">
+            v-if="deploymentstrategy == 'docker'">
             <v-col
               cols="12"
               md="6"
@@ -245,9 +238,9 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Security</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+      <v-expansion-panel v-if="advanced">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-header>
+        <v-expansion-panel-content class="secondary">
 
           <v-row>
             <v-col
@@ -256,7 +249,7 @@
             >
               <v-switch
                 v-model="security.vulnerabilityScans"
-                :label="`Enable Trivy vulnerabfility scans: ${security.vulnerabilityScans}`"
+                label="Enable Trivy vulnerabfility scans"
                 color="primary"
                 inset
             ></v-switch>
@@ -280,7 +273,7 @@
             >
               <v-switch
                 v-model="security.readOnlyRootFilesystem"
-                :label="`Read only root filesystem: ${security.readOnlyRootFilesystem}`"
+                label="Read only root filesystem"
                 color="primary"
                 inset
             ></v-switch>
@@ -388,8 +381,7 @@
             >
               <v-switch
                 v-model="autoscale"
-                :label="`Autoscale: ${autoscale.toString()}`"
-                inset
+                label="Autoscale"
               ></v-switch>
             </v-col>
           </v-row>
@@ -696,6 +688,7 @@ export default {
       }
     },
     data: () => ({
+      advanced: false,
       panel: [0],
       valid: false,
       buildpack: {
@@ -717,7 +710,7 @@ export default {
           command: '',
         },
       },
-      deploymentstrategyGit: true,
+      deploymentstrategy: "git",
       pipelineData: {
         git: {
           repository: {
@@ -847,13 +840,6 @@ export default {
       ],
 */
     }),
-    computed: {
-      // a computed getter
-      appDeploymentStrategy() {
-        // `this` points to the component instance
-        return this.deploymentstrategyGit ? 'git' : 'docker'
-      }
-    },
     mounted() {
       if (this.$route.query.service) {
         this.loadTemplate(this.$route.query.service);
@@ -875,11 +861,9 @@ export default {
           this.deploymentstrategy = response.data.deploymentstrategy;
 
           if (response.data.deploymentstrategy == 'git') {
-            this.deploymentstrategyGit = true;
             this.gitrepo.ssh_url = response.data.git.repository.ssh_url;
             this.branch = response.data.git.branch;
           } else {
-            this.deploymentstrategyGit = false;
             this.docker.image = response.data.image.repository;
             this.docker.tag = response.data.image.tag;
           }
@@ -892,13 +876,13 @@ export default {
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(2)
+            this.panel.push(1)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(4)
+            this.panel.push(3)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(5)
+            this.panel.push(4)
           }
         });
       },
@@ -1014,18 +998,18 @@ export default {
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(2)
+              this.panel.push(1)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(4)
+              this.panel.push(3)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(5)
+              this.panel.push(4)
             }
 
             this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext?.readOnlyRootFilesystem != false; // reversed since it is a boolean
 
-            this.deploymentstrategyGit = response.data.spec.deploymentstrategy == 'git';
+            this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.appname = response.data.spec.name;
             this.buildpack = {
               run: response.data.spec.image.run,
@@ -1062,7 +1046,7 @@ export default {
           appname: this.appname,
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
-          deploymentstrategy: this.appDeploymentStrategy,
+          deploymentstrategy: this.deploymentstrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
@@ -1146,7 +1130,7 @@ export default {
           appname: this.appname.toLowerCase(),
           gitrepo: this.pipelineData.git.repository,
           branch: this.branch,
-          deploymentstrategy: this.appDeploymentStrategy,
+          deploymentstrategy: this.deploymentstrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
