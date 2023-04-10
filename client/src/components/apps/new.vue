@@ -858,15 +858,10 @@ export default {
 
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;
-          this.deploymentstrategy = response.data.deploymentstrategy;
+          this.deploymentstrategy = 'docker';
 
-          if (response.data.deploymentstrategy == 'git') {
-            this.gitrepo.ssh_url = response.data.git.repository.ssh_url;
-            this.branch = response.data.git.branch;
-          } else {
-            this.docker.image = response.data.image.repository;
-            this.docker.tag = response.data.image.tag;
-          }
+          this.docker.image = response.data.image.repository;
+          this.docker.tag = response.data.image.tag;
 
           this.envvars = response.data.envVars;
           this.extraVolumes = response.data.extraVolumes;
