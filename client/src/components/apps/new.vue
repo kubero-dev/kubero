@@ -180,10 +180,8 @@
             </v-col>
           </v-row>
 
-          <v-divider class="ma-5" v-if="deploymentstrategy == 'git' && advanced === true"></v-divider>
-
           <v-row
-            v-if="deploymentstrategy == 'git' && advanced === true">
+            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -195,7 +193,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="deploymentstrategy == 'git' && advanced === true">
+            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -241,8 +239,8 @@
 
       <!-- SECURITY -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Security</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-header>
+        <v-expansion-panel-content class="secondary">
 
           <v-row>
             <v-col
