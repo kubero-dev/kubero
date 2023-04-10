@@ -14,18 +14,6 @@
             </p>
         </v-col>
       </v-row>
-      <!-- not sure if i will split into tabs or expandable panels
-      <template>
-        <v-tabs>
-          <v-tab>Appliccation</v-tab>
-          <v-tab>Deployment</v-tab>
-          <v-tab>Resources</v-tab>
-          <v-tab>Cronjobs</v-tab>
-          <v-tab>Env Vars</v-tab>
-          <v-tab>Addons</v-tab>
-        </v-tabs>
-      </template>
-      -->
 
       <v-row
        v-if="app==='new' && $route.query.service != undefined">
@@ -129,7 +117,7 @@
             <v-radio-group
               v-model="deploymentstrategy"
               row
-              label="Deployment strategy"
+              label="Strategy"
             >
               <v-radio
                 label="GitOps"
