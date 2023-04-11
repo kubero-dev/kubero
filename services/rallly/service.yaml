@@ -1,0 +1,12 @@
+name: Rallly
+description: 'Rallly is an open-source scheduling and collaboration tool designed to make organizing events and meetings easier.'
+tags:
+- collaboration
+- scheduling
+source: https://github.com/lukevella/rallly
+website: https://rallly.co
+documentation:
+- https://github.com/lukevella/rallly-selfhosted
+icon: https://rallly.co/favicon-196x196.png
+screenshots:
+- https://raw.githubusercontent.com/lukevella/rallly/main/docs/images/poll-image.png
