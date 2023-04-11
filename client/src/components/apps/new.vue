@@ -858,7 +858,7 @@ export default {
 
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;
-          this.deploymentstrategy = 'docker';
+          this.deploymentstrategy = response.data.deploymentstrategy;
 
           this.docker.image = response.data.image.repository;
           this.docker.tag = response.data.image.tag;

@@ -3,7 +3,7 @@ description: 'Kuma is a self-hosted monitoring tool like "Uptime Robot". '
 tags:
 - monitoring
 source: https://github.com/louislam/uptime-kuma
-website: https://louislam.net/uptime-kuma/
+website: https://uptime.kuma.pet
 icon: https://github.com/louislam/uptime-kuma/raw/master/public/icon.svg
 screenshots:
 - https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067
