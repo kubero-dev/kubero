@@ -25,8 +25,9 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 - Build, start and cleanup review-apps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create scheduled tasks (cronjobs)
+- Deploy well knwon apps with one click (Wordpress, Grafana, ...)
 - Easy deployment of your apps on Kubernetes without helm charts
-- Deploy add-ons for your application (PostgreSQL, Redis, more to come)
+- Deploy add-ons for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
 - Easy access of application logs in the UI
 - Easy and safe restart of the application in the UI
 - Periodic vulnerability scans of your running apps
@@ -53,8 +54,8 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 - Github
 - Gitlab
 - Bitbucket
-- Forgejo (WIP)
-- OneDev (WIP)
+- Forgejo (planned)
+- OneDev (planned)
 
 ## Tested languages/frameworks
 Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -82,8 +83,8 @@ The Kubero Operator ships with several basic addons that can be used in your app
 - CouchDB
 - RabbitMQ (WIP)
 - CockroachDB (WIP)
-- Minio (WIP)
-- InfluxDB (WIP)
+- Minio (planned)
+- InfluxDB (planned)
 
 ## 30+ Application templates (similar to Heroku Buttons)
 - Wordpress
