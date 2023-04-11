@@ -25,7 +25,7 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 - Build, start and cleanup review-apps after opening/closing a pull request
 - Automatic deployment of the app based on a branch or tag
 - Create scheduled tasks (cronjobs)
-- Deploy well knwon apps with one click (Wordpress, Grafana, ...)
+- Deploy well known apps with a template (Wordpress, Grafana, ...)
 - Easy deployment of your apps on Kubernetes without helm charts
 - Deploy add-ons for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
 - Easy access of application logs in the UI
