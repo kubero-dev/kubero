@@ -1,0 +1,12 @@
+name: Passbolt
+description: 'The open source password manager for teams'
+tags:
+- password
+- security
+source: https://github.com/passbolt/passbolt_api
+website: https://www.passbolt.com
+icon: https://avatars.githubusercontent.com/u/4386228?s=200&v=4
+screenshots:
+- https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-login.png
+- https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-share.png
+- https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot4.png
