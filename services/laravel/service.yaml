@@ -1,5 +1,6 @@
 name: Laravel
 description: 'Laravel is a web application framework with expressive, elegant syntax.'
+gitops: true
 tags:
 - framework
 - php
