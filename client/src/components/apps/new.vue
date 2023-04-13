@@ -841,13 +841,14 @@ export default {
 */
     }),
     mounted() {
-      if (this.$route.query.service) {
-        this.loadTemplate(this.$route.query.service);
-      }
       this.loadStorageClasses();
       this.loadPipeline();
       this.loadPodsizeList();
       this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
+
+      if (this.$route.query.service) {
+        this.loadTemplate(this.$route.query.service);
+      }
     },
     components: {
         Addons,
