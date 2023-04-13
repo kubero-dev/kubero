@@ -868,6 +868,14 @@ export default {
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
 
+          if (response.data.image.build) {
+            console.log("buildpack build", response.data.image.build);
+            this.buildpack.build = response.data.image.build;
+          } 
+
+          if (response.data.image.run) {
+            this.buildpack.run = response.data.image.run;
+          }
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
