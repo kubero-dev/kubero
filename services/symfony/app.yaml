@@ -30,7 +30,9 @@ spec:
     value: "1"
   cronjobs: []
   extraVolumes: 
-  - mountPath: /app/var
+  - accessModes:
+    - ReadWriteMany
+    mountPath: /app/var
     name: symfony-var
     size: 1Gi
   web:
