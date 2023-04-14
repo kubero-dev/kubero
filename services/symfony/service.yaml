@@ -1,6 +1,5 @@
 name: Symfony
 description: 'Symfony is a PHP framework for web and console applications and a set of reusable PHP components.'
-gitops: true
 tags:
 - framework
 - php
