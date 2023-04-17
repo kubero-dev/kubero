@@ -1,0 +1,15 @@
+name: Tasks.md
+description: 'A self-hosted, file based task management board that supports Markdown syntax.'
+tags:
+- scrumboard
+- kanban
+- task
+- todo
+- list
+- markdown
+- markdown-editor
+source: https://github.com/BaldissaraMatheus/Tasks.md
+website: https://hub.docker.com/r/baldissaramatheus/tasks.md
+icon: https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/frontend/public/favicon/android-chrome-192x192.png
+screenshots:
+- https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/public/demonstration.gif
