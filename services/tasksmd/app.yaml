@@ -15,7 +15,9 @@ spec:
     value: Demo
   cronjobs: []
   extraVolumes: 
-  - mountPath: /api/files/
+  - accessModes:
+    - ReadWriteMany
+    mountPath: /api/files/
     name: tasksmd-files
     size: 1Gi
   web:
