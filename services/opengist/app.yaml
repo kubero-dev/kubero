@@ -1,0 +1,22 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: opengist
+spec:
+  name: opengist
+  deploymentstrategy: docker
+  image:
+    repository: ghcr.io/thomiceli/opengist
+    tag: "1"
+    containerPort: "6157"
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: 
+  - mountPath: /root/.opengist
+    name: opengist-volume
+    size: 1Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
