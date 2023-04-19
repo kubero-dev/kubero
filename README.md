@@ -86,7 +86,7 @@ The Kubero Operator ships with several basic addons that can be used in your app
 - Minio (planned)
 - InfluxDB (planned)
 
-## 30+ Application templates (similar to Heroku Buttons)
+## 40+ Application templates (similar to Heroku Buttons)
 - Wordpress
 - Grafana
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
