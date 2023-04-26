@@ -1,0 +1,12 @@
+name: LanguageTool
+description: 'LanguageTool is an Open Source proofreading software for English, Spanish, French, German, Portuguese, Polish, Dutch, and more than 20 other languages.'
+tags:
+- spellcheck
+- grammar
+source: https://github.com/languagetool-org/languagetool
+website: https://languagetool.org/
+icon: https://avatars.githubusercontent.com/u/5187764?s=200&v=4
+documentation:
+- https://github.com/Erikvl87/docker-languagetool/blob/master/docker-compose.yml
+screenshots:
+- https://languagetool.org/videos/gmail_de_en.mp4
