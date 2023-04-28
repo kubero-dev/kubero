@@ -1,0 +1,22 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: gatus
+spec:
+  name: gatus
+  deploymentstrategy: docker
+  image:
+    repository: illasoft/illa-builder
+    tag: latest
+    containerPort: "80"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
