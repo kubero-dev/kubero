@@ -3,7 +3,7 @@ description: 'Homarr is a simple and lightweight homepage for your server, that 
 tags:
 - homepage
 source: https://github.com/ajnart/homarr
-website: homarr.dev
+website: https://homarr.dev
 icon: https://github.com/ajnart/homarr/raw/dev/public/imgs/logo/logo-color.svg
 screenshots:
 - https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif
