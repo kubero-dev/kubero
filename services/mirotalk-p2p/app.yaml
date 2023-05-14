@@ -11,10 +11,6 @@ spec:
     containerPort: "3000"
   addons: []
   envVars:
-  - name: PROC_TYPE
-    value: worker
-  - name: PORT
-    value: "3000"
   - name: HTTPS
     value: "false"
   - name: HOST
