@@ -1,0 +1,19 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: gatus
+spec:
+  name: gatus
+  deploymentstrategy: docker
+  image:
+    repository: twinproduction/gatus
+    tag: latest
+    containerPort: "8080"
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
