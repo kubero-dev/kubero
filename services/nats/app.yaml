@@ -1,0 +1,19 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: nats
+spec:
+  name: nats
+  deploymentstrategy: docker
+  image:
+    repository: nats
+    tag: latest
+    containerPort: "4222"
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
