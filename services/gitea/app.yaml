@@ -9,6 +9,9 @@ spec:
     repository: gitea/gitea
     tag: latest
     containerPort: "3000"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
   addons: []
   envVars: []
   cronjobs: []
