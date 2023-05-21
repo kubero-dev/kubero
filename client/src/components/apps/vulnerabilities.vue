@@ -26,7 +26,7 @@
         </v-row>
         <v-layout class="flex-column">
 
-                <v-row>
+                <v-row v-if="this.vulnScanResult.logPod.startTime">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
