@@ -49,12 +49,11 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 <a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
 
 ## Supported GIT repositories (hosted and self-hosted)
-- Gitea
+- Gitea / Forgejo
 - Gogs
 - Github
 - Gitlab
 - Bitbucket
-- Forgejo (planned)
 - OneDev (planned)
 
 ## Tested languages/frameworks
