@@ -21,25 +21,25 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 <img src="docs/img/highlevel.png">
 
 ## What can Kubero do for you?
-- Create a CI pipeline with up to 4 separate staging environments for all your applications
-- Build, start and cleanup review-apps after opening/closing a pull request
-- Automatic deployment of the app based on a branch or tag
-- Create scheduled tasks (cronjobs)
-- Deploy well known apps with a template (Wordpress, Grafana, ...)
-- Easy deployment of your apps on Kubernetes without helm charts
-- Deploy add-ons for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
-- Easy access of application logs in the UI
-- Easy and safe restart of the application in the UI
-- Periodic vulnerability scans of your running apps
+- Create a CI pipeline with up to 4 separate `staging environments` for all your applications
+- Build, start and cleanup `review-apps` after opening/closing a pull request
+- Automatic `redeployment` of the app based on a push to a branch or tag
+- Create scheduled tasks as `cronjobs`
+- Deploy well known apps with `template` (Wordpress, Grafana, ...)
+- Easy deployment of your apps on Kubernetes `without helm charts`
+- Deploy `add-ons` for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
+- Easy access of `application logs` in the UI
+- Easy and safe `restart` of the application in the UI
+- Periodic `vulnerability scans` of your running apps
 
 ## What Kubero won't do for you
 - Manage your Kubernetes cluster
 - Give access to your container CLI
 
 ## How it Works ([DEMO](https://demo.kubero.dev))
-1. Create a pipeline with the phases you need (dev, staging, production)
+1. Create a pipeline with the phases you need (review, test, stage, production)
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
-3. Create your apps with cronjobs and addons
+3. Configure your apps with cronjobs and addons
 
 Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
 
@@ -57,7 +57,7 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 - OneDev (planned)
 
 ## Tested languages/frameworks
-Basicly *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
+Basically *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
 
 - GoLang (including Hugo, gin-gonic)
 - Python (including Flask)
