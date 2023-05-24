@@ -46,7 +46,7 @@
         >
           <v-switch
             v-model="gitops"
-            label="Connect this pipeline to a Git repository (GitOps)"
+            label="Connect pipeline to a Git repository (GitOps)"
           ></v-switch>
         </v-col>
       </v-row>
@@ -142,7 +142,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-card elevation="5" class="mt-8">
+      <v-card elevation="2" class="cardBackground mt-8">
         <v-card-title>Phases</v-card-title>
         <v-card-text>
           <v-row v-for="phase in phases" :key="phase.name">
