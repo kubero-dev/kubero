@@ -1,0 +1,28 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: dockerregistry
+spec:
+  name: dockerregistry
+  deploymentstrategy: docker
+  image:
+    repository: registry
+    tag: latest
+    containerPort: "5000"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/registry
+    name: registry-data
+    size: 10Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
