@@ -1,0 +1,5 @@
+ignore:
+  - 'services'
+  - 'docs'
+  - '**/*.json'
+  - '**/*.yaml'
