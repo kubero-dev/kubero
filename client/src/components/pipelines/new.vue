@@ -46,7 +46,7 @@
         >
           <v-switch
             v-model="gitops"
-            label="Connect this Pipeline to a Git Repository (GitOps)"
+            label="Connect this pipeline to a Git repository (GitOps)"
           ></v-switch>
         </v-col>
       </v-row>
