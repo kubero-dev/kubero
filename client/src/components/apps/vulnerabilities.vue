@@ -234,8 +234,23 @@ export default {
             }
         } )
         .then(response => {
+
+
+            this.scanning = false;
             this.vulnScanResult = response.data;
             this.renderVulnerabilities = true;
+
+            if (this.vulnScanResult.status == "running") {
+                this.scanning = true;
+                this.renderVulnerabilities = false;
+                if (this.interval == null) {
+                    this.interval = setInterval(this.loadVulnerabilities, 2000);
+                }
+            }
+
+            if (this.vulnScanResult.status != "running") {
+                clearInterval(this.interval);
+            }
         })
         .catch(error => {
             console.log(error);
@@ -246,6 +261,8 @@ export default {
         axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/scan`)
         .then(() => {
             this.scanning = true;
+            this.interval = setInterval(this.loadVulnerabilities, 2000);
+
         })
         .catch(error => {
             console.log(error);

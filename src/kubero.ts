@@ -837,7 +837,7 @@ export class Kubero {
         }
 
         if (!logs) {
-            scanResult.status = 'error'
+            scanResult.status = 'running'
             scanResult.message = 'no vulnerability scan logs found'
             return scanResult;
         }
