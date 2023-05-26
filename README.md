@@ -14,11 +14,18 @@
 Kubero [pronounced: Kube Hero] is a fully self-hosted Internal Developer Platform (IDP) that brings the workflows of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
 <br>
 <br>
-Kubero is Kubernetes native and runs with two containers on any Kubernetes instance.
-<br>
-<br>
 
-<img src="docs/img/highlevel.png">
+<img src="docs/screenshots/createapp.gif">
+
+More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a> and a full video on
+<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
+
+## How it Works ([DEMO](https://demo.kubero.dev))
+1. Create a pipeline with the phases you need (review, test, stage, production)
+2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
+3. Configure your apps with cronjobs and addons
+
+Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
 
 ## What can Kubero do for you?
 - Create a CI pipeline with up to 4 separate `staging environments` for all your applications
@@ -35,18 +42,6 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 ## What Kubero won't do for you
 - Manage your Kubernetes cluster
 - Give access to your container CLI
-
-## How it Works ([DEMO](https://demo.kubero.dev))
-1. Create a pipeline with the phases you need (review, test, stage, production)
-2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
-3. Configure your apps with cronjobs and addons
-
-Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
-
-<img src="docs/screenshots/createapp.gif">
-
-More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a> and a full video on
-<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
 
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea / Forgejo
@@ -73,20 +68,20 @@ https://github.com/kubero-dev/buildpacks
 
 ## Preconfigured add-ons
 The Kubero Operator ships with several basic addons that can be used in your apps.
-- MySQL
-- PostgreSQL
-- Redis
-- MongoDB
-- Elasticsearch
-- Kafka
-- CouchDB
-- Haraka Mail Server
+- <img src="client/public/img/addons/MySQL.png" width="15px"> MySQL
+- <img src="client/public/img/addons/postgresql.png" width="15px"> PostgreSQL
+- <img src="client/public/img/addons/Redis.png" width="15px"> Redis
+- <img src="client/public/img/addons/MongoDB.png" width="15px"> MongoDB
+- <img src="client/public/img/addons/Elasticsearch.png" width="15px"> Elasticsearch
+- <img src="client/public/img/addons/Kafka.png" width="15px"> Kafka
+- <img src="client/public/img/addons/CouchDB.png" width="15px"> CouchDB
+- <img src="client/public/img/addons/Haraka.png" width="15px"> Haraka Mail Server
 - RabbitMQ (WIP)
 - CockroachDB (WIP)
 - Minio (planned)
 - InfluxDB (planned)
 
-## 40+ Application templates (similar to Heroku Buttons)
+## 50+ Application templates (similar to Heroku Buttons)
 - Wordpress
 - Grafana
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
@@ -95,6 +90,12 @@ The Kubero Operator ships with several basic addons that can be used in your app
 
 Check out the full [list here](https://www.kubero.dev/templates/) or submit your own app! [Read here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
 
+## Basic Concept 
+Kubero is Kubernetes native and runs with two containers on any Kubernetes instance.
+<br>
+<br>
+
+<img src="docs/img/highlevel.png">
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
