@@ -22,7 +22,7 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-for="item in apps" :key="item.name">
+                <v-row v-for="item in apps" :key="item.name" :id="item.name">
                     <v-col cols="12">
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-text>
@@ -118,10 +118,12 @@ export default {
         });
       },
       deletePipeline(app) {
+        document.querySelector(`#${app}`).style.display = "none";
+
         axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
-            this.loadPipelinesList();
+            //this.loadPipelinesList();
         })
         .catch(error => {
             console.log(error);
