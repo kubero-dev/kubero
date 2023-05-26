@@ -1,65 +1,31 @@
-version: "3.9"
+version: "3"
 services:
+  # Kubero usually runs in a Kubernetes cluster in the kubero namespace
+  # If you want to run it locally, you can use kind to create a local Kubernetes cluster
   kubero:
-    container_name: "kubero"
-    build: .
-    #command: ["tail", "-f", "/dev/null"] # for debugging
+    container_name: "kubero-ui"
+    image: ghcr.io/kubero-dev/kubero/kubero:latest
     env_file:
+      # copy the .env.template file to .env and change the values to your needs
       - .env
     environment:
-      - KUBERO_CONTEXT=kind-kubero-001 # make sure you use the context name from your mounted kubeconfig
+      # change the KUBERO_CONTEXT to the name of your local kind cluster context
+      # you can find the name by running `kubectl config get-contexts`
+      # Must be the same as the context name in the kubeconfig file !
+      - KUBECONFIG_PATH=./kubeconfig
+      - KUBERO_CONTEXT=kind-kubero-001 
+      - KUBERO_NAMESPACE=kubero
+      - KUBERO_SESSION_KEY=randomString
     ports:
+      # the UI will be available on http://localhost:8000. Make sure the port is not used by another service
       - "8000:2000"
     extra_hosts:
-      - "kubero-001-control-plane:192.168.65.2" # make sure you use the container name from your local kind cluster control plane
+      # if you are using a local Kubernetes cluster, make sure you use the container name from your 
+      # local kind cluster control plane. You can find the name by running `docker ps` and looking for the
+      # container name of the control plane. 192.168.65.2 is your host machine IP address.
+      - "kubero-001-control-plane:192.168.65.2"
     volumes:
-      #- .:/app
-      - ./kubeconfig-docker:/app/server/kubeconfig # change the port 6443 to the outside port of your local kind cluster control plane
+      # run `kind get kubeconfig --internal --name kubero-001 > ./kubeconfig-docker` to get the right config
+      # modify the server in the config to use the external kubernetes port from your host machine
+      - ./kubeconfig-002-docker:/app/server/kubeconfig
       - ./config.yaml:/app/server/config.yaml
-  gitea:
-    image: gitea/gitea:latest
-    container_name: gitea
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-    restart: always
-    volumes:
-      - ./.dockerdata/gitea:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "3000:3000"
-      - "222:22"
-  gitlab:
-    image: 'gitlab/gitlab-ee:latest'
-    restart: always
-    hostname: 'gitlab.lacolhost.com'
-    environment:
-      GITLAB_OMNIBUS_CONFIG: |
-        external_url 'http://gitlab.lacolhost.com'
-        # Add any other gitlab.rb configuration here, each on its own line
-    ports:
-      - '3080:80'
-      - '3443:443'
-      - '3022:22'
-    volumes:
-      - './.dockerdata/gitlab/config:/etc/gitlab'
-      - './.dockerdata/gitlab/logs:/var/log/gitlab'
-      - './.dockerdata/gitlab/data:/var/opt/gitlab'
-    shm_size: '256m'
-
-  gogs:
-    image: gogs/gogs:latest
-    container_name: gogs
-    hostname: 'localhost'
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-    restart: always
-    volumes:
-      - ./.dockerdata/gogs:/data
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    ports:
-      - "3000:3000"
-      - "22:22"
