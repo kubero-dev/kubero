@@ -26,7 +26,7 @@
         </v-row>
         <v-layout class="flex-column">
 
-                <v-row v-if="this.vulnScanResult.logPod.startTime">
+                <v-row v-if="this.renderVulnerabilities">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
@@ -42,18 +42,18 @@
                                         <tr>
                                             <th>Artefact</th>
                                             <td>
-                                                <v-span
+                                                <span
                                                     v-if="this.vulnScanResult.logs.ArtifactType == 'repository'"
                                                     class="mx-0"
                                                 >
                                                     <v-icon left small>mdi-git</v-icon>
-                                                </v-span>
-                                                <v-span
+                                                </span>
+                                                <span
                                                     v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'"
                                                     class="mx-0"
                                                 >
                                                     <v-icon left small>mdi-docker</v-icon>
-                                                </v-span>
+                                                </span>
                                                 {{ this.vulnScanResult.logs.ArtifactName }}</td>
                                         </tr>
                                         <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
@@ -106,7 +106,7 @@
                                     :size="50" unit="%" :thickness="60"
                                     has-legend legend-placement="right"
                                     :auto-adjust-text-size="true"
-                                    :total="this.vulnScanResult.logsummary.total"
+                                    :total=this.vulnScanResult.logsummary.total
                                     :sections="vulnSummary">
                                 </vc-donut>
                             </v-card-text>
@@ -179,7 +179,23 @@ export default {
     },
     data: () => ({
         scanning: false,
-        vulnScanResult: {},
+        vulnScanResult: {
+                "scanned": false,
+                "logs": {
+                    "ArtifactID": "",
+                    "ArtifactType": "",
+                    "Metadata": {},
+                    "Results": [],
+                    "Summary": {},
+                },
+                "logsummary": {
+                    "total": 0,
+                    "high": 0,
+                    "medium": 0,
+                    "low": 0,
+                    "unknown": 0,
+                },
+            },
         renderVulnerabilities: false,
         vulnExpanded: [],
         vulnHeaders: [
@@ -234,8 +250,25 @@ export default {
             }
         } )
         .then(response => {
+
+            this.scanning = false;
             this.vulnScanResult = response.data;
-            this.renderVulnerabilities = true;
+
+            if (this.vulnScanResult.status == "running") {
+                this.scanning = true;
+                this.renderVulnerabilities = false;
+                if (this.interval == null) {
+                    this.interval = setInterval(this.loadVulnerabilities, 2000);
+                }
+            }
+
+            if (this.vulnScanResult.status == "ok") {
+                this.renderVulnerabilities = true;
+            }
+
+            if (this.vulnScanResult.status != "running") {
+                clearInterval(this.interval);
+            }
         })
         .catch(error => {
             console.log(error);
@@ -243,9 +276,12 @@ export default {
 
       },
       startVulnScan() {
+        this.renderVulnerabilities = false;
         axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/scan`)
         .then(() => {
             this.scanning = true;
+            this.interval = setInterval(this.loadVulnerabilities, 2000);
+
         })
         .catch(error => {
             console.log(error);
