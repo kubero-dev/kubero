@@ -205,7 +205,7 @@ export class Kubero {
             if (pipeline) {
                 await this.kubectl.deletePipeline(pipelineName);
 
-                // TODO: lines not working, since object may still exist in the API
+                await new Promise(resolve => setTimeout(resolve, 5000)); // needs some extra time to delete the namespace
                 this.updateState();
                 this._io.emit('updatedPipelines', "deleted");
                 this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
