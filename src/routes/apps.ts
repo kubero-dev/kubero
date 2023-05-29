@@ -171,8 +171,11 @@ function getVulnerabilityScan(enabled: boolean): any{
     return vulnerabilityscan;
 }
 
-function configureBuildpack(req: Request): any {
+function configureBuildpack(req: Request): string {
 
+    if (req.body.buildpack == undefined) {
+        return "custom";
+    }
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
     let selectedBuildpack: any;
@@ -184,7 +187,7 @@ function configureBuildpack(req: Request): any {
             name: "custom",
         };
     }
-    return selectedBuildpack;
+    return selectedBuildpack.name;
 }
 
 function createApp(req: Request,) : IApp {
@@ -195,7 +198,7 @@ function createApp(req: Request,) : IApp {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
-        buildpack: selectedBuildpack.name,
+        buildpack: selectedBuildpack,
         deploymentstrategy: req.body.deploymentstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
