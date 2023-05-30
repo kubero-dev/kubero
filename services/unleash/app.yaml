@@ -1,0 +1,53 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: unleash
+spec:
+  name: unleash
+  deploymentstrategy: docker
+  image:
+    repository: unleashorg/unleash-server
+    tag: latest
+    containerPort: "4242"
+  addons: 
+  - displayName: Kubero Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: undleash-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgres
+                  password: postgres
+                  postgresPassword: postgres
+                  username: postgres
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                size: 1Gi
+  envVars:
+  - name: DATABASE_SSL
+    value: "false"
+  - name: LOG_LEVEL
+    value: warn
+  - name: INIT_FRONTEND_API_TOKENS
+    value: default:development.unleash-insecure-frontend-api-token
+  - name: INIT_CLIENT_API_TOKENS
+    value: default:development.unleash-insecure-api-token
+  - name: DATABASE_URL
+    value: postgres://postgres:postgres@undleash-postgresql/postgres
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
