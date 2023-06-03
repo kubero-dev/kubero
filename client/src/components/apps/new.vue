@@ -145,11 +145,10 @@
               md="6"
             >
               <v-text-field
-                v-model="pipelineData.git.repository.ssh_url"
+                v-model="gitrepo.ssh_url"
                 :rules="repositoryRules"
                 label="Repository"
                 required
-                disabled
               ></v-text-field>
             </v-col>
           </v-row>
@@ -181,7 +180,22 @@
           </v-row>
 
           <v-row
-            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
+            v-if="buildpack == undefined && deploymentstrategy == 'git' ">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-select
+                v-model="buildpack"
+                :items="buildpacks"
+                label="Buildpack"
+                @change="updateBuildpack(buildpack)"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-if="buildpack != undefined && deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -193,7 +207,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="deploymentstrategy == 'git' && advanced === true" class="secondary">
+            v-if="buildpack != undefined && deploymentstrategy == 'git' && advanced === true" class="secondary">
             <v-col
               cols="12"
               md="6"
@@ -691,6 +705,7 @@ export default {
       advanced: false,
       panel: [0],
       valid: false,
+      buildpacks: [],
       buildpack: {
         run: {
           command: '',
@@ -728,12 +743,25 @@ export default {
       ],
       */
       gitrepo: {
-        ssh_url: 'git@github.com:kubero-dev/template-nodeapp.git',
+        admin: false,
+        clone_url: '',
+        default_branch: 'main',
+        description: "",
+        homepage: "",
+        id: 0,
+        language: "",
+        name: "",
+        node_id: "",
+        owner: "",
+        private: false,
+        push: true,
+        ssh_url: "",
+        visibility: "public",
       },
       branch: 'main',
       branchesList: [],
       docker: {
-        image: 'ghcr.io/kubero-dev/template-nodeapp',
+        image: '',
         tag: 'latest',
       },
       autodeploy: true,
@@ -841,9 +869,10 @@ export default {
 */
     }),
     mounted() {
-      this.loadStorageClasses();
       this.loadPipeline();
+      this.loadStorageClasses();
       this.loadPodsizeList();
+      this.loadBuildpacks();
       this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
 
       if (this.$route.query.service) {
@@ -906,7 +935,10 @@ export default {
 
           if (this.app == 'new') {
             this.domain = this.pipelineData.domain;
-            this.gitrepo.ssh_url = this.pipelineData.git.repository.ssh_url;
+
+            if (this.pipelineData.git.repository.admin == true) {
+              this.gitrepo = this.pipelineData.git.repository;
+            }
 
             /* TODO: auto select/sugest buildpack based on language
             switch (this.pipelineData.github.repository.language) {
@@ -969,12 +1001,21 @@ export default {
         console.log(podsize);
         //this.podsize = podsize;
       },
-      /*
+
+      loadBuildpacks() {
+        axios.get('/api/config/buildpacks').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.buildpacks.push({
+              text: response.data[i].name,
+              value: response.data[i],
+            });
+          }
+        });
+      },
       updateBuildpack(buildpack) {
         console.log(buildpack);
         this.buildpack = buildpack;
       },
-      */
 
       deleteApp() {
         axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
@@ -1044,20 +1085,32 @@ export default {
         }
       },
       updateApp() {
+
+        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+            this.gitrepo = this.pipelineData.git.repository;
+        }
+
+        if (this.gitrepo.admin == false) {
+          //this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(':', '/').replace('git@', 'https://');
+          // eslint-disable-next-line no-useless-escape
+          const regex = /(git@|ssh:|http[s]?:\/\/)([\w\.]+)(:|\/)([\w\/\-~]+)(\.git)?/;
+          this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(regex, "https://$2/$4$5");
+        }
+
         let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
-          gitrepo: this.pipelineData.git.repository,
+          gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.buildpack.fetch,
-            build: this.buildpack.build,
-            run: this.buildpack.run,
+            fetch: this.buildpack?.fetch,
+            build: this.buildpack?.build,
+            run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain,
@@ -1120,11 +1173,24 @@ export default {
         });
       },
       createApp() {
-        if (
-          (this.buildpack.build.command !== this.pipelineData.buildpack.build.command) ||
-          (this.buildpack.run.command !== this.pipelineData.buildpack.run.command)
-        ){
-          this.buildpack.name = "custom";
+        if (this.pipelineData.buildpack !== undefined) {
+          if (
+            (this.buildpack.build.command !== this.pipelineData.buildpack.build.command) ||
+            (this.buildpack.run.command !== this.pipelineData.buildpack.run.command)
+          ){
+            this.buildpack.name = "custom";
+          }
+        }
+
+        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+            this.gitrepo = this.pipelineData.git.repository;
+        }
+
+        if (this.gitrepo.admin == false) {
+          //this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(':', '/').replace('git@', 'https://');
+          // eslint-disable-next-line no-useless-escape
+          const regex = /(git@|ssh:|http[s]?:\/\/)([\w\.]+)(:|\/)([\w\/\-~]+)(\.git)?/;
+          this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(regex, "https://$2/$4$5");
         }
 
         let postdata = {
@@ -1132,16 +1198,16 @@ export default {
           buildpack: this.buildpack,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
-          gitrepo: this.pipelineData.git.repository,
+          gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            fetch: this.buildpack.fetch,
-            build: this.buildpack.build,
-            run: this.buildpack.run,
+            fetch: this.buildpack?.fetch,
+            build: this.buildpack?.build,
+            run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
           domain: this.domain.toLowerCase(),
@@ -1171,6 +1237,10 @@ export default {
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
+        }
+
+        if (postdata.image.run == undefined) {
+          postdata.image.run = {};
         }
 
         postdata.image.run.securityContext = {
