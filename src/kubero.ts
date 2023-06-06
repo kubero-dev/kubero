@@ -229,6 +229,8 @@ export class Kubero {
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
+
+            this.triggerImageBuild(app.pipeline, app.phase, app.name);
             this.appStateList.push(app);
 
             this._io.emit('updatedApps', "created");
@@ -903,5 +905,46 @@ export class Kubero {
         });
 
         return summary;
+    }
+
+    public async triggerImageBuild(pipeline: string, phase: string, appName: string) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+
+        const app = appresult?.body as IKubectlApp;
+        let repo = '';
+
+        if (app.spec.gitrepo?.admin) {
+            repo = app.spec.gitrepo.ssh_url || "";
+        } else {
+            repo = app.spec.gitrepo?.clone_url || "";
+        }
+
+        //const registry = process.env.KUBERO_BUILD_REGISTRY || 'docker.io';
+        //const image = `${registry}/${pipeline}/${appName}:${app.spec.image.tag}`;
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.createBuildImageJob(
+                namespace,                  // namespace
+                appName,                    // app
+                repo,                       // gitrepo
+                app.spec.branch,            // branch
+                app.spec.image.repository,  // image
+                app.spec.image.tag          // tag
+            );
+        }
+
+        return {
+            status: 'ok',
+            message: 'build started',
+            deploymentstrategy: app?.spec?.deploymentstrategy,
+            pipeline: pipeline,
+            phase: phase,
+            app: appName
+        };
     }
 }

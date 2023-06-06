@@ -700,4 +700,140 @@ export class Kubectl {
         }
     }
 
+    public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string): Promise<any> {
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-build',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            build: app
+                        }
+                    },
+                    spec: {
+                        initContainers: [
+                          {
+                            name: "kuberoapp-fetcher",
+                            securityContext: {
+                              readOnlyRootFilesystem: false
+                            },
+                            image: "ghcr.io/kubero-dev/buildpacks/fetch:main",
+                            imagePullPolicy: "Always",
+                            workingDir: "/app",
+                            env: [
+                              {
+                                name: "GIT_REPOSITORY",
+                                value: gitrepo
+                              },
+                              {
+                                name: "GIT_BRANCH",
+                                value: branch
+                              },
+                              {
+                                name: "GIT_REF",
+                                value: "refs/heads/dummy-pr"
+                              },
+                              {
+                                name: "KUBERO_BUILDPACK_DEFAULT_BUILD_CMD",
+                                value: "npm install"
+                              },
+                              {
+                                name: "KUBERO_BUILDPACK_DEFAULT_RUN_CMD",
+                                value: "node index.js"
+                              }
+                            ],
+                            volumeMounts: [
+                              {
+                                mountPath: "/root/.ssh",
+                                name: "deployment-keys",
+                                readOnly: true
+                              },
+                              {
+                                mountPath: "/app",
+                                name: "app-storage"
+                              }
+                            ]
+                          },
+                          {
+                            name: "kuberoapp-builder",
+                            securityContext: {
+                              readOnlyRootFilesystem: false
+                            },
+                            image: "node:latest",
+                            imagePullPolicy: "Always",
+                            workingDir: "/app",
+                            command: [
+                              "./init-build.sh"
+                            ],
+                            volumeMounts: [
+                              {
+                                mountPath: "/app",
+                                name: "app-storage"
+                              }
+                            ]
+                          },
+                          {
+                            name: "kuberoapp-docker",
+                            image: "quay.io/containers/buildah:latest",
+                            workingDir: "/app",
+                            securityContext: {
+                              privileged: true
+                            },
+                            command: [
+                              "sh",
+                              "-c",
+                              "buildah build --isolation chroot -t "+image+":"+tag+" .\nbuildah push --tls-verify=false "+image+":"+tag
+                            ],
+                            volumeMounts: [
+                              {
+                                mountPath: "/app",
+                                name: "app-storage"
+                              }
+                            ]
+                          }
+                        ],
+                        containers: [
+                          {
+                            name: "kuberoapp-deployer",
+                            image: "bitnami/kubectl:latest",
+                            command: [
+                              "sh",
+                              "-c",
+                              "kubectl patch kuberoapps test -p '{\"spec\":{\"image\":{\"tag\": \""+tag+"\"}}}'"
+                            ]
+                          }
+                        ],
+                        restartPolicy: "Never",
+                        volumes: [
+                          {
+                            name: "deployment-keys",
+                            secret: {
+                              defaultMode: 384,
+                              secretName: "deployment-keys"
+                            }
+                          },
+                          {
+                            name: "app-storage",
+                            emptyDir: {}
+                          }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating build job');
+        }
+    }
+
 }

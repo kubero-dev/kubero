@@ -171,6 +171,7 @@ export interface IPipelineList {
 }
 
 export interface IGithubRepository {
+    admin: boolean,
     description?: string,
     id?: number,
     name?: string,
@@ -290,7 +291,7 @@ export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
     kubero: {
-        namespace: string; // deprecated v1.9.0
+        namespace?: string; // deprecated v1.9.0
         readonly: boolean;
         banner: {
             message: string;
