@@ -5,6 +5,7 @@ export interface IApp {
     phase: string,
     buildpack: string,
     deploymentstrategy: 'git' | 'docker',
+    buildstrategy: 'plain' | 'dockerfile' | 'nixpacks',
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,

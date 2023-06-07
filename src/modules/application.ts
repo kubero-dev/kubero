@@ -26,6 +26,7 @@ export class App implements IApp{
     public phase: string
     public buildpack: string
     public deploymentstrategy: 'git' | 'docker';
+    public buildstrategy: 'plain' | 'dockerfile' | 'nixpacks';
     public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean
@@ -157,6 +158,7 @@ export class App implements IApp{
         this.phase = app.phase
         this.buildpack = app.buildpack
         this.deploymentstrategy = app.deploymentstrategy
+        this.buildstrategy = app.buildstrategy
         this.gitrepo = app.gitrepo
         this.branch = app.branch
         this.autodeploy = app.autodeploy

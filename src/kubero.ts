@@ -230,7 +230,9 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
             this.appStateList.push(app);
 
             this._io.emit('updatedApps', "created");
@@ -526,6 +528,7 @@ export class Kubero {
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
+                    buildstrategy: 'plain', // TODO: use buildstrategy from pipeline 
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
