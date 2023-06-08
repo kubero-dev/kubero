@@ -926,8 +926,9 @@ export class Kubero {
             repo = app.spec.gitrepo?.clone_url || "";
         }
 
-        //const registry = process.env.KUBERO_BUILD_REGISTRY || 'docker.io';
-        //const image = `${registry}/${pipeline}/${appName}:${app.spec.image.tag}`;
+        // TODO: Make image configurable
+        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry-service.kubero.svc.cluster.local:5000';
+        const image = `${registry}/${pipeline}/${appName}`;
 
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
@@ -936,7 +937,7 @@ export class Kubero {
                 appName,                    // app
                 repo,                       // gitrepo
                 app.spec.branch,            // branch
-                app.spec.image.repository,  // image
+                image,                      // image
                 app.spec.image.tag          // tag
             );
         }

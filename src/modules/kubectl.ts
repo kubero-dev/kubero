@@ -762,26 +762,8 @@ export class Kubectl {
                             ]
                           },
                           {
-                            name: "kuberoapp-builder",
-                            securityContext: {
-                              readOnlyRootFilesystem: false
-                            },
-                            image: "node:latest",
-                            imagePullPolicy: "Always",
-                            workingDir: "/app",
-                            command: [
-                              "./init-build.sh"
-                            ],
-                            volumeMounts: [
-                              {
-                                mountPath: "/app",
-                                name: "app-storage"
-                              }
-                            ]
-                          },
-                          {
                             name: "kuberoapp-docker",
-                            image: "quay.io/containers/buildah:latest",
+                            image: "quay.io/containers/buildah:v1.29",
                             workingDir: "/app",
                             securityContext: {
                               privileged: true
