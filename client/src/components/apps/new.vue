@@ -1277,6 +1277,7 @@ export default {
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
+          buildstrategy: this.buildstrategy,
           image : {
             containerport: this.containerPort,
             repository: this.docker.image,

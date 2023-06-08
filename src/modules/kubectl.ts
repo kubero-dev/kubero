@@ -788,11 +788,14 @@ export class Kubectl {
                             command: [
                               "sh",
                               "-c",
-                              "kubectl patch kuberoapps test -p '{\"spec\":{\"image\":{\"tag\": \""+tag+"\"}}}'"
+                              "kubectl patch kuberoapps "+app+" --type=merge -p '{\"spec\":{\"image\":{\"repository\": \""+image+"\",\"tag\": \""+tag+"\"}}}'"
                             ]
                           }
                         ],
                         restartPolicy: "Never",
+                        serviceAccountName: app+'-kuberoapp',
+                        serviceAccount: app+'-kuberoapp',
+                        automountServiceAccountToken: true,
                         volumes: [
                           {
                             name: "deployment-keys",

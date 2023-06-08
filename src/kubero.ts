@@ -930,6 +930,8 @@ export class Kubero {
         const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry-service.kubero.svc.cluster.local:5000';
         const image = `${registry}/${pipeline}/${appName}`;
 
+        console.log('Build image: ', image);
+
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
             this.kubectl.createBuildImageJob(
