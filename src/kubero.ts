@@ -927,7 +927,7 @@ export class Kubero {
         }
 
         // TODO: Make image configurable
-        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry-service.kubero.svc.cluster.local:5000';
+        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
         const image = `${registry}/${pipeline}/${appName}`;
 
         console.log('Build image: ', image);
