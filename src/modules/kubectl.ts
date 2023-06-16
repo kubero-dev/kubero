@@ -711,6 +711,7 @@ export class Kubectl {
             spec: {
                 ttlSecondsAfterFinished: 86400,
                 completions: 1,
+                backoffLimit: 1,
                 template: {
                     metadata: {
                         labels: {
@@ -765,18 +766,35 @@ export class Kubectl {
                             name: "kuberoapp-docker",
                             image: "quay.io/containers/buildah:v1.29",
                             workingDir: "/app",
+                            env: [
+                                {
+                                    name: "REGISTRY_AUTH_FILE",
+                                    value: "/etc/buildah/auth/.dockerconfigjson"
+                                },
+                                {
+                                    name: "BUILD_IMAGE",
+                                    value: image+":"+tag
+                                }
+                            ],
                             securityContext: {
                               privileged: true
                             },
                             command: [
                               "sh",
                               "-c",
-                              "buildah build --isolation chroot -t "+image+":"+tag+" .\nbuildah push --tls-verify=false "+image+":"+tag
+                              "buildah build --isolation chroot -t $BUILD_IMAGE .\nbuildah push --tls-verify=false $BUILD_IMAGE"
+                              //"tail -f /dev/null" // for debugging
                             ],
                             volumeMounts: [
                               {
                                 mountPath: "/app",
-                                name: "app-storage"
+                                name: "app-storage",
+                                readOnly: true
+                              },
+                              {
+                                mountPath: "/etc/buildah/auth",
+                                name: "pull-secret",
+                                readOnly: true
                               }
                             ]
                           }
@@ -807,7 +825,14 @@ export class Kubectl {
                           {
                             name: "app-storage",
                             emptyDir: {}
-                          }
+                          },
+                          {
+                            name: "pull-secret",
+                            secret: {
+                                defaultMode: 384,
+                                secretName: app+"-kuberoapp-pull-secret"
+                            }
+                        }
                         ]
                     }
                 }
