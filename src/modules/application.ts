@@ -186,8 +186,8 @@ export class App implements IApp{
         this.image = {
             containerPort: app.image.containerPort,
             pullPolicy: 'Always',
-            repository: app.image.repository || 'busybox',
-            tag: app.image.tag || 'latest',
+            repository: app.image.repository || 'ghcr.io/kubero-dev/idler',
+            tag: app.image.tag || 'v1',
             fetch: app.image.fetch,
             build: app.image.build,
             run: app.image.run,
