@@ -618,6 +618,7 @@ export class Kubectl {
             spec: {
                 ttlSecondsAfterFinished: 86400,
                 completions: 1,
+                backoffLimit: 1,
                 template: {
                     metadata: {
                         labels: {
@@ -641,6 +642,28 @@ export class Kubectl {
                                     "vuln",
                                     "--exit-code",
                                     "0"
+                                ],
+                                env: [
+                                    {
+                                        name: 'TRIVY_USERNAME',
+                                        valueFrom: {
+                                            secretKeyRef: {
+                                                name: app+'-kuberoapp-registry-login',
+                                                key: 'username',
+                                                optional: true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: 'TRIVY_PASSWORD',
+                                        valueFrom: {
+                                            secretKeyRef: {
+                                                name: app+'-kuberoapp-registry-login',
+                                                key: 'password',
+                                                optional: true
+                                            }
+                                        }
+                                    }
                                 ],
                             }
                         ]

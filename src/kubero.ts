@@ -778,7 +778,8 @@ export class Kubero {
         const app = appresult?.body as IKubectlApp;
 
 
-        if (app?.spec?.deploymentstrategy === 'git') {
+        if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy === 'plain') {
+        //if (app?.spec?.deploymentstrategy === 'git') {
 
             if (app?.spec.gitrepo?.clone_url) {
                 if (contextName) {
