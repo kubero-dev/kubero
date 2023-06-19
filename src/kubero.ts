@@ -926,6 +926,13 @@ export class Kubero {
             repo = app.spec.gitrepo?.clone_url || "";
         }
 
+        let dockerfilePath = 'Dockerfile';
+        if (app.spec.buildstrategy === 'dockerfile') {
+            //dockerfilePath = app.spec.dockerfile || 'Dockerfile';
+        } else if (app.spec.buildstrategy === 'nixpacks') {
+            dockerfilePath = '.nixpacks/Dockerfile';
+        }
+
         // TODO: Make image configurable
         const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
         const image = `${registry}/${pipeline}/${appName}`;
@@ -940,7 +947,8 @@ export class Kubero {
                 repo,                       // gitrepo
                 app.spec.branch,            // branch
                 image,                      // image
-                app.spec.image.tag          // tag
+                app.spec.image.tag,         // tag
+                dockerfilePath              // dockerfile
             );
         }
 

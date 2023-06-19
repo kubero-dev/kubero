@@ -700,7 +700,8 @@ export class Kubectl {
         }
     }
 
-    public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string): Promise<any> {
+    public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
+
         const job = {
             apiVersion: 'batch/v1',
             kind: 'Job',
@@ -774,6 +775,10 @@ export class Kubectl {
                                 {
                                     name: "BUILD_IMAGE",
                                     value: image+":"+tag
+                                },
+                                {
+                                    name: "BUILDAH_DOCKERFILE_PATH",
+                                    value: "/app/"+dockerfilePath
                                 }
                             ],
                             securityContext: {
@@ -782,7 +787,7 @@ export class Kubectl {
                             command: [
                               "sh",
                               "-c",
-                              "buildah build --isolation chroot -t $BUILD_IMAGE .\nbuildah push --tls-verify=false $BUILD_IMAGE"
+                              "buildah build -f $BUILDAH_DOCKERFILE_PATH --isolation chroot -t $BUILD_IMAGE .\nbuildah push --tls-verify=false $BUILD_IMAGE"
                               //"tail -f /dev/null" // for debugging
                             ],
                             volumeMounts: [
@@ -838,6 +843,31 @@ export class Kubectl {
                 }
             }
         };
+
+        job.spec.template.spec.initContainers.splice(1, 0, {
+            name: "kuberoapp-nixpacks",
+            image: "ghcr.io/kubero-dev/buildpacks/build:latest",
+            workingDir: "/app",
+            env: [],
+            securityContext: {
+              privileged: false
+            },
+            command: [
+              "sh",
+              "-c",
+              "nixpacks build . -o ."
+              //"tail -f /dev/null" // for debugging
+            ],
+            volumeMounts: [
+              {
+                mountPath: "/app",
+                name: "app-storage",
+                readOnly: false
+              }
+            ]
+          }
+        );
+
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
         } catch (error) {
