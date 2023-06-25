@@ -145,7 +145,7 @@
             <v-col
               cols="12"
               md="4"
-            >
+            > {{ this.$vuetify.buildPipeline }}
               <v-radio-group v-model="buildstrategy">
                 <v-radio
                   key="0"
@@ -156,11 +156,13 @@
                   key="1"
                   label="Nixpacks"
                   value="nixpacks"
+                  :disabled="!this.$vuetify.buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="2"
                   label="Dockerfile"
                   value="dockerfile"
+                  :disabled="!this.$vuetify.buildPipeline"
                 ></v-radio>
               </v-radio-group>
             </v-col>
@@ -191,6 +193,13 @@
                   Dockerfile
                 </h3>
                 <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
+              </v-alert>
+
+              <v-alert text color="blue" type="info" v-if="!this.$vuetify.buildPipeline">
+                <h3>
+                  Buildpipeline not configured
+                </h3>
+                <div>To use Nickspacks and Dockerfile build pipeline, it must be configured.</div>
               </v-alert>
 
             </v-col>
@@ -800,6 +809,7 @@ export default {
       },
       deploymentstrategy: "git",
       buildstrategy: "plain",
+      buildPipeline: false,
       pipelineData: {
         git: {
           repository: {
@@ -952,6 +962,8 @@ export default {
       if (this.$route.query.service) {
         this.loadTemplate(this.$route.query.service);
       }
+
+      this.buildPipeline = this.$vuetify.buildPipeline
     },
     components: {
         Addons,

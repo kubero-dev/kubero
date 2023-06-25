@@ -5,6 +5,9 @@ import colors from 'vuetify/es5/util/colors'
 Vue.use(Vuetify);
 
 export default new Vuetify({
+  version: "",
+  isAuthenticated: false,
+  buildPipeline: false,
   theme: {
     dark: false,
     themes: {
