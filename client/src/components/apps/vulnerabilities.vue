@@ -77,7 +77,7 @@
                                             <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
                                         </tr>
                                         <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Esposed Ports</th>
+                                            <th>Exposed Ports</th>
                                             <td>
                                                 <v-chip
                                                     v-for="(item, key, index) in this.vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="index"

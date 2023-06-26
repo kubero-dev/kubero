@@ -20,9 +20,15 @@ Router.all("/session", (req: Request, res: Response) => {
         }
     }
 
+    let buildPipeline = false
+    if ( process.env.KUBERO_BUILD_REGISTRY != undefined ) {
+        buildPipeline = true
+    } 
+
     let message = {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
+        "buildPipeline": buildPipeline,
     }
     res.status(status).send(message)
 })

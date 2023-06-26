@@ -199,6 +199,12 @@ export default {
                         console.log("isAuthenticated: " + result.data.isAuthenticated);
                         this.session = result.data.isAuthenticated;
                         this.version = result.data.version;
+
+                        // safe version to vuetufy gloabl scope for use in components
+                        this.$vuetify.version = this.version;
+                        this.$vuetify.isAuthenticated = result.data.isAuthenticated;
+                        this.$vuetify.buildPipeline = result.data.buildPipeline;
+
                         if (result.status === 200) {
                             this.isAuthenticated = true;
                         }

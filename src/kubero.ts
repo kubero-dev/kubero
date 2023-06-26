@@ -229,6 +229,10 @@ export class Kubero {
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
+
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
             this.appStateList.push(app);
 
             this._io.emit('updatedApps', "created");
@@ -524,6 +528,7 @@ export class Kubero {
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
+                    buildstrategy: 'plain', // TODO: use buildstrategy from pipeline 
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
@@ -773,7 +778,8 @@ export class Kubero {
         const app = appresult?.body as IKubectlApp;
 
 
-        if (app?.spec?.deploymentstrategy === 'git') {
+        if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy === 'plain') {
+        //if (app?.spec?.deploymentstrategy === 'git') {
 
             if (app?.spec.gitrepo?.clone_url) {
                 if (contextName) {
@@ -903,5 +909,57 @@ export class Kubero {
         });
 
         return summary;
+    }
+
+    public async triggerImageBuild(pipeline: string, phase: string, appName: string) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+
+        const app = appresult?.body as IKubectlApp;
+        let repo = '';
+
+        if (app.spec.gitrepo?.admin) {
+            repo = app.spec.gitrepo.ssh_url || "";
+        } else {
+            repo = app.spec.gitrepo?.clone_url || "";
+        }
+
+        let dockerfilePath = 'Dockerfile';
+        if (app.spec.buildstrategy === 'dockerfile') {
+            //dockerfilePath = app.spec.dockerfile || 'Dockerfile';
+        } else if (app.spec.buildstrategy === 'nixpacks') {
+            dockerfilePath = '.nixpacks/Dockerfile';
+        }
+
+        // TODO: Make image configurable
+        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
+        const image = `${registry}/${pipeline}/${appName}`;
+
+        console.log('Build image: ', image);
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.createBuildImageJob(
+                namespace,                  // namespace
+                appName,                    // app
+                repo,                       // gitrepo
+                app.spec.branch,            // branch
+                image,                      // image
+                app.spec.image.tag,         // tag
+                dockerfilePath              // dockerfile
+            );
+        }
+
+        return {
+            status: 'ok',
+            message: 'build started',
+            deploymentstrategy: app?.spec?.deploymentstrategy,
+            pipeline: pipeline,
+            phase: phase,
+            app: appName
+        };
     }
 }
