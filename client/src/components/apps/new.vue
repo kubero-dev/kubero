@@ -1275,10 +1275,14 @@ export default {
         }
 
         if (this.gitrepo.admin == false) {
-          //this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(':', '/').replace('git@', 'https://');
           // eslint-disable-next-line no-useless-escape
           const regex = /(git@|ssh:|http[s]?:\/\/)([\w\.]+)(:|\/)([\w\/\-~]+)(\.git)?/;
           this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(regex, "https://$2/$4$5");
+        }
+
+        if (this.deploymentstrategy == "git" && this.buildstrategy != "plain" ) {
+          this.docker.image = "ghcr.io/kubero-dev/idler"
+          this.docker.tag = "v1"
         }
 
         let postdata = {
