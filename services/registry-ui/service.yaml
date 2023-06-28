@@ -1,0 +1,8 @@
+name: Docker Registry UI
+description: 'The simplest and most complete UI for your private registry'
+tags:
+- registry
+source: https://github.com/Joxit/docker-registry-ui
+website: https://joxit.dev/docker-registry-ui/
+icon: https://avatars.githubusercontent.com/u/5429470?s=200&v=4
+screenshots:
