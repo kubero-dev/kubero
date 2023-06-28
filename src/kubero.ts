@@ -940,16 +940,17 @@ export class Kubero {
 
         console.log('Build image: ', image);
 
+        const timestamp = new Date().getTime();
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
             this.kubectl.createBuildImageJob(
-                namespace,                  // namespace
-                appName,                    // app
-                repo,                       // gitrepo
-                app.spec.branch,            // branch
-                image,                      // image
-                app.spec.image.tag,         // tag
-                dockerfilePath              // dockerfile
+                namespace,                      // namespace
+                appName,                        // app
+                repo,                           // gitrepo
+                app.spec.branch,                // branch
+                image,                          // image
+                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
+                dockerfilePath                  // dockerfile
             );
         }
 

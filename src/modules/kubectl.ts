@@ -763,7 +763,7 @@ export class Kubectl {
                               },
                               {
                                 name: "GIT_REF",
-                                value: "refs/heads/dummy-pr"
+                                value: "refs/heads/dummy-pr" // TODO: this needs to be a real reference !!
                               },
                               {
                                 name: "KUBERO_BUILDPACK_DEFAULT_BUILD_CMD",
