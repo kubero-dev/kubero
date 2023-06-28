@@ -251,6 +251,10 @@ export class Kubero {
             return;
         }
 
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            this.triggerImageBuild(app.pipeline, app.phase, app.name);
+        }
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
@@ -347,6 +351,30 @@ export class Kubero {
             this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         }
     }
+
+    private rebuildApp(app: IApp) {
+        debug.debug('rebuild App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        const contextName = this.getContext(app.pipeline, app.phase);
+        if (contextName) {
+
+            if ( app.deploymentstrategy == 'docker' || app.buildstrategy == undefined || app.buildstrategy == 'plain'){
+                this.kubectl.restartApp(app.pipeline, app.phase, app.name, 'web', contextName);
+                this.kubectl.restartApp(app.pipeline, app.phase, app.name, 'worker', contextName);
+            } else {
+                // rebuild for buildstrategy git/dockerfile or git/nixpacks
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
+
+            let message = {
+                'action': 'rebuild',
+                'pipeline':app.pipeline,
+                'phase':app.phase,
+                'app': app.name
+            }
+            //this._io.emit('restartedApp', message);
+            this.kubectl.createEvent('Normal', 'Rebuild', 'app.restarted', 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        }
+    }
 /*
     public deployApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
@@ -440,7 +468,7 @@ export class Kubero {
 
         for (const app of apps) {
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
-            this.restartApp(app.pipeline, app.phase, app.name);
+            this.rebuildApp(app);
         }
     }
 
