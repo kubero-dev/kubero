@@ -145,7 +145,7 @@
             <v-col
               cols="12"
               md="4"
-            > {{ this.$vuetify.buildPipeline }}
+            >
               <v-radio-group v-model="buildstrategy">
                 <v-radio
                   key="0"
@@ -199,7 +199,7 @@
                 <h3>
                   Buildpipeline not configured
                 </h3>
-                <div>To use Nickspacks and Dockerfile build pipeline, it must be configured.</div>
+                <div>Configure the registry to use Nickspacks and Dockerfile build pipeline</div>
               </v-alert>
 
             </v-col>
@@ -963,7 +963,8 @@ export default {
         this.loadTemplate(this.$route.query.service);
       }
 
-      this.buildPipeline = this.$vuetify.buildPipeline
+      //this.buildPipeline = this.$vuetify.buildPipeline
+      //console.log("loadPipeline", this.$vuetify.buildPipeline);
     },
     components: {
         Addons,
@@ -985,7 +986,7 @@ export default {
           this.addons = response.data.addons;
 
           if (response.data.image.build) {
-            console.log("buildpack build", response.data.image.build);
+            //console.log("buildpack build", response.data.image.build);
             this.buildpack.build = response.data.image.build;
           } 
 
@@ -1083,8 +1084,9 @@ export default {
           }
         });
       },
+      // eslint-disable-next-line no-unused-vars
       updatePodsize(podsize) {
-        console.log(podsize);
+        //console.log(podsize);
         //this.podsize = podsize;
       },
 
@@ -1099,7 +1101,7 @@ export default {
         });
       },
       updateBuildpack(buildpack) {
-        console.log(buildpack);
+        //console.log(buildpack);
         this.buildpack = buildpack;
       },
 
@@ -1253,9 +1255,10 @@ export default {
         }
 
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+          // eslint-disable-next-line no-unused-vars
         ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
-          console.log(response);
+          //console.log(response);
         }).catch(error => {
           console.log(error);
         });
@@ -1342,9 +1345,10 @@ export default {
         }
 
         axios.post(`/api/apps`, postdata)
+        // eslint-disable-next-line no-unused-vars
         .then(response => {
           this.appname = '';
-          console.log(response);
+          //console.log(response);
           this.$router.push({path: '/pipeline/' + this.pipeline + '/apps'});
         })
         .catch(error => {

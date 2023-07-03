@@ -132,9 +132,9 @@ export default {
     */
     created() {
         this.$vuetify.theme.dark = this.getTheme();
+        this.checkSession()
     },
     mounted() {
-        this.checkSession()
         this.loadBanner()
     },
     updated() {
