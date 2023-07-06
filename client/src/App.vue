@@ -72,7 +72,7 @@
                         </v-list-item-icon>
                         <v-list-item-title>Documentation</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link href="https://github.com/kubero-dev/kubero/discussions" target="_blank">
+                    <v-list-item link href="https://github.com/kubero-dev/kubero" target="_blank">
                         <v-list-item-icon>
                         <v-icon>mdi-github</v-icon>
                         </v-list-item-icon>
