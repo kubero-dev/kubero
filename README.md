@@ -28,16 +28,16 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
 
 ## What can Kubero do for you?
-- Create a CI pipeline with up to 4 separate `staging environments` for all your applications
-- Build, start and cleanup `review-apps` after opening/closing a pull request
-- Automatic `redeployment` of the app based on a push to a branch or tag
-- Create scheduled tasks as `cronjobs`
-- Deploy well known apps with `template` (Wordpress, Grafana, ...)
-- Easy deployment of your apps on Kubernetes `without helm charts`
-- Deploy `add-ons` for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
-- Easy access of `application logs` in the UI
-- Easy and safe `restart` of the application in the UI
-- Periodic `vulnerability scans` of your running apps
+- Create a CI pipeline with up to 4 separate **staging environments** for all your applications
+- Build, start and cleanup **review-apps** after opening/closing a pull request
+- Automatic **redeployment** of the app based on a push to a branch or tag
+- Create scheduled tasks as **cronjobs**
+- Deploy well known apps with **templates** (Wordpress, Grafana, ...)
+- Easy deployment of your apps on Kubernetes **without helm charts**
+- Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
+- Easy access of **application logs** in the UI
+- Easy and safe **restart** of the application in the UI
+- Periodic <span style="color: MediumPurple">**vulnerability scans**</span> of your running apps
 
 ## What Kubero won't do for you
 - Manage your Kubernetes cluster
@@ -68,14 +68,14 @@ https://github.com/kubero-dev/buildpacks
 
 ## Preconfigured add-ons
 The Kubero Operator ships with several basic addons that can be used in your apps.
-- <img src="client/public/img/addons/MySQL.png" width="15px"> MySQL
-- <img src="client/public/img/addons/postgresql.png" width="15px"> PostgreSQL
-- <img src="client/public/img/addons/Redis.png" width="15px"> Redis
-- <img src="client/public/img/addons/MongoDB.png" width="15px"> MongoDB
-- <img src="client/public/img/addons/Elasticsearch.png" width="15px"> Elasticsearch
-- <img src="client/public/img/addons/Kafka.png" width="15px"> Kafka
-- <img src="client/public/img/addons/CouchDB.png" width="15px"> CouchDB
-- <img src="client/public/img/addons/Haraka.png" width="15px"> Haraka Mail Server
+- <img src="client/public/img/addons/MySQL.png" width="30px" style="vertical-align: middle; margin: 10px"> MySQL
+- <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> PostgreSQL
+- <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> Redis
+- <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> MongoDB
+- <img src="client/public/img/addons/Elasticsearch.png" width="30px" style="vertical-align: middle; margin: 10px"> Elasticsearch
+- <img src="client/public/img/addons/Kafka.png" width="30px" style="vertical-align: middle; margin: 10px"> Kafka
+- <img src="client/public/img/addons/CouchDB.png" width="30px" style="vertical-align: middle; margin: 10px"> CouchDB
+- <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px"> Haraka Mail Server
 - RabbitMQ (WIP)
 - CockroachDB (WIP)
 - Minio (planned)
