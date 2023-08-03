@@ -1,4 +1,8 @@
 <template>
+    <div>
+    <v-container>
+        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+    </v-container>
     <v-container :fluid="true">
         <h1>{{ this.pipeline }}</h1>
         <v-layout>
@@ -28,6 +32,7 @@
                 </v-row>
         </v-layout>
     </v-container>
+    </div>
 </template>
 
 <script>
@@ -44,10 +49,22 @@ export default {
         default: "MISSSING"
       },
     },
-    data: () => ({
+    data () {return {
+        breadcrumbItems: [
+            {
+                text: 'DASHBOARD',
+                disabled: false,
+                href: '#/',
+            },
+            {
+                text: 'PIPELINE:'+this.pipeline,
+                disabled: true,
+                href: '#/pipeline/'+this.pipeline+'/apps',
+            }
+        ],
         reviewapps: false,
         phases: false,
-    }),
+    }},
     computed: {
         activePhases() {
             let phases = [];
@@ -63,6 +80,7 @@ export default {
     },
     components: {
         Appcard,
+        breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
       async loadPipeline() {

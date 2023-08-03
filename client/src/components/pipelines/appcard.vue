@@ -16,7 +16,7 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name">{{ this.app.name }}</a></v-card-title>
+    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'">{{ this.app.name }}</a></v-card-title>
 
     <v-card-text>
         <v-row
@@ -91,13 +91,23 @@
             </v-icon>
         </v-btn>
         <v-btn
-            title="Show Logs"
+            title="Details"
             color="deep-purple lighten-2"
             text
             :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
         >
             <v-icon
-                >mdi-console
+                >mdi-page-next-outline
+            </v-icon>
+        </v-btn>
+        <v-btn
+            title="Edit"
+            color="deep-purple lighten-2"
+            text
+            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
+        >
+            <v-icon
+                >mdi-pencil
             </v-icon>
         </v-btn>
         <v-btn

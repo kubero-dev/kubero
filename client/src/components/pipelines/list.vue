@@ -1,5 +1,6 @@
     <template>
     <v-container>
+        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
 
                 <v-row class="justify-space-between">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
@@ -103,9 +104,20 @@ export default {
     mounted() {
         this.loadPipelinesList();
     },
-    data: () => ({
+    components: {
+        breadcrumbs: () => import('../breadcrumbs.vue'),
+    },
+    data () { return {
         apps: [],
-    }),
+
+        breadcrumbItems: [
+            {
+                text: 'DASHBOARD',
+                disabled: true,
+                href: '#/',
+            }
+        ],
+    }},
     methods: {
       async loadPipelinesList() {
         const self = this;
