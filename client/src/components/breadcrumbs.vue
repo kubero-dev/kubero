@@ -5,7 +5,7 @@
           :href="item.href"
           :disabled="item.disabled"
       >
-          {{ item.text }}
+      <v-icon v-if="item.icon">{{ item.icon }}</v-icon> {{ item.text }}
       </v-breadcrumbs-item>
       </template>
   </v-breadcrumbs>
@@ -22,3 +22,9 @@
     },
   }
 </script>
+
+<style scoped>
+  .v-breadcrumbs {
+    padding-left: 0;
+  }
+</style>

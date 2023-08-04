@@ -39,7 +39,12 @@ export default {
                     href: '#/pipeline/'+this.pipeline+'/apps',
                 },
                 {
-                    text: 'PHASE:'+this.phase+'   /   APP:'+this.app,
+                    text: 'PHASE:'+this.phase,
+                    disabled: true,
+                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+                },
+                {
+                    text: 'APP:'+this.app,
                     disabled: true,
                     href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 },
@@ -48,6 +53,7 @@ export default {
                     disabled: false,
                     //http://localhost:2000/#/pipeline/customcommand/production/noproc
                     href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
+                    icon: "mdi-pencil-box-outline",
                 },
             ],
         }
