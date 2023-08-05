@@ -1,15 +1,6 @@
 <template>
     <v-container>
-        <v-breadcrumbs :items="items">
-            <template v-slot:item="{ item }">
-            <v-breadcrumbs-item
-                :href="item.href"
-                :disabled="item.disabled"
-            >
-                {{ item.text.toUpperCase() }}
-            </v-breadcrumbs-item>
-            </template>
-        </v-breadcrumbs>
+        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
         <v-tabs v-model="tab"  class="background">
             <v-tab class="background">Logs</v-tab>
             <v-tab class="background">Events</v-tab>
@@ -36,26 +27,33 @@ export default {
     data () {
         return {
             tab: null,
-            items: [
+            breadcrumbItems: [
                 {
-                    text: 'Dashboard',
+                    text: 'DASHBOARD',
                     disabled: false,
                     href: '#/',
                 },
                 {
-                    text: 'Pipeline:'+this.pipeline,
+                    text: 'PIPELINE:'+this.pipeline,
                     disabled: false,
                     href: '#/pipeline/'+this.pipeline+'/apps',
                 },
                 {
-                    text: 'Phase:'+this.phase,
-                    disabled: false,
+                    text: 'PHASE:'+this.phase,
+                    disabled: true,
+                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 },
                 {
-                    text: this.app,
+                    text: 'APP:'+this.app,
+                    disabled: true,
+                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+                },
+                {
+                    text: "EDIT",
                     disabled: false,
                     //http://localhost:2000/#/pipeline/customcommand/production/noproc
                     href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
+                    icon: "mdi-pencil-box-outline",
                 },
             ],
         }
@@ -64,6 +62,7 @@ export default {
         events : () => import('./events.vue'),
         logs : () => import('./logs.vue'),
         vulnerabilities : () => import('./vulnerabilities.vue'),
+        breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     props: {
       pipeline: {

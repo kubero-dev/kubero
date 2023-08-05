@@ -1,6 +1,7 @@
 <template>
   <v-form v-model="valid">
     <v-container>
+      <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
             <h2 v-if="app=='new'">
@@ -783,7 +784,37 @@ export default {
         default: "new"
       }
     },
-    data: () => ({
+    data () {
+    return {
+      breadcrumbItems: [
+          {
+              text: 'DASHBOARD',
+              disabled: false,
+              href: '#/',
+          },
+          {
+              text: 'PIPELINE:'+this.pipeline,
+              disabled: false,
+              href: '#/pipeline/'+this.pipeline+'/apps',
+          },
+          {
+              text: 'PHASE:'+this.phase,
+              disabled: false,
+              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+          },
+          {
+              text: 'APP:'+this.app,
+              disabled: false,
+              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+          },
+          {
+              text: 'EDIT',
+              disabled: true,
+              //http://localhost:2000/#/pipeline/customcommand/production/noproc
+              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
+                    icon: "mdi-pencil-box-outline",
+          },
+      ],
       advanced: false,
       panel: [0],
       valid: false,
@@ -951,7 +982,7 @@ export default {
         v => /(NodeJS|Docker)$/.test(v) || 'select a valid buildpack',
       ],
 */
-    }),
+    }},
     mounted() {
       this.loadPipeline();
       this.loadStorageClasses();
@@ -968,6 +999,7 @@ export default {
     },
     components: {
         Addons,
+        breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
       loadTemplate(service) {
