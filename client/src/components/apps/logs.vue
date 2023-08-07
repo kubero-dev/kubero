@@ -9,7 +9,7 @@
                     class="ma-2"
                     @click="openInWindow"
                     >
-                    Open
+                    Open Logs
                     <v-icon
                         right
                         dark
