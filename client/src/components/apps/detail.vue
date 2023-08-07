@@ -60,7 +60,7 @@ export default {
     },
     components: {
         events : () => import('./events.vue'),
-        logs : () => import('./logs.vue'),
+        logs : () => import('./logstab.vue'),
         vulnerabilities : () => import('./vulnerabilities.vue'),
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
