@@ -26,6 +26,22 @@ Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: R
     res.send('ok');
 });
 
+Router.get('/logs/:pipeline/:phase/:app/history', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get logs history for a specific app'
+    // #swagger.description = 'Get logs history for a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
+
+    const logs = await req.app.locals.kubero.getLogsHistory(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app
+    );
+    res.send(logs);
+});
+
 Router.get('/events', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero Kubernetes events'

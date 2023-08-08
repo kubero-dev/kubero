@@ -16,6 +16,7 @@ export default {
         },
     },
     mounted() {
+        this.getLogHistory()
         this.socketJoin()
         this.startLogs()
     },
@@ -67,6 +68,11 @@ export default {
         startLogs() {
             axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}`).then(() => {
                 console.log("logs started");
+            });
+        },
+        getLogHistory() {
+            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}/history`).then((response) => {
+                this.loglines = response.data;
             });
         },
     },
