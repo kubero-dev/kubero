@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "version": "1.8.0",
+    "version": "1.10.1",
     "title": "Kubero",
     "description": "Kubero is a web-based tool deploy applications on a Kubernetes clusters. It provides a simple and intuitive interface to manage your clusters, applications, and pipelines."
   },
@@ -44,7 +44,6 @@
         ],
         "summary": "Get a list of available addons",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -68,7 +67,6 @@
         ],
         "summary": "Get a list of available addons",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -83,7 +81,6 @@
         ],
         "summary": "Get a list of installed operators",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -98,7 +95,6 @@
         ],
         "summary": "Create a new app",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -246,7 +242,6 @@
         ],
         "summary": "Get a list of running apps",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -270,7 +265,6 @@
         ],
         "summary": "Create a new app",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -283,7 +277,6 @@
         ],
         "summary": "Get a list of running apps",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -376,8 +369,11 @@
         ],
         "summary": "Authenticate with github",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/auth/github/callback": {
@@ -387,8 +383,11 @@
         ],
         "summary": "Github Authentication Callback",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/auth/oauth2": {
@@ -398,8 +397,11 @@
         ],
         "summary": "Authenticate with oauth2",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/auth/oauth2/callback": {
@@ -409,8 +411,11 @@
         ],
         "summary": "Oauth2 Authentication Callback",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/auth/methods": {
@@ -420,7 +425,6 @@
         ],
         "summary": "Get the available authentication methods",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -435,7 +439,6 @@
         ],
         "summary": "Login with username and password",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -453,7 +456,6 @@
         ],
         "summary": "Logout and destroy the session",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -468,7 +470,6 @@
         ],
         "summary": "Get the config",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -483,7 +484,6 @@
         ],
         "summary": "Get the podsize list",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -507,7 +507,6 @@
         ],
         "summary": "Get the podsize list",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -522,7 +521,6 @@
         ],
         "summary": "Get the buildpacks list",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -546,7 +544,6 @@
         ],
         "summary": "Get the buildpacks list",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -561,7 +558,6 @@
         ],
         "summary": "Get the available Kubernetes contexts",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -585,7 +581,6 @@
         ],
         "summary": "Get the available k8s context list",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -600,7 +595,6 @@
         ],
         "summary": "Get the available repositories",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -624,7 +618,6 @@
         ],
         "summary": "Get the available repositories",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -639,7 +632,6 @@
         ],
         "summary": "Get the available storageclasses",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -654,6 +646,49 @@
         ],
         "summary": "Get logs for a specific app",
         "description": "Get logs for a specific app",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pipeline name"
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Phase name"
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "App name"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/logs/{pipeline}/{phase}/{app}/history": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get logs history for a specific app",
+        "description": "Get logs history for a specific app",
         "parameters": [
           {
             "name": "pipeline",
@@ -763,7 +798,6 @@
         ],
         "summary": "Get node metrics and metrics for all apps",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -835,7 +869,6 @@
         ],
         "summary": "Get a list of available pipelines",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -943,7 +976,6 @@
         ],
         "summary": "Get a list of available pipelines",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1462,7 +1494,6 @@
         ],
         "summary": "Get the Kubero settings",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1486,7 +1517,6 @@
         ],
         "summary": "Get the Kubero settings",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1501,7 +1531,6 @@
         ],
         "summary": "Get the Kubero Dashboad banner",
         "description": "",
-        "parameters": [],
         "responses": {
           "200": {
             "description": "OK"
@@ -1516,8 +1545,11 @@
         ],
         "summary": "Get all services",
         "description": "",
-        "parameters": [],
-        "responses": {}
+        "responses": {
+          "default": {
+            "description": ""
+          }
+        }
       }
     },
     "/services/{name}": {
