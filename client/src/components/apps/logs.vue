@@ -87,7 +87,6 @@ a:link { text-decoration: none;}
 }
 .console {
     height: 100%;
-    max-height: 1000px;
     overflow-x: scroll;
     background-color: #333;
     color: #c0c0c0;
