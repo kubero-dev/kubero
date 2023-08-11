@@ -756,7 +756,13 @@ export class Kubero {
                 if (pod.metadata?.name?.startsWith(appName)) {
                     for (const container of pod.spec?.containers || []) {
                         console.log('getting logs for '+pod.metadata.name+' '+container.name);
-                        await this.kubectl.log.log(namespace, pod.metadata.name, container.name, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
+                        try {
+                            await this.kubectl.log.log(namespace, pod.metadata.name, container.name, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
+                        } catch (error) {
+                            console.log("error getting logs for "+pod.metadata.name+" "+container.name);
+                            return loglines;
+                        }
+                        
                         
                         // sleep for 1 second to wait for all logs to be collected
                         await new Promise(r => setTimeout(r, 1000));
