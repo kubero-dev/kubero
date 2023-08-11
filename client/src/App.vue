@@ -1,7 +1,7 @@
 <template>
     <v-app>
 
-        <v-app-bar dense max-height="50" :color="banner.bgcolor" v-if="banner.show">
+        <v-app-bar dense max-height="50" :color="banner.bgcolor" v-if="banner.show && popup!='true'">
             <v-toolbar-title style="width: 100%; text-align: center; color: azure;">{{ banner.message }}</v-toolbar-title>
         </v-app-bar>
         <v-navigation-drawer
@@ -10,7 +10,7 @@
             expand-on-hover
             permanent
             mini-variant
-            v-if="isAuthenticated"
+            v-if="isAuthenticated && popup!='true'"
         >
             <v-list nav dense>
                 <v-list-item link to="/">
@@ -131,6 +131,9 @@ export default {
     },
     */
     created() {
+        if (this.$route.query.popup) {
+            this.popup = this.$route.query.popup;
+        }
         this.$vuetify.theme.dark = this.getTheme();
         this.checkSession()
     },
@@ -141,6 +144,7 @@ export default {
         this.checkSession();
     },
     data: () => ({
+        popup: "false",
         session: false,
         isAuthenticated: false,
         version: "dev",

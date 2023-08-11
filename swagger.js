@@ -2,7 +2,7 @@ const swaggerAutogen = require('swagger-autogen')({openapi: '3.0.0'})
 // https://github.com/davibaltar/swagger-autogen
 const doc = {
     info: {
-      version: '1.8.0',
+      version: '1.10.1',
       title: 'Kubero',
       description: 'Kubero is a web-based tool deploy applications on a Kubernetes clusters. It provides a simple and intuitive interface to manage your clusters, applications, and pipelines.',
     },
