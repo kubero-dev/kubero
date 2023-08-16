@@ -190,11 +190,11 @@ export class GogsApi extends Repo {
 
     public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
         let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
-        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
+        let hash = crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
 
         let verified = false;
         if (hash === signature) {
-            debug.debug('Gitea webhook signature is valid for event: '+delivery);
+            debug.debug('Gogs webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
             debug.log('ERROR: invalid signature for event: '+delivery);
