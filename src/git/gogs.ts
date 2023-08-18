@@ -21,6 +21,8 @@ export class GogsApi extends Repo {
     }
 
     protected async getRepository(gitrepo: string): Promise<IRepository> {
+        const GitUrlParse = require("git-url-parse");
+
         let ret: IRepository = {
             status: 500,
             statusText: 'error',
