@@ -2,6 +2,7 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
+import gitUrlParse = require("git-url-parse");
 debug('app:kubero:github:api')
 
 //const { Octokit } = require("@octokit/core");
@@ -30,9 +31,9 @@ export class GithubApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here or use default function in Superclass
-        let owner = gitrepo.match(/^git@github.com:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@github.com:.*\/(.*).git$/)?.[1] as string;
+        let parsed = gitUrlParse(gitrepo)
+        let repo = parsed.name
+        let owner = parsed.owner
 
         try {
             let res = await this.octokit.request('GET /repos/{owner}/{repo}', {
