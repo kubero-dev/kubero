@@ -61,7 +61,7 @@ Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Re
             //console.log(req.headers)
             let gogs_event = req.headers['x-gogs-event']
             let gogs_delivery = req.headers['x-gogs-delivery']
-            let gogs_signature = req.headers['x-hub-signature-256']
+            let gogs_signature = req.headers['x-gogs-signature']
             let gogs_body = req.body
 
             req.app.locals.kubero.handleWebhook('gogs', gogs_event, gogs_delivery, gogs_signature, gogs_body);
