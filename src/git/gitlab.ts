@@ -5,6 +5,7 @@ import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
 import {Client as GitlabClient} from '@nerdvision/gitlab-js';
 import {Options} from 'got';
+import gitUrlParse = require("git-url-parse");
 
 
 export class GitlabApi extends Repo {
@@ -40,9 +41,9 @@ export class GitlabApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here
-        let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@.*:.*\/(.*)\.git$/)?.[1] as string;
+        let parsed = gitUrlParse(gitrepo)
+        let repo = parsed.name
+        let owner = parsed.owner
 
         let res: any = await this.gitlab.get(`projects/${owner}%2F${repo}`)
         .catch((error: any) => {
