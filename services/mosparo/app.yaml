@@ -1,0 +1,32 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mosparo
+spec:
+  name: mosparo
+  deploymentstrategy: docker
+  image:
+    repository: mosparo/mosparo
+    tag: latest
+    containerPort: "80"
+  addons: []
+  envVars: 
+  - name: APP_SECRET
+    value: mySecret
+  - name: MOSPARO_ENABLE_WEBSERVER
+    value: "1"
+  - name: MOSPARO_ENABLE_CRON
+    value: "1"
+  cronjobs: []
+  extraVolumes: 
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /mosparo-data
+    name: mosparo-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
