@@ -1,0 +1,30 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: chartmuseum
+spec:
+  name: chartmuseum
+  deploymentstrategy: docker
+  image:
+    repository: ghcr.io/helm/chartmuseum
+    tag: canary
+    containerPort: "8080"
+  addons: []
+  envVars: 
+  - name: STORAGE
+    value: local
+  - name: STORAGE_LOCAL_ROOTDIR
+    value: /charts
+  cronjobs: []
+  extraVolumes: 
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /charts
+    name: chartmuseum-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
