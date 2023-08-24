@@ -1,8 +1,8 @@
 name: Mosparo
 description: 'The modern spam protection. Protects your forms from spam by simply checking the content. Open source, Free to use, Accessible, and Self-Hosted.'
 tags:
-- monitoring
-source: https://github.com/TwiN/gatus
+- spam protection
+source: https://github.com/mosparo/mosparo
 website: https://mosparo.io/
 icon: https://avatars.githubusercontent.com/u/83111146?s=200&v=4
 screenshots:
