@@ -178,7 +178,7 @@ export class Kubero {
         return ret;
     }
 
-    public async getPipeline(pipelineName: string) {
+    public async getPipeline(pipelineName: string): Promise<IPipeline | undefined>{
         debug.debug('getPipeline');
 
         let pipeline = await this.kubectl.getPipeline(pipelineName)
@@ -186,7 +186,7 @@ export class Kubero {
             debug.log(error);
         });
 
-        if (pipeline) {
+        if (pipeline && pipeline.metadata && pipeline.metadata.resourceVersion) {
             pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
             return pipeline.spec;
         }
