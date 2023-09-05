@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
+import { gitLink } from '../types';
 import { IApp, IPipeline } from '../types';
 import { App } from '../modules/application';
 import { Webhooks } from '@octokit/webhooks';
@@ -23,25 +24,42 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
             }
     }] */
 
-    let con = await req.app.locals.kubero.connectRepo(
-        req.body.git.repository.provider.toLowerCase(),
-        req.body.git.repository.ssh_url);
+    const con = await req.app.locals.kubero.connectRepo(
+                        req.body.git.repository.provider.toLowerCase(),
+                        req.body.git.repository.ssh_url);
+
+    let git: gitLink = {
+        keys: {
+            priv: "Zm9v",
+            pub: "YmFy"
+        },
+        repository: {
+            admin: false,
+            clone_url: "",
+            ssh_url: "",
+        },
+        webhook: {}
+    };
+
+    if (con.error) {
+        console.log("ERROR: connecting Gitrepository", con.error);
+    } else {
+        git.keys = con.keys.data,
+        git.webhook = con.webhook.data,
+        git.repository = con.repository.data
+    }
 
     const buildpackList = req.app.locals.kubero.getBuildpacks()
 
     const selectedBuildpack = buildpackList.find((element: { name: any; }) => element.name == req.body.buildpack.name);
 
-    let pipeline: IPipeline = {
+    const pipeline: IPipeline = {
         name: req.body.pipelineName,
         domain: req.body.domain,
         phases: req.body.phases,
         buildpack: selectedBuildpack,
         reviewapps: req.body.reviewapps,
-        git: {
-            keys: con.keys.data,
-            webhook: con.webhook.data,
-            repository: con.repository.data
-        },
+        git: git,
         dockerimage: req.body.dockerimage,
         deploymentstrategy: req.body.deploymentstrategy,
     };

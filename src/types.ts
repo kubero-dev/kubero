@@ -157,14 +157,20 @@ export interface IPipeline {
     reviewapps: boolean;
     phases: IPipelinePhase[];
     buildpack: IBuildpack
-    git: {
-        keys: object,
-        repository?: IGithubRepository
-        webhook: object;
-    };
+    git: gitLink;
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
     resourceVersion?: string; // required to update resource, not part of spec
+}
+
+export interface gitLink {
+    keys: {
+        priv: string,
+        pub: string,
+    },
+    provider?: string,
+    repository?: IGithubRepository
+    webhook: object;
 }
 
 export interface IPipelineList {
