@@ -21,7 +21,8 @@ import {
     PodMetric,
     PodMetricsList,
     NodeMetric,
-    StorageV1Api
+    StorageV1Api,
+    BatchV1Api
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -36,6 +37,7 @@ export class Kubectl {
     private appsV1Api: AppsV1Api;
     private metricsApi: Metrics;
     private storageV1Api: StorageV1Api;
+    private batchV1Api: BatchV1Api;
     private customObjectsApi: CustomObjectsApi;
     private kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
@@ -69,6 +71,7 @@ export class Kubectl {
         this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
         this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
         this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
+        this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
         this.metricsApi = new Metrics(this.kc);
         this.patchUtils = new PatchUtils();
         this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
@@ -539,4 +542,361 @@ export class Kubectl {
         }
         return ret;
     }
+
+    private async deleteScanJob(namespace: string, name: string): Promise<any> {
+        try {
+            await this.batchV1Api.deleteNamespacedJob(name, namespace);
+            // wait for job to be deleted
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        } catch (error) {
+            //console.log(error);
+            console.log('ERROR deleting job: '+name+' ' +namespace);
+        }
+    }
+
+    public async createScanRepoJob(namespace: string, app: string, gitrepo: string, branch: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-vuln',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "repo",
+                                    gitrepo,
+                                    "--branch",
+                                    branch,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--scanners",
+                                    "vuln,secret,config",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Repo scan job: '+app+' ' +namespace);
+        }
+    }
+
+    public async createScanImageJob(namespace: string, app: string, image: string, tag: string): Promise<any> {
+        await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-vuln',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                backoffLimit: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            vulnerabilityscan: app
+                        }
+                    },
+                    spec: {
+                        restartPolicy: 'Never',
+                        containers: [
+                            {
+                                name: 'trivy-repo-scan',
+                                image: "aquasec/trivy:latest",
+                                command: [
+                                    "trivy",
+                                    "image",
+                                    image+":"+tag,
+                                    "-q",
+                                    "-f",
+                                    "json",
+                                    "--scanners",
+                                    "vuln",
+                                    "--exit-code",
+                                    "0"
+                                ],
+                                env: [
+                                    {
+                                        name: 'TRIVY_USERNAME',
+                                        valueFrom: {
+                                            secretKeyRef: {
+                                                name: app+'-kuberoapp-registry-login',
+                                                key: 'username',
+                                                optional: true
+                                            }
+                                        }
+                                    },
+                                    {
+                                        name: 'TRIVY_PASSWORD',
+                                        valueFrom: {
+                                            secretKeyRef: {
+                                                name: app+'-kuberoapp-registry-login',
+                                                key: 'password',
+                                                optional: true
+                                            }
+                                        }
+                                    }
+                                ],
+                            }
+                        ]
+                    }
+                }
+            }
+        };
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating Image scan job');
+        }
+    }
+
+    public async getVulnerabilityScanLogs(namespace: string, logPod: string): Promise<any> {
+
+        try {
+            const logs = await this.coreV1Api.readNamespacedPodLog(logPod, namespace, undefined, false);
+            return logs.body;
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching scan logs');
+        }
+    }
+
+    public async getLatestPodByLabel(namespace: string, label: string ): Promise<any> {
+
+        try {
+            const pods = await this.coreV1Api.listNamespacedPod(namespace, undefined, undefined, undefined, undefined, label);
+            let latestPod = null;
+            for (let i = 0; i < pods.body.items.length; i++) {
+                const pod = pods.body.items[i];
+                if (latestPod === null) {
+                    latestPod = pod;
+                } else {
+                    if (
+                        pod.metadata?.creationTimestamp && latestPod.metadata?.creationTimestamp &&
+                        pod.metadata?.creationTimestamp > latestPod.metadata?.creationTimestamp) {
+                        latestPod = pod;
+                    }
+                }
+            }
+
+            return {
+                name: latestPod?.metadata?.name,
+                status: latestPod?.status?.phase,
+                startTime: latestPod?.status?.startTime,
+                containerStatuses: latestPod?.status?.containerStatuses
+
+            };
+
+            //return latestPod?.metadata?.name
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching pod by label');
+        }
+    }
+
+    public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
+
+        const job = {
+            apiVersion: 'batch/v1',
+            kind: 'Job',
+            metadata: {
+                name: app+'-kuberoapp-build',
+                namespace: namespace,
+            },
+            spec: {
+                ttlSecondsAfterFinished: 86400,
+                completions: 1,
+                backoffLimit: 1,
+                template: {
+                    metadata: {
+                        labels: {
+                            build: app
+                        }
+                    },
+                    spec: {
+                        initContainers: [
+                          {
+                            name: "kuberoapp-fetcher",
+                            securityContext: {
+                              readOnlyRootFilesystem: false
+                            },
+                            image: "ghcr.io/kubero-dev/buildpacks/fetch:main",
+                            imagePullPolicy: "Always",
+                            workingDir: "/app",
+                            env: [
+                              {
+                                name: "GIT_REPOSITORY",
+                                value: gitrepo
+                              },
+                              {
+                                name: "GIT_BRANCH",
+                                value: branch
+                              },
+                              {
+                                name: "GIT_REF",
+                                value: "refs/heads/dummy-pr" // TODO: this needs to be a real reference !!
+                              },
+                              {
+                                name: "KUBERO_BUILDPACK_DEFAULT_BUILD_CMD",
+                                value: "npm install"
+                              },
+                              {
+                                name: "KUBERO_BUILDPACK_DEFAULT_RUN_CMD",
+                                value: "node index.js"
+                              }
+                            ],
+                            volumeMounts: [
+                              {
+                                mountPath: "/root/.ssh",
+                                name: "deployment-keys",
+                                readOnly: true
+                              },
+                              {
+                                mountPath: "/app",
+                                name: "app-storage"
+                              }
+                            ]
+                          },
+                          {
+                            name: "kuberoapp-docker",
+                            image: "quay.io/containers/buildah:v1.29",
+                            workingDir: "/app",
+                            env: [
+                                {
+                                    name: "REGISTRY_AUTH_FILE",
+                                    value: "/etc/buildah/auth/.dockerconfigjson"
+                                },
+                                {
+                                    name: "BUILD_IMAGE",
+                                    value: image+":"+tag
+                                },
+                                {
+                                    name: "BUILDAH_DOCKERFILE_PATH",
+                                    value: "/app/"+dockerfilePath
+                                }
+                            ],
+                            securityContext: {
+                              privileged: true
+                            },
+                            command: [
+                              "sh",
+                              "-c",
+                              "buildah build -f $BUILDAH_DOCKERFILE_PATH --isolation chroot -t $BUILD_IMAGE .\nbuildah push --tls-verify=false $BUILD_IMAGE"
+                              //"tail -f /dev/null" // for debugging
+                            ],
+                            volumeMounts: [
+                              {
+                                mountPath: "/app",
+                                name: "app-storage",
+                                readOnly: true
+                              },
+                              {
+                                mountPath: "/etc/buildah/auth",
+                                name: "pull-secret",
+                                readOnly: true
+                              }
+                            ]
+                          }
+                        ],
+                        containers: [
+                          {
+                            name: "kuberoapp-deployer",
+                            image: "bitnami/kubectl:latest",
+                            command: [
+                              "sh",
+                              "-c",
+                              "kubectl patch kuberoapps "+app+" --type=merge -p '{\"spec\":{\"image\":{\"repository\": \""+image+"\",\"tag\": \""+tag+"\"}}}'"
+                            ]
+                          }
+                        ],
+                        restartPolicy: "Never",
+                        serviceAccountName: app+'-kuberoapp',
+                        serviceAccount: app+'-kuberoapp',
+                        automountServiceAccountToken: true,
+                        volumes: [
+                          {
+                            name: "deployment-keys",
+                            secret: {
+                              defaultMode: 384,
+                              secretName: "deployment-keys"
+                            }
+                          },
+                          {
+                            name: "app-storage",
+                            emptyDir: {}
+                          },
+                          {
+                            name: "pull-secret",
+                            secret: {
+                                defaultMode: 384,
+                                secretName: app+"-kuberoapp-pull-secret"
+                            }
+                        }
+                        ]
+                    }
+                }
+            }
+        };
+
+        job.spec.template.spec.initContainers.splice(1, 0, {
+            name: "kuberoapp-nixpacks",
+            image: "ghcr.io/kubero-dev/buildpacks/build:latest",
+            workingDir: "/app",
+            env: [],
+            securityContext: {
+              privileged: false
+            },
+            command: [
+              "sh",
+              "-c",
+              "nixpacks build . -o ."
+              //"tail -f /dev/null" // for debugging
+            ],
+            volumeMounts: [
+              {
+                mountPath: "/app",
+                name: "app-storage",
+                readOnly: false
+              }
+            ]
+          }
+        );
+
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating build job');
+        }
+    }
+
 }

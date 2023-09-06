@@ -6,7 +6,7 @@ spec:
   name: wordpress
   deploymentstrategy: docker
   image:
-    repository: zadam/trilium
+    repository: bitnami/wordpress
     tag: latest
     containerPort: "8080"
   addons:

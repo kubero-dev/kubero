@@ -4,6 +4,7 @@ import PipelineNew from "@/components/pipelines/new"
 import PipelineDetails from "@/components/pipelines/detail"
 import AppsNew from "@/components/apps/new"
 import AppsDetail from "@/components/apps/detail"
+import AppsLogsPopUp from "@/components/apps/logs"
 import Settingsform from "@/components/settings/form"
 import Addonslist from "@/components/addons/list"
 import EventsView from "@/components/events/view"
@@ -53,6 +54,12 @@ export default new VueRouter({
       props: true
     },
     {
+      path: "/pipeline/:pipeline/:phase/:app/logspopup",
+      name: "App logs popup",
+      component: AppsLogsPopUp,
+      props: true
+    },
+    {
       path: "/settings",
       name: "Settigns",
       component: Settingsform
@@ -73,8 +80,8 @@ export default new VueRouter({
       component: EventsView
     },
     {
-      path: "/services",
-      name: "Services",
+      path: "/templates",
+      name: "Templates",
       component: Serviceslist
     },
   ]

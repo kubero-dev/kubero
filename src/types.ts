@@ -5,6 +5,7 @@ export interface IApp {
     phase: string,
     buildpack: string,
     deploymentstrategy: 'git' | 'docker',
+    buildstrategy: 'plain' | 'dockerfile' | 'nixpacks',
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
@@ -81,6 +82,14 @@ export interface IApp {
     extraVolumes: IExtraVolume[],
     cronjobs: ICronjob[]
     addons: IAddon[]
+    vulnerabilityscan: {
+        enabled: boolean
+        schedule: string
+        image: {
+            repository: string
+            tag: string
+        }
+    }
 /*
     affinity: {},
     autoscaling: {
@@ -148,14 +157,20 @@ export interface IPipeline {
     reviewapps: boolean;
     phases: IPipelinePhase[];
     buildpack: IBuildpack
-    git: {
-        keys: object,
-        repository?: IGithubRepository
-        webhook: object;
-    };
+    git: gitLink;
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
     resourceVersion?: string; // required to update resource, not part of spec
+}
+
+export interface gitLink {
+    keys: {
+        priv: string,
+        pub: string,
+    },
+    provider?: string,
+    repository?: IGithubRepository
+    webhook: object;
 }
 
 export interface IPipelineList {
@@ -163,6 +178,7 @@ export interface IPipelineList {
 }
 
 export interface IGithubRepository {
+    admin: boolean,
     description?: string,
     id?: number,
     name?: string,
@@ -170,6 +186,7 @@ export interface IGithubRepository {
     owner?: string,
     private?: boolean,
     ssh_url?: string
+    clone_url?: string,
 }
 
 export interface IPipelinePhase {
@@ -278,12 +295,17 @@ export interface IBuildpack {
     tag: string;
 }
 export interface IKuberoConfig {
-    name: string;
-    version: string;
     podSizeList: IPodSize[];
-    namespace: string;
-    port: number;
     buildpacks: IBuildpack[];
+    kubero: {
+        namespace?: string; // deprecated v1.9.0
+        readonly: boolean;
+        banner: {
+            message: string;
+            bgcolor: string;
+            fontcolor: string;
+        }
+    }
 }
 
 export interface IDeployKeyPair {

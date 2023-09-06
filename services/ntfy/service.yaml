@@ -6,7 +6,7 @@ tags:
 - pubsub
 source: https://github.com/binwiederhier/ntfy
 website: https://ntfy.sh/
-icon: https://ntfy.sh/static/img/ntfy.png
+icon: https://ntfy.sh/_next/static/media/logo.077f6a13.svg
 screenshots:
 - https://ntfy.sh/static/img/screenshot-web-detail.png
 - https://ntfy.sh/static/img/screenshot-curl.png

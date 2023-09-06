@@ -1,0 +1,65 @@
+version: "3.9"
+services:
+  kubero:
+    container_name: "kubero"
+    build: .
+    #command: ["tail", "-f", "/dev/null"] # for debugging
+    env_file:
+      - .env
+    environment:
+      - KUBERO_CONTEXT=kind-kubero-001 # make sure you use the context name from your mounted kubeconfig
+    ports:
+      - "8000:2000"
+    extra_hosts:
+      - "kubero-001-control-plane:192.168.65.2" # make sure you use the container name from your local kind cluster control plane
+    volumes:
+      #- .:/app
+      - ./kubeconfig-docker:/app/server/kubeconfig # change the port 6443 to the outside port of your local kind cluster control plane
+      - ./config.yaml:/app/server/config.yaml
+  gitea:
+    image: gitea/gitea:latest
+    container_name: gitea
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - ./.dockerdata/gitea:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "222:22"
+  gitlab:
+    image: 'gitlab/gitlab-ee:latest'
+    restart: always
+    hostname: 'gitlab.lacolhost.com'
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'http://gitlab.lacolhost.com'
+        # Add any other gitlab.rb configuration here, each on its own line
+    ports:
+      - '3080:80'
+      - '3443:443'
+      - '3022:22'
+    volumes:
+      - './.dockerdata/gitlab/config:/etc/gitlab'
+      - './.dockerdata/gitlab/logs:/var/log/gitlab'
+      - './.dockerdata/gitlab/data:/var/opt/gitlab'
+    shm_size: '256m'
+
+  gogs:
+    image: gogs/gogs:latest
+    container_name: gogs
+    hostname: 'localhost'
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - ./.dockerdata/gogs:/data
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "3000:3000"
+      - "22:22"

@@ -1,0 +1,58 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mosparo
+spec:
+  name: mosparo
+  deploymentstrategy: docker
+  image:
+    repository: mosparo/mosparo
+    tag: latest
+    containerPort: "80"
+  addons:
+  - displayName: Kubero Mysql
+    env: []
+    icon: /img/addons/MySQL.png
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions:
+      KuberoMysql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMysql
+        metadata:
+          name: mosparo-mysql
+        spec:
+          mysql:
+            auth:
+              createDatabase: true
+              database: mosparo
+              password: mysecret
+              rootPassword: mysecret
+              username: mosparo
+            global:
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                accessModes:
+                - ReadWriteOnce
+                size: 1Gi
+  envVars: 
+  - name: APP_SECRET
+    value: mySecret
+  - name: MOSPARO_ENABLE_WEBSERVER
+    value: "1"
+  - name: MOSPARO_ENABLE_CRON
+    value: "1"
+  cronjobs: []
+  extraVolumes: 
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /mosparo-data
+    name: mosparo-volume
+    size: 1Gi
+    storageClass: standard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

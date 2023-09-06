@@ -4,6 +4,6 @@ tags:
 - monitoring
 source: https://github.com/dgtlmoon/changedetection.io
 website: https://changedetection.io/
-icon: https://changedetection.io/assets/images/favicons/apple-touch-icon.png
+icon: https://changedetection.io/themes/cdio/assets/images/favicons/apple-touch-icon.png
 screenshots:
 - https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png

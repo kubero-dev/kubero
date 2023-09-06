@@ -2,6 +2,7 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
+import gitUrlParse = require("git-url-parse");
 debug('app:kubero:bitbucket:api')
 
 //const { Octokit } = require("@octokit/core");
@@ -40,9 +41,9 @@ export class BitbucketApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here
-        let owner = gitrepo.match(/^git@bitbucket.org:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@bitbucket.org:.*\/(.*).git$/)?.[1] as string;
+        let parsed = gitUrlParse(gitrepo)
+        let repo = parsed.name
+        let owner = parsed.owner
 
         console.log(owner, repo);
         try {

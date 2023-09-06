@@ -2,6 +2,7 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
+import gitUrlParse = require("git-url-parse");
 debug('app:kubero:gogs:api')
 
 //https://www.npmjs.com/package/gitea-js
@@ -20,6 +21,8 @@ export class GogsApi extends Repo {
     }
 
     protected async getRepository(gitrepo: string): Promise<IRepository> {
+        const GitUrlParse = require("git-url-parse");
+
         let ret: IRepository = {
             status: 500,
             statusText: 'error',
@@ -31,9 +34,18 @@ export class GogsApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here
-        let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@.*:.*\/(.*)\.git$/)?.[1] as string;
+        let parsed = gitUrlParse(gitrepo)
+        let repo = parsed.name
+        let owner = parsed.owner
+        
+        if ( owner == undefined ){
+            debug.log("git owner extraction failed");
+            throw new Error("git owner extraction failed");
+        }
+        if ( repo == undefined ){
+            debug.log("git owner extraction failed");
+            throw new Error("git repo extraction failed");
+        }
 
         let res = await this.gitea.repos.repoGet(owner, repo)
         .catch((error: any) => {
@@ -190,11 +202,11 @@ export class GogsApi extends Repo {
 
     public getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean {
         let secret = process.env.KUBERO_WEBHOOK_SECRET as string;
-        let hash = 'sha256='+crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
+        let hash = crypto.createHmac('sha256', secret).update(JSON.stringify(body, null, '  ')).digest('hex')
 
         let verified = false;
         if (hash === signature) {
-            debug.debug('Gitea webhook signature is valid for event: '+delivery);
+            debug.debug('Gogs webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
             debug.log('ERROR: invalid signature for event: '+delivery);

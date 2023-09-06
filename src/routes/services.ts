@@ -1,7 +1,5 @@
 import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
-import { IApp } from '../types';
-import { App } from '../modules/application';
 import axios from 'axios';
 import YAML from 'yaml'
 
@@ -25,7 +23,7 @@ Router.get('/services/:name', authMiddleware, async function (req: Request, res:
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a specific service'
 
-    const serviceName = req.params.name.replace(/[^\w.]+/g, '');
+    const serviceName = req.params.name.replace(/[^\w.-]+/g, '');
 
     const service = await axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/services/' + serviceName + '/app.yaml')
     .catch((err) => {

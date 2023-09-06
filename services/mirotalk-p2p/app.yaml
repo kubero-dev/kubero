@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: mirotalk-p2p
+spec:
+  name: mirotalk-p2p
+  deploymentstrategy: docker
+  image:
+    repository: mirotalk/p2p
+    tag: latest
+    containerPort: "3000"
+  addons: []
+  envVars:
+  - name: HTTPS
+    value: "false"
+  - name: HOST
+    value: "miro.linode.shoks.ch"
+  - name: HOST_PROTECTED
+    value: "false"
+  - name: HOST_USERNAME
+    value: "user"
+  - name: HOST_PASSWORD
+    value: "secret"
+  - name: NGROK_ENABLED
+    value: "false"
+  - name: STUN
+    value: "stun:stun.l.google.com:19302"
+  - name: TURN_ENABLED
+    value: "false"
+  - name: API_KEY_SECRET
+    value: "mirotalk_default_secret"
+  - name: SURVEY_ENABLED
+    value: "false"
+  - name: SENTRY_ENABLED
+    value: "false"
+  - name: SLACK_ENABLED
+    value: "false"
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

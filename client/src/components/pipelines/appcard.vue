@@ -4,7 +4,8 @@
     class="mt-5"
     outlined
     elevation="2"
-    color="#fafafa"
+    color="cardBackground"
+    v-if="this.deleted === false"
     >
 
     <template slot="progress">
@@ -15,7 +16,7 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name">{{ this.app.name }}</a></v-card-title>
+    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'">{{ this.app.name }}</a></v-card-title>
 
     <v-card-text>
         <v-row
@@ -41,6 +42,17 @@
         <v-chip label class="mr-1" v-if="this.app.deploymentstrategy != 'docker' && this.app.commithash">{{ this.app.commithash }}</v-chip>
 
     </v-card-text>
+
+    <table style="width: 100%;" v-if="this.vulnSummary.unknown != undefined">
+      <tr>
+        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ this.vulnSummary.unknown }} UNKNOWN</td>
+        <td title="LOW" class="vuln-summary severity-low">{{ this.vulnSummary.low }} LOW</td>
+        <td title="MEDIUM" class="vuln-summary severity-medium">{{ this.vulnSummary.medium }} MEDIUM</td>
+        <td title="HIGH" class="vuln-summary severity-high">{{ this.vulnSummary.high }} HIGH</td>
+        <td title="CRITICAL" class="vuln-summary severity-critical">{{ this.vulnSummary.critical }} CRITICAL</td>
+        <td title="TOTAL" class="vuln-summary severity-total">{{ this.vulnSummary.total }} TOTAL</td>
+      </tr>
+    </table>
 
     <v-divider></v-divider>
     <v-card-text v-if="metricsDisplay == 'bars'">
@@ -79,13 +91,23 @@
             </v-icon>
         </v-btn>
         <v-btn
-            title="Show Logs"
+            title="Details"
             color="deep-purple lighten-2"
             text
             :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
         >
             <v-icon
-                >mdi-console
+                >mdi-page-next-outline
+            </v-icon>
+        </v-btn>
+        <v-btn
+            title="Edit"
+            color="deep-purple lighten-2"
+            text
+            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
+        >
+            <v-icon
+                >mdi-pencil
             </v-icon>
         </v-btn>
         <v-btn
@@ -99,6 +121,18 @@
                 >mdi-open-in-new
             </v-icon>
         </v-btn>
+        <v-spacer></v-spacer>
+        <v-btn
+            title="Delete App"
+            depressed
+            color="primary lighten-2"
+            @click="deleteApp()"
+        >
+            <v-icon
+              color="white"
+                >mdi-delete
+            </v-icon>
+        </v-btn>
     </v-card-actions>
 </v-card>
 </template>
@@ -106,6 +140,14 @@
 <script>
 import axios from "axios";
 export default {
+    sockets: {
+        async deleteApp(appName, pipelineName, phaseName) {
+            console.log("deleteApp", appName);
+            if (this.app.name == appName && this.pipeline == pipelineName && this.phase == phaseName) {
+                this.deleted = true;
+            }
+        },
+    },
     props: {
       pipeline: {
         type: String,
@@ -150,16 +192,40 @@ export default {
       }
     },
     data: () => ({
+      deleted: false,
       loadingState: false,
       metrics: [],
       metricsDisplay: "dots",
+      vulnSummary: {
+        "total": undefined,
+        "critical": undefined,
+        "high": undefined,
+        "medium": undefined,
+        "low": undefined,
+        "unknown": undefined
+      },
     }),
     mounted() {
         this.loadMetrics();
         setInterval(this.loadMetrics, 10000);
+        this.loadVulnSummary();
     },
     methods: {
-        restartApp() {
+        deleteApp() {
+
+          axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
+            .then(response => {
+              //this.$router.push(`/pipeline/${this.pipeline}/apps`);
+              console.log("deleteApp");
+              this.deleted = true;
+              console.log(response);
+            })
+            .catch(error => {
+              console.log(error);
+            });
+
+        },
+        async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 console.log(response);
@@ -168,6 +234,10 @@ export default {
             .catch(error => {
                 console.log(error);
             });
+
+            // TODO - this is a hack to wait for the restart to complete. It is not so easy to get the status of the restart.
+            await new Promise(r => setTimeout(r, 15000));
+            this.loadingState = false;
         },
         loadMetrics() {
             axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
@@ -188,12 +258,33 @@ export default {
             .catch(error => {
                 console.log(error);
             });
-        }
+        },
+        loadVulnSummary() {
+            axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app.name}/scan/result`)
+            .then(response => {
+                this.vulnSummary = response.data.logsummary;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
     }
 }
 </script>
 
 <style>
+.vuln-summary {
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    letter-spacing: 0.00938em;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.54);
+
+    width: 16%;
+    text-align: center;
+}
+
 .v-btn.v-size--default {
     font-size: 0.675rem;
 }

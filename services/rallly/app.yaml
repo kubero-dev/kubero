@@ -1,0 +1,47 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: rallly
+spec:
+  name: rallly
+  deploymentstrategy: docker
+  image:
+    repository: lukevella/rallly
+    tag: latest
+    containerPort: "3000"
+  addons: 
+  - displayName: Kubero Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: rallly-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: rallly
+                  postgresPassword: rallly
+                  username: rallly
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                size: 1Gi
+  envVars: 
+  - name: DATABASE_URL
+    value: postgres://rallly:rallly@rallly-postgresql:5432/postgresql
+  - name: SECRET_PASSWORD
+    value: replace-me-now-with-a-own-secret
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

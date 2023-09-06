@@ -3,7 +3,7 @@
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Addons</h1>
+                <h1>Add-ons</h1>
             </v-col>
         </v-row>
         <v-row>
@@ -12,7 +12,7 @@
                 <v-card
                     :disabled="!addon.enabled"
                     style="padding-bottom: 40px;"
-                    color="#fafafa">
+                    color="cardBackground">
                     <v-list-item-content class="justify-center">
 
                         <v-avatar
@@ -80,13 +80,13 @@
                 <v-card-text>
                     <pre>{{clickedAddon.install}}</pre>
                     <v-btn
-                        color="grey lighten-2"
+                        color="primary"
                         @click="copyInstall(clickedAddon.install)"
                         >
                         copy
                         <v-icon
                             right
-                            dark
+                            color="white"
                         >
                             mdi-content-copy
                         </v-icon>

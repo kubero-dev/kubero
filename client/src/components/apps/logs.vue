@@ -1,23 +1,10 @@
 <template>
-    <v-container>
-        <v-row class="justify-space-between">
-            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Logs for {{ this.app }}</h1>
-                <p></p>
-            </v-col>
-        </v-row>
-        <v-row style="height: 1100px">
-            <v-col cols="12" sm="12" md="12">
-                <div class="console" id="console">
-                    <div v-for="line in loglines" :key="line.id">
-                    {{ new Date(line.time).toISOString()}}<span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
-                    {{ line.log }}
-                </div>
-                </div>
-            </v-col>
-        </v-row>
-
-    </v-container>
+    <div class="console" id="console" style="height: 100%;">
+        <div v-for="line in loglines" :key="line.id">
+        {{ new Date(line.time).toISOString()}}<span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
+        {{ line.log }}
+        </div>
+    </div>
 </template>
 
 <script>
@@ -29,6 +16,7 @@ export default {
         },
     },
     mounted() {
+        this.getLogHistory()
         this.socketJoin()
         this.startLogs()
     },
@@ -66,8 +54,6 @@ export default {
             */
         ],
     }),
-    components: {
-    },
     methods: {
         socketJoin() {
             this.$socket.client.emit("join", {
@@ -84,6 +70,11 @@ export default {
                 console.log("logs started");
             });
         },
+        getLogHistory() {
+            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}/history`).then((response) => {
+                this.loglines = response.data;
+            });
+        },
     },
 }
 </script>
@@ -96,7 +87,6 @@ a:link { text-decoration: none;}
 }
 .console {
     height: 100%;
-    max-height: 1000px;
     overflow-x: scroll;
     background-color: #333;
     color: #c0c0c0;

@@ -20,7 +20,7 @@
             v-model="pipelineName"
             :rules="nameRules"
             :counter="60"
-            label="Pipeline name *"
+            label="Name *"
             :disabled="!newPipeline"
             required
           ></v-text-field>
@@ -34,11 +34,24 @@
           <v-text-field
             v-model="domain"
             :rules="domainRules"
-            label="Pipeline domain"
+            label="FQDN domain"
           ></v-text-field>
         </v-col>
       </v-row>
+
       <v-row>
+        <v-col
+          cols="12"
+          md="8"
+        >
+          <v-switch
+            v-model="gitops"
+            label="Connect pipeline to a Git repository (GitOps)"
+          ></v-switch>
+        </v-col>
+      </v-row>
+
+      <v-row v-if="gitops">
         <v-col
           cols="12"
           md="8"
@@ -54,7 +67,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="gitops">
         <v-col
           cols="12"
           md="6"
@@ -71,7 +84,7 @@
         </v-col>
       </v-row>
       <v-row
-        v-if="showConnectButton"
+        v-if="gitops && showConnectButton"
       >
         <v-col
           cols="12"
@@ -95,7 +108,7 @@
       </v-row>
 
       <v-row
-        v-if="repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
+        v-if="gitops && repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
       >
         <v-col
           cols="12"
@@ -116,7 +129,7 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-if="gitops">
         <v-col
           cols="12"
           md="6"
@@ -129,53 +142,66 @@
           ></v-select>
         </v-col>
       </v-row>
-
-      <v-row v-for="phase in phases" :key="phase.name">
-        <v-col
-          cols="12"
-          md="2"
-        >
-          <v-switch
-            v-model="phase.enabled"
-            :label="phase.name"
-            :disabled="phase.name == 'review' && repository_status.connected === false"
-          ></v-switch>
-        </v-col>
-        <v-col
-          cols="12"
-          md="4"
-        >
-          <v-select
-            v-model="phase.context"
-            :items="contextList"
-            label="Cluster"
-            v-if="phase.enabled"
-          ></v-select>
-        </v-col>
-      </v-row>
+      <v-card elevation="2" class="cardBackground mt-8">
+        <v-card-title>Phases</v-card-title>
+        <v-card-text>
+          <v-row v-for="phase in phases" :key="phase.name">
+            <v-col
+              cols="12"
+              md="2"
+            >
+              <v-switch
+                v-model="phase.enabled"
+                :label="phase.name"
+                :disabled="phase.name == 'review' && repository_status.connected === false"
+              ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-select
+                v-model="phase.context"
+                :items="contextList"
+                label="Cluster"
+                v-if="phase.enabled"
+              ></v-select>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
 
       <v-row>
         <v-col
           cols="12"
           md="4"
+          class="mt-8"
         >
             <v-btn
                 color="primary"
                 v-if="newPipeline"
                 elevation="2"
                 @click="createPipeline()"
-                :disabled="!valid
-                        || !gitrepo
-                        || !buildpack"
+                :disabled="!valid || 
+                        (gitops &&
+                          !(
+                            gitrepo && 
+                            buildpack
+                          )
+                        )"
                 >Create</v-btn>
             <v-btn
                 color="primary"
                 v-if="!newPipeline"
                 elevation="2"
                 @click="updatePipeline()"
-                :disabled="!valid
-                        || !gitrepo
-                        || !buildpack"
+                :disabled="!valid || 
+                        (gitops &&
+                          !(
+                            gitrepo && 
+                            buildpack
+                          )
+                        )"
                 >Update</v-btn>
         </v-col>
       </v-row>
@@ -193,6 +219,7 @@ export default {
       }
     },
     data: () => ({
+      gitops: false,
       newPipeline: true,
       resourceVersion: undefined,
       repotab: 'github', //selected tab

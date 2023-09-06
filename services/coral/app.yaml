@@ -1,0 +1,84 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: coral
+spec:
+  name: coral
+  deploymentstrategy: docker
+  image:
+    repository: coralproject/talk
+    tag: "7"
+    containerPort: "8080"
+  addons: 
+  - displayName: Kubero Redis
+    env: []
+    icon: /img/addons/Redis.png
+    id: kubero-operator
+    kind: KuberoRedis
+    resourceDefinitions:
+      KuberoRedis:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoRedis
+        metadata:
+          name: coral-redis
+        spec:
+          redis:
+            architecture: replication
+            global:
+              redis:
+                password: changeme
+              storageClass: standard
+            master:
+              persistence:
+                size: 1Gi
+            replica:
+              persistence:
+                size: 1Gi
+              replicaCount: 1
+  - displayName: Kubero MongoDB
+    env: []
+    icon: /img/addons/MongoDB.png
+    id: kubero-operator
+    kind: KuberoMongoDB
+    resourceDefinitions:
+      KuberoMongoDB:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMongoDB
+        metadata:
+          name: coral-mongodb
+        spec:
+          mongodb:
+            architecture: standalone
+            auth:
+              databases:
+              - kubero
+              passwords:
+              - changeme
+              rootPassword: changeme
+              rootUser: root
+              usernames:
+              - coral
+            directoryPerDB: false
+            disableJavascript: false
+            global:
+              storageClass: standard
+            persistence:
+              size: 1Gi
+            replicaCount: 1
+  envVars: 
+  - name: SIGNING_SECRET
+    value: change-me-to-make-me-secure
+  - name: REDIS_URI
+    value: redis://coral:changeme@coral-redis-master:6379
+  - name: MONGODB_URI
+    value: mongodb://root:changeme@coral-mongodb:27017/?tls=false
+  - name: NODE_ENV
+    value: production
+  - name: LOGGING_LEVEL
+    value: info
+  cronjobs: []
+  extraVolumes: []
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

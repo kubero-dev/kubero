@@ -2,21 +2,21 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 name: kubero
 networking:
-  ipFamily: ipv4
-  apiServerAddress: 127.0.0.1
+    ipFamily: ipv4
+    apiServerAddress: 127.0.0.1
 nodes:
-- role: control-plane
-  #image: kindest/node:v1.21.1
-  kubeadmConfigPatches:
-  - |
-    kind: InitConfiguration
-    nodeRegistration:
-      kubeletExtraArgs:
-        node-labels: "ingress-ready=true"
-  extraPortMappings:
-  - containerPort: 80
-    hostPort: 80
-    protocol: TCP
-  - containerPort: 443
-    hostPort: 443
-    protocol: TCP
+    - role: control-plane
+      image: kindest/node:v1.26.3
+      kubeadmConfigPatches:
+        - |
+          kind: InitConfiguration
+          nodeRegistration:
+            kubeletExtraArgs:
+              node-labels: "ingress-ready=true"
+      extraPortMappings:
+        - containerPort: 80
+          hostPort: 80
+          protocol: TCP
+        - containerPort: 443
+          hostPort: 443
+          protocol: TCP

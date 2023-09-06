@@ -1,0 +1,9 @@
+name: Statping NG
+description: 'An updated drop-in replacement for statping - Status Page for monitoring your websites and applications with beautiful graphs, analytics, and plugins.'
+tags:
+- monitoring
+source: https://github.com/statping-ng/statping-ng
+website: statping-ng.github.io
+icon: https://avatars.githubusercontent.com/u/88886654?s=200&v=4
+screenshots:
+- https://camo.githubusercontent.com/2e6247a73a3ef41ee0884415c6ec63c9caa4d9dc8fdb4a8ecf64342b00a29a0f/68747470733a2f2f7374617470696e672d6e672e6769746875622e696f2f6173736574732f65787465726e616c2f736c61636b2d6e6f74696665722e706e67

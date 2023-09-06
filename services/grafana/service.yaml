@@ -1,5 +1,5 @@
 name: Grafana
-description: 'Gatus is a service that allows you to monitor the availability and latency of your services and expose this information a beautiful dashboard.'
+description: 'Grafana open source software enables you to query, visualize, alert on, and explore your metrics, logs, and traces wherever they are stored.'
 tags:
 - monitoring
 - metrics

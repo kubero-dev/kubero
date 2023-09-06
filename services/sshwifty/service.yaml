@@ -1,0 +1,9 @@
+name: Sshwifty
+description: 'Sshwifty is a SSH and Telnet connector made for the Web'
+tags:
+- client
+source: https://github.com/nirui/sshwifty
+website: https://sshwifty-demo.nirui.org
+icon: https://raw.githubusercontent.com/meienberger/runtipi-appstore/master/apps/sshwifty/metadata/logo.jpg
+screenshots:
+- https://raw.githubusercontent.com/nirui/sshwifty/master/Screenshot.png

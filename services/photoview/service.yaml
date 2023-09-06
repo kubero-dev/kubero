@@ -1,0 +1,9 @@
+name: Photoview
+description: 'Photoview is a simple and user-friendly photo gallery that is made for photographers and aims to provide an easy and fast way to navigate directories.'
+tags:
+- imaga database
+source: https://github.com/photoview/photoview
+website: https://photoview.github.io/
+icon: https://avatars.githubusercontent.com/u/75802894?s=200&v=4
+screenshots:
+- https://raw.githubusercontent.com/photoview/photoview/master/screenshots/timeline.png

@@ -130,6 +130,11 @@ export class Kubero {
     public async newPipeline(pipeline: IPipeline) {
         debug.debug('create Pipeline: '+pipeline.name);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
         this.updateState();
@@ -143,6 +148,11 @@ export class Kubero {
     // updates a new pipeline in the same namespace as the kubero app
     public async updatePipeline(pipeline: IPipeline, resourceVersion: string) {
         debug.debug('update Pipeline: '+pipeline.name);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
 
         // Create the Pipeline CRD
         await this.kubectl.updatePipeline(pipeline, resourceVersion);
@@ -168,7 +178,7 @@ export class Kubero {
         return ret;
     }
 
-    public async getPipeline(pipelineName: string) {
+    public async getPipeline(pipelineName: string): Promise<IPipeline | undefined>{
         debug.debug('getPipeline');
 
         let pipeline = await this.kubectl.getPipeline(pipelineName)
@@ -176,7 +186,7 @@ export class Kubero {
             debug.log(error);
         });
 
-        if (pipeline) {
+        if (pipeline && pipeline.metadata && pipeline.metadata.resourceVersion) {
             pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
             return pipeline.spec;
         }
@@ -186,11 +196,16 @@ export class Kubero {
     public deletePipeline(pipelineName: string) {
         debug.debug('deletePipeline: '+pipelineName);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         this.kubectl.getPipeline(pipelineName).then(async pipeline =>{
             if (pipeline) {
                 await this.kubectl.deletePipeline(pipelineName);
 
-                // TODO: lines not working, since object may still exist in the API
+                await new Promise(resolve => setTimeout(resolve, 5000)); // needs some extra time to delete the namespace
                 this.updateState();
                 this._io.emit('updatedPipelines', "deleted");
                 this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
@@ -205,9 +220,19 @@ export class Kubero {
     // create a new app in a specified pipeline and phase
     public async newApp(app: App) {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
+
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
             this.appStateList.push(app);
 
             this._io.emit('updatedApps', "created");
@@ -221,6 +246,15 @@ export class Kubero {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.setContext(app.pipeline, app.phase);
 
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            this.triggerImageBuild(app.pipeline, app.phase, app.name);
+        }
+
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
@@ -233,16 +267,24 @@ export class Kubero {
     // delete a app in a pipeline and phase
     public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not deleting app');
+            return;
+        }
+
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
-            this._io.emit('updatedApps', "deleted");
             this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+            this._io.emit('deleteApp',appName, pipelineName, phaseName);
         }
     }
 
     private removeAppFromState(pipelineName: string, phaseName: string, appName: string) {
+        //console.log('removeAppFromState: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
         for (let i = 0; i < this.appStateList.length; i++) {
             if (this.appStateList[i].name == appName &&
                 this.appStateList[i].pipeline == pipelineName &&
@@ -307,6 +349,30 @@ export class Kubero {
             }
             //this._io.emit('restartedApp', message);
             this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        }
+    }
+
+    private rebuildApp(app: IApp) {
+        debug.debug('rebuild App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        const contextName = this.getContext(app.pipeline, app.phase);
+        if (contextName) {
+
+            if ( app.deploymentstrategy == 'docker' || app.buildstrategy == undefined || app.buildstrategy == 'plain'){
+                this.kubectl.restartApp(app.pipeline, app.phase, app.name, 'web', contextName);
+                this.kubectl.restartApp(app.pipeline, app.phase, app.name, 'worker', contextName);
+            } else {
+                // rebuild for buildstrategy git/dockerfile or git/nixpacks
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
+
+            let message = {
+                'action': 'rebuild',
+                'pipeline':app.pipeline,
+                'phase':app.phase,
+                'app': app.name
+            }
+            //this._io.emit('restartedApp', message);
+            this.kubectl.createEvent('Normal', 'Rebuild', 'app.restarted', 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
     }
 /*
@@ -402,7 +468,7 @@ export class Kubero {
 
         for (const app of apps) {
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
-            this.restartApp(app.pipeline, app.phase, app.name);
+            this.rebuildApp(app);
         }
     }
 
@@ -490,6 +556,7 @@ export class Kubero {
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
+                    buildstrategy: 'plain', // TODO: use buildstrategy from pipeline 
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
@@ -528,6 +595,15 @@ export class Kubero {
                     cronjobs: [],
                     addons: [],
                     resources: {},
+                    vulnerabilityscan: {
+                        enabled: false,
+                        schedule: "0 0 * * *",
+                        image: {
+                            repository: "aquasec/trivy",
+                            tag: "latest"
+                        }
+                    }
+
 
                 }
                 let app = new App(appOptions);
@@ -558,6 +634,17 @@ export class Kubero {
     private loadConfig(path:string): IKuberoConfig {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
+
+            // override env vars with config values
+            if (config.kubero) {
+                if (config.kubero.namespace && process.env.KUBERO_NAMESPACE === undefined) {
+                    process.env.KUBERO_NAMESPACE = config.kubero.namespace;
+                }
+                if (config.kubero.readonly && process.env.KUBERO_READONLY === undefined) {
+                    process.env.KUBERO_READONLY = config.kubero.readonly.toString();
+                }
+            }
+
             return config;
         } catch (error) {
             debug.log('FATAL ERROR: could not load config file: '+path);
@@ -613,7 +700,7 @@ export class Kubero {
 
             if (!this.podLogStreams.includes(podName)) {
 
-                this.kubectl.log.log(namespace, podName, container, logStream, {follow: true, tailLines: 50, pretty: false, timestamps: false})
+                this.kubectl.log.log(namespace, podName, container, logStream, {follow: true, tailLines: 0, pretty: false, timestamps: false})
                 .then(res => {
                     debug.log('logs started for '+podName+' '+container);
                     this.podLogStreams.push(podName);
@@ -648,6 +735,69 @@ export class Kubero {
                 }
             });
         }
+    }
+
+    public async getLogsHistory(pipelineName: string, phaseName: string, appName: string) {
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        const logStream = new Stream.PassThrough();
+        let logs: String = '';
+        logStream.on('data', (chunk: any) => {
+            //console.log(chunk.toString());
+            logs += chunk.toString();
+        });
+
+        let loglines: any[] = [];
+        if (contextName) {
+            const pods = await this.kubectl.getPods(namespace, contextName);
+            for (const pod of pods) {
+
+                if (pod.metadata?.name?.startsWith(appName)) {
+                    for (const container of pod.spec?.containers || []) {
+                        console.log('getting logs for '+pod.metadata.name+' '+container.name);
+                        try {
+                            await this.kubectl.log.log(namespace, pod.metadata.name, container.name, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
+                        } catch (error) {
+                            console.log("error getting logs for "+pod.metadata.name+" "+container.name);
+                            return loglines;
+                        }
+                        
+                        
+                        // sleep for 1 second to wait for all logs to be collected
+                        await new Promise(r => setTimeout(r, 1000));
+
+                        // split loglines into array
+                        const loglinesArray = logs.split('\n').reverse();
+                        for (const logline of loglinesArray) {
+                            if (logline.length > 0) {
+                                // split after first whitespace
+                                const loglineArray = logline.split(/(?<=^\S+)\s/);
+                                const loglineDate = new Date(loglineArray[0]);
+                                const loglineText = loglineArray[1];
+
+                            
+
+                                loglines.push({
+                                    id: uuidv4(),
+                                    time: loglineDate.getTime(),
+                                    pipeline: pipelineName,
+                                    phase: phaseName,
+                                    app: appName,
+                                    pod: pod.metadata.name,
+                                    podID: pod.metadata.name.split('-')[3]+'-'+pod.metadata.name.split('-')[4],
+                                    container: container.name,
+                                    color: this.logcolor(pod.metadata.name),
+                                    log: loglineText
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return loglines;
     }
 
     public getRepositories() {
@@ -707,5 +857,201 @@ export class Kubero {
 
     public getStorageglasses() {
         return this.kubectl.getStorageglasses();
+    }
+
+    public async startScan(pipeline: string, phase: string, appName: string) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+        const app = appresult?.body as IKubectlApp;
+
+
+        if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy === 'plain') {
+        //if (app?.spec?.deploymentstrategy === 'git') {
+
+            if (app?.spec.gitrepo?.clone_url) {
+                if (contextName) {
+                    this.kubectl.setCurrentContext(contextName);
+                    this.kubectl.createScanRepoJob(namespace, appName, app.spec.gitrepo.clone_url, app.spec.branch);
+                }
+            } else {
+                debug.log('no git repo found to run scan');
+            }
+        } else {
+            if (contextName) {
+                this.kubectl.setCurrentContext(contextName);
+                this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag);
+            }
+        }
+
+        return {
+            status: 'ok',
+            message: 'scan started',
+            deploymentstrategy: app?.spec?.deploymentstrategy,
+            pipeline: pipeline,
+            phase: phase,
+            app: appName
+        };
+    }
+
+    public async getScanResult(pipeline: string, phase: string, appName: string, logdetails: boolean) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+        let scanResult = {
+            status: 'error',
+            message: 'unknown error',
+            deploymentstrategy: '',
+            pipeline: pipeline,
+            phase: phase,
+            app: appName,
+            namespace: namespace,
+            logsummary: {},
+            logs: {},
+            logPod: ''
+        }
+
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+        const app = appresult?.body as IKubectlApp;
+
+        const logPod = await this.kubectl.getLatestPodByLabel(namespace, `vulnerabilityscan=${appName}`);
+
+        if (!logPod.name) {
+            scanResult.status = 'error'
+            scanResult.message = 'no vulnerability scan pod found'
+            return scanResult;
+        }
+
+        let logs = '';
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            logs = await this.kubectl.getVulnerabilityScanLogs(namespace, logPod.name);
+        }
+
+        if (!logs) {
+            scanResult.status = 'running'
+            scanResult.message = 'no vulnerability scan logs found'
+            return scanResult;
+        }
+
+        const logsummary = this.getVulnSummary(logs);
+
+        scanResult.status = 'ok'
+        scanResult.message = 'vulnerability scan result'
+        scanResult.deploymentstrategy = app?.spec?.deploymentstrategy
+        scanResult.logsummary = logsummary
+        scanResult.logPod = logPod
+
+
+        if (logdetails) {
+            scanResult.logs = logs;
+        }
+
+        return scanResult;
+    }
+
+    private getVulnSummary(logs: any) {
+        let summary = {
+            total: 0,
+            critical: 0,
+            high: 0,
+            medium: 0,
+            low: 0,
+            unknown: 0
+        }
+
+        if (!logs || !logs.Results) {
+            console.log(logs);
+
+            console.log('no logs found or not able to parse results');
+            return summary;
+        }
+
+        logs.Results.forEach((target: any) => {
+            if (target.Vulnerabilities) {
+                target.Vulnerabilities.forEach((vuln: any) => {
+                    summary.total++;
+                    switch (vuln.Severity) {
+                        case 'CRITICAL':
+                            summary.critical++;
+                            break;
+                        case 'HIGH':
+                            summary.high++;
+                            break;
+                        case 'MEDIUM':
+                            summary.medium++;
+                            break;
+                        case 'LOW':
+                            summary.low++;
+                            break;
+                        case 'UNKNOWN':
+                            summary.unknown++;
+                            break;
+                        default:
+                            summary.unknown++;
+                    }
+                });
+            }
+        });
+
+        return summary;
+    }
+
+    public async triggerImageBuild(pipeline: string, phase: string, appName: string) {
+        const contextName = this.getContext(pipeline, phase);
+        const namespace = pipeline+'-'+phase;
+
+        const appresult = await this.getApp(pipeline, phase, appName)
+
+
+        const app = appresult?.body as IKubectlApp;
+        let repo = '';
+
+        if (app.spec.gitrepo?.admin) {
+            repo = app.spec.gitrepo.ssh_url || "";
+        } else {
+            repo = app.spec.gitrepo?.clone_url || "";
+        }
+
+        let dockerfilePath = 'Dockerfile';
+        if (app.spec.buildstrategy === 'dockerfile') {
+            //dockerfilePath = app.spec.dockerfile || 'Dockerfile';
+        } else if (app.spec.buildstrategy === 'nixpacks') {
+            dockerfilePath = '.nixpacks/Dockerfile';
+        }
+
+        // TODO: Make image configurable
+        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
+        const image = `${registry}/${pipeline}/${appName}`;
+
+        console.log('Build image: ', image);
+
+        const timestamp = new Date().getTime();
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.createBuildImageJob(
+                namespace,                      // namespace
+                appName,                        // app
+                repo,                           // gitrepo
+                app.spec.branch,                // branch
+                image,                          // image
+                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
+                dockerfilePath                  // dockerfile
+            );
+        }
+
+        return {
+            status: 'ok',
+            message: 'build started',
+            deploymentstrategy: app?.spec?.deploymentstrategy,
+            pipeline: pipeline,
+            phase: phase,
+            app: appName
+        };
     }
 }

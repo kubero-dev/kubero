@@ -1,0 +1,10 @@
+name: opengist
+description: 'Self-hosted pastebin powered by Git, open-source alternative to Github Gist.'
+tags:
+- editor
+- pastebin
+source: https://github.com/thomiceli/opengist
+website: https://github.com/thomiceli/opengist
+documentation:
+icon: https://raw.githubusercontent.com/thomiceli/opengist/master/public/favicon.svg
+screenshots:

@@ -16,7 +16,7 @@
     "lodash-es": "^4.17.20",
     "nth-check": ">=2.0.1",
     "set-value": ">=4.0.1",
-    "socket.io-client": "^3.1.1",
+    "socket.io-client": "^4.7.2",
     "vue": "^2.7.14",
     "vue-socket.io-extended": "^4.0.6",
     "vuetify": "^2.6.13"

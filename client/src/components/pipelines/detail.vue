@@ -1,13 +1,17 @@
 <template>
+    <div>
+    <v-container>
+        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+    </v-container>
     <v-container :fluid="true">
         <h1>{{ this.pipeline }}</h1>
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
                         <p><span class="text-uppercase">{{phase.name}}</span><br /><span class="caption">[{{phase.context}}]</span></p>
-                        
 
-                        <Appcard v-for="app in phase.apps" :key="app.name" 
+
+                        <Appcard v-for="app in phase.apps" :key="app.name"
                             :pipeline="pipeline"
                             :phase="phase.name"
                             :app="app" />
@@ -17,9 +21,9 @@
                         icon
                         large
                         :to="{ name: 'New App', params: { phase: phase.name }}"
-                        class="mt-5"
+                        class="mt-5 navBG"
                         >
-                            <v-icon dark>
+                            <v-icon>
                                 mdi-plus
                             </v-icon>
                         </v-btn>
@@ -28,6 +32,7 @@
                 </v-row>
         </v-layout>
     </v-container>
+    </div>
 </template>
 
 <script>
@@ -35,13 +40,6 @@ import axios from "axios";
 import Appcard from "./appcard.vue";
 
 export default {
-    sockets: {
-        async updatedApps(instances) {
-            console.log("updatedApps", instances);
-            let _phases = await this.loadPipeline();
-            this.phases = _phases;
-        },
-    },
     mounted() {
         this.loadPipeline();
     },
@@ -51,10 +49,22 @@ export default {
         default: "MISSSING"
       },
     },
-    data: () => ({
+    data () {return {
+        breadcrumbItems: [
+            {
+                text: 'DASHBOARD',
+                disabled: false,
+                href: '#/',
+            },
+            {
+                text: 'PIPELINE:'+this.pipeline,
+                disabled: true,
+                href: '#/pipeline/'+this.pipeline+'/apps',
+            }
+        ],
         reviewapps: false,
         phases: false,
-    }),
+    }},
     computed: {
         activePhases() {
             let phases = [];
@@ -70,6 +80,7 @@ export default {
     },
     components: {
         Appcard,
+        breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
       async loadPipeline() {
@@ -87,6 +98,3 @@ export default {
     },
 }
 </script>
-
-<style lang="scss">
-</style>

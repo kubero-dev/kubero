@@ -2,6 +2,7 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
 import { Repo } from './repo';
+import gitUrlParse = require("git-url-parse");
 debug('app:kubero:gitea:api')
 
 //https://www.npmjs.com/package/gitea-js
@@ -31,9 +32,9 @@ export class GiteaApi extends Repo {
             }
         }
 
-        // TODO : Improve matching here
-        let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@.*:.*\/(.*)\.git$/)?.[1] as string;
+        let parsed = gitUrlParse(gitrepo)
+        let repo = parsed.name
+        let owner = parsed.owner
 
         let res = await this.gitea.repos.repoGet(owner, repo)
         .catch((error: any) => {

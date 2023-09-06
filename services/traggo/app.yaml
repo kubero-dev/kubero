@@ -15,11 +15,9 @@ spec:
   extraVolumes:
   - accessModes:
     - ReadWriteMany
-    emptyDir: false
     mountPath: /opt/traggo/data
     name: traggo-data
     size: 1Gi
-    storageClass: standard
   web:
     replicaCount: 1
   worker:

@@ -1,5 +1,6 @@
     <template>
     <v-container>
+        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
 
                 <v-row class="justify-space-between">
                     <v-col cols="6" sm="6" md="6" lg="6" xl="6">
@@ -22,9 +23,9 @@
                     </v-col>
                 </v-row>
 
-                <v-row v-for="item in apps" :key="item.name">
+                <v-row v-for="item in apps" :key="item.name" :id="item.name">
                     <v-col cols="12">
-                        <v-card elevation="2" outlined color="#fafafa">
+                        <v-card elevation="2" outlined color="cardBackground">
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" sm="12" md="6">
@@ -60,7 +61,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         @click="deletePipeline(item.name)"
                                         >
                                             <v-icon dark>
@@ -72,7 +73,7 @@
                                         fab
                                         small
                                         class="ma-2"
-                                        color="grey lighten-2"
+                                        color="secondary"
                                         :href="'#/pipeline/'+item.name"
                                         >
                                             <v-icon dark>
@@ -103,9 +104,20 @@ export default {
     mounted() {
         this.loadPipelinesList();
     },
-    data: () => ({
+    components: {
+        breadcrumbs: () => import('../breadcrumbs.vue'),
+    },
+    data () { return {
         apps: [],
-    }),
+
+        breadcrumbItems: [
+            {
+                text: 'DASHBOARD',
+                disabled: true,
+                href: '#/',
+            }
+        ],
+    }},
     methods: {
       async loadPipelinesList() {
         const self = this;
@@ -118,10 +130,12 @@ export default {
         });
       },
       deletePipeline(app) {
+        document.querySelector(`#${app}`).style.display = "none";
+
         axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
-            this.loadPipelinesList();
+            //this.loadPipelinesList();
         })
         .catch(error => {
             console.log(error);

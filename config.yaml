@@ -1,7 +1,14 @@
 kubero:
-  context: kind-kubero
-  namespace: kubero
-  port: 2000
+  readonly: false
+  banner:
+    show: false
+    message: "Welcome to Kubero!"
+    bgcolor: "#8560A9"
+    fontcolor: "azure"
+  defaultannotations:
+    apps:
+    pipelines:
+      - janitor/ttl=5m
 buildpacks:
   - name: NodeJS
     language: JavaScript
@@ -26,9 +33,8 @@ buildpacks:
       tag: latest
       command: "composer install; chown -R 1000:1000 /app"
     run:
-      repository: webdevops/php-apache
-      tag: "8.1"
-      readOnlyAppStorage: false
+      repository: ghcr.io/kubero-dev/buildpacks/php
+      tag: "main"
       securityContext:
         allowPrivilegeEscalation: true
         readOnlyRootFilesystem: false
@@ -45,7 +51,7 @@ buildpacks:
     run:
       repository: python
       tag: 3.10-buster
-      command: "python3 -m venv .venv && . .venv/bin/activate && python3 main.py"
+      command: ". .venv/bin/activate && python3 main.py"
   - name: GoLang
     language: GoLang
     fetch:

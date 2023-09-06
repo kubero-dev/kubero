@@ -10,7 +10,7 @@
                             :color=event.color
                             :icon=event.icon
                             fill-dot>
-                            <v-card class="elevation-2">
+                            <v-card class="cardBackground elevation-2">
                             <v-card-title class="text-h5">
                                 {{ event.message }}
                             </v-card-title>
