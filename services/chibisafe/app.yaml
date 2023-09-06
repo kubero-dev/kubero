@@ -1,0 +1,37 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: chibisafe
+spec:
+  name: chibisafe
+  deploymentstrategy: chibisafe
+  image:
+    repository: chibisafe/chibisafe
+    tag: latest
+    containerPort: "8000"
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+  addons: []
+  envVars: []
+  cronjobs: []
+  extraVolumes: 
+  - accessModes:
+    - ReadWriteOnce
+    mountPath: /home/node/chibisafe/database
+    name: chibisafe-db-volume
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    mountPath: /home/node/chibisafe/uploads
+    name: chibisafe-uploads-volume
+    size: 1Gi
+  - accessModes:
+    - ReadWriteOnce
+    mountPath: /home/node/chibisafe/logs
+    name: chibisafe-logs-volume
+    size: 1Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
