@@ -1,0 +1,12 @@
+name: Chibisafe
+description: 'Blazing fast file uploader and awesome bunker written in node!'
+tags:
+- fileuploader
+- lolisafe
+source: https://github.com/chibisafe/chibisafe
+website: https://chibisafe.moe
+icon: https://avatars.githubusercontent.com/u/115422728?s=200&v=4
+screenshots:
+- https://user-images.githubusercontent.com/7425261/245041422-659068cd-f154-4fe0-860f-4478e0f859d5.png
+- https://user-images.githubusercontent.com/7425261/245041448-83dae9d1-5f71-404a-b79c-19fb4d0dfd62.png
+- https://user-images.githubusercontent.com/7425261/245041459-0dad05a8-f42b-4834-983f-2ca82eedb176.png
