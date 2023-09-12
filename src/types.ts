@@ -157,13 +157,13 @@ export interface IPipeline {
     reviewapps: boolean;
     phases: IPipelinePhase[];
     buildpack: IBuildpack
-    git: gitLink;
+    git: IgitLink;
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
     resourceVersion?: string; // required to update resource, not part of spec
 }
 
-export interface gitLink {
+export interface IgitLink {
     keys: {
         priv: string,
         pub: string,

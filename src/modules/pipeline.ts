@@ -1,4 +1,4 @@
-import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IGithubRepository} from '../types';
+import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IgitLink, IGithubRepository} from '../types';
 
 export class Pipeline implements IPipeline {
     public name: string;
@@ -8,11 +8,7 @@ export class Pipeline implements IPipeline {
     public phases: IPipelinePhase[];
     public buildpack: IBuildpack;
     public deploymentstrategy: 'git' | 'docker';
-    public git: {
-        keys: object,
-        repository?: IGithubRepository | undefined;
-        webhook: object;
-    };
+    public git: IgitLink;
 
     constructor(
         pl: IPipeline,
