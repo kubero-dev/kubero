@@ -98,14 +98,14 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 <img src="docs/img/highlevel.png">
 
 ## Quickstart
-1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
+**1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a>** (MacOS, Linux, Windows)<p>
 
-### Binaries (MacOS, Linux)
+Binaries (MacOS, Linux)
 ```
 curl -fsSL get.kubero.dev | bash
 ```
 
-### Brew (MacOS, Linux)
+ Brew (MacOS, Linux)
 ```
 brew tap kubero-dev/kubero
 brew install kubero-cli

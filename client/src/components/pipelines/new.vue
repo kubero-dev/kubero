@@ -297,7 +297,7 @@ export default {
       ],
       domainRules: [
         v => v.length <= 90 || 'Name must be less than 90 characters',
-        v => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
+        v => /^([a-z0-9|-]*[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
       ],
       repositoryRules: [
         v => !!v || 'Repository is required',
