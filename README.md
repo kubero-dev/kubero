@@ -99,6 +99,17 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 
 ## Quickstart
 1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a><p>
+
+### Binaries (MacOS, Linux)
+```
+curl -fsSL get.kubero.dev | bash
+```
+
+### Brew (MacOS, Linux)
+```
+brew tap kubero-dev/kubero
+brew install kubero-cli
+
 2) Run `kubero install` to install all components on an new or your existing cluster
 
 You can bring your own cluster or create one with the kubero install on one of the following providers:
