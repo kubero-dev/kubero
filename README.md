@@ -111,7 +111,7 @@ brew tap kubero-dev/kubero
 brew install kubero-cli
 ```
 
-2) Run `kubero install` to install all components on an new or your existing cluster
+**2) Run `kubero install` to install all components on an new or your existing cluster**
 
 You can bring your own cluster or create one with the kubero install on one of the following providers:
 - GKE
