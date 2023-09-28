@@ -109,6 +109,7 @@ curl -fsSL get.kubero.dev | bash
 ```
 brew tap kubero-dev/kubero
 brew install kubero-cli
+```
 
 2) Run `kubero install` to install all components on an new or your existing cluster
 
