@@ -1,23 +1,18 @@
 <template>
     <v-container>
-        <v-row class="justify-space-between">
+        <v-row>
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
                 <h1>
                     Logs for {{ this.app }}
-                    
-                    <v-btn
+                </h1>
+            </v-col>
+            <v-col cols="6" sm="6" md="6" lg="6" xl="6" class="d-flex justify-end">
+                <v-btn
                     class="ma-2"
                     @click="openInWindow"
-                    >
-                    Open Logs
-                    <v-icon
-                        right
-                        dark
-                    >
-                        mdi-open-in-new
-                    </v-icon>
-                    </v-btn>
-                </h1>
+                    >Open Logs
+                    <v-icon right dark >mdi-open-in-new</v-icon>
+                </v-btn>
                 <p></p>
             </v-col>
         </v-row>
