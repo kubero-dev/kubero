@@ -1,13 +1,22 @@
 <template>
     <v-container>
         <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
-        <v-tabs v-model="tab"  class="background">
-            <v-tab class="background">Logs</v-tab>
-            <v-tab class="background">Events</v-tab>
-            <v-tab class="background">Vulnerabilities</v-tab>
-            <v-spacer  class="background"></v-spacer>
-        </v-tabs>
 
+        <v-container class="d-flex justify-space-between align-center mb-2">
+            <v-tabs v-model="tab"  class="background">
+                <v-tab class="background">Logs</v-tab>
+                <v-tab class="background">Events</v-tab>
+                <v-tab class="background">Vulnerabilities</v-tab>
+                <v-spacer  class="background"></v-spacer>
+            </v-tabs>
+            <v-btn
+                elevation="2"
+                color="primary"
+                :href="`#/pipeline/${this.pipeline}/${this.phase}/${this.app}`"
+                >Edit App
+            </v-btn>
+        </v-container>
+        
         <v-tabs-items v-model="tab">
             <v-tab-item transition="false" class="background">
                 <logs :pipeline="pipeline" :phase="phase" :app="app"/>
@@ -47,14 +56,7 @@ export default {
                     text: 'APP:'+this.app,
                     disabled: true,
                     href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
-                },
-                {
-                    text: "EDIT",
-                    disabled: false,
-                    //http://localhost:2000/#/pipeline/customcommand/production/noproc
-                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
-                    icon: "mdi-pencil-box-outline",
-                },
+                }
             ],
         }
     },

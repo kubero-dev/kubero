@@ -806,14 +806,7 @@ export default {
               text: 'APP:'+this.app,
               disabled: false,
               href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
-          },
-          {
-              text: 'EDIT',
-              disabled: true,
-              //http://localhost:2000/#/pipeline/customcommand/production/noproc
-              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}`,
-                    icon: "mdi-pencil-box-outline",
-          },
+          }
       ],
       advanced: false,
       panel: [0],
