@@ -635,6 +635,25 @@ export class Kubero {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
 
+
+            // backward compatibility. Add default if template does not exist
+            if (!config.templates) {
+                config.templates = {
+                    enabled: true,
+                    catalogs: [
+                        {
+                            name: 'Kubero',
+                            description: 'Kubero Templates',
+                            templateBasePath: 'https://raw.githubusercontent.com/kubero-dev/kubero/main/services/',
+                            index: {
+                                url: 'https://raw.githubusercontent.com/kubero-dev/templates/main/index.json',
+                                format: 'json',
+                            }
+                        }
+                    ]
+                };
+            }
+
             // override env vars with config values
             if (config.kubero) {
                 if (config.kubero.namespace && process.env.KUBERO_NAMESPACE === undefined) {
@@ -1060,10 +1079,10 @@ export class Kubero {
     }
 
     public async getTemplateBasePath(catalogId: number) {
-        return this.config.templates?.catalogs[catalogId].templateBasePath;
+        return this.config.templates.catalogs[catalogId].templateBasePath;
     }
 
     public getTemplateEnabled() {
-        return this.config.templates?.enabled;
+        return this.config.templates.enabled;
     }
 }
