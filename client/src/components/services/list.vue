@@ -93,7 +93,7 @@
                         color="primary"
                         dark
                         :disabled="!pipeline || !phase"
-                        @click="openInstall(clickedTemplate.dirname, pipeline, phase)"
+                        @click="openInstall(clickedTemplate.dirname, pipeline, phase, catalogId)"
                         >
                         Install
                     </v-btn>
@@ -110,7 +110,7 @@ export default {
     sockets: {
     },
     mounted() {
-        this.loadTemplatesList();
+        this.loadCatalogs();
         this.loadPipelinesList();
     },
     data: () => ({
@@ -121,6 +121,11 @@ export default {
         services: [],
         dialog: false,
         clickedTemplate: {},
+        catalogId: 0,
+        templates: {
+            enabled: true,
+            catalogs: [],
+        }
     }),
     components: {
     },
@@ -133,19 +138,32 @@ export default {
             }
             this.dialog = false;
         },
-        openInstall(templatename, pipeline, phase) {
+        openInstall(templatename, pipeline, phase, catalogId) {
             // redirect to install page
-            console.log(`/#/pipeline/${pipeline}/${phase}/apps/new?service=${templatename}`);
-            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?service=${templatename}`;
+            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?template=${templatename}&catalogId=${catalogId}`;
 
         },
         openInstallDialog(template) {
             this.clickedTemplate = template;
             this.dialog = true;
         },
-        loadTemplatesList() {
+        loadCatalogs() {
             const self = this;
-            axios.get(`https://services.kubero.dev`)
+            axios.get(`/api/config/catalogs`)
+            .then(response => {
+                self.templates = response.data;
+                if (self.templates.catalogs.length > 0) {
+                    self.loadTemplates(self.templates.catalogs[self.catalogId].index.url)
+                }
+
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+        async loadTemplates(indexUrl) {
+            const self = this;
+            axios.get(indexUrl)
             .then(response => {
                 self.services = response.data;
             })

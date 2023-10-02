@@ -22,6 +22,7 @@ export class Settings {
             const configMap = YAML.parse(settings.data["config.yaml"]) as IKuberoConfig
             config["podSizeList"] = configMap.podSizeList
             config["buildpacks"] = configMap.buildpacks
+            config["templates"] = configMap.templates
         }
 
         // TODO: not sure if it is a good idea to expose the whole env to the frontend

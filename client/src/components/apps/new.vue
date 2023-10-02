@@ -983,8 +983,8 @@ export default {
       this.loadBuildpacks();
       this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
 
-      if (this.$route.query.service) {
-        this.loadTemplate(this.$route.query.service);
+      if (this.$route.query.template) {
+        this.loadTemplate(this.$route.query.catalogId, this.$route.query.template);
       }
 
       //this.buildPipeline = this.$vuetify.buildPipeline
@@ -995,8 +995,8 @@ export default {
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
-      loadTemplate(service) {
-        axios.get('/api/services/'+service).then(response => {
+      loadTemplate(catalogId, template) {
+        axios.get('/api/templates/'+catalogId+'/'+template).then(response => {
 
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;

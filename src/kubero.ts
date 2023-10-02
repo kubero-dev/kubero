@@ -630,7 +630,7 @@ export class Kubero {
         }
     }
 
-    // Loads the app config from the config file
+    // Loads the Kubero config from the local config file
     private loadConfig(path:string): IKuberoConfig {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
@@ -1053,5 +1053,17 @@ export class Kubero {
             phase: phase,
             app: appName
         };
+    }
+
+    public async getTemplateConfig() {
+        return this.config.templates;
+    }
+
+    public async getTemplateBasePath(catalogId: number) {
+        return this.config.templates?.catalogs[catalogId].templateBasePath;
+    }
+
+    public getTemplateEnabled() {
+        return this.config.templates?.enabled;
     }
 }

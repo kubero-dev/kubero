@@ -358,7 +358,7 @@ export class Kubectl {
     public async getKuberoconfig(): Promise<V1ConfigMap | void> {
         let config = await this.coreV1Api.readNamespacedConfigMap(
             'kubero-config',
-            'kubero'
+            'kubero' // TODO: This should be configurable
         ).catch((error: any) => {
             debug.log(error);
         })

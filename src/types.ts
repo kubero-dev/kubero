@@ -297,6 +297,20 @@ export interface IBuildpack {
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
+    templates?: {  // introduced v1.11.0
+        enabled: boolean;
+        catalogs: [
+            {
+                name: string;
+                description: string;
+                templateBasePath: string;
+                index: {
+                    url: string;
+                    format: string;
+                }
+            }
+        ]
+    }
     kubero: {
         namespace?: string; // deprecated v1.9.0
         readonly: boolean;

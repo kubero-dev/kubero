@@ -106,3 +106,9 @@ Router.get('/config/storageclasses', authMiddleware, async function (req: Reques
     // #swagger.summary = 'Get the available storageclasses'
     res.send(await req.app.locals.kubero.getStorageglasses());
 });
+
+Router.get('/config/catalogs', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of available catalogs'
+    res.send(await req.app.locals.kubero.getTemplateConfig());
+});

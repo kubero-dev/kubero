@@ -25,7 +25,7 @@
                     </v-list-item-icon>
                     <v-list-item-title>Add-Ons</v-list-item-title>
                 </v-list-item>
-                <v-list-item link to="/templates">
+                <v-list-item link to="/templates" v-if="templatesEnabled">
                     <v-list-item-icon>
                     <v-icon>mdi-palette-outline</v-icon>
                     </v-list-item-icon>
@@ -147,6 +147,7 @@ export default {
         popup: "false",
         session: false,
         isAuthenticated: false,
+        templatesEnabled: true,
         version: "dev",
         banner: {
             show: false,
@@ -203,6 +204,7 @@ export default {
                         console.log("isAuthenticated: " + result.data.isAuthenticated);
                         this.session = result.data.isAuthenticated;
                         this.version = result.data.version;
+                        this.templatesEnabled = result.data.templatesEnabled;
 
                         // safe version to vuetufy gloabl scope for use in components
                         this.$vuetify.version = this.version;
