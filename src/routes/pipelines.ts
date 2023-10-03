@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
-import { gitLink } from '../types';
+import { IgitLink } from '../types';
 import { IApp, IPipeline } from '../types';
 import { App } from '../modules/application';
 import { Webhooks } from '@octokit/webhooks';
@@ -28,7 +28,7 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
                         req.body.git.repository.provider.toLowerCase(),
                         req.body.git.repository.ssh_url);
 
-    let git: gitLink = {
+    let git: IgitLink = {
         keys: {
             priv: "Zm9v",
             pub: "YmFy"
