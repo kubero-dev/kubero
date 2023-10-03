@@ -7,6 +7,17 @@
             </v-col>
         </v-row>
         <v-row>
+            <v-tabs v-if="templates.catalogs.length > 1">
+                <template>
+                    <v-tab
+                        v-for="(catalog, index) in Object.entries(templates.catalogs)"
+                        :key="index"
+                        @click="loadTemplates(catalog[1].index.url)"
+                    >
+                        {{ catalog[1].name }}
+                    </v-tab>
+                </template>
+            </v-tabs>
             <v-col cols="12" sm="12" md="3"
             v-for="template in services.services" :key="template.name">
                 <v-card
@@ -110,7 +121,7 @@ export default {
     sockets: {
     },
     mounted() {
-        this.loadCatalogs();
+        this.loadCatalogs(this.catalogId);
         this.loadPipelinesList();
     },
     data: () => ({
@@ -125,7 +136,8 @@ export default {
         templates: {
             enabled: true,
             catalogs: [],
-        }
+        },
+        catalogTabs: [],
     }),
     components: {
     },
@@ -147,13 +159,13 @@ export default {
             this.clickedTemplate = template;
             this.dialog = true;
         },
-        loadCatalogs() {
+        loadCatalogs(catalogId) {
             const self = this;
             axios.get(`/api/config/catalogs`)
             .then(response => {
                 self.templates = response.data;
                 if (self.templates.catalogs.length > 0 && self.templates.enabled == true) {
-                    self.loadTemplates(self.templates.catalogs[self.catalogId].index.url)
+                    self.loadTemplates(self.templates.catalogs[catalogId].index.url)
                 }
 
             })
