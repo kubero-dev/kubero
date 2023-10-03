@@ -152,7 +152,7 @@ export default {
             axios.get(`/api/config/catalogs`)
             .then(response => {
                 self.templates = response.data;
-                if (self.templates.catalogs.length > 0) {
+                if (self.templates.catalogs.length > 0 && self.templates.enabled == true) {
                     self.loadTemplates(self.templates.catalogs[self.catalogId].index.url)
                 }
 
