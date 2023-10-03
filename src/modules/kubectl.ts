@@ -574,6 +574,9 @@ export class Kubectl {
                     },
                     spec: {
                         restartPolicy: 'Never',
+                        securityContext: {
+                            runAsUser: 1000
+                        },
                         containers: [
                             {
                                 name: 'trivy-repo-scan',
@@ -589,6 +592,8 @@ export class Kubectl {
                                     "json",
                                     "--scanners",
                                     "vuln,secret,config",
+                                    "--cache-dir",
+                                    "/tmp/trivy",
                                     "--exit-code",
                                     "0"
                                 ],
@@ -627,6 +632,9 @@ export class Kubectl {
                     },
                     spec: {
                         restartPolicy: 'Never',
+                        securityContext: {
+                            runAsUser: 1000
+                        },
                         containers: [
                             {
                                 name: 'trivy-repo-scan',
@@ -640,6 +648,8 @@ export class Kubectl {
                                     "json",
                                     "--scanners",
                                     "vuln",
+                                    "--cache-dir",
+                                    "/tmp/trivy",
                                     "--exit-code",
                                     "0"
                                 ],
