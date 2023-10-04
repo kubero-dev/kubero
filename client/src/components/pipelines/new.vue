@@ -153,7 +153,7 @@
               <v-switch
                 v-model="phase.enabled"
                 :label="phase.name"
-                :disabled="phase.name == 'review' && repository_status.connected === false"
+                :disabled="phase.name == 'review' && (repository_status.connected === false || gitops === false)"
               ></v-switch>
             </v-col>
             <v-col
@@ -466,6 +466,14 @@ export default {
             this.newPipeline = false;
             const p = response.data;
 
+            if (p.git.provider === '') {
+              this.gitops = false;
+              this.repository_status.connected = false
+            } else {
+              this.gitops = true;
+              this.repository_status.connected = true
+            }
+
             this.resourceVersion = p.resourceVersion;
             this.pipelineName = p.name;
             this.domain = p.domain;
@@ -506,7 +514,7 @@ export default {
           reviewapps: this.reviewapps,
           git: this.git,
           dockerimage: '',
-          deploymentstrategy: "git",
+          deploymentstrategy: "git", // DEPRECATED
           buildpack: this.buildpack,
         })
         .then(response => {
@@ -528,7 +536,7 @@ export default {
           reviewapps: this.reviewapps,
           git: this.git,
           dockerimage: '',
-          deploymentstrategy: "git",
+          deploymentstrategy: "git", // DEPRECATED 
           buildpack: this.buildpack,
         })
         .then(response => {
