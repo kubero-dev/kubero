@@ -2,34 +2,44 @@ import debug from 'debug';
 import * as crypto from "crypto"
 import { Repo } from "./repo";
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR } from './types';
-import gitUrlParse from 'git-url-parse';
 import axios from 'axios';
+import { OneDevWrapper } from '../wrappers/onedev';
 debug('app:kubero:onedev:api')
 
 export class OneDevApi extends Repo {
-  private onedev: any;
+  private onedev: OneDevWrapper;
 
   constructor(baseURL: string, username: string, token: string) {
     super("onedev");
-    this.onedev.clientOptions = {
-      auth: {
-        baseURL: baseURL,
-        username: username,
-        password: token
-      }
-    };
+    this.onedev = new OneDevWrapper(baseURL, username, token);
   }
 
-  private async getProjectIdFromURL(oneDevUrl: string) {
+  private async getProjectIdFromURL(oneDevUrl: string): Promise<number | null> {
+    let projectNameWithParents = '';
     const parts = oneDevUrl.split('/');
-    let projectId = '';
 
-    for (let i = 1; i < parts.length; ++i) {
-      if (parts[i].startsWith('~')) return projectId.slice(1);
-      projectId += '/' + parts[i];
+    for (let i = 1; i < parts.length; ++i) { // starting from 1 since 0th element would be baseURL
+      if (parts[i].startsWith('~')) break;
+      projectNameWithParents += '/' + parts[i];
     }
 
-    return projectId.slice(1);
+    projectNameWithParents = projectNameWithParents.slice(1);
+
+    // getting projectIds of all the parents since there can be multiple projects with a single name
+    let parentId: number | null = null;
+
+    projectNameWithParents.split('/').forEach(async (projectName: string, idx: number): Promise<void> => {
+      // no need of try-catch here since the wrapper handles that
+      const projects = await this.onedev.getProjectsFromName(projectName, parentId); // since the parentId of a top level project is null
+      console.log('projects', projects);
+
+      if (!projects || projects.length === 0) throw new Error(`Project with name ${projectName} and parentId ${parentId} not found`);
+      else if (projects.length > 1) throw new Error(`Multilple projects with name ${projectName} and parentId ${parentId} found, kindly provide the projectId directly.`);
+
+      parentId = projects[0].id;
+    });
+
+    return parentId;
   }
 
 
@@ -45,37 +55,32 @@ export class OneDevApi extends Repo {
       }
     }
 
-    let repo = this.getProjectIdFromURL(gitrepo)
+    const projectId = await this.getProjectIdFromURL(gitrepo);
 
+    if (projectId === null || projectId === undefined) {
+      ret.status = 404;
+      ret.statusText = 'not found';
+      return ret;
+    };
 
-    let res = await axios.get(`${this.onedev.}`)
-    this.onedev.repos.repoGet(owner, repo)
-      .catch((error: any) => {
-        console.log(error)
-        return ret;
-      })
+    const projectInfo = await this.onedev.getProjectInfoByProjectId(projectId);
 
+    // TODO: Need to discuss this with kubero's maintainer and if possible review onedev's API with them to make sure we get everything we need
     ret = {
-      status: res.status,
+      status: 200,
       statusText: 'found',
       data: {
-        id: res.data.id,
-        node_id: res.data.node_id,
-        name: res.data.name,
-        description: res.data.description,
-        owner: res.data.owner.login,
-        private: res.data.private,
-        ssh_url: res.data.ssh_url,
-        language: res.data.language,
-        homepage: res.data.homepage,
-        admin: res.data.permissions.admin,
-        push: res.data.permissions.push,
-        visibility: res.data.visibility,
-        default_branch: res.data.default_branch,
+        id: projectId,
+        name: projectInfo.name,
+        description: projectInfo.description,
+        owner: this.onedev.username,
+        push: true,
+        admin: true,
+        default_branch: await this.onedev.getRepositoryDefaultBranch(projectId),
       }
     }
-    return ret;
 
+    return ret;
   }
 
   protected async addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR> {
@@ -166,7 +171,7 @@ export class OneDevApi extends Repo {
         id: 0,
         title: title,
         verified: false,
-        created_at: '2020-01-01T00:00:00Z',
+        created_at: new Date().toISOString(),
         url: '',
         read_only: true,
         pub: keyPair.pubKeyBase64,
@@ -257,37 +262,12 @@ export class OneDevApi extends Repo {
     }
   }
 
-  // public async listRepos(): Promise<string[]> {
-  //   let ret: string[] = [];
-  //   try {
-  //     const repos = await this.onedev.user.userCurrentListRepos()
-  //     for (let repo of repos.data) {
-  //       ret.push(repo.ssh_url)
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  //   return ret;
-  // }
-
   public async getBranches(gitrepo: string): Promise<string[]> {
-    // https://try.gitea.io/api/swagger#/repository/repoListBranches
-    let ret: string[] = [];
+    // no need of try-catch here since the wrapper takes care of that
+    let projectId = await this.getProjectIdFromURL(gitrepo);
+    if (projectId === null || projectId === undefined) throw new Error('Failed to get projectId for project');
 
-    //let repo = "template-nodeapp"
-    //let owner = "gicara"
-
-    let { repo, owner } = this.parseRepo(gitrepo)
-    try {
-      const branches = await this.onedev.repos.repoListBranches(owner, repo)
-      for (let branch of branches.data) {
-        ret.push(branch.name)
-      }
-    } catch (error) {
-      console.log(error)
-    }
-
-    return ret;
+    return await this.onedev.getProjectBranches(projectId as number);
   }
 
 }
