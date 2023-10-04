@@ -124,7 +124,7 @@ import axios from "axios";
 //import Appfooter from "./components/appfooter.vue";
 
 export default {
-    name: "App",
+    name: "Kubero",
     /*
     components: {
         Appfooter
@@ -228,6 +228,7 @@ export default {
                 .get("/api/banner")
                 .then((result) => {
                     this.banner = result.data;
+                    this.app.name = "oooo"
                 })
                 .catch((err) => {
                     console.log(err);

@@ -5,6 +5,11 @@ import vuetify from './plugins/vuetify';
 import vueSocketIoExtended from './plugins/vue-socket-io-extended';
 import router from './router';
 
+router.beforeEach((to, from, next) => {
+  document.title = App.name + " - " + to.name;
+  next();
+});
+
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
