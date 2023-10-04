@@ -32,16 +32,13 @@ Kubero will then start an init container that will clone your repository and ano
 - Build, start and cleanup **review-apps** after opening/closing a pull request
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
-- Deploy well known apps with **templates** (Wordpress, Grafana, ...)
+- Deploy well known apps with **templates** [(Wordpress, Grafana, ...)](https://www.kubero.dev/templates)
 - Easy deployment of your apps on Kubernetes **without helm charts**
-- Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#how-it-works-demo))
+- Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
 - Easy access of **application logs** in the UI
 - Easy and safe **restart** of the application in the UI
-- Periodic <span style="color: MediumPurple">**vulnerability scans**</span> of your running apps
-
-## What Kubero won't do for you
-- Manage your Kubernetes cluster
-- Give access to your container CLI
+- Periodic **vulnerability scans** of your running apps
+- Comes with an API and CLI to integrate with your existing tools
 
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea / Forgejo
