@@ -81,10 +81,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           images: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
-          tags: |
-            type=semver,pattern=v{{version}}
-            type=semver,pattern=v{{major}}.{{minor}}
-            type=semver,pattern=v{{major}}
+          tags: type=raw,value=v${{ inputs.version }}
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -93,8 +90,8 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
-          tags: v${{ inputs.version }}
+          push: true
+          tags: ${{ steps.kubero-meta.outputs.tags }}
           platforms: linux/amd64
           labels: ${{ steps.kubero-meta.outputs.labels }}
 
