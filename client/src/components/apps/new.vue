@@ -1265,7 +1265,7 @@ export default {
               this.panel.push(4)
             }
 
-            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext?.readOnlyRootFilesystem != false; // reversed since it is a boolean
+            this.security = response.data.spec.image.run.securityContext || {};
 
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
