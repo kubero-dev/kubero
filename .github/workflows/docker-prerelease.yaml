@@ -93,7 +93,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
+          push: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
           tags: v${{ inputs.version }}
           platforms: linux/amd64
           labels: ${{ steps.kubero-meta.outputs.labels }}
