@@ -76,6 +76,8 @@ export class App implements IApp{
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];
@@ -88,6 +90,8 @@ export class App implements IApp{
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];
@@ -101,6 +105,8 @@ export class App implements IApp{
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];

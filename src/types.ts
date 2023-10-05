@@ -26,6 +26,9 @@ export interface IApp {
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
+                runAsNonRoot?: boolean;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];
@@ -38,6 +41,9 @@ export interface IApp {
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
+                runAsNonRoot?: boolean;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];
@@ -51,6 +57,9 @@ export interface IApp {
             securityContext?: {
                 readOnlyRootFilesystem?: boolean;
                 allowPrivilegeEscalation?: boolean;
+                runAsUser?: number;
+                runAsGroup?: number;
+                runAsNonRoot?: boolean;
                 capabilities?: {
                     drop?: string[];
                     add?: string[];
@@ -265,6 +274,9 @@ export interface IBuildpack {
         securityContext?: {
             readOnlyRootFilesystem?: boolean;
             allowPrivilegeEscalation?: boolean;
+            runAsUser?: number;
+            runAsGroup?: number;
+            runAsNonRoot?: boolean;
             capabilities?: {
                 drop?: string[];
             }
@@ -276,6 +288,9 @@ export interface IBuildpack {
         securityContext?: {
             readOnlyRootFilesystem?: boolean;
             allowPrivilegeEscalation?: boolean;
+            runAsUser?: number;
+            runAsGroup?: number;
+            runAsNonRoot?: boolean;
             capabilities?: {
                 drop?: string[];
             }
@@ -287,6 +302,9 @@ export interface IBuildpack {
         securityContext?: {
             readOnlyRootFilesystem?: boolean;
             allowPrivilegeEscalation?: boolean;
+            runAsUser?: number;
+            runAsGroup?: number;
+            runAsNonRoot?: boolean;
             capabilities?: {
                 drop?: string[];
             }

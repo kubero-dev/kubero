@@ -351,19 +351,6 @@
                 inset
             ></v-switch>
             </v-col>
-            <!--
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-switch
-                v-model="security.allowPrivilegeEscalation"
-                :label="`Allow privilege escalation: ${security.allowPrivilegeEscalation}`"
-                color="primary"
-                inset
-            ></v-switch>
-            </v-col>
-            -->
             <v-col
               cols="12"
               md="6"
@@ -375,19 +362,87 @@
                 inset
             ></v-switch>
             </v-col>
-            <!--
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="security.allowPrivilegeEscalation"
+                label="Allow privilege escalation"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
                 v-model="security.runAsNonRoot"
-                :label="`Run as non root: ${security.runAsNonRoot}`"
+                label="Run as non root"
                 color="primary"
                 inset
             ></v-switch>
             </v-col>
-            -->
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="security.runAsUser"
+                :rules="uidRules"
+                label="Run as user"
+            ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="security.runAsGroup"
+                :rules="uidRules"
+                label="Run as group"
+            ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+            <v-select
+              v-model="security.capabilities.add"
+              :items="capabilities"
+              :menu-props="{ maxHeight: '400' }"
+              label="Capabilities add"
+              multiple
+              hint="Select one or more"
+              persistent-hint
+              chips
+            ></v-select>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+            <v-select
+              v-model="security.capabilities.drop"
+              :items="capabilities"
+              :menu-props="{ maxHeight: '400' }"
+              label="Capabilities drop"
+              multiple
+              hint="Select one or more"
+              persistent-hint
+              chips
+            ></v-select>
+            </v-col>
           </v-row>
 
         </v-expansion-panel-content>
@@ -937,18 +992,59 @@ export default {
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
         readOnlyRootFilesystem: true,
-        /*
         runAsUser: 0,
         runAsGroup: 0,
         capabilities: {
-          add: [],
+          add: ['ALL'],
           drop: [],
         },
+        /*
         seLinuxOptions: {
           level: 's0:c0,c1',
         },
         */
       },
+      capabilities: [
+        'ALL',
+        'AUDIT_CONTROL',
+        'AUDIT_READ',
+        'AUDIT_WRITE',
+        'BLOCK_SUSPEND',
+        'CHOWN',
+        'DAC_OVERRIDE',
+        'DAC_READ_SEARCH',
+        'FOWNER',
+        'FSETID',
+        'IPC_LOCK',
+        'IPC_OWNER',
+        'KILL',
+        'LEASE',
+        'LINUX_IMMUTABLE',
+        'MAC_ADMIN',
+        'MAC_OVERRIDE',
+        'MKNOD',
+        'NET_ADMIN',
+        'NET_BIND_SERVICE',
+        'NET_BROADCAST',
+        'NET_RAW',
+        'SETFCAP',
+        'SETGID',
+        'SETPCAP',
+        'SETUID',
+        'SYS_ADMIN',
+        'SYS_BOOT',
+        'SYS_CHROOT',
+        'SYS_MODULE',
+        'SYS_NICE',
+        'SYS_PACCT',
+        'SYS_PTRACE',
+        'SYS_RAWIO',
+        'SYS_RESOURCE',
+        'SYS_TIME',
+        'SYS_TTY_CONFIG',
+        'SYSLOG',
+        'WAKE_ALARM',
+      ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -968,6 +1064,10 @@ export default {
       cronjobScheduleRules: [
         v => !!v || 'Schedule is required',
         v => /(((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}/.test(v) || 'Not a valid crontab format',
+      ],
+      uidRules: [
+        //v => !!v || 'UID is required',
+        v => /^\d+$/.test(v) || 'Not a number',
       ],
 /*
       buildpackRules: [
@@ -1276,7 +1376,13 @@ export default {
 
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
-            //runAsNonRoot: true,
+            runAsNonRoot: this.security.runAsNonRoot,
+            runAsUser: parseInt(this.security.runAsUser),
+            runAsGroup: parseInt(this.security.runAsGroup),
+            capabilities: {
+              add: this.security.capabilities.add,
+              drop: this.security.capabilities.drop,
+            },
         }
 
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
@@ -1366,7 +1472,13 @@ export default {
 
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
-            //runAsNonRoot: true,
+            runAsNonRoot: this.security.runAsNonRoot,
+            runAsUser: parseInt(this.security.runAsUser),
+            runAsGroup: parseInt(this.security.runAsGroup),
+            capabilities: {
+              add: this.security.capabilities.add,
+              drop: this.security.capabilities.drop,
+            },
         }
 
         axios.post(`/api/apps`, postdata)
@@ -1458,5 +1570,8 @@ export default {
 }
 .v-expansion-panel-header {
     background: cardBackground;
+}
+.theme--light.v-chip:not(.v-chip--active) {
+    background: #BBB;
 }
 </style>
