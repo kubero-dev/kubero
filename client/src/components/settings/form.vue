@@ -333,6 +333,7 @@ export default {
         },
         podSizeList: [],
         buildpacks: [],
+        templateCatalogs: [],
       }
     }),
     components: {

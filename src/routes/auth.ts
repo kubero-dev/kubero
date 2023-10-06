@@ -12,6 +12,7 @@ Router.all("/session", (req: Request, res: Response) => {
 
     let status = 200
     let isAuthenticated = false
+    let templatesEnabled = true
 
     if (auth.authentication === true) {
         isAuthenticated = req.isAuthenticated()
@@ -25,10 +26,15 @@ Router.all("/session", (req: Request, res: Response) => {
         buildPipeline = true
     } 
 
+
+    templatesEnabled = true
+
     let message = {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
         "buildPipeline": buildPipeline,
+        "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
+        //"templatesEnabled": true,
     }
     res.status(status).send(message)
 })
