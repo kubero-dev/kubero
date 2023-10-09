@@ -66,15 +66,12 @@
     <v-card-subtitle class="pr-data">
         <v-row>
             <v-col>
+                <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.pullrequest.branch }}</v-chip>
+            </v-col>
+            <v-col>
                 <v-icon small>mdi-source-commit-start</v-icon> {{ this.pullrequest.created_at | formatDate}}<br>
                 <v-icon small>mdi-source-pull</v-icon> {{ this.pullrequest.updated_at | formatDate}}
             </v-col>
-        <v-col>
-            <!--
-            <v-chip label class="mr-1" v-if="this.pullrequest.state == 'open'"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.pullrequest.state }}</v-chip>
-            <v-chip label class="mr-1" v-if="this.pullrequest.state == 'closed'"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.pullrequest.state }}</v-chip>
-            -->
-        </v-col>
     </v-row>
     </v-card-subtitle>
 </v-card>
@@ -82,10 +79,14 @@
 
 
 <script>
-
+ import axios from "axios";
 
 export default {
     props: {
+        pipeline: {
+            type: String,
+            default: "MISSSING"
+        },
         pullrequest: {
             type: Object,
             default: () => ({}),
@@ -99,6 +100,17 @@ export default {
         async startReviewApp() {
             console.log("startReviewApp", this.pullrequest.number);
             this.loadingState = true;
+
+            axios.post("/api/repo/pullrequest/start", {
+                branch: this.pullrequest.branch,
+                title: this.pullrequest.title,
+                ssh_url: this.pullrequest.ssh_url,
+                pipelineName: this.pipeline,
+            }).then((response) => {
+                console.log("startReviewApp", response);
+            }).catch((error) => {
+                console.log("startReviewApp", error);
+            });
         },
     }
 }

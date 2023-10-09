@@ -324,13 +324,14 @@ export class GithubApi extends Repo {
                 repo: repo,
                 state: 'open'
             })
-            console.log(pulls)
+            //console.log(pulls)
             for (let pr of pulls.data) {
                 const p: IPullrequest = {
                     html_url: pr.html_url,
                     number: pr.number,
                     title: pr.title,
                     state: pr.state,
+                    draft: pr.draft,
                     user: {
                         login: pr.user.login,
                         avatar_url: pr.user.avatar_url,
@@ -339,7 +340,9 @@ export class GithubApi extends Repo {
                     updated_at: pr.updated_at,
                     closed_at: pr.closed_at,
                     merged_at: pr.merged_at,
-                    locked: pr.locked
+                    locked: pr.locked,
+                    branch: pr.head.ref,
+                    ssh_url: pr.head.repo.ssh_url,
                 }
                 ret.push(p)
             }

@@ -16,10 +16,11 @@
                             :phase="phase.name"
                             :app="app" />
 
-                        <div v-if="phase.name == 'review'">
+                        <span v-if="phase.name == 'review'">
                             <PRcard v-for="pr in pullrequests" :key="pr.number"
+                                :pipeline="pipeline"
                                 :pullrequest="pr" />
-                        </div>
+                        </span>
 
                         <v-btn
                         elevation="2"
@@ -119,7 +120,22 @@ export default {
 
         axios.get('/api/repo/'+this.git.provider+'/' + gitrepoB64 + '/pullrequests')
         .then(response => {
-            self.pullrequests = response.data;
+
+            // iterate over response.data and search in self.phases[0].name for a match
+            // if not found, add the pullrequest to the phase.apps array
+            response.data.forEach(pr => {
+                let found = false;
+                self.phases[0].apps.forEach(app => {
+                    if (app.name == pr.branch) {
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    self.pullrequests.push(pr);
+                }
+            });
+
+            //self.pullrequests = response.data;
             return response.data;
         })
         .catch(error => {

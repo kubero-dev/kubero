@@ -479,12 +479,10 @@ export class Kubero {
         switch (webhook.action) {
             case 'opened':
             case 'reopened':
-                this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
-                this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
+                this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url, undefined); // "undefined" will create the app in all pipelines
                 break;
             case 'closed':
                 this.deletePRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
-                this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
                 break;
             default:
                 console.log('webhook pull request action not handled: '+webhook.action);
@@ -569,15 +567,21 @@ export class Kubero {
     }
 
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
-    private async createPRApp(branch: string, title: string, ssh_url: string) {
-        debug.log('createPRApp');
+    private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
+        debug.log('createPRApp: ', branch, title, ssh_url);
         let pipelines = await this.listPipelines() as IPipelineList;
 
         for (const pipeline of pipelines.items) {
+            console.log(pipeline.git.repository?.ssh_url, ssh_url);
+            console.log(pipeline.reviewapps);
 
             if (pipeline.reviewapps &&
                 pipeline.git.repository &&
                 pipeline.git.repository.ssh_url === ssh_url) {
+
+                if (pipelineName && pipelineName != pipeline.name) {
+                    continue;
+                }
 
                 debug.debug('found pipeline: '+pipeline.name);
                 let pipelaneName = pipeline.name
@@ -643,6 +647,7 @@ export class Kubero {
                 let app = new App(appOptions);
 
                 this.newApp(app);
+                this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+branch+' in '+ ssh_url);
             }
         }
     }
@@ -660,6 +665,7 @@ export class Kubero {
                 app.branch === branch) {
 
                     this.deleteApp(app.pipeline, app.phase, websaveTitle);
+                    this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+branch+' in '+ ssh_url);
             }
         }
     }
