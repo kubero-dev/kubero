@@ -64,7 +64,7 @@
                                         color="secondary"
                                         @click="deletePipeline(item.name)"
                                         >
-                                            <v-icon dark>
+                                            <v-icon>
                                                 mdi-delete
                                             </v-icon>
                                         </v-btn>
@@ -76,7 +76,7 @@
                                         color="secondary"
                                         :href="'#/pipeline/'+item.name"
                                         >
-                                            <v-icon dark>
+                                            <v-icon>
                                                 mdi-pencil
                                             </v-icon>
                                         </v-btn>
