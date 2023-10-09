@@ -630,10 +630,29 @@ export class Kubero {
         }
     }
 
-    // Loads the app config from the config file
+    // Loads the Kubero config from the local config file
     private loadConfig(path:string): IKuberoConfig {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
+
+
+            // backward compatibility. Add default if template does not exist
+            if (!config.templates) {
+                config.templates = {
+                    enabled: true,
+                    catalogs: [
+                        {
+                            name: 'Kubero',
+                            description: 'Kubero Templates',
+                            templateBasePath: 'https://raw.githubusercontent.com/kubero-dev/kubero/main/services/',
+                            index: {
+                                url: 'https://raw.githubusercontent.com/kubero-dev/templates/main/index.json',
+                                format: 'json',
+                            }
+                        }
+                    ]
+                };
+            }
 
             // override env vars with config values
             if (config.kubero) {
@@ -1053,5 +1072,17 @@ export class Kubero {
             phase: phase,
             app: appName
         };
+    }
+
+    public async getTemplateConfig() {
+        return this.config.templates;
+    }
+
+    public async getTemplateBasePath(catalogId: number) {
+        return this.config.templates.catalogs[catalogId].templateBasePath;
+    }
+
+    public getTemplateEnabled() {
+        return this.config.templates.enabled;
     }
 }
