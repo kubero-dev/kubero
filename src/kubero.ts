@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
+import { IPullrequest } from './git/types';
 import { App } from './modules/application';
 import { GithubApi } from './git/github';
 import { BitbucketApi } from './git/bitbucket';
@@ -397,7 +398,7 @@ export class Kubero {
                 return this.gitlabApi.listRepos();
             case 'bitbucket':
                 return this.bitbucketApi.listRepos();
-            case 'ondev':
+            case 'onedev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -417,7 +418,7 @@ export class Kubero {
                 return this.gitlabApi.connectRepo(repoAddress);
             case 'bitbucket':
                 return this.bitbucketApi.connectRepo(repoAddress);
-            case 'ondev':
+            case 'onedev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -442,7 +443,7 @@ export class Kubero {
             case 'bitbucket':
                 webhook = this.bitbucketApi.getWebhook(event, delivery, body); // Bitbucket has no signature
                 break;
-            case 'ondev':
+            case 'onedev':
             default:
                 break;
         }
@@ -515,12 +516,45 @@ export class Kubero {
             case 'bitbucket':
                 branches = this.bitbucketApi.getBranches(repo);
                 break;
-            case 'ondev':
+            case 'onedev':
             default:
                 break;
         }
 
         return branches
+    }
+
+
+    public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
+        //return this.git.listRepoBranches(repo, repoProvider);
+        let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
+            resolve([]);
+        });
+
+        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
+
+        switch (repoProvider) {
+            case 'github':
+                pulls = this.githubApi.getPullrequests(repo);
+                break;
+            case 'gitea':
+                pulls = this.giteaApi.getPullrequests(repo);
+                break;
+            case 'gogs':
+                pulls = this.gogsApi.getPullrequests(repo);
+                break;
+            case 'gitlab':
+                pulls = this.gitlabApi.getPullrequests(repo);
+                break;
+            case 'bitbucket':
+                pulls = this.bitbucketApi.getPullrequests(repo);
+                break;
+            case 'onedev':
+            default:
+                break;
+        }
+
+        return pulls
     }
 
     private async getAppsByBranch(branch: string) {

@@ -16,6 +16,11 @@
                             :phase="phase.name"
                             :app="app" />
 
+                        <div v-if="phase.name == 'review'">
+                            <PRcard v-for="pr in pullrequests" :key="pr.number"
+                                :pullrequest="pr" />
+                        </div>
+
                         <v-btn
                         elevation="2"
                         icon
@@ -38,6 +43,7 @@
 <script>
 import axios from "axios";
 import Appcard from "./appcard.vue";
+import PRcard from "./prcard.vue";
 
 export default {
     mounted() {
@@ -64,6 +70,11 @@ export default {
         ],
         reviewapps: false,
         phases: false,
+        git: {
+            ssh_url: "",
+            provider: ""
+        },
+        pullrequests: [],
     }},
     computed: {
         activePhases() {
@@ -79,6 +90,7 @@ export default {
         }
     },
     components: {
+        PRcard,
         Appcard,
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
@@ -89,7 +101,26 @@ export default {
         .then(response => {
             self.phases = response.data.phases;
             self.reviewapps = response.data.reviewapps;
+            self.git.ssh_url = response.data.git.repository.ssh_url;
+            self.git.provider = response.data.git.provider;
+            if (self.reviewapps) {
+                self.loadPullrequests();
+            }
             return response.data.phases;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
+      async loadPullrequests() {
+        const self = this;
+
+        const gitrepoB64 = btoa(this.git.ssh_url);
+
+        axios.get('/api/repo/'+this.git.provider+'/' + gitrepoB64 + '/pullrequests')
+        .then(response => {
+            self.pullrequests = response.data;
+            return response.data;
         })
         .catch(error => {
             console.log(error);

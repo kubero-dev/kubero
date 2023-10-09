@@ -13,6 +13,12 @@ router.beforeEach((to, from, next) => {
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return new Date(value).toLocaleString();
+  }
+});
+
 // vcdount is created in index.html by loadin js from CDN
 //https://www.npmjs.com/package/vue-css-donut-chart
 // eslint-disable-next-line no-undef

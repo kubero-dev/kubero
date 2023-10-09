@@ -1,7 +1,7 @@
 // https://www.nerd.vision/post/nerdvision-gitlab-js-an-easier-way-to-access-the-gitlab-api-in-javascript
 // https://www.npmjs.com/package/@nerdvision/gitlab-js
 import debug from 'debug';
-import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import { Repo } from './repo';
 import {Client as GitlabClient} from '@nerdvision/gitlab-js';
 import {Options} from 'got';
@@ -308,6 +308,14 @@ export class GitlabApi extends Repo {
         } catch (error) {
             console.log(error)
         }
+
+
+        return ret;
+    }
+
+    public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
+
+        let ret: IPullrequest[] = [];
 
 
         return ret;
