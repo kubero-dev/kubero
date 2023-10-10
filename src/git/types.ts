@@ -59,3 +59,22 @@ export interface IDeploykeyR {
         priv: string
     }
 }
+
+export interface IPullrequest {
+    html_url: string,
+    number: number,
+    title: string,
+    state: string,
+    user: {
+        login: string,
+        avatar_url: string,
+    },
+    created_at: string,
+    updated_at: string,
+    closed_at: string,
+    merged_at: string,
+    locked: boolean,
+    draft: boolean,
+    branch: string,
+    ssh_url: string,
+}

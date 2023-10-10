@@ -190,7 +190,7 @@ function configureBuildpack(req: Request): string {
     return selectedBuildpack.name;
 }
 
-function createApp(req: Request,) : IApp {
+function createApp(req: Request) : IApp {
 
     const selectedBuildpack = configureBuildpack(req);
 
