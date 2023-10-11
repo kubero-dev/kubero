@@ -79,10 +79,21 @@ export class OneDevWrapper {
     return defaultBranchResp.data as string;
   }
 
-  public async addSHHKeys(projectId: number) {
+  public async repoCreateKey(projectId: number, title: string, key: string, readOnly: boolean = true): Promise<number> {
+    let keyResp: AxiosResponse;
+    try {
+      keyResp = await axios.post(`${this.baseURL}/~api/repositories/${projectId}/keys`, {
+        title: title,
+        key: key,
+        readOnly: readOnly
+      });
+    } catch (err) {
+      console.error('Error adding SSH key: ', err);
+      throw new Error('Error adding SSH key');
+    }
 
+    if (keyResp.status !== 201) throw new Error('Error adding SSH key');
+    return keyResp.data.id;
   }
-
-
 
 }

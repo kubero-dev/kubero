@@ -99,7 +99,7 @@ export class OneDevApi extends Repo {
     }
 
     //https://try.gitea.io/api/swagger#/repository/repoListHooks
-    const webhooksList = await this.onedev.repoListHooks(owner, repo)
+    const webhooksList = await this.onedev.repoListHooks(owner, repo) //TODO: Needs to be implemented
       .catch((error: any) => {
         console.log(error)
         return ret;
@@ -123,8 +123,7 @@ export class OneDevApi extends Repo {
     // create the webhook since it does not exist
     try {
 
-      //https://try.gitea.io/api/swagger#/repository/repoCreateHook
-      let res = await this.onedev.repoCreateHook(owner, repo, {
+      let res = await this.onedev.repoCreateHook(owner, repo, { //TODO: Needs to be implemented
         active: true,
         config: {
           url: url,
@@ -180,8 +179,7 @@ export class OneDevApi extends Repo {
     }
 
     try {
-      //https://try.gitea.io/api/swagger#/repository/repoCreateKey
-      let res = await this.onedev.repos.repoCreateKey(owner, repo, {
+      let res = await this.onedev.repoCreateKey(owner, repo, {  // TODO: repo and owner are the same in onedev
         title: title,
         key: keyPair.pubKey,
         read_only: true
@@ -268,6 +266,27 @@ export class OneDevApi extends Repo {
     if (projectId === null || projectId === undefined) throw new Error('Failed to get projectId for project');
 
     return await this.onedev.getProjectBranches(projectId as number);
+  }
+
+  public async listRepos(): Promise<string[]> {
+    let ret: string[] = [];
+    try {
+        const repos = await this.onedev.userCurrentListRepos() // TODO: needs to be implemented
+        for (let repo of repos.data) {
+            ret.push(repo.ssh_url)
+        }
+    } catch (error) {
+        console.log(error)
+    }
+    return ret;
+}
+
+  public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
+
+    // send an empty list for now
+    let ret: IPullrequest[] = [];
+
+    return ret;
   }
 
 }
