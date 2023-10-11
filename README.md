@@ -27,7 +27,7 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 
 Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
 
-## What can Kubero do for you?
+## Features
 - Create unlimited CI pipelines with up to 4 separate **staging environments** for all your applications
 - Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
 - Automatic **redeployment** of the app based on a push to a branch or tag
@@ -49,7 +49,7 @@ Kubero will then start an init container that will clone your repository and ano
 - OneDev (in progress)
 
 ## Tested languages/frameworks
-Basically *everything* that can be shipped in a single container. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
+Basically *everything* that can be packaged in a single container can be deployed by Kubero. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
 
 - GoLang (including Hugo, gin-gonic)
 - Python (including Flask)
