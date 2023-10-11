@@ -16,6 +16,12 @@
                             :phase="phase.name"
                             :app="app" />
 
+                        <span v-if="phase.name == 'review'">
+                            <PRcard v-for="pr in pullrequests" :key="pr.number"
+                                :pipeline="pipeline"
+                                :pullrequest="pr" />
+                        </span>
+
                         <v-btn
                         elevation="2"
                         icon
@@ -38,6 +44,7 @@
 <script>
 import axios from "axios";
 import Appcard from "./appcard.vue";
+import PRcard from "./prcard.vue";
 
 export default {
     mounted() {
@@ -64,6 +71,11 @@ export default {
         ],
         reviewapps: false,
         phases: false,
+        git: {
+            ssh_url: "",
+            provider: ""
+        },
+        pullrequests: [],
     }},
     computed: {
         activePhases() {
@@ -79,6 +91,7 @@ export default {
         }
     },
     components: {
+        PRcard,
         Appcard,
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
@@ -89,7 +102,41 @@ export default {
         .then(response => {
             self.phases = response.data.phases;
             self.reviewapps = response.data.reviewapps;
+            self.git.ssh_url = response.data.git.repository.ssh_url;
+            self.git.provider = response.data.git.provider;
+            if (self.reviewapps) {
+                self.loadPullrequests();
+            }
             return response.data.phases;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
+      async loadPullrequests() {
+        const self = this;
+
+        const gitrepoB64 = btoa(this.git.ssh_url);
+
+        axios.get('/api/repo/'+this.git.provider+'/' + gitrepoB64 + '/pullrequests')
+        .then(response => {
+
+            // iterate over response.data and search in self.phases[0].name for a match
+            // if not found, add the pullrequest to the phase.apps array
+            response.data.forEach(pr => {
+                let found = false;
+                self.phases[0].apps.forEach(app => {
+                    if (app.name == pr.branch) {
+                        found = true;
+                    }
+                });
+                if (!found) {
+                    self.pullrequests.push(pr);
+                }
+            });
+
+            //self.pullrequests = response.data;
+            return response.data;
         })
         .catch(error => {
             console.log(error);

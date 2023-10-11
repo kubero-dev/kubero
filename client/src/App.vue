@@ -241,8 +241,37 @@ export default {
 </script>
 
 <style>
-.v-icon {
-  color: #8560A9!important;
+.v-icon.theme--light{
+    color: #8560A9
+}
+
+.v-btn > .v-btn__content .v-icon.theme--light {
+    color: #8560A9
+}
+
+.v-icon.theme--dark{
+    color: #8560A9;
+}
+
+.v-btn > .v-btn__content .v-icon.theme--dark {
+    color: #8560A9;
+}
+
+.v-list-item--active .v-icon.theme--dark {
+    /*color: #ac89d0;*/
+    color: #ceafec;
+}
+
+.v-list-item--active .v-icon.theme--light {
+    color: #8560A9;
+}
+
+.theme--light.v-application {
+    color: #454545;
+}
+
+.theme--dark.v-application {
+    color: #d3d3d3;
 }
 
 .discord{
