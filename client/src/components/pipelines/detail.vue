@@ -47,6 +47,16 @@ import Appcard from "./appcard.vue";
 import PRcard from "./prcard.vue";
 
 export default {
+    sockets: {
+        async updatedApps(instances) {
+            console.log("updatedApps", instances);
+            this.loadPipeline();
+        },
+        async deleteApp(instances) {
+            console.log("deleteApp", instances);
+            this.loadPipeline();
+        },
+    },
     mounted() {
         this.loadPipeline();
     },
@@ -120,6 +130,8 @@ export default {
 
         axios.get('/api/repo/'+this.git.provider+'/' + gitrepoB64 + '/pullrequests')
         .then(response => {
+
+            self.pullrequests = [];
 
             // iterate over response.data and search in self.phases[0].name for a match
             // if not found, add the pullrequest to the phase.apps array

@@ -468,6 +468,8 @@ export class Kubero {
         let apps = await this.getAppsByBranch(webhook.branch);
 
         for (const app of apps) {
+
+            this._io.emit('updatedApps', "created");
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
             this.rebuildApp(app);
         }
