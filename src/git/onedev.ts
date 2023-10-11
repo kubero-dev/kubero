@@ -1,7 +1,7 @@
 import debug from 'debug';
 import * as crypto from "crypto"
 import { Repo } from "./repo";
-import { IWebhook, IRepository, IWebhookR, IDeploykeyR } from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import axios from 'axios';
 import { OneDevWrapper } from '../wrappers/onedev';
 debug('app:kubero:onedev:api')
@@ -99,7 +99,7 @@ export class OneDevApi extends Repo {
     }
 
     //https://try.gitea.io/api/swagger#/repository/repoListHooks
-    const webhooksList = await this.onedev.repos.repoListHooks(owner, repo)
+    const webhooksList = await this.onedev.repoListHooks(owner, repo)
       .catch((error: any) => {
         console.log(error)
         return ret;
@@ -124,7 +124,7 @@ export class OneDevApi extends Repo {
     try {
 
       //https://try.gitea.io/api/swagger#/repository/repoCreateHook
-      let res = await this.onedev.repos.repoCreateHook(owner, repo, {
+      let res = await this.onedev.repoCreateHook(owner, repo, {
         active: true,
         config: {
           url: url,
