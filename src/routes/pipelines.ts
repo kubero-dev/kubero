@@ -12,7 +12,7 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
-Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res: Response) {
+Router.post('/cli/pipelines', bearerMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Pipeline']
     // #swagger.summary = 'Create a new pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
@@ -25,8 +25,8 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
     }] */
 
     const con = await req.app.locals.kubero.connectRepo(
-                        req.body.git.repository.provider.toLowerCase(),
-                        req.body.git.repository.ssh_url);
+        req.body.git.repository.provider.toLowerCase(),
+        req.body.git.repository.ssh_url);
 
     let git: IgitLink = {
         keys: {
@@ -45,8 +45,8 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
         console.log("ERROR: connecting Gitrepository", con.error);
     } else {
         git.keys = con.keys.data,
-        git.webhook = con.webhook.data,
-        git.repository = con.repository.data
+            git.webhook = con.webhook.data,
+            git.repository = con.repository.data
     }
 
     const buildpackList = req.app.locals.kubero.getBuildpacks()
@@ -67,7 +67,7 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
     res.send(pipeline);
 });
 
-Router.post('/pipelines',authMiddleware, async function (req: Request, res: Response) {
+Router.post('/pipelines', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Create a new pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
@@ -86,7 +86,7 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
 });
 
 
-Router.put('/pipelines/:pipeline',authMiddleware, async function (req: Request, res: Response) {
+Router.put('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Edit a pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'Pipeline object', required: true, type: 'object' }
@@ -122,9 +122,9 @@ Router.get('/pipelines', authMiddleware, async function (req: Request, res: Resp
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a list of available pipelines'
     let pipelines = await req.app.locals.kubero.listPipelines()
-    .catch((err: any) => {
-        console.log(err)
-    });
+        .catch((err: any) => {
+            console.log(err)
+        });
     res.send(pipelines);
 });
 
@@ -153,7 +153,7 @@ Router.delete('/pipelines/:pipeline', authMiddleware, async function (req: Reque
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Delete a pipeline'
     await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
-    res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
+    res.send("pipeline " + encodeURI(req.params.pipeline) + " deleted");
 });
 
 Router.delete('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Request, res: Response) {
@@ -167,7 +167,7 @@ Router.delete('/cli/pipelines/:pipeline', bearerMiddleware, async function (req:
             }
     }] */
     await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
-    res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
+    res.send("pipeline " + encodeURI(req.params.pipeline) + " deleted");
 });
 
 Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
@@ -194,7 +194,7 @@ Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async fu
     const phase = encodeURI(req.params.phase);
     const app = encodeURI(req.params.app);
     const response = {
-        message: "deleted "+pipeline+" "+phase+" "+app,
+        message: "deleted " + pipeline + " " + phase + " " + app,
         pipeline: pipeline,
         phase: phase,
         app: app
