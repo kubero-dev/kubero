@@ -356,7 +356,7 @@
               md="6"
             >
               <v-switch
-                v-model="security.readOnlyRootFilesystem"
+                v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
                 label="Read only root filesystem"
                 color="primary"
                 inset
@@ -370,7 +370,7 @@
               md="6"
             >
               <v-switch
-                v-model="security.allowPrivilegeEscalation"
+                v-model="buildpack.run.securityContext.allowPrivilegeEscalation"
                 label="Allow privilege escalation"
                 color="primary"
                 inset
@@ -381,7 +381,7 @@
               md="6"
             >
               <v-switch
-                v-model="security.runAsNonRoot"
+                v-model="buildpack.run.securityContext.runAsNonRoot"
                 label="Run as non root"
                 color="primary"
                 inset
@@ -395,7 +395,7 @@
               md="6"
             >
               <v-text-field
-                v-model="security.runAsUser"
+                v-model="buildpack.run.securityContext.runAsUser"
                 :rules="uidRules"
                 label="Run as user"
             ></v-text-field>
@@ -405,7 +405,7 @@
               md="6"
             >
               <v-text-field
-                v-model="security.runAsGroup"
+                v-model="buildpack.run.securityContext.runAsGroup"
                 :rules="uidRules"
                 label="Run as group"
             ></v-text-field>
@@ -418,7 +418,7 @@
               md="6"
             >
             <v-select
-              v-model="security.capabilities.add"
+              v-model="buildpack.run.securityContext.capabilities.add"
               :items="capabilities"
               :menu-props="{ maxHeight: '400' }"
               label="Capabilities add"
@@ -433,7 +433,7 @@
               md="6"
             >
             <v-select
-              v-model="security.capabilities.drop"
+              v-model="buildpack.run.securityContext.capabilities.drop"
               :items="capabilities"
               :menu-props="{ maxHeight: '400' }"
               label="Capabilities drop"
@@ -870,6 +870,17 @@ export default {
       buildpack: {
         run: {
           command: '',
+          securityContext: {
+            readOnlyRootFilesystem: true,
+            allowPrivilegeEscalation: false,
+            runAsNonRoot: false,
+            runAsUser: 0,
+            runAsGroup: 0,
+            capabilities: {
+              add: [],
+              drop: [],
+            },
+          },
         },
         build: {
           command: '',
@@ -879,7 +890,15 @@ export default {
         run: {
           command: '',
           securityContext: {
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: true,
+            allowPrivilegeEscalation: false,
+            runAsNonRoot: false,
+            runAsUser: 0,
+            runAsGroup: 0,
+            capabilities: {
+              add: [],
+              drop: [],
+            },
           },
         },
         build: {
@@ -995,7 +1014,7 @@ export default {
         runAsUser: 0,
         runAsGroup: 0,
         capabilities: {
-          add: ['ALL'],
+          add: [],
           drop: [],
         },
         /*
@@ -1005,7 +1024,6 @@ export default {
         */
       },
       capabilities: [
-        'ALL',
         'AUDIT_CONTROL',
         'AUDIT_READ',
         'AUDIT_WRITE',
@@ -1246,7 +1264,7 @@ export default {
       loadApp() {
         if (this.app !== 'new') {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
-            this.resourceVersion = response.data.metadata.resourceVersion;
+            this.resourceVersion = response.data.resourceVersion;
 
             if (response.data.spec.ingress.tls.length > 0) {
               this.ssl = true;
@@ -1373,7 +1391,7 @@ export default {
         }
 */
 
-
+/*
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
             runAsNonRoot: this.security.runAsNonRoot,
@@ -1384,7 +1402,7 @@ export default {
               drop: this.security.capabilities.drop,
             },
         }
-
+*/
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
@@ -1469,7 +1487,7 @@ export default {
         if (postdata.image.run == undefined) {
           postdata.image.run = {};
         }
-
+/*
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
             runAsNonRoot: this.security.runAsNonRoot,
@@ -1480,7 +1498,7 @@ export default {
               drop: this.security.capabilities.drop,
             },
         }
-
+*/
         axios.post(`/api/apps`, postdata)
         // eslint-disable-next-line no-unused-vars
         .then(response => {

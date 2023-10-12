@@ -24,6 +24,12 @@ buildpacks:
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        capabilities:
+          add:
+            - SYS_PTRACE
     build:
       repository: node
       tag: latest
