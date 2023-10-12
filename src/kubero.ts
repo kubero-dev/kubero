@@ -154,6 +154,14 @@ export class Kubero {
             return;
         }
 
+        const currentPL = await this.kubectl.getPipeline(pipeline.name)
+        .catch(error => {
+            debug.log(error);
+        });
+
+        pipeline.git.keys.priv = currentPL?.spec.git.keys.priv;
+        pipeline.git.keys.pub = currentPL?.spec.git.keys.pub;
+
         // Create the Pipeline CRD
         await this.kubectl.updatePipeline(pipeline, resourceVersion);
         this.updateState();
@@ -188,6 +196,9 @@ export class Kubero {
 
         if (pipeline && pipeline.metadata && pipeline.metadata.resourceVersion) {
             pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
+
+            delete pipeline.spec.git.keys.priv
+            delete pipeline.spec.git.keys.pub
             return pipeline.spec;
         }
     }
@@ -309,6 +320,10 @@ export class Kubero {
         debug.debug('listApps in '+pipelineName);
         await this.kubectl.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         const kpipeline = await this.kubectl.getPipeline(pipelineName);
+
+        delete kpipeline.spec.git.keys.priv
+        delete kpipeline.spec.git.keys.pub
+
         let pipeline = kpipeline.spec
 
         if (pipeline) {

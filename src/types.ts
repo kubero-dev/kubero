@@ -165,8 +165,8 @@ export interface IPipeline {
 
 export interface IgitLink {
     keys: {
-        priv: string,
-        pub: string,
+        priv?: string,
+        pub?: string,
     },
     provider?: string,
     repository?: IGithubRepository
