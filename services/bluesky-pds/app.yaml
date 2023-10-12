@@ -1,0 +1,45 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  name: bluesky-pds
+spec:
+  name: bluesky-pds
+  deploymentstrategy: docker
+  image:
+    repository: ghcr.io/bluesky-social/pds
+    tag: latest
+    containerPort: "3000"
+  addons: []
+  envVars: 
+  - name: PDS_HOSTNAME
+    value: bsky.changeme.com
+  - name: PDS_JWT_SECRET
+    value: changeme
+  - name: PDS_ADMIN_PASSWORD
+    value: changeme
+  - name: PDS_REPO_SIGNING_KEY_K256_PRIVATE_KEY_HEX
+    value: changeme
+  - name: PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX
+    value: changeme
+  - name: PDS_DB_SQLITE_LOCATION
+    value: /pds/pds.sqlite
+  - name: PDS_BLOBSTORE_DISK_LOCATION
+    value: /pds/blocks
+  - name: PDS_DID_PLC_URL
+    value: https://plc.bsky-sandbox.dev
+  - name: PDS_BSKY_APP_VIEW_URL
+    value: https://api.bsky-sandbox.dev
+  - name: PDS_BSKY_APP_VIEW_DID
+    value: did:web:api.bsky-sandbox.dev
+  - name: PDS_CRAWLERS
+    value: https://bgs.bsky-sandbox.dev
+  cronjobs: []
+  extraVolumes: 
+  - emptyDir: false
+    mountPath: /pds
+    name: bsk-data
+    size: 40Gi
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
