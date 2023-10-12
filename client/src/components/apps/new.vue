@@ -995,7 +995,7 @@ export default {
         runAsUser: 0,
         runAsGroup: 0,
         capabilities: {
-          add: ['ALL'],
+          add: [],
           drop: [],
         },
         /*
@@ -1005,7 +1005,6 @@ export default {
         */
       },
       capabilities: [
-        'ALL',
         'AUDIT_CONTROL',
         'AUDIT_READ',
         'AUDIT_WRITE',
