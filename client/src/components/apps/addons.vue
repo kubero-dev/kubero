@@ -7,7 +7,7 @@
         md="3"
       >
 
-        <v-card color="#F7F8FB">
+        <v-card class="cardBackground">
           <v-list-item-content class="justify-center">
             <div class="mx-auto text-center">
               <v-avatar

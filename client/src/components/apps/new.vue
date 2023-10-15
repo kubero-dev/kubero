@@ -351,43 +351,98 @@
                 inset
             ></v-switch>
             </v-col>
-            <!--
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
-                v-model="security.allowPrivilegeEscalation"
-                :label="`Allow privilege escalation: ${security.allowPrivilegeEscalation}`"
-                color="primary"
-                inset
-            ></v-switch>
-            </v-col>
-            -->
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-switch
-                v-model="security.readOnlyRootFilesystem"
+                v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
                 label="Read only root filesystem"
                 color="primary"
                 inset
             ></v-switch>
             </v-col>
-            <!--
+          </v-row>
+
+          <v-row>
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
-                v-model="security.runAsNonRoot"
-                :label="`Run as non root: ${security.runAsNonRoot}`"
+                v-model="buildpack.run.securityContext.allowPrivilegeEscalation"
+                label="Allow privilege escalation"
                 color="primary"
                 inset
             ></v-switch>
             </v-col>
-            -->
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="buildpack.run.securityContext.runAsNonRoot"
+                label="Run as non root"
+                color="primary"
+                inset
+            ></v-switch>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="buildpack.run.securityContext.runAsUser"
+                :rules="uidRules"
+                label="Run as user"
+            ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="buildpack.run.securityContext.runAsGroup"
+                :rules="uidRules"
+                label="Run as group"
+            ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+            <v-select
+              v-model="buildpack.run.securityContext.capabilities.add"
+              :items="capabilities"
+              :menu-props="{ maxHeight: '400' }"
+              label="Capabilities add"
+              multiple
+              hint="Select one or more"
+              persistent-hint
+              chips
+            ></v-select>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+            <v-select
+              v-model="buildpack.run.securityContext.capabilities.drop"
+              :items="capabilities"
+              :menu-props="{ maxHeight: '400' }"
+              label="Capabilities drop"
+              multiple
+              hint="Select one or more"
+              persistent-hint
+              chips
+            ></v-select>
+            </v-col>
           </v-row>
 
         </v-expansion-panel-content>
@@ -815,6 +870,17 @@ export default {
       buildpack: {
         run: {
           command: '',
+          securityContext: {
+            readOnlyRootFilesystem: true,
+            allowPrivilegeEscalation: false,
+            runAsNonRoot: false,
+            runAsUser: 0,
+            runAsGroup: 0,
+            capabilities: {
+              add: [],
+              drop: [],
+            },
+          },
         },
         build: {
           command: '',
@@ -824,7 +890,15 @@ export default {
         run: {
           command: '',
           securityContext: {
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: true,
+            allowPrivilegeEscalation: false,
+            runAsNonRoot: false,
+            runAsUser: 0,
+            runAsGroup: 0,
+            capabilities: {
+              add: [],
+              drop: [],
+            },
           },
         },
         build: {
@@ -937,18 +1011,58 @@ export default {
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
         readOnlyRootFilesystem: true,
-        /*
         runAsUser: 0,
         runAsGroup: 0,
         capabilities: {
           add: [],
           drop: [],
         },
+        /*
         seLinuxOptions: {
           level: 's0:c0,c1',
         },
         */
       },
+      capabilities: [
+        'AUDIT_CONTROL',
+        'AUDIT_READ',
+        'AUDIT_WRITE',
+        'BLOCK_SUSPEND',
+        'CHOWN',
+        'DAC_OVERRIDE',
+        'DAC_READ_SEARCH',
+        'FOWNER',
+        'FSETID',
+        'IPC_LOCK',
+        'IPC_OWNER',
+        'KILL',
+        'LEASE',
+        'LINUX_IMMUTABLE',
+        'MAC_ADMIN',
+        'MAC_OVERRIDE',
+        'MKNOD',
+        'NET_ADMIN',
+        'NET_BIND_SERVICE',
+        'NET_BROADCAST',
+        'NET_RAW',
+        'SETFCAP',
+        'SETGID',
+        'SETPCAP',
+        'SETUID',
+        'SYS_ADMIN',
+        'SYS_BOOT',
+        'SYS_CHROOT',
+        'SYS_MODULE',
+        'SYS_NICE',
+        'SYS_PACCT',
+        'SYS_PTRACE',
+        'SYS_RAWIO',
+        'SYS_RESOURCE',
+        'SYS_TIME',
+        'SYS_TTY_CONFIG',
+        'SYSLOG',
+        'WAKE_ALARM',
+      ],
       nameRules: [
         v => !!v || 'Name is required',
         v => v.length <= 60 || 'Name must be less than 60 characters',
@@ -968,6 +1082,10 @@ export default {
       cronjobScheduleRules: [
         v => !!v || 'Schedule is required',
         v => /(((\d+,)+\d+|(\d+(\/|-)\d+)|\d+|\*) ?){5,7}/.test(v) || 'Not a valid crontab format',
+      ],
+      uidRules: [
+        //v => !!v || 'UID is required',
+        v => /^\d+$/.test(v) || 'Not a number',
       ],
 /*
       buildpackRules: [
@@ -1146,7 +1264,7 @@ export default {
       loadApp() {
         if (this.app !== 'new') {
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
-            this.resourceVersion = response.data.metadata.resourceVersion;
+            this.resourceVersion = response.data.resourceVersion;
 
             if (response.data.spec.ingress.tls.length > 0) {
               this.ssl = true;
@@ -1165,7 +1283,7 @@ export default {
               this.panel.push(4)
             }
 
-            this.security.readOnlyRootFilesystem = response.data.spec.image.run.securityContext?.readOnlyRootFilesystem != false; // reversed since it is a boolean
+            this.security = response.data.spec.image.run.securityContext || {};
 
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
@@ -1273,12 +1391,18 @@ export default {
         }
 */
 
-
+/*
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
-            //runAsNonRoot: true,
+            runAsNonRoot: this.security.runAsNonRoot,
+            runAsUser: parseInt(this.security.runAsUser),
+            runAsGroup: parseInt(this.security.runAsGroup),
+            capabilities: {
+              add: this.security.capabilities.add,
+              drop: this.security.capabilities.drop,
+            },
         }
-
+*/
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
@@ -1363,12 +1487,18 @@ export default {
         if (postdata.image.run == undefined) {
           postdata.image.run = {};
         }
-
+/*
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
-            //runAsNonRoot: true,
+            runAsNonRoot: this.security.runAsNonRoot,
+            runAsUser: parseInt(this.security.runAsUser),
+            runAsGroup: parseInt(this.security.runAsGroup),
+            capabilities: {
+              add: this.security.capabilities.add,
+              drop: this.security.capabilities.drop,
+            },
         }
-
+*/
         axios.post(`/api/apps`, postdata)
         // eslint-disable-next-line no-unused-vars
         .then(response => {
@@ -1458,5 +1588,8 @@ export default {
 }
 .v-expansion-panel-header {
     background: cardBackground;
+}
+.theme--light.v-chip:not(.v-chip--active) {
+    background: #BBB;
 }
 </style>

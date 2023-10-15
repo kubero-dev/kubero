@@ -30,6 +30,20 @@ Router.get('/repo/:repoprovider/:gitrepob64/branches/list', async function (req:
     res.send(branches);
 });
 
+Router.get('/repo/:repoprovider/:gitrepob64/pullrequests', async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of available Pull requests'
+    // #swagger.parameters['gitrepob64'] = { description: 'Base64 encoded git repository url' }
+    // #swagger.parameters['repoprovider'] = { description: 'Repository provider', schema: { '@enum': ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'] }}
+    let branches = await req.app.locals.kubero.listRepoPullrequests(req.params.repoprovider, req.params.gitrepob64);
+    res.send(branches);
+});
+
+Router.post('/repo/pullrequest/start', async function (req: Request, res: Response) {
+    req.app.locals.kubero.createPRApp(req.body.branch, req.body.branch, req.body.ssh_url, req.body.pipelineName)
+    res.send('ok');
+});
+
 Router.all('/repo/webhooks/:repoprovider', async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Webhooks endpoint for repository providers'

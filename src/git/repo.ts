@@ -1,7 +1,7 @@
 import debug from 'debug';
 import * as crypto from "crypto"
 import sshpk from 'sshpk';
-import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import { IDeployKeyPair} from '../types';
 debug('app:kubero:git:repo')
 
@@ -117,4 +117,5 @@ export abstract class Repo {
     protected abstract addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
     protected abstract getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
     protected abstract getBranches(repo: string): Promise<string[]> | undefined;
+    protected abstract getPullrequests(repo: string): Promise<IPullrequest[]> | undefined;
 }

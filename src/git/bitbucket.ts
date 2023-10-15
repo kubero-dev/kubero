@@ -1,6 +1,6 @@
 import debug from 'debug';
 import * as crypto from "crypto"
-import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import { Repo } from './repo';
 import gitUrlParse = require("git-url-parse");
 debug('app:kubero:bitbucket:api')
@@ -312,5 +312,13 @@ export class BitbucketApi extends Repo {
 
         return [];
 
+    }
+
+    public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
+
+        let ret: IPullrequest[] = [];
+
+
+        return ret;
     }
 }
