@@ -73,8 +73,8 @@ export interface IPullrequest {
     updated_at: string,
     closed_at: string,
     merged_at: string,
-    locked: boolean,
-    draft: boolean,
+    locked?: boolean,
+    draft?: boolean,
     branch: string,
     ssh_url: string,
 }

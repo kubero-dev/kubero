@@ -66,7 +66,7 @@
     <v-card-subtitle class="pr-data">
         <v-row>
             <v-col>
-                <v-chip label class="mr-1"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.pullrequest.branch }}</v-chip>
+                <v-chip label class="mr-1"><span v-if="this.pullrequest.autodeploy">Autodeploy | </span>{{ this.pullrequest.branch }}</v-chip>
             </v-col>
             <v-col>
                 <v-icon small>mdi-source-commit-start</v-icon> {{ this.pullrequest.created_at | formatDate}}<br>
