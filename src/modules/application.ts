@@ -99,10 +99,10 @@ export class App implements IApp{
     }
 
     private imagePullSecrets: [];
-    private ingress?: {
+    public ingress: {
         annotations: Object,
         className: string,
-        enabled: true,
+        enabled: boolean,
         hosts: [
             {
                 host: string,
@@ -111,7 +111,12 @@ export class App implements IApp{
                 ]
             }
         ],
-        tls: [{hosts: [string], secretName: string}] | []
+        tls: [
+            {
+                hosts: string[], 
+                secretName: string
+            }
+        ] | []
     };
     private nameOverride: "";
     private nodeSelector: {};
@@ -183,9 +188,13 @@ export class App implements IApp{
 
         this.imagePullSecrets = []
 
+        this.ingress = app.ingress
+        this.ingress.className = process.env.KUBERNETES_INGRESS_CLASSNAME || ""
+
+        /*
         if (app.domain) {
-            this.ingress= {
-                annotations: {},
+            this.ingress = {
+                annotations: app.ingress?.annotations || {},
                 className: process.env.KUBERNETES_INGRESS_CLASSNAME || "",
                 enabled: true,
                 hosts: [
@@ -196,43 +205,16 @@ export class App implements IApp{
                         ]
                     }
                 ],
-                tls: [],
+                tls: this.ingress?.tls || [],
             }
         }
 
-        if (app.ssl && this.ingress && app.domain) {
-            this.ingress.annotations = {
+        if ((app.ssl || this.ingress?.tls?.length > 0) && this.ingress && app.domain) {
+            const sslAnnotations = {
                 "cert-manager.io/cluster-issuer": "letsencrypt-prod",
                 "kubernetes.io/tls-acme": "true",
-                /* some cool headers i might want to add later
-                "kubernetes.io/ingress.class": process.env.KUBERNETES_INGRESS_CLASSNAME || "",
-                "nginx.ingress.kubernetes.io/ssl-redirect": "true",
-                "nginx.ingress.kubernetes.io/force-ssl-redirect": "true",
-                "nginx.ingress.kubernetes.io/secure-backends": "true",
-                "nginx.ingress.kubernetes.io/backend-protocol": "HTTPS",
-                "nginx.ingress.kubernetes.io/ssl-passthrough": "true",
-                "nginx.ingress.kubernetes.io/enable-cors": "true",
-                "nginx.ingress.kubernetes.io/cors-allow-origin": "*",
-                "nginx.ingress.kubernetes.io/cors-allow-methods": "GET, POST, PUT, DELETE, OPTIONS",
-                "nginx.ingress.kubernetes.io/cors-allow-headers": "Origin, X-Requested-With, Content-Type, Accept, Authorization",
-                "nginx.ingress.kubernetes.io/cors-allow-credentials": "true",
-                "nginx.ingress.kubernetes.io/configuration-snippet": "proxy_set_header X-Forwarded-Proto $scheme;",
-                "nginx.ingress.kubernetes.io/proxy-body-size": "0",
-                "nginx.ingress.kubernetes.io/proxy-read-timeout": "3600",
-                "nginx.ingress.kubernetes.io/proxy-send-timeout": "3600",
-                "nginx.ingress.kubernetes.io/proxy-connect-timeout": "3600",
-                "nginx.ingress.kubernetes.io/proxy-buffer-size": "128k",
-                "nginx.ingress.kubernetes.io/proxy-buffers": "4 256k",
-                "nginx.ingress.kubernetes.io/proxy-buffering": "on",
-                "nginx.ingress.kubernetes.io/proxy-request-buffering": "on",
-                "nginx.ingress.kubernetes.io/proxy-http-version": "1.1",
-                "nginx.ingress.kubernetes.io/proxy-ssl-verify": "off",
-                "nginx.ingress.kubernetes.io/proxy-ssl-verify-depth": "1",
-                "nginx.ingress.kubernetes.io/proxy-ssl-name": "localhost",
-                "nginx.ingress.kubernetes.io/proxy-ssl-server-name": "on",
-                "nginx.ingress.kubernetes.io/proxy-ssl-secret": "default/localhost-tls",
-                */
             }
+            this.ingress.annotations = {...this.ingress.annotations, ...sslAnnotations};
             this.ingress.tls = [
                 {
                     hosts: [
@@ -241,7 +223,19 @@ export class App implements IApp{
                     secretName: app.name + '-tls'
                 }
             ]
+        } else {
+            if (this.ingress?.annotations) {
+                if (this.ingress?.annotations && "cert-manager.io/cluster-issuer" in this.ingress.annotations) {
+                    delete this.ingress.annotations["cert-manager.io/cluster-issuer"];
+                }
+                if (this.ingress?.annotations && "kubernetes.io/tls-acme" in this.ingress.annotations) {
+                    delete this.ingress.annotations["kubernetes.io/tls-acme"];
+                }
+            }
         }
+        */
+
+        console.log("this.ingress.annotations", this.ingress?.annotations)
 
         this.nameOverride= "",
         this.nodeSelector= {},
