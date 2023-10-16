@@ -1,6 +1,6 @@
 import debug from 'debug';
 import * as crypto from "crypto"
-import { IWebhook, IRepository, IWebhookR, IDeploykeyR} from './types';
+import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import { Repo } from './repo';
 import gitUrlParse = require("git-url-parse");
 debug('app:kubero:gitea:api')
@@ -260,10 +260,7 @@ export class GiteaApi extends Repo {
     public async getBranches(gitrepo: string): Promise<string[]>{
         // https://try.gitea.io/api/swagger#/repository/repoListBranches
         let ret: string[] = [];
-
-        //let repo = "template-nodeapp"
-        //let owner = "gicara"
-
+        
         let {repo, owner} = this.parseRepo(gitrepo)
         try {
             const branches = await this.gitea.repos.repoListBranches(owner, repo)
@@ -272,6 +269,45 @@ export class GiteaApi extends Repo {
             }
         } catch (error) {
             console.log(error)
+        }
+
+        return ret;
+    }
+
+    public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
+
+        let ret: IPullrequest[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const pulls = await this.gitea.repos.repoListPullRequests(owner, repo, {
+                state: "open",
+                sort: "recentupdate"})
+            for (let pr of pulls.data) {
+                const p: IPullrequest = {
+                    html_url: pr.url,
+                    number: pr.number,
+                    title: pr.title,
+                    state: pr.state,
+                    //draft: pr.draft,
+                    user: {
+                        login: pr.user.login,
+                        avatar_url: pr.user.avatar_url,
+                    },
+                    created_at: pr.created_at,
+                    updated_at: pr.updated_at,
+                    closed_at: pr.closed_at,
+                    merged_at: pr.merged_at,
+                    //locked: pr.locked,
+                    branch: pr.head.ref,
+                    ssh_url: pr.head.repo.ssh_url,
+                }
+                ret.push(p)
+            }
+
+        } catch (error) {
+            debug.log(error)
         }
 
         return ret;

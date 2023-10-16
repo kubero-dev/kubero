@@ -1,6 +1,7 @@
 import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
+import { IPullrequest } from './git/types';
 import { App } from './modules/application';
 import { Buildpack } from './modules/config';
 import { GithubApi } from './git/github';
@@ -417,7 +418,7 @@ export class Kubero {
                 return this.gitlabApi.listRepos();
             case 'bitbucket':
                 return this.bitbucketApi.listRepos();
-            case 'ondev':
+            case 'onedev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -437,7 +438,7 @@ export class Kubero {
                 return this.gitlabApi.connectRepo(repoAddress);
             case 'bitbucket':
                 return this.bitbucketApi.connectRepo(repoAddress);
-            case 'ondev':
+            case 'onedev':
             default:
                 return {'error': 'unknown repo provider'};
         }
@@ -462,7 +463,7 @@ export class Kubero {
             case 'bitbucket':
                 webhook = this.bitbucketApi.getWebhook(event, delivery, body); // Bitbucket has no signature
                 break;
-            case 'ondev':
+            case 'onedev':
             default:
                 break;
         }
@@ -487,6 +488,8 @@ export class Kubero {
         let apps = await this.getAppsByBranch(webhook.branch);
 
         for (const app of apps) {
+
+            this._io.emit('updatedApps', "created");
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
             this.rebuildApp(app);
         }
@@ -498,12 +501,10 @@ export class Kubero {
         switch (webhook.action) {
             case 'opened':
             case 'reopened':
-                this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
-                this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
+                this.createPRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url, undefined); // "undefined" will create the app in all pipelines
                 break;
             case 'closed':
                 this.deletePRApp(webhook.branch, webhook.branch, webhook.repo.ssh_url)
-                this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+webhook.branch+' in '+ webhook.repo.ssh_url);
                 break;
             default:
                 console.log('webhook pull request action not handled: '+webhook.action);
@@ -535,12 +536,45 @@ export class Kubero {
             case 'bitbucket':
                 branches = this.bitbucketApi.getBranches(repo);
                 break;
-            case 'ondev':
+            case 'onedev':
             default:
                 break;
         }
 
         return branches
+    }
+
+
+    public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
+        //return this.git.listRepoBranches(repo, repoProvider);
+        let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
+            resolve([]);
+        });
+
+        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
+
+        switch (repoProvider) {
+            case 'github':
+                pulls = this.githubApi.getPullrequests(repo);
+                break;
+            case 'gitea':
+                pulls = this.giteaApi.getPullrequests(repo);
+                break;
+            case 'gogs':
+                pulls = this.gogsApi.getPullrequests(repo);
+                break;
+            case 'gitlab':
+                pulls = this.gitlabApi.getPullrequests(repo);
+                break;
+            case 'bitbucket':
+                pulls = this.bitbucketApi.getPullrequests(repo);
+                break;
+            case 'onedev':
+            default:
+                break;
+        }
+
+        return pulls
     }
 
     private async getAppsByBranch(branch: string) {
@@ -555,15 +589,21 @@ export class Kubero {
     }
 
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
-    private async createPRApp(branch: string, title: string, ssh_url: string) {
-        debug.log('createPRApp');
+    private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
+        debug.log('createPRApp: ', branch, title, ssh_url);
         let pipelines = await this.listPipelines() as IPipelineList;
 
         for (const pipeline of pipelines.items) {
+            console.log(pipeline.git.repository?.ssh_url, ssh_url);
+            console.log(pipeline.reviewapps);
 
             if (pipeline.reviewapps &&
                 pipeline.git.repository &&
                 pipeline.git.repository.ssh_url === ssh_url) {
+
+                if (pipelineName && pipelineName != pipeline.name) {
+                    continue;
+                }
 
                 debug.debug('found pipeline: '+pipeline.name);
                 let pipelaneName = pipeline.name
@@ -629,6 +669,7 @@ export class Kubero {
                 let app = new App(appOptions);
 
                 this.newApp(app);
+                this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+branch+' in '+ ssh_url);
             }
         }
     }
@@ -646,6 +687,7 @@ export class Kubero {
                 app.branch === branch) {
 
                     this.deleteApp(app.pipeline, app.phase, websaveTitle);
+                    this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+branch+' in '+ ssh_url);
             }
         }
     }
