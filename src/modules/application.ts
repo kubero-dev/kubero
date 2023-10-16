@@ -200,52 +200,6 @@ export class App implements IApp{
             }
         ]
 
-        /*
-        if (app.domain) {
-            this.ingress = {
-                annotations: app.ingress?.annotations || {},
-                className: process.env.KUBERNETES_INGRESS_CLASSNAME || "",
-                enabled: true,
-                hosts: [
-                    {
-                        host: app.domain,
-                        paths: [
-                            {path: "/" , pathType: 'ImplementationSpecific'}
-                        ]
-                    }
-                ],
-                tls: this.ingress?.tls || [],
-            }
-        }
-
-        if ((app.ssl || this.ingress?.tls?.length > 0) && this.ingress && app.domain) {
-            const sslAnnotations = {
-                "cert-manager.io/cluster-issuer": "letsencrypt-prod",
-                "kubernetes.io/tls-acme": "true",
-            }
-            this.ingress.annotations = {...this.ingress.annotations, ...sslAnnotations};
-            this.ingress.tls = [
-                {
-                    hosts: [
-                        app.domain
-                    ],
-                    secretName: app.name + '-tls'
-                }
-            ]
-        } else {
-            if (this.ingress?.annotations) {
-                if (this.ingress?.annotations && "cert-manager.io/cluster-issuer" in this.ingress.annotations) {
-                    delete this.ingress.annotations["cert-manager.io/cluster-issuer"];
-                }
-                if (this.ingress?.annotations && "kubernetes.io/tls-acme" in this.ingress.annotations) {
-                    delete this.ingress.annotations["kubernetes.io/tls-acme"];
-                }
-            }
-        }
-        */
-
-        console.log("this.ingress.annotations", this.ingress?.annotations)
-
         this.nameOverride= "",
         this.nodeSelector= {},
         this.podAnnotations= {},
