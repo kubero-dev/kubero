@@ -2,6 +2,7 @@ import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
 import { App } from './modules/application';
+import { Buildpack } from './modules/config';
 import { GithubApi } from './git/github';
 import { BitbucketApi } from './git/bitbucket';
 import { GiteaApi } from './git/gitea';
@@ -195,6 +196,10 @@ export class Kubero {
         });
 
         if (pipeline && pipeline.metadata && pipeline.metadata.resourceVersion) {
+            pipeline.spec.buildpack.fetch.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.fetch.securityContext);
+            pipeline.spec.buildpack.build.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.build.securityContext);
+            pipeline.spec.buildpack.run.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.run.securityContext);
+
             pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
 
             delete pipeline.spec.git.keys.priv
@@ -873,7 +878,13 @@ export class Kubero {
     }
 
     public getBuildpacks() {
-        return this.config.buildpacks;
+        let buildpackList: Buildpack[] = [];
+        for (const buildpack of this.config.buildpacks) {
+            const b = new Buildpack(buildpack);
+            buildpackList.push(b);
+        }
+
+        return buildpackList;
     }
 
     public getEvents(namespace: string) {

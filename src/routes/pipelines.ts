@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { Auth } from '../modules/auth';
-import { IgitLink } from '../types';
+import { IKubectlApp, IgitLink } from '../types';
 import { IApp, IPipeline } from '../types';
 import { App } from '../modules/application';
 import { Webhooks } from '@octokit/webhooks';
@@ -213,6 +213,8 @@ Router.get('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async funct
             }
     }] */
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
+
+    // TODO: the response should be sanitised the same way as in the the UI
     res.send(app.body);
 });
 
@@ -220,7 +222,13 @@ Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get app details'
     let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send(app.body);
+
+    const a = new App(app.body.spec as IApp);
+
+    res.send({
+        resourceVersion: app.body.metadata.resourceVersion,
+        spec: a
+    });
 });
 
 Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (req: Request, res: Response) {

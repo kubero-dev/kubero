@@ -23,39 +23,18 @@ export interface IApp {
         fetch: {
             repository: string,
             tag: string,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext?: ISecurityContext
         }
         build: {
             repository: string,
             tag: string,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext?: ISecurityContext
         }
         run: {
             repository: string,
             tag: string,
             readOnly?: boolean,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext: ISecurityContext
         }
     }
 
@@ -131,6 +110,18 @@ export interface IApp {
     },
     tolerations: [],
 */
+}
+
+export interface ISecurityContext {
+    readOnlyRootFilesystem: boolean;
+    allowPrivilegeEscalation: boolean;
+    runAsUser: number;
+    runAsGroup: number;
+    runAsNonRoot: boolean;
+    capabilities: {
+        drop: string[];
+        add: string[];
+    }
 }
 
 export interface IExtraVolume {
@@ -262,36 +253,18 @@ export interface IBuildpack {
     fetch: {
         repository: string;
         tag: string;
-        securityContext?: {
-            readOnlyRootFilesystem?: boolean;
-            allowPrivilegeEscalation?: boolean;
-            capabilities?: {
-                drop?: string[];
-            }
-        }
+        securityContext: ISecurityContext
     },
     build: {
         repository: string;
         tag: string;
-        securityContext?: {
-            readOnlyRootFilesystem?: boolean;
-            allowPrivilegeEscalation?: boolean;
-            capabilities?: {
-                drop?: string[];
-            }
-        }
+        securityContext: ISecurityContext
     },
     run: {
         repository: string;
         tag: string;
-        securityContext?: {
-            readOnlyRootFilesystem?: boolean;
-            allowPrivilegeEscalation?: boolean;
-            capabilities?: {
-                drop?: string[];
-            }
-        }
-    }
+        securityContext: ISecurityContext
+    },
     tag: string;
 }
 export interface IKuberoConfig {

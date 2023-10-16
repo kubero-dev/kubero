@@ -1,5 +1,6 @@
-import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize, IExtraVolume} from '../types';
+import { IApp, IKubectlMetadata, IKubectlApp, IGithubRepository, ICronjob, IPodSize, IExtraVolume, ISecurityContext} from '../types';
 import { IAddon } from './addons';
+import { Buildpack } from './config';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;
@@ -73,39 +74,18 @@ export class App implements IApp{
         fetch: {
             repository: string,
             tag: string,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext?: ISecurityContext
         }
         build: {
             repository: string,
             tag: string,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext?: ISecurityContext
         }
         run: {
             repository: string,
             tag: string,
             readOnly?: boolean,
-            securityContext?: {
-                readOnlyRootFilesystem?: boolean;
-                allowPrivilegeEscalation?: boolean;
-                capabilities?: {
-                    drop?: string[];
-                    add?: string[];
-                }
-            }
+            securityContext: ISecurityContext
         }
     };
 
@@ -192,6 +172,12 @@ export class App implements IApp{
             build: app.image.build,
             run: app.image.run,
         }
+
+        // function to set security context, required for backwards compatibility
+        // Added in v1.11.0
+        this.image.fetch.securityContext = Buildpack.SetSecurityContext(this.image.fetch.securityContext)
+        this.image.build.securityContext = Buildpack.SetSecurityContext(this.image.build.securityContext)
+        this.image.run.securityContext = Buildpack.SetSecurityContext(this.image.run.securityContext)
 
         this.vulnerabilityscan = app.vulnerabilityscan
 
