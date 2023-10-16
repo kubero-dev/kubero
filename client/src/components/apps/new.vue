@@ -1250,23 +1250,14 @@ export default {
       ],
 */
     }},
-    /*
-    computed: {
-        sslEnabled() {
-            if (this.ingress.tls.length > 0) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    },
-    */
     mounted() {
       this.loadPipeline();
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
-      this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
+      if (this.app != 'new') {
+        this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
+      }
 
       if (this.$route.query.template) {
         this.loadTemplate(this.$route.query.catalogId, this.$route.query.template);

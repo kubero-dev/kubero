@@ -189,7 +189,16 @@ export class App implements IApp{
         this.imagePullSecrets = []
 
         this.ingress = app.ingress
-        this.ingress.className = process.env.KUBERNETES_INGRESS_CLASSNAME || ""
+        this.ingress.className = process.env.KUBERNETES_INGRESS_CLASSNAME || "nginx"
+        this.ingress.enabled = true
+        this.ingress.hosts = [
+            {
+                host: app.domain || "",
+                paths: [
+                    {path: "/" , pathType: 'ImplementationSpecific'}
+                ]
+            }
+        ]
 
         /*
         if (app.domain) {
