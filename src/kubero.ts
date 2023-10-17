@@ -662,6 +662,23 @@ export class Kubero {
                             repository: "aquasec/trivy",
                             tag: "latest"
                         }
+                    },
+                    ingress: {
+                        annotations: {},
+                        className: process.env.INGRESS_CLASSNAME || 'nginx',
+                        enabled: true,
+                        hosts: [
+                            {
+                                host: websaveTitle+"."+pipeline.domain,
+                                paths: [
+                                    {
+                                        path: "/",
+                                        pathType: "Prefix"
+                                    }
+                                ]
+                            }
+                        ],
+                        tls: []
                     }
 
 

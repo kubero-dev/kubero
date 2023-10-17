@@ -25,19 +25,40 @@ buildpacks:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
         capabilities:
-          add:
-            - SYS_PTRACE
+          add: []
+          drop: []
     build:
       repository: node
       tag: latest
       command: "npm install"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     run:
       repository: node
       tag: latest
       command: "node index.js"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
   - name: PHP
     language: PHP
     fetch:
@@ -85,40 +106,121 @@ buildpacks:
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
+      securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            add: []
+            drop: []
     build:
       repository: klakegg/hugo
       tag: latest
       command: hugo -D
+      securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            add: []
+            drop: []
     run:
       repository: caddy
       tag: latest
       command: caddy file-server --listen :8080 --root /app/public
+      securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            add: []
+            drop: []
   - name: Ruby
     language: Ruby
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     build:
       repository: ruby
       tag: "2.7"
       command: "export GEM_HOME=/app/bundle; bundle install --jobs=4 --retry=3"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     run:
       repository: ruby
       tag: "2.7"
       command: "export GEM_HOME=/app/bundle; bundle exec ruby main.rb"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
   - name: Static
     language: HTML
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
       tag: main
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     build:
       repository: busybox
       tag: latest
       command: "echo 'Buildpack not required'"
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     run:
       repository: caddy
       tag: latest
       command: caddy file-server --listen :8080 --root /app
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
 podSizeList:
 - name: small
   description: 'Small (CPU: 0.25, Memory: 0.5Gi)'

@@ -348,7 +348,6 @@
                 v-model="security.vulnerabilityScans"
                 label="Enable Trivy vulnerabfility scans"
                 color="primary"
-                inset
             ></v-switch>
             </v-col>
             <v-col
@@ -359,7 +358,6 @@
                 v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
                 label="Read only root filesystem"
                 color="primary"
-                inset
             ></v-switch>
             </v-col>
           </v-row>
@@ -373,7 +371,6 @@
                 v-model="buildpack.run.securityContext.allowPrivilegeEscalation"
                 label="Allow privilege escalation"
                 color="primary"
-                inset
             ></v-switch>
             </v-col>
             <v-col
@@ -384,7 +381,6 @@
                 v-model="buildpack.run.securityContext.runAsNonRoot"
                 label="Run as non root"
                 color="primary"
-                inset
             ></v-switch>
             </v-col>
           </v-row>
@@ -444,6 +440,151 @@
             ></v-select>
             </v-col>
           </v-row>
+
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+
+      <!-- NETWORKING -->
+      <v-expansion-panel v-if="advanced">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Networking</v-expansion-panel-header>
+        <v-expansion-panel-content class="secondary">
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/whitelist-source-range']"
+                label="Whitelist Source Range"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/denylist-source-range']"
+                label="Denylist Source Range"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/force-ssl-redirect']"
+                label="Force SSL Redirect"
+                color="primary"
+                :disabled="!ssl"
+              ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/proxy-buffer-size']"
+                label="Proxy Buffer Size"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+
+
+      <!-- CORS -->
+      <v-expansion-panel v-if="advanced">
+        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Cors</v-expansion-panel-header>
+        <v-expansion-panel-content class="secondary">
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="12"
+            >
+              <v-switch
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                label="Enable CORS"
+                color="primary"
+                inset
+              ></v-switch>
+            </v-col>
+          </v-row>
+          
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-origin']"
+                label="CORS Allow Origin"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-headers']"
+                label="CORS Allow Headers"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-expose-headers']"
+                label="CORS Expose Headers"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-switch
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-credentials']"
+                label="CORS Allow Credentials"
+                color="primary"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-max-age']"
+                label="CORS Max Age"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-methods']"
+                label="CORS Allow Methods"
+                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+
 
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -1023,6 +1164,21 @@ export default {
         },
         */
       },
+      ingress: {
+        annotations: {
+          'nginx.ingress.kubernetes.io/whitelist-source-range': '',
+          'nginx.ingress.kubernetes.io/denylist-source-range': '',
+          'nginx.ingress.kubernetes.io/force-ssl-redirect': false,
+          'nginx.ingress.kubernetes.io/proxy-buffer-size': '4k',
+          'nginx.ingress.kubernetes.io/enable-cors': false,
+          'nginx.ingress.kubernetes.io/cors-allow-origin': '*',
+          'nginx.ingress.kubernetes.io/cors-allow-headers': 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization',
+          'nginx.ingress.kubernetes.io/cors-expose-headers': '*',
+          'nginx.ingress.kubernetes.io/cors-allow-credentials': true,
+          'nginx.ingress.kubernetes.io/cors-max-age': '1728000',
+          'nginx.ingress.kubernetes.io/cors-allow-methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS',
+        },
+      },
       capabilities: [
         'AUDIT_CONTROL',
         'AUDIT_READ',
@@ -1099,7 +1255,9 @@ export default {
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
-      this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
+      if (this.app != 'new') {
+        this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
+      }
 
       if (this.$route.query.template) {
         this.loadTemplate(this.$route.query.catalogId, this.$route.query.template);
@@ -1313,8 +1471,53 @@ export default {
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
             this.addons= response.data.spec.addons || [];
             this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
+            this.ingress = response.data.spec.ingress || {};
           });
         }
+      },
+      cleanupIngressAnnotations(){
+
+        if (this.ssl === false) {
+          delete this.ingress.annotations['cert-manager.io/cluster-issuer'];
+          delete this.ingress.annotations['kubernetes.io/tls-acme'];
+          this.ingress.tls = [];
+        } else {
+          this.ingress.annotations['cert-manager.io/cluster-issuer'] = 'letsencrypt-prod';
+          this.ingress.annotations['kubernetes.io/tls-acme'] = 'true';
+          this.ingress.tls = [
+            {
+              hosts: [this.domain],
+              secretName: this.appname+'-tls',
+            },
+          ];
+        }
+
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/whitelist-source-range'] == '') {
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/whitelist-source-range'];
+        }
+
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/denylist-source-range'] == '') {
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/denylist-source-range'];
+        }
+
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/force-ssl-redirect'] == false) {
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/force-ssl-redirect'];
+        }
+
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/proxy-buffer-size'] == '4k') {
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/proxy-buffer-size'];
+        }
+
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == false) {
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-origin'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-headers'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-expose-headers'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-credentials'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-max-age'];
+          delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-methods'];
+        }
+
       },
       updateApp() {
 
@@ -1328,6 +1531,8 @@ export default {
           const regex = /(git@|ssh:|http[s]?:\/\/)([\w\.]+)(:|\/)([\w\/\-~]+)(\.git)?/;
           this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(regex, "https://$2/$4$5");
         }
+
+        this.cleanupIngressAnnotations();
 
         let postdata = {
           resourceVersion: this.resourceVersion,
@@ -1373,7 +1578,7 @@ export default {
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
-
+          ingress: this.ingress,
         }
 /*
         if (this.security.vulnerabilityScans) {
@@ -1437,6 +1642,8 @@ export default {
           this.docker.tag = "v1"
         }
 
+        this.cleanupIngressAnnotations();
+
         let postdata = {
           pipeline: this.pipeline,
           buildpack: this.buildpack,
@@ -1482,6 +1689,7 @@ export default {
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
+          ingress: this.ingress,
         }
 
         if (postdata.image.run == undefined) {

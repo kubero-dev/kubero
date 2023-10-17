@@ -69,14 +69,27 @@ export interface IApp {
             tag: string
         }
     }
+    ingress: {
+        annotations: Object,
+        className: string,
+        enabled: boolean,
+        hosts: [
+            {
+                host: string
+                paths: [
+                    {path: string, pathType: string}
+                ]
+            }
+        ],
+        tls: [
+            {
+                hosts: string[],
+                secretName: string
+            }
+        ] | []
+    },
 /*
     affinity: {},
-    autoscaling: {
-        enabled: boolean,
-        maxReplicas: number,
-        minReplicas: number,
-        targetCPUUtilizationPercentage: number
-    },
     fullnameOverride: string,
     imagePullSecrets: [],
     ingress?: {
