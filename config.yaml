@@ -23,7 +23,7 @@ buildpacks:
     language: JavaScript
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000
@@ -42,7 +42,7 @@ buildpacks:
     language: PHP
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
     build:
       repository: composer
       tag: latest
@@ -58,7 +58,7 @@ buildpacks:
     language: Python
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
     build:
       repository: python
       tag: 3.10-buster
@@ -71,7 +71,7 @@ buildpacks:
     language: GoLang
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
     build:
       repository: golang
       tag: alpine
@@ -84,7 +84,16 @@ buildpacks:
     language: GoLang
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
+      securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          runAsNonRoot: false
+          readOnlyRootFilesystem: false
+          allowPrivilegeEscalation: false
+          capabilities:
+            add: []
+            drop: []
     build:
       repository: klakegg/hugo
       tag: latest
@@ -97,7 +106,16 @@ buildpacks:
     language: Ruby
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     build:
       repository: ruby
       tag: "2.7"
@@ -110,7 +128,16 @@ buildpacks:
     language: HTML
     fetch:
       repository: ghcr.io/kubero-dev/buildpacks/fetch
-      tag: main
+      tag: v1.2
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        runAsNonRoot: false
+        readOnlyRootFilesystem: false
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
     build:
       repository: busybox
       tag: latest
