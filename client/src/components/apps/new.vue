@@ -354,6 +354,24 @@
               cols="12"
               md="6"
             >
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-switch
+                v-model="buildpack.run.readOnlyAppStorage"
+                label="Read only app storage"
+                color="primary"
+            ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
               <v-switch
                 v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
                 label="Read only root filesystem"
@@ -1029,6 +1047,7 @@ export default {
       },
       image: {
         run: {
+          readOnlyAppStorage: true,
           command: '',
           securityContext: {
             readOnlyRootFilesystem: true,
