@@ -32,6 +32,7 @@ export interface IApp {
         }
         run: {
             repository: string,
+            readOnlyAppStorage?: boolean,
             tag: string,
             readOnly?: boolean,
             securityContext: ISecurityContext

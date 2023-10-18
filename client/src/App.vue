@@ -230,7 +230,6 @@ export default {
                 .get("/api/banner")
                 .then((result) => {
                     this.banner = result.data;
-                    this.app.name = "oooo"
                 })
                 .catch((err) => {
                     console.log(err);

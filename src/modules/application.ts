@@ -84,7 +84,7 @@ export class App implements IApp{
         run: {
             repository: string,
             tag: string,
-            readOnly?: boolean,
+            readOnlyAppStorage?: boolean,
             securityContext: ISecurityContext
         }
     };

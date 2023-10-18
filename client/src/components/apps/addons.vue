@@ -221,7 +221,7 @@ export default {
                         value: storageClass.name
                     });
                 }
-                console.log(this.availableStorageClasses);
+                //console.log(this.availableStorageClasses);
             })
             .catch(error => {
                 console.log(error);
@@ -237,7 +237,7 @@ export default {
             }
         },
         editAddon(addon){
-            console.log(addon);
+            //console.log(addon);
             this.mode = 'edit';
 
             // search in available addons for the selected addon
@@ -249,7 +249,7 @@ export default {
             }
 
             // set the formfields to the values from the yaml
-            console.log(this.selectedAddon.formfields);
+            //console.log(this.selectedAddon.formfields);
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
                 const fieldvalue = get(addon.resourceDefinitions, field, value.default)
                 //console.log(field, value, fieldvalue);
@@ -276,7 +276,7 @@ export default {
             });
         },
         addonChange(event) {
-            console.log(event);
+            //console.log(event);
             this.selectedAddon = event;
         },
         submitForm() {
@@ -309,7 +309,7 @@ export default {
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             };
 
-            console.log(addon);
+            //console.log(addon);
 
             if (this.mode === 'create') {
                 this.addAddon(addon);
