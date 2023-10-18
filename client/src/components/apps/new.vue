@@ -339,14 +339,14 @@
         <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-header>
         <v-expansion-panel-content class="secondary">
 
-          <v-row>
+          <v-row  v-if="deploymentstrategy == 'git'">
             <v-col
               cols="12"
               md="6"
             >
               <v-switch
-                v-model="security.vulnerabilityScans"
-                label="Enable Trivy vulnerabfility scans"
+                v-model="buildpack.run.readOnlyAppStorage"
+                label="Read only app volume"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -363,8 +363,8 @@
               md="6"
             >
               <v-switch
-                v-model="buildpack.run.readOnlyAppStorage"
-                label="Read only app storage"
+                v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
+                label="Read only root filesystem"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -373,8 +373,8 @@
               md="6"
             >
               <v-switch
-                v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
-                label="Read only root filesystem"
+                v-model="security.vulnerabilityScans"
+                label="Enable Trivy vulnerabfility scans"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -1324,6 +1324,11 @@ export default {
           if (this.cronjobs.length > 0) {
             this.panel.push(4)
           }
+
+          // Backward compability older v1.11.1
+          if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+            this.buildpack.run.readOnlyAppStorage = true;
+          }
         });
       },
       changeName(name) {
@@ -1361,6 +1366,11 @@ export default {
                 break;
             }
             */
+          }
+
+          // Backward compability older v1.11.1
+          if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+            this.buildpack.run.readOnlyAppStorage = true;
           }
 
         });
@@ -1491,6 +1501,11 @@ export default {
             this.addons= response.data.spec.addons || [];
             this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
             this.ingress = response.data.spec.ingress || {};
+
+            // Backward compability older v1.11.1
+            if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+              this.buildpack.run.readOnlyAppStorage = true;
+            }
           });
         }
       },
@@ -1599,34 +1614,7 @@ export default {
           security: this.security,
           ingress: this.ingress,
         }
-/*
-        if (this.security.vulnerabilityScans) {
-          postdata.vulnerabilityscan = {
-            enabled: true,
-            image: {
-              repository: "aquasec/trivy",
-              tag: "latest",
-            },
-          }
-        } else {
-          postdata.vulnerabilityscan = {
-            enabled: false,
-          }
-        }
-*/
 
-/*
-        postdata.image.run.securityContext = {
-            readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,
-            runAsNonRoot: this.security.runAsNonRoot,
-            runAsUser: parseInt(this.security.runAsUser),
-            runAsGroup: parseInt(this.security.runAsGroup),
-            capabilities: {
-              add: this.security.capabilities.add,
-              drop: this.security.capabilities.drop,
-            },
-        }
-*/
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
