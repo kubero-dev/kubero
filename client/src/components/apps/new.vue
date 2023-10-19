@@ -1166,6 +1166,8 @@ export default {
         */
 
       ],
+      letsecryptClusterIssuer: 'letsencrypt-prod',
+      // deprecated in version 1.11.0
       security: {
         vulnerabilityScans: false,
         allowPrivilegeEscalation: false,
@@ -1176,12 +1178,7 @@ export default {
         capabilities: {
           add: [],
           drop: [],
-        },
-        /*
-        seLinuxOptions: {
-          level: 's0:c0,c1',
-        },
-        */
+        }
       },
       ingress: {
         annotations: {
@@ -1274,6 +1271,7 @@ export default {
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
+      this.loadClusterIssuers();
       if (this.app != 'new') {
         this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
       }
@@ -1290,6 +1288,13 @@ export default {
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
+      loadClusterIssuers(){
+        axios.get('/api/config/clusterissuers').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.letsecryptClusterIssuer = response.data[i].id;
+          }
+        });
+      },
       loadTemplate(catalogId, template) {
         axios.get('/api/templates/'+catalogId+'/'+template).then(response => {
 
@@ -1325,7 +1330,7 @@ export default {
             this.panel.push(4)
           }
 
-          // Backward compability older v1.11.1
+          // Backward compatibility older v1.11.1
           if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
@@ -1368,7 +1373,7 @@ export default {
             */
           }
 
-          // Backward compability older v1.11.1
+          // Backward compatibility older v1.11.1
           if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
@@ -1502,7 +1507,7 @@ export default {
             this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
             this.ingress = response.data.spec.ingress || {};
 
-            // Backward compability older v1.11.1
+            // Backward compatibility older v1.11.1
             if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
               this.buildpack.run.readOnlyAppStorage = true;
             }
@@ -1516,7 +1521,7 @@ export default {
           delete this.ingress.annotations['kubernetes.io/tls-acme'];
           this.ingress.tls = [];
         } else {
-          this.ingress.annotations['cert-manager.io/cluster-issuer'] = 'letsencrypt-prod';
+          this.ingress.annotations['cert-manager.io/cluster-issuer'] = this.letsecryptClusterIssuer;
           this.ingress.annotations['kubernetes.io/tls-acme'] = 'true';
           this.ingress.tls = [
             {
@@ -1615,6 +1620,9 @@ export default {
           ingress: this.ingress,
         }
 
+        postdata.image.run.securityContext.runAsUser = parseInt(postdata.image.run.securityContext.runAsUser);
+        postdata.image.run.securityContext.runAsGroup = parseInt(postdata.image.run.securityContext.runAsGroup);
+
         axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
@@ -1702,6 +1710,10 @@ export default {
         if (postdata.image.run == undefined) {
           postdata.image.run = {};
         }
+
+        postdata.image.run.securityContext.runAsUser = parseInt(postdata.image.run.securityContext.runAsUser);
+        postdata.image.run.securityContext.runAsGroup = parseInt(postdata.image.run.securityContext.runAsGroup);
+
 /*
         postdata.image.run.securityContext = {
             readOnlyRootFilesystem: this.security.readOnlyRootFilesystem,

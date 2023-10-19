@@ -284,6 +284,7 @@ export interface IBuildpack {
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
+    clusterissuer: string;
     templates: {  // introduced v1.11.0
         enabled: boolean;
         catalogs: [

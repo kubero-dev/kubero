@@ -9,6 +9,7 @@ kubero:
     apps:
     pipelines:
       - janitor/ttl=5m
+clusterissuer: letsencrypt-prod
 templates:
   enabled: true
   catalogs:

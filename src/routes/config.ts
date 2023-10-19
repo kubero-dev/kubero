@@ -112,3 +112,12 @@ Router.get('/config/catalogs', authMiddleware, async function (req: Request, res
     // #swagger.summary = 'Get a list of available catalogs'
     res.send(await req.app.locals.kubero.getTemplateConfig());
 });
+
+Router.get('/config/clusterissuers', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of available clusterissuers'
+    const ret = {
+        id: await req.app.locals.kubero.getClusterIssuer() || 'letsencrypt-prod',
+    }
+    res.send(ret);
+});
