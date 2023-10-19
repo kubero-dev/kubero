@@ -1290,9 +1290,7 @@ export default {
     methods: {
       loadClusterIssuers(){
         axios.get('/api/config/clusterissuers').then(response => {
-          for (let i = 0; i < response.data.length; i++) {
-            this.letsecryptClusterIssuer = response.data[i].id;
-          }
+          this.letsecryptClusterIssuer = response.data[0].id;
         });
       },
       loadTemplate(catalogId, template) {
