@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  kubero:
+  kubero-dev:
     container_name: "kubero"
     build: .
     #command: ["tail", "-f", "/dev/null"] # for debugging
@@ -16,6 +16,7 @@ services:
       #- .:/app
       - ./kubeconfig-docker:/app/server/kubeconfig # change the port 6443 to the outside port of your local kind cluster control plane
       - ./config.yaml:/app/server/config.yaml
+
   gitea:
     image: gitea/gitea:latest
     container_name: gitea
@@ -30,6 +31,7 @@ services:
     ports:
       - "3000:3000"
       - "222:22"
+
   gitlab:
     image: 'gitlab/gitlab-ee:latest'
     restart: always
@@ -63,3 +65,18 @@ services:
     ports:
       - "3000:3000"
       - "22:22"
+
+  onedev:
+    image: 1dev/server:latest
+    container_name: onedev
+    environment:
+      - USER_UID=1000
+      - USER_GID=1000
+    restart: always
+    volumes:
+      - ./.dockerdata/onedev:/opt/onedev
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "6610:6610"
+      - "6611:6611"

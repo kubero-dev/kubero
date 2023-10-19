@@ -1,10 +1,13 @@
 version: "3"
+include:
+  - docker-compose.dev.yaml
 services:
   # Kubero usually runs in a Kubernetes cluster in the kubero namespace
   # If you want to run it locally, you can use kind to create a local Kubernetes cluster
   kubero:
     container_name: "kubero-ui"
     image: ghcr.io/kubero-dev/kubero/kubero:latest
+    build: .
     env_file:
       # copy the .env.template file to .env and change the values to your needs
       - .env

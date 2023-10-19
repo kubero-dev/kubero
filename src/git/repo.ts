@@ -116,6 +116,7 @@ export abstract class Repo {
     protected abstract getRepository(gitrepo: string): Promise<IRepository>;
     protected abstract addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
     protected abstract getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
+    protected abstract listRepos(): Promise<string[]>;
     protected abstract getBranches(repo: string): Promise<string[]> | undefined;
     protected abstract getPullrequests(repo: string): Promise<IPullrequest[]> | undefined;
 }
