@@ -440,6 +440,7 @@
               hint="Select one or more"
               persistent-hint
               chips
+              class="capability"
             ></v-select>
             </v-col>
             <v-col
@@ -455,6 +456,7 @@
               hint="Select one or more"
               persistent-hint
               chips
+              class="capability"
             ></v-select>
             </v-col>
           </v-row>
@@ -1814,7 +1816,9 @@ export default {
 .v-expansion-panel-header {
     background: cardBackground;
 }
-.theme--light.v-chip:not(.v-chip--active) {
+
+.capability .theme--light.v-chip:not(.v-chip--active) {
     background: #BBB;
 }
+
 </style>

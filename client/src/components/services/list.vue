@@ -226,4 +226,14 @@ pre {
     display: block;
     word-wrap: break-word;
 }
+
+
+.theme--light.v-chip:not(.v-chip--active) {
+    background: #e6e6e6;
+}
+
+.theme--dark.v-chip:not(.v-chip--active) {
+    background: #2c2c2c;
+}
+
 </style>

@@ -307,4 +307,13 @@ export default {
     background-color: gray !important;
     color: whitesmoke!important;
 }
+
+.theme--light.v-chip:not(.v-chip--active) {
+    background: #e6e6e6;
+}
+
+.theme--dark.v-chip:not(.v-chip--active) {
+    background: #2c2c2c;
+}
+
 </style>
