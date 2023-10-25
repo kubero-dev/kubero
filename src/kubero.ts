@@ -196,12 +196,16 @@ export class Kubero {
             debug.log(error);
         });
 
-        if (pipeline && pipeline.metadata && pipeline.metadata.resourceVersion) {
-            pipeline.spec.buildpack.fetch.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.fetch.securityContext);
-            pipeline.spec.buildpack.build.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.build.securityContext);
-            pipeline.spec.buildpack.run.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.run.securityContext);
+        if (pipeline) {
+            if (pipeline.spec.buildpack) {
+                pipeline.spec.buildpack.fetch.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.fetch.securityContext);
+                pipeline.spec.buildpack.build.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.build.securityContext);
+                pipeline.spec.buildpack.run.securityContext = Buildpack.SetSecurityContext(pipeline.spec.buildpack.run.securityContext);
+            }
 
-            pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
+            if (pipeline.metadata && pipeline.metadata.resourceVersion) {
+                pipeline.spec.resourceVersion = pipeline.metadata.resourceVersion;
+            }
 
             delete pipeline.spec.git.keys.priv
             delete pipeline.spec.git.keys.pub
