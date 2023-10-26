@@ -13,7 +13,9 @@ spec:
   envVars: []
   cronjobs: []
   extraVolumes: 
-  - mountPath: /root/.opengist
+  - accessModes:
+    - ReadWriteOnce
+    mountPath: /root/.opengist
     name: opengist-volume
     size: 1Gi
     storageClass: standard
