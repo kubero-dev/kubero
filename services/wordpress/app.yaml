@@ -48,7 +48,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /bitnami/wordpress
     name: wordpress-data

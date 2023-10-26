@@ -20,7 +20,7 @@ spec:
   cronjobs: []
   extraVolumes: 
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     mountPath: /ngrams
     name: languagetool-ngrams
     size: 1Gi

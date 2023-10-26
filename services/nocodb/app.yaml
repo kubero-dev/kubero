@@ -17,7 +17,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /usr/app/data/
     name: nocodb-data-volume

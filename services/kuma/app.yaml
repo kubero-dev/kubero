@@ -14,7 +14,7 @@ spec:
   cronjobs: []
   extraVolumes:
   - accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
     emptyDir: false
     mountPath: /app/data
     name: kuma-data

@@ -39,6 +39,8 @@ spec:
     mountPath: /pds
     name: bsk-data
     size: 40Gi
+    accessModes:
+    - ReadWriteOnce
   web:
     replicaCount: 1
   worker:
