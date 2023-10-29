@@ -48,6 +48,14 @@ export class KuberoMongoDB extends Plugin implements IPlugin {
             default: 'default',
             required: true
         },
+        'KuberoMongoDB.spec.mongodb.auth.databases[0]':{
+            type: 'text',
+            label: 'Database*',
+            name: 'spec.mongodb.auth.databases[0]',
+            default: '',
+            required: true,
+            description: 'Database Name'
+        },
         'KuberoMongoDB.spec.mongodb.auth.rootPassword':{
             type: 'text',
             label: 'Root Password*',
