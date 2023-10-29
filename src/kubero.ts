@@ -889,7 +889,7 @@ export class Kubero {
         }
         
         // sleep for 1 second to wait for all logs to be collected
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 300));
 
         // split loglines into array
         const loglinesArray = logs.split('\n').reverse();

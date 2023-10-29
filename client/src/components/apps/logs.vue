@@ -1,6 +1,6 @@
 <template>
-    <div style="height: 90%;">
-    <v-tabs>
+    <div style="height: 95%;">
+    <v-tabs class="console-bar">
         <template>
             <v-tab @click="getLogHistory('web')">web</v-tab>
             <v-tab @click="getLogHistory('builder')">build</v-tab>
@@ -9,7 +9,7 @@
     </v-tabs>
     <div class="console" id="console">
         <div v-for="line in loglines" :key="line.id">
-        {{ new Date(line.time).toISOString()}}<span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
+        {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
         {{ line.log }}
         </div>
     </div>
@@ -94,6 +94,15 @@ a:link { text-decoration: none;}
 .v-icon.v-icon {
     vertical-align:inherit;
 }
+
+.theme--light.v-tabs.console-bar > .v-tabs-bar .v-tab:not(.v-tab--active) {
+    color: #9F9F9F;
+}
+
+.theme--light.v-tabs.console-bar > .v-tabs-bar {
+    background-color: #1E1E1E; /*#444*/
+}
+
 .console {
     height: 100%;
     overflow-x: scroll;
