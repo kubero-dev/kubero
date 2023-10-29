@@ -1,9 +1,18 @@
 <template>
-    <div class="console" id="console" style="height: 100%;">
+    <div style="height: 90%;">
+    <v-tabs>
+        <template>
+            <v-tab @click="getLogHistory('web')">web</v-tab>
+            <v-tab @click="getLogHistory('builder')">build</v-tab>
+            <v-tab @click="getLogHistory('fetcher')">fetch</v-tab>
+        </template>
+    </v-tabs>
+    <div class="console" id="console">
         <div v-for="line in loglines" :key="line.id">
         {{ new Date(line.time).toISOString()}}<span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
         {{ line.log }}
         </div>
+    </div>
     </div>
 </template>
 
@@ -16,7 +25,7 @@ export default {
         },
     },
     mounted() {
-        this.getLogHistory()
+        this.getLogHistory('web')
         this.socketJoin()
         this.startLogs()
     },
@@ -70,8 +79,8 @@ export default {
                 console.log("logs started");
             });
         },
-        getLogHistory() {
-            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}/history`).then((response) => {
+        getLogHistory(container) {
+            axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}/${container}/history`).then((response) => {
                 this.loglines = response.data;
             });
         },
