@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, IPodSize, IKuberoConfig} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig} from './types';
 import { IPullrequest } from './git/types';
 import { App } from './modules/application';
 import { Buildpack } from './modules/config';
@@ -842,9 +842,36 @@ export class Kubero {
         }
     }
 
-    public async getLogsHistory(pipelineName: string, phaseName: string, appName: string) {
+    public async getLogsHistory(pipelineName: string, phaseName: string, appName: string, container: string) {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
+
+        let loglines: ILoglines[] = [];
+        if (contextName) {
+            const pods = await this.kubectl.getPods(namespace, contextName);
+            for (const pod of pods) {
+
+                if (pod.metadata?.name?.startsWith(appName)) {
+                    if (container == 'web') {
+                        for (const container of pod.spec?.containers || []) {
+                            const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
+                            loglines = loglines.concat(ll);
+                        }
+                    } else if (container == 'builder' || container == 'fetcher') {
+                        const ll = await this.fetchLogs(namespace, pod.metadata.name, "kuberoapp-"+container, pipelineName, phaseName, appName)
+                        loglines = loglines.concat(ll);
+                    } else {
+                        // leace the loglines empty
+                        console.log('unknown container: '+container);
+                    }
+                }
+            }
+        }
+        return loglines;
+    }
+
+    private async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
+        let loglines: ILoglines[] = [];
 
         const logStream = new Stream.PassThrough();
         let logs: String = '';
@@ -853,52 +880,38 @@ export class Kubero {
             logs += chunk.toString();
         });
 
-        let loglines: any[] = [];
-        if (contextName) {
-            const pods = await this.kubectl.getPods(namespace, contextName);
-            for (const pod of pods) {
+        console.log('getting logs for '+podName+' '+containerName);
+        try {
+            await this.kubectl.log.log(namespace, podName, containerName, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
+        } catch (error) {
+            console.log("error getting logs for "+podName+" "+containerName);
+            return [];
+        }
+        
+        // sleep for 1 second to wait for all logs to be collected
+        await new Promise(r => setTimeout(r, 1000));
 
-                if (pod.metadata?.name?.startsWith(appName)) {
-                    for (const container of pod.spec?.containers || []) {
-                        console.log('getting logs for '+pod.metadata.name+' '+container.name);
-                        try {
-                            await this.kubectl.log.log(namespace, pod.metadata.name, container.name, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
-                        } catch (error) {
-                            console.log("error getting logs for "+pod.metadata.name+" "+container.name);
-                            return loglines;
-                        }
-                        
-                        
-                        // sleep for 1 second to wait for all logs to be collected
-                        await new Promise(r => setTimeout(r, 1000));
-
-                        // split loglines into array
-                        const loglinesArray = logs.split('\n').reverse();
-                        for (const logline of loglinesArray) {
-                            if (logline.length > 0) {
-                                // split after first whitespace
-                                const loglineArray = logline.split(/(?<=^\S+)\s/);
-                                const loglineDate = new Date(loglineArray[0]);
-                                const loglineText = loglineArray[1];
-
-                            
-
-                                loglines.push({
-                                    id: uuidv4(),
-                                    time: loglineDate.getTime(),
-                                    pipeline: pipelineName,
-                                    phase: phaseName,
-                                    app: appName,
-                                    pod: pod.metadata.name,
-                                    podID: pod.metadata.name.split('-')[3]+'-'+pod.metadata.name.split('-')[4],
-                                    container: container.name,
-                                    color: this.logcolor(pod.metadata.name),
-                                    log: loglineText
-                                });
-                            }
-                        }
-                    }
-                }
+        // split loglines into array
+        const loglinesArray = logs.split('\n').reverse();
+        for (const logline of loglinesArray) {
+            if (logline.length > 0) {
+                // split after first whitespace
+                const loglineArray = logline.split(/(?<=^\S+)\s/);
+                const loglineDate = new Date(loglineArray[0]);
+                const loglineText = loglineArray[1];
+            
+                loglines.push({
+                    id: uuidv4(),
+                    time: loglineDate.getTime(),
+                    pipeline: pipelineName,
+                    phase: phaseName,
+                    app: appName,
+                    pod: podName,
+                    podID: podName.split('-')[3]+'-'+podName.split('-')[4],
+                    container: containerName,
+                    color: this.logcolor(podName),
+                    log: loglineText
+                });
             }
         }
 
