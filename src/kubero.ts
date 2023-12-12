@@ -1194,4 +1194,18 @@ export class Kubero {
     public getClusterIssuer() {
         return this.config.clusterissuer;
     }
+
+    public deployApp(pipelineName: string, phaseName: string, appName: string, tag: string) {
+        debug.debug('deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.deployApp(namespace, appName, tag);
+            this._io.emit('updatedApps', "deplyment_started");
+        }
+    }
+
 }

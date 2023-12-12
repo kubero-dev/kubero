@@ -506,6 +506,11 @@ export default {
           }
         }
 
+        // Bugfix: select a buildpack if none is selected, since it contains basic seciruty settings
+        if (this.buildpack === undefined) {
+          this.buildpack = this.buildpackList[0].value;
+        }
+
         axios.post(`/api/pipelines`, {
           pipelineName: this.pipelineName,
           domain: this.domain,

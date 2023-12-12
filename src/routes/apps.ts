@@ -317,3 +317,20 @@ Router.get('/apps', authMiddleware, async function (req: Request, res: Response)
     // #swagger.summary = 'Get a list of running apps'
     res.send(await req.app.locals.kubero.getAppStateList());
 });
+
+// Used GET instead of POST to make it easier to use from the CLI
+// Not used in the UI yet
+Router.get('/cli/apps/:pipeline/:phase/:app/deploy/:tag', bearerMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['Apps']
+    // #swagger.summary = 'Deploy a prebuilt app tag'
+    /* #swagger.security = [{
+            "bearerAuth": {
+                "type": 'http',
+                "scheme": 'bearer',
+                "bearerFormat": 'JWT',
+            }
+    }] */
+
+    req.app.locals.kubero.deployApp(req.params.pipeline, req.params.phase, req.params.app, req.params.tag);
+    res.send("deployed");
+});

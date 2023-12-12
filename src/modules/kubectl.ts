@@ -28,6 +28,7 @@ import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKu
 import { App, KubectlApp } from './application';
 import { KubectlPipeline } from './pipeline';
 import { IAddon, IAddonMinimal } from './addons';
+import { version } from 'os';
 
 
 export class Kubectl {
@@ -908,5 +909,50 @@ export class Kubectl {
             console.log('ERROR creating build job');
         }
     }
+
+    public async deployAppDisabled(namespace: string, app: string, tag: string): Promise<any> {
+
+        console.log("deploy app: " + app, ",namespace: " + namespace, ",tag: " + tag);
+    }
+
+    public async deployApp(namespace: string, appName: string, tag: string) {
+
+        let deploymentName = appName+'-kuberoapp-web';
+        console.log("deploy app: " + appName, ",namespace: " + namespace, ",tag: " + tag, ",deploymentName: " + deploymentName);
+
+        // format : https://jsonpatch.com/
+        const patch = [
+            {
+              op: 'replace',
+              path: '/spec/image/tag',
+              value: tag,
+            },
+          ];
+
+        const apiVersion = "v1alpha1"
+        const group = "application.kubero.dev"
+        const plural = "kuberoapps"
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        this.customObjectsApi.patchNamespacedCustomObject(
+            group,
+            apiVersion,
+            namespace,
+            plural,
+            appName,
+            patch,
+            undefined,
+            undefined,
+            undefined,
+            options
+        ).then(() => {
+            debug.log(`Deployment ${deploymentName} in Pipeline ${namespace} updated`);
+        }).catch(error => {
+            if (error.body.message) {
+                debug.log('ERROR: '+error.body.message);
+            }
+            debug.log('ERROR: '+error);
+        });
+    };
 
 }

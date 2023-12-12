@@ -1331,7 +1331,7 @@ export default {
           }
 
           // Backward compatibility older v1.11.1
-          if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+          if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
         });
@@ -1374,7 +1374,7 @@ export default {
           }
 
           // Backward compatibility older v1.11.1
-          if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+          if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
 
@@ -1508,7 +1508,7 @@ export default {
             this.ingress = response.data.spec.ingress || {};
 
             // Backward compatibility older v1.11.1
-            if (this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
+            if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
               this.buildpack.run.readOnlyAppStorage = true;
             }
           });
