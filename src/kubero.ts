@@ -243,7 +243,7 @@ export class Kubero {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not creating app');
             return;
         }
 
