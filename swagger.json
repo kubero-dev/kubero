@@ -285,6 +285,186 @@
       }
     },
     "/pipelines/{pipeline}/{phase}/{app}": {
+      "put": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Update an app in a specific pipeline",
+        "description": "",
+        "parameters": [
+          {
+            "name": "pipeline",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "phase",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "app",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "buildpack": {
+                  "example": "any"
+                },
+                "deploymentstrategy": {
+                  "example": "any"
+                },
+                "buildstrategy": {
+                  "example": "any"
+                },
+                "gitrepo": {
+                  "example": "any"
+                },
+                "branch": {
+                  "example": "any"
+                },
+                "autodeploy": {
+                  "example": "any"
+                },
+                "domain": {
+                  "example": "any"
+                },
+                "ssl": {
+                  "example": "any"
+                },
+                "podsize": {
+                  "example": "any"
+                },
+                "autoscale": {
+                  "example": "any"
+                },
+                "extraVolumes": {
+                  "example": "any"
+                },
+                "envvars": {
+                  "example": "any"
+                },
+                "image": {
+                  "example": "any"
+                },
+                "ingress": {
+                  "example": "any"
+                },
+                "web": {
+                  "example": "any"
+                },
+                "worker": {
+                  "example": "any"
+                },
+                "cronjobs": {
+                  "example": "any"
+                },
+                "addons": {
+                  "example": "any"
+                },
+                "security": {
+                  "example": "any"
+                },
+                "resourceVersion": {
+                  "example": "any"
+                }
+              }
+            },
+            "description": "App object",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "buildpack": {
+                    "example": "any"
+                  },
+                  "deploymentstrategy": {
+                    "example": "any"
+                  },
+                  "buildstrategy": {
+                    "example": "any"
+                  },
+                  "gitrepo": {
+                    "example": "any"
+                  },
+                  "branch": {
+                    "example": "any"
+                  },
+                  "autodeploy": {
+                    "example": "any"
+                  },
+                  "domain": {
+                    "example": "any"
+                  },
+                  "ssl": {
+                    "example": "any"
+                  },
+                  "podsize": {
+                    "example": "any"
+                  },
+                  "autoscale": {
+                    "example": "any"
+                  },
+                  "extraVolumes": {
+                    "example": "any"
+                  },
+                  "envvars": {
+                    "example": "any"
+                  },
+                  "image": {
+                    "example": "any"
+                  },
+                  "ingress": {
+                    "example": "any"
+                  },
+                  "web": {
+                    "example": "any"
+                  },
+                  "worker": {
+                    "example": "any"
+                  },
+                  "cronjobs": {
+                    "example": "any"
+                  },
+                  "addons": {
+                    "example": "any"
+                  },
+                  "security": {
+                    "example": "any"
+                  },
+                  "resourceVersion": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "delete": {
         "tags": [
           "UI"
@@ -639,6 +819,34 @@
         }
       }
     },
+    "/config/catalogs": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get a list of available catalogs",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/config/clusterissuers": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get a list of available clusterissuers",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/logs/{pipeline}/{phase}/{app}": {
       "get": {
         "tags": [
@@ -682,7 +890,7 @@
         }
       }
     },
-    "/logs/{pipeline}/{phase}/{app}/history": {
+    "/logs/{pipeline}/{phase}/{app}/{container}/history": {
       "get": {
         "tags": [
           "UI"
@@ -716,6 +924,14 @@
               "type": "string"
             },
             "description": "App name"
+          },
+          {
+            "name": "container",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -1487,6 +1703,77 @@
         }
       }
     },
+    "/repo/{repoprovider}/{gitrepob64}/pullrequests": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get a list of available Pull requests",
+        "description": "",
+        "parameters": [
+          {
+            "name": "repoprovider",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "github",
+                "gitlab",
+                "bitbucket",
+                "gitea",
+                "gogs"
+              ]
+            },
+            "description": "Repository provider"
+          },
+          {
+            "name": "gitrepob64",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Base64 encoded git repository url"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/repo/pullrequest/start": {
+      "post": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "branch": {
+                    "example": "any"
+                  },
+                  "ssh_url": {
+                    "example": "any"
+                  },
+                  "pipelineName": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/cli/settings": {
       "get": {
         "tags": [
@@ -1538,30 +1825,24 @@
         }
       }
     },
-    "/services": {
+    "/templates/{catalogId}/{template}": {
       "get": {
         "tags": [
           "UI"
         ],
-        "summary": "Get all services",
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
-          }
-        }
-      }
-    },
-    "/services/{name}": {
-      "get": {
-        "tags": [
-          "UI"
-        ],
-        "summary": "Get a specific service",
+        "summary": "Get a specific template",
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "catalogId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "template",
             "in": "path",
             "required": true,
             "schema": {
@@ -1575,6 +1856,30 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/templates/{catalogId}": {
+      "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get a specific template",
+        "description": "",
+        "parameters": [
+          {
+            "name": "catalogId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": ""
           }
         }
       }
