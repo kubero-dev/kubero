@@ -718,8 +718,8 @@ export class Kubero {
         try {
             let config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
 
-            if (!config.clusterissuer) {
-                config.clusterissuer = 'letsencrypt-prod';
+            if (!config.kubero.clusterissuer) {
+                config.kubero.clusterissuer = 'letsencrypt-prod';
             }
 
             // backward compatibility. Add default if template does not exist
@@ -1192,6 +1192,6 @@ export class Kubero {
     }
 
     public getClusterIssuer() {
-        return this.config.clusterissuer;
+        return this.config.kubero.clusterissuer;
     }
 }

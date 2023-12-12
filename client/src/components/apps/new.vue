@@ -1168,7 +1168,7 @@ export default {
         */
 
       ],
-      letsecryptClusterIssuer: 'letsencrypt-prod',
+      clusterissuer: 'letsencrypt-prod',
       // deprecated in version 1.11.0
       security: {
         vulnerabilityScans: false,
@@ -1292,7 +1292,7 @@ export default {
     methods: {
       loadClusterIssuers(){
         axios.get('/api/config/clusterissuers').then(response => {
-          this.letsecryptClusterIssuer = response.data.id;
+          this.clusterissuer = response.data.id;
         });
       },
       loadTemplate(catalogId, template) {
@@ -1521,7 +1521,7 @@ export default {
           delete this.ingress.annotations['kubernetes.io/tls-acme'];
           this.ingress.tls = [];
         } else {
-          this.ingress.annotations['cert-manager.io/cluster-issuer'] = this.letsecryptClusterIssuer;
+          this.ingress.annotations['cert-manager.io/cluster-issuer'] = this.clusterissuer;
           this.ingress.annotations['kubernetes.io/tls-acme'] = 'true';
           this.ingress.tls = [
             {
