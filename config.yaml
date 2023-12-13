@@ -1,4 +1,5 @@
 kubero:
+  clusterissuer: letsencrypt-prod
   readonly: false
   banner:
     show: false
