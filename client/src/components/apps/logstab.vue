@@ -18,7 +18,7 @@
         </v-row>
         <v-row style="height: 1100px">
             <v-col cols="12" sm="12" md="12">
-                <logs :pipeline=pipeline :phase=phase :app=app></logs>
+                <logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy></logs>
             </v-col>
         </v-row>
 
@@ -39,7 +39,11 @@ export default {
       app: {
         type: String,
         default: "new"
-      }
+      },
+      deploymentstrategy: {
+        type: String,
+        default: "docker"
+      },
     },
     data: () => ({
     }),

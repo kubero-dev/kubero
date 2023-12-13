@@ -19,7 +19,7 @@
         
         <v-tabs-items v-model="tab">
             <v-tab-item transition="false" class="background">
-                <logs :pipeline="pipeline" :phase="phase" :app="app"/>
+                <logs :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
             </v-tab-item>
             <v-tab-item transition="false" class="background">
                 <events :pipeline="pipeline" :phase="phase" :app="app"/>
@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
     data () {
         return {
@@ -58,8 +59,41 @@ export default {
                     href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 }
             ],
+            pipelineData: {},
+            appData: {},
         }
     },
+    mounted() {
+        this.loadPipeline();
+        this.loadApp();
+        this.socketJoin();
+    },
+    beforeDestroy() {
+        this.socketLeave();
+    },
+    methods: {
+        socketLeave() {
+            this.$socket.client.emit("leave", {
+                room: `${this.pipeline}-${this.phase}-${this.app}`,
+            });
+        },
+        socketJoin() {
+            this.$socket.client.emit("join", {
+                room: `${this.pipeline}-${this.phase}-${this.app}`,
+            });
+        },
+        loadPipeline() {
+            axios.get('/api/pipelines/'+this.pipeline).then(response => {
+                this.pipelineData = response.data;
+            });
+        },
+        loadApp() {
+            axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
+                this.appData = response.data;
+            });
+        },
+    },
+
     components: {
         events : () => import('./events.vue'),
         logs : () => import('./logstab.vue'),

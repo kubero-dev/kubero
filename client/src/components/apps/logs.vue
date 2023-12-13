@@ -2,9 +2,9 @@
     <div style="height: 95%;">
     <v-tabs class="console-bar">
         <template>
-            <v-tab @click="getLogHistory('web')">web</v-tab>
-            <v-tab @click="getLogHistory('builder')">build</v-tab>
-            <v-tab @click="getLogHistory('fetcher')">fetch</v-tab>
+            <v-tab @click="getLogHistory('web')">run</v-tab>
+            <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('builder')">build</v-tab>
+            <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('fetcher')">fetch</v-tab>
         </template>
     </v-tabs>
     <div class="console" id="console">
@@ -44,7 +44,11 @@ export default {
       app: {
         type: String,
         default: "new"
-      }
+      },
+      deploymentstrategy: {
+        type: String,
+        default: "docker"
+      },
     },
     data: () => ({
         loglines: [
