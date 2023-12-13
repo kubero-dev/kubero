@@ -14,6 +14,7 @@ import { KuberoElasticsearch } from '../addons/kuberoElasticsearch';
 import { KuberoCouchDB } from '../addons/kuberoCouchDB';
 import { KuberoKafka } from '../addons/kuberoKafka';
 import { KuberoMail } from '../addons/kuberoMail';
+import { KuberoRabbitMQ } from '../addons/kuberoRabbitMQ';
 import { MongoDB } from '../addons/mongoDB';
 import { Minio } from '../addons/minio';
 import { IPlugin } from '../addons/plugin';
@@ -101,6 +102,9 @@ export class Addons {
 
         const kuberoMail = new KuberoMail(this.CRDList)
         this.addonsList.push(kuberoMail)
+
+        const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList)
+        this.addonsList.push(kuberoRabbitMQ)
 
         const postgresCluster = new PostgresCluster(this.CRDList)
         this.addonsList.push(postgresCluster)
