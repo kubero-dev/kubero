@@ -79,6 +79,25 @@
     </v-card-text>
     <v-divider></v-divider>
 
+    <span v-if="this.app.addons.length > 0">
+    <v-card-text>
+      <v-avatar
+        rounded
+        color="rgba(133, 96, 169, .2)"
+        v-for="addon in this.app.addons" :key="addon.id">
+        
+        <img
+          :src="addon.icon"
+          :alt="addon.displayName"
+
+          style="padding: 10px"
+        >
+      </v-avatar>
+    </v-card-text>
+    <v-divider></v-divider>
+    </span>
+
+
     <v-card-actions class="ml-2">
         <v-btn
             title="Restart App"
