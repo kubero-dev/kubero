@@ -9,6 +9,7 @@ import { Redis } from '../addons/redis';
 import { KuberoMysql } from '../addons/kuberoMysql';
 import { KuberoRedis } from '../addons/kuberoRedis';
 import { KuberoPostgresql } from '../addons/kuberoPostgresql';
+import { KuberoMemcached } from '../addons/kuberoMemcached';
 import { KuberoMongoDB } from '../addons/kuberoMongoDB';
 import { KuberoElasticsearch } from '../addons/kuberoElasticsearch';
 import { KuberoCouchDB } from '../addons/kuberoCouchDB';
@@ -89,6 +90,9 @@ export class Addons {
 
         const kuberoMongoDB = new KuberoMongoDB(this.CRDList)
         this.addonsList.push(kuberoMongoDB)
+
+        const kuberoMemcached = new KuberoMemcached(this.CRDList)
+        this.addonsList.push(kuberoMemcached)
 
         const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList)
         this.addonsList.push(kuberoElasticsearch)

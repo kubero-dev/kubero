@@ -3,7 +3,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class KuberoPostgresql extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
-    public displayName = 'Kubero Postgresql'
+    public displayName = 'Postgresql'
     public icon = '/img/addons/postgresql.png'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'

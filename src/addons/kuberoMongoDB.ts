@@ -3,7 +3,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class KuberoMongoDB extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
-    public displayName = 'Kubero MongoDB'
+    public displayName = 'MongoDB'
     public icon = '/img/addons/MongoDB.png'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'
@@ -42,10 +42,10 @@ export class KuberoMongoDB extends Plugin implements IPlugin {
         },
         'KuberoMongoDB.spec.mongodb.architecture':{
             type: 'select',
-            label: 'Storage Class',
+            label: 'Architecture*',
             options: ['standalone', 'replicaset'],
             name: 'spec.mongodb.architecture',
-            default: 'default',
+            default: 'standalone',
             required: true
         },
         'KuberoMongoDB.spec.mongodb.auth.databases[0]':{

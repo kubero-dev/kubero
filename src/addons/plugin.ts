@@ -113,7 +113,7 @@ export abstract class Plugin {
 
                         this.resourceDefinitions[crd.spec.names.kind] = exampleCRD;
 
-                        this.displayName = artefactCRD.displayName;
+                        //this.displayName = artefactCRD.displayName;
                         this.description = artefactCRD.description;
                         break;
                     }

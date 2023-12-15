@@ -3,7 +3,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class KuberoMysql extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
-    public displayName = 'Kubero MySQL'
+    public displayName = 'MySQL'
     public icon = '/img/addons/MySQL.png'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'

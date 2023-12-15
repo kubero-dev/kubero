@@ -3,7 +3,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 // Classname must be same as the CRD's Name
 export class KuberoRedis extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
-    public displayName = 'Kubero Redis'
+    public displayName = 'Redis'
     public icon = '/img/addons/Redis.png'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'
