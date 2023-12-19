@@ -83,9 +83,7 @@
     <v-card-text>
       <v-avatar
         rounded
-        color="rgba(133, 96, 169, .2)"
         v-for="addon in this.app.addons" :key="addon.id">
-        
         <img
           :src="addon.icon"
           :alt="addon.displayName"
@@ -333,5 +331,12 @@ export default {
 }
 .theme--dark#metrics:nth-child(odd) {
   background-color: rgba(133, 96, 169, .2);
+}
+</style>
+
+<style scoped>
+.v-avatar {
+  background-color: rgba(70, 70, 70, 0.2);
+  margin-left: 10px
 }
 </style>

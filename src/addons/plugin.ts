@@ -48,7 +48,8 @@ export abstract class Plugin {
     public resourceDefinitions: any = {}; // List of CRD to apply
 
     public artifact_url: string = ''; // Example: https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql
-    public artefact_data: any = {};
+    private artefact_data: any = {};
+    private operator_data: any = {};
     public kind: string;
 
     constructor() {
@@ -59,68 +60,98 @@ export abstract class Plugin {
 
         console.log("init : "+this.id, this.constructor.name)
 
+        // load data from local Operators
+        this.operator_data = this.loadOperatorData(availableCRDs);
+
         // load data from artifacthub
+        await this.loadMetadataFromArtefacthub();
+
+        // load CRD from artefacthub, or alterantively from local operator, as a fallback use the CRD from the plugin
+        this.loadCRDFromArtefacthubData();
+
+        this.loadAdditionalResourceDefinitions();
+
+
+    }
+
+    private async loadMetadataFromArtefacthub() {
         const response = await axios.get(this.artifact_url)
             .catch(error => {
-                console.log('Error loading data from artifacthub')
+                console.log('Warning: failed loading data from artifacthub for '+this.id)
                 //console.log(error);
             }
         );
 
-        //this.displayName = response?.data.displayName;
-        this.description = response?.data.description;
-        this.maintainers = response?.data.maintainers;
-        this.links = response?.data.links;
-        this.readme = response?.data.readme;
-        this.version.latest = response?.data.version;
-        this.artefact_data = response?.data;
-/*
-        // Load data from local Operators
-        for (const operator of availableOperators) {
-            const operatorName = operator.metadata.name.split(".")[0]
-            if (operatorName === this.id) {
-                this.enabled = true;
-                this.version.installed = operator.spec.version
-
-                const operatorCRDList = operator.metadata.annotations['alm-examples'];
-
-                for (const op of JSON.parse(operatorCRDList)) {
-                    if (op.kind === this.constructor.name) {
-                        //this.crd = op;
-                        this.resourceDefinitions[op.kind] = op;
-                        break;
-                    }
-                }
-
-                for (const [key, value] of Object.entries(this.additionalResourceDefinitions)) {
-                    this.resourceDefinitions[key] = value;
-                }
-
-
-            }
+        // set artifact hub values
+        if (response?.data && response.data.description) {
+            //this.displayName = response?.data.displayName; // use the name from the plugin
+            this.description = response.data.description;
+            this.maintainers = response.data.maintainers;
+            this.links = response.data.links;
+            this.readme = response.data.readme;
+            this.version.latest = response.data.version;
+            this.artefact_data = response.data;
+        } else {
+            console.log("No artefact.io data found for "+this.id)
         }
-*/
+        
+    }
 
-        for (const crd of availableCRDs) {
-            if (crd.spec.names.kind === this.constructor.name) {
-                this.enabled = true;
-                this.version.installed = this.artefact_data.version;
-
-                for (const artefactCRD of this.artefact_data.crds) {
-                    if (artefactCRD.kind === crd.spec.names.kind) {
-                        // search in artefact data for the crd
-                        let exampleCRD = this.artefact_data.crds_examples.find((crd: any) => crd.kind === artefactCRD.kind);
-
-                        this.resourceDefinitions[crd.spec.names.kind] = exampleCRD;
-
-                        //this.displayName = artefactCRD.displayName;
-                        this.description = artefactCRD.description;
-                        break;
-                    }
-                }
-
-            }
+    private loadCRDFromArtefacthubData() {
+        if (this.artefact_data.crds === undefined) {
+            console.log("No CRDs defined in artefacthub for "+this.id)
+            this.loadCRDFromOperatorData();
+            return;
         }
 
+        for (const artefactCRD of this.artefact_data.crds) {
+            if (artefactCRD.kind === this.kind) {
+                // search in artefact data for the crd
+                let exampleCRD = this.artefact_data.crds_examples.find((crd: any) => crd.kind === artefactCRD.kind);
+
+                this.resourceDefinitions[this.kind] = exampleCRD;
+
+                //this.displayName = artefactCRD.displayName; // use the name from the plugin
+                if (artefactCRD.description.length > this.description.length) {
+                    this.description = artefactCRD.description; // use the description from the CRD
+                }
+                
+                break;
+            }
+        }
+    }
+
+    private loadCRDFromOperatorData() {
+        const operatorCRDList = this.operator_data.metadata.annotations['alm-examples'];
+
+        if (operatorCRDList === undefined) {
+            console.log("No CRDs defined in operator for "+this.id)
+            return;
+        }
+
+        for (const op of JSON.parse(operatorCRDList)) {
+            if (op.kind === this.constructor.name) {
+                //this.crd = op;
+                this.resourceDefinitions[op.kind] = op;
+                break;
+            }
+        }
+    }
+
+    private loadOperatorData(availableOperators: any): any {
+        for (const operatorCRD of availableOperators) {
+            if (operatorCRD.spec.names.kind === this.constructor.name) {
+                this.enabled = true;
+                this.version.installed = operatorCRD.spec.version
+                return operatorCRD;
+            }
+        }
+        return undefined;
+    }
+
+    private loadAdditionalResourceDefinitions() {
+        for (const [key, value] of Object.entries(this.additionalResourceDefinitions)) {
+            this.resourceDefinitions[key] = value;
+        }
     }
 }
