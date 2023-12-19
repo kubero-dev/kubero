@@ -13,7 +13,7 @@ export class KuberoMemcached extends Plugin implements IPlugin {
         }
     ]
     public artifact_url = 'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator'
-    public beta: boolean = false;
+    public beta: boolean = true;
 
     public formfields: {[key: string]: IPluginFormFields} = {
         'KuberoMemcached.metadata.name':{
