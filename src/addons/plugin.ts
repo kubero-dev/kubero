@@ -122,6 +122,11 @@ export abstract class Plugin {
     }
 
     private loadCRDFromOperatorData() {
+        if (this.operator_data === undefined) {
+            console.log("No CRDs defined in operator for "+this.id)
+            return;
+        }
+
         const operatorCRDList = this.operator_data.metadata.annotations['alm-examples'];
 
         if (operatorCRDList === undefined) {

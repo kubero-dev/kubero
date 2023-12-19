@@ -8,15 +8,23 @@ export class Tunnel extends Plugin implements IPlugin {
     public install: string = 'kubectl apply -k https://github.com/adyanth/cloudflare-operator/config/default'
     public url = 'https://github.com/adyanth/cloudflare-operator'
     public description: string = 'Cloudflared establishes outbound connections (tunnels) between your resources and Cloudflare\'s global network. Tunnels are persistent objects that route traffic to DNS records. Within the same tunnel, you can run as many cloudflared processes (connectors) as needed.'
-    public docs = [
+    public links = [
         {
-            title: 'Getting started', url: 'https://github.com/adyanth/cloudflare-operator/blob/main/docs/getting-started.md',
+            name: 'Getting started', url: 'https://github.com/adyanth/cloudflare-operator/blob/main/docs/getting-started.md',
         },
         {
-            title: 'Cloudflare Tunnel', url: 'https://developers.cloudflare.com/cloudflare-one/connections/connect-apps'
+            name: 'Cloudflare Tunnel', url: 'https://developers.cloudflare.com/cloudflare-one/connections/connect-apps'
         },
         {
-            title: 'Blog Post', url: 'https://adyanth.site/posts/migration-compose-k8s/cloudflare-tunnel-operator-architecture/'
+            name: 'Blog Post', url: 'https://adyanth.site/posts/migration-compose-k8s/cloudflare-tunnel-operator-architecture/'
+        }
+    ]
+    public maintainers = [
+        {
+            name: 'Adyanth Hosavalike',
+            email: 'me@adyanth.dev',
+            url: 'https://adyanth.site',
+            github: 'adyanth'
         }
     ]
     public artifact_url = 'https://www.httpbin.org/status/404' // Not available on ArtifactHub
