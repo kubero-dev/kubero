@@ -18,6 +18,7 @@ import { KuberoMail } from '../addons/kuberoMail';
 import { KuberoRabbitMQ } from '../addons/kuberoRabbitMQ';
 import { MongoDB } from '../addons/mongoDB';
 import { Minio } from '../addons/minio';
+import { Tunnel } from '../addons/cloudflare';
 import { IPlugin } from '../addons/plugin';
 
 
@@ -78,6 +79,7 @@ export class Addons {
 
     public async loadOperators(): Promise<void> {
 
+        // Load all Custom Resource Definitions to get the list of installed operators
         this.CRDList = await this.kubectl.getCustomresources()
 
         const kuberoMysql = new KuberoMysql(this.CRDList)
@@ -109,6 +111,9 @@ export class Addons {
 
         const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList)
         this.addonsList.push(kuberoRabbitMQ)
+
+        const tunnel = new Tunnel(this.CRDList)
+        this.addonsList.push(tunnel)
 
         const postgresCluster = new PostgresCluster(this.CRDList)
         this.addonsList.push(postgresCluster)

@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class KuberoRabbitMQ extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
     public displayName = 'RabbitMQ'
-    public icon = '/img/addons/RabbitMQ.png'
+    public icon = '/img/addons/RabbitMQ.svg'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'
     public docs = [

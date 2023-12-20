@@ -6,7 +6,7 @@ networking:
     apiServerAddress: 127.0.0.1
 nodes:
     - role: control-plane
-      image: kindest/node:v1.26.3
+      image: kindest/node:v1.28.0
       kubeadmConfigPatches:
         - |
           kind: InitConfiguration

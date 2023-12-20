@@ -15,22 +15,23 @@
                     color="cardBackground">
                     <v-list-item-content class="justify-center">
 
-                        <v-avatar
-                            size="57"
-                            rounded
-                            ><img
-                            :src="addon.icon"
-                            :alt="addon.name"
-                            ></v-avatar>
-                        <v-card-title>
+                            <v-avatar
+                                size="57"
+                                rounded
+                                ><img
+                                :src="addon.icon"
+                                :alt="addon.name"
+                                >
                             <v-badge
                                 v-if="addon.beta"
                                 color="blue"
                                 content="beta"
+
+                                style="inset: auto auto -15px -15px;"
                                 >
+                            </v-badge></v-avatar>
+                        <v-card-title>
                             <a :href="addon.url">{{ addon.displayName }}</a>
-                            </v-badge>
-                            <a v-else :href="addon.url">{{ addon.displayName }}</a>
                         </v-card-title>
                         <!--
                         <v-card-subtitle>
