@@ -6,7 +6,8 @@
 
 <a href="https://github.com/kubero-dev/kubero/blob/main/LICENSE" target="_blank"><img alt="License" src="https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=blue"></a>
 <a href="https://github.com/kubero-dev/kubero/releases/latest" target="_blank"><img alt="GitHub release (latest by date)" src="https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen"></a>
-<a href="https://discord.gg/tafRPMWS4r" target="_blank"><img alt="Discord" src="https://img.shields.io/discord/1051249947472826408?style=flat-square"></a>
+<a href="https://discord.gg/tafRPMWS4r" target="_blank"><img alt="Discord" src="https://img.shields.io/discord/1051249947472826408?style=flat-square"></a><!--<img alt="GitHub Downloads all releases" src="https://img.shields.io/github/downloads/kubero-dev/kubero-cli/total?style=flat-square&label=cli downloads">-->
+<a href="https://github.com/kubero-dev/kubero/releases/latest" target="_blank"><img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/kubero-dev/kubero?style=flat-square"></a>
 <a href="https://demo.kubero.dev" target="_blank"><img alt="Demo" src="https://img.shields.io/badge/demo-up-sucess?style=flat-square&color=blue"></a>
 
 
