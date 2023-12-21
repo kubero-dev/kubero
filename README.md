@@ -76,7 +76,7 @@ https://github.com/kubero-dev/buildpacks
 | <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Haraka Mail Server | [Kubero](https://github.com/kubero-dev/haraka-docker) | ✅ |
 | <img src="client/public/img/addons/Memcached.png" width="30px" style="vertical-align: middle; margin: 10px"> | Memcache | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
 | <img src="client/public/img/addons/RabbitMQ.png" width="30px" style="vertical-align: middle; margin: 10px"> | RabbitMQ | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
-| <img src="client/public/img/addons/Cloudflare.svg" width="30px" style="vertical-align: middle; margin: 10px"> | Cludflare Tunnels | [Adianth](https://github.com/adyanth/cloudflare-operator) |  |
+| <img src="client/public/img/addons/cloudflare.svg" width="30px" style="vertical-align: middle; margin: 10px"> | Cludflare Tunnels | [Adianth](https://github.com/adyanth/cloudflare-operator) |  |
 | <img src="client/public/img/addons/Minio.png" width="30px" style="vertical-align: middle; margin: 10px"> | Minio | [Minio](https://artifacthub.io/packages/olm/community-operators/minio-operator) |  |
 | <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | Percona MongoDB Cluster | [Percona](https://artifacthub.io/packages/olm/community-operators/mongodb-operator) |  |
 | <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | Crunchy Postgres Cluster | [Crunchy Data](https://artifacthub.io/packages/olm/community-operators/postgresql) |  |
