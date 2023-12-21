@@ -17,7 +17,7 @@
       </v-row>
 
       <v-row
-       v-if="app==='new' && $route.query.service != undefined">
+       v-if="app==='new' && $route.query.template != undefined">
         <v-col
           cols="12"
           md="6"
