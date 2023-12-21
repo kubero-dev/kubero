@@ -46,7 +46,6 @@ Kubero will then start an init container that will clone your repository and ano
 - Github
 - Gitlab
 - Bitbucket
-- OneDev (in progress)
 
 ## Tested languages/frameworks
 Basically *everything* that can be packaged in a single container can be deployed by Kubero. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
@@ -63,20 +62,32 @@ Basically *everything* that can be packaged in a single container can be deploye
 You find the preconfigured buildpacks and examples here:
 https://github.com/kubero-dev/buildpacks
 
-## Preconfigured add-ons
-The Kubero Operator ships with several basic add-ons that can be used in your apps.
-- <img src="client/public/img/addons/MySQL.png" width="30px" style="vertical-align: middle; margin: 10px"> MySQL
-- <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> PostgreSQL
-- <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> Redis
-- <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> MongoDB
-- <img src="client/public/img/addons/Elasticsearch.png" width="30px" style="vertical-align: middle; margin: 10px"> Elasticsearch
-- <img src="client/public/img/addons/Kafka.png" width="30px" style="vertical-align: middle; margin: 10px"> Kafka
-- <img src="client/public/img/addons/CouchDB.png" width="30px" style="vertical-align: middle; margin: 10px"> CouchDB
-- <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px"> Haraka Mail Server
-- RabbitMQ (planned)
-- CockroachDB (planned)
-- Minio (planned)
-- InfluxDB (planned)
+## Add-ons
+
+|   | Addon | Maintainer | Built in* |
+|---|-------|------------|-----------|
+| <img src="client/public/img/addons/MySQL.png" width="30px" style="vertical-align: middle; margin: 10px"> | MySQL | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
+| <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | PostgreSQL | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
+| <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> | Redis | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
+| <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | MongoDB | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
+| <img src="client/public/img/addons/Elasticsearch.png" width="30px" style="vertical-align: middle; margin: 10px"> | Elasticsearch | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/Kafka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Kafka | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/CouchDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | CouchDB | [Apache](https://apache.github.io/couchdb-helm) | ✅ |
+| <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Haraka Mail Server | [Kubero](https://github.com/kubero-dev/haraka-docker) | ✅ |
+| <img src="client/public/img/addons/Memcached.png" width="30px" style="vertical-align: middle; margin: 10px"> | Memcache | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/RabbitMQ.png" width="30px" style="vertical-align: middle; margin: 10px"> | RabbitMQ | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/Cloudflare.svg" width="30px" style="vertical-align: middle; margin: 10px"> | Cludflare Tunnels | [Adianth](https://github.com/adyanth/cloudflare-operator) |  |
+| <img src="client/public/img/addons/Minio.png" width="30px" style="vertical-align: middle; margin: 10px"> | Minio | [Minio](https://artifacthub.io/packages/olm/community-operators/minio-operator) |  |
+| <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | Percona MongoDB Cluster | [Percona](https://artifacthub.io/packages/olm/community-operators/mongodb-operator) |  |
+| <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | Crunchy Postgres Cluster | [Crunchy Data](https://artifacthub.io/packages/olm/community-operators/postgresql) |  |
+| <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> | Redis Cluster | [Opstree](https://artifacthub.io/packages/olm/community-operators/redis-operator) |  |
+
+
+\* Ships with the Kubero Operator
+
+#### Planned Add-ons 
+- CockroachDB
+- InfluxDB
 
 ## 60+ Application templates (similar to Heroku Buttons)
 - Wordpress
