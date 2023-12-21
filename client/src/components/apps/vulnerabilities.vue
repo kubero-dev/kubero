@@ -164,6 +164,27 @@
                         </span>
                     </v-col>
                 </v-row>
+
+                <v-row
+                    v-if="!this.renderVulnerabilities">
+                    <v-col
+                    cols="12"
+                    md="6"
+                    style="margin-top: 20px;"
+                    >
+                        <v-alert
+                            outlined
+                            type="info"
+                            prominent
+                            border="left"
+                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
+                        >
+                            <h3>No vulnerabilityscans available</h3>
+                            To scan this app for vulnerabfilities, please trigger a rescan.
+
+                        </v-alert>
+                    </v-col>
+                </v-row>
         </v-layout>
 
     </v-container>
