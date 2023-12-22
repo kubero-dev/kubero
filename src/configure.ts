@@ -23,8 +23,7 @@ import * as fs from 'fs';
 
 const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.env;
 
-export const before = (app: Express) => {
-
+export const configure = async (app: Express, server: Server) => {
     // Load Version from File
     process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');;
 
@@ -42,26 +41,6 @@ export const before = (app: Express) => {
         app.use(auth.passport.initialize());
         app.use(auth.passport.session());
     }
-}
-
-export const after = (app: Express, server: Server) => {
-
-    // Attache socket.io to server
-    let sockets = init(server);
-    const kubero = new Kubero(sockets);
-    kubero.updateState();
-    app.locals.kubero = kubero;
-
-    const addons = new Addons({
-        kubectl: kubero.kubectl
-    });
-    addons.loadOperators();
-    app.locals.addons = addons;
-
-    const settings = new Settings({
-        kubectl: kubero.kubectl
-    });
-    app.locals.settings = settings;
 
     app.use('/api', RouterAddons);
     app.use('/api', RouterAuth);
@@ -75,4 +54,25 @@ export const after = (app: Express, server: Server) => {
     app.use('/api', RouterSecurity);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
+
+    // Attache socket.io to server
+    let sockets = init(server);
+    const kubero = new Kubero(sockets);
+
+    // sleep 5 seconds to wait for kubernetes availability test
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    kubero.updateState();
+    app.locals.kubero = kubero;
+
+    const addons = new Addons({
+        kubectl: kubero.kubectl
+    });
+    addons.loadOperators();
+    app.locals.addons = addons;
+
+    const settings = new Settings({
+        kubectl: kubero.kubectl
+    });
+    app.locals.settings = settings;
 }

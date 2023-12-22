@@ -40,7 +40,7 @@ export class Kubectl {
     private storageV1Api: StorageV1Api;
     private batchV1Api: BatchV1Api;
     private customObjectsApi: CustomObjectsApi;
-    private kubeVersion: VersionInfo | void;
+    public kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils;
     public log: KubeLog;
     public config: IKuberoConfig;
@@ -79,15 +79,23 @@ export class Kubectl {
 
         this.kubeVersion = new VersionInfo();
         this.getKubeVersion()
-        .catch(error => {
-            debug.log("error getting kube version");
-            debug.log(error);
-        })
         .then(v => {
             this.kubeVersion = v;
         })
 
         this.log = new KubeLog(this.kc);
+    }
+
+    public async getKubeVersion(): Promise<VersionInfo | void>{
+        // TODO and WARNING: This does not respect the context set by the user!
+        try {
+            let versionInfo = await this.versionApi.getCode()
+            debug.debug(JSON.stringify(versionInfo.body));
+            return versionInfo.body;
+        } catch (error) {
+            debug.log("getKubeVersion: error getting kube version");
+            //debug.log(error);
+        }
     }
 
     public getContexts() {
@@ -100,14 +108,21 @@ export class Kubectl {
 
     public async getPipelinesList() {
         this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
-        let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
-            'application.kubero.dev',
-            'v1alpha1',
-            process.env.KUBERO_NAMESPACE || 'kubero',
-            'kuberopipelines',
-            'default'
-        );
-        return pipelines.body as IKubectlPipelineList;
+        try {
+            let pipelines = await this.customObjectsApi.listNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                process.env.KUBERO_NAMESPACE || 'kubero',
+                'kuberopipelines'
+            )
+            return pipelines.body as IKubectlPipelineList;
+        } catch (error) {
+            //debug.log(error);
+            debug.log("getPipelinesList: error getting pipelines");
+        }
+        const pipelines = {} as IKubectlPipelineList;
+        pipelines.items = [];
+        return pipelines;
     }
 
     public async createPipeline(pl: IPipeline) {
@@ -175,13 +190,6 @@ export class Kubectl {
         } else {
             return {} as IKubectlPipeline;
         }
-    }
-
-    public async getKubeVersion() {
-        let versionInfo = await this.versionApi.getCode()
-        this.kubeVersion= versionInfo.body;
-        debug.debug(JSON.stringify(this.kubeVersion));
-        return this.kubeVersion;
     }
 
     public async createApp(app: App, context: string) {
@@ -264,13 +272,21 @@ export class Kubectl {
 
     public async getAppsList(namespace: string, context: string) {
         this.kc.setCurrentContext(context);
-        let appslist = await this.customObjectsApi.listNamespacedCustomObject(
-            'application.kubero.dev',
-            'v1alpha1',
-            namespace,
-            'kuberoapps'
-        )
-        return appslist.body as IKubectlAppList;
+        try {
+            let appslist = await this.customObjectsApi.listNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberoapps'
+            )
+            return appslist.body as IKubectlAppList;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getAppsList: error getting apps");
+        }
+        const appslist = {} as IKubectlAppList;
+        appslist.items = [];
+        return appslist as IKubectlAppList;
     }
 
     public async restartApp(pipelineName: string, phaseName: string, appName: string, workloadType: string, context: string) {
@@ -341,10 +357,9 @@ export class Kubectl {
                 'v1',
                 'customresourcedefinitions'
             )
-            //let operators = response.body as KubernetesListObject<KubernetesObject>;
             operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work
-        } catch (error) {
-            debug.log(error);
+        } catch (error: any) {
+            //debug.log(error);
             debug.log("error getting customresources");
         }
 
@@ -397,8 +412,16 @@ export class Kubectl {
     )};
 
     public async getEvents(namespace: string): Promise<CoreV1Event[]> {
-        let events = await this.coreV1Api.listNamespacedEvent(namespace);
-        return events.body.items;
+        try {
+            const events = await this.coreV1Api.listNamespacedEvent(namespace);
+            return events.body.items;
+        } catch (error) {
+            //debug.log(error);
+            debug.log("getEvents: error getting events");
+        }
+        const events = {} as CoreV1EventList;
+        events.items = [];
+        return events.items;
     }
 
     public async getPodMetrics(namespace: string, appName: string): Promise<any> { //TODO make this a real type
