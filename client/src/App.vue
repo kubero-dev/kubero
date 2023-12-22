@@ -149,6 +149,7 @@ export default {
         isAuthenticated: false,
         templatesEnabled: true,
         version: "dev",
+        kubernetesVersion: "unknown",
         banner: {
             show: false,
             message: "",
@@ -205,14 +206,31 @@ export default {
                         this.session = result.data.isAuthenticated;
                         this.version = result.data.version;
                         this.templatesEnabled = result.data.templatesEnabled;
+                        this.kubernetesVersion = result.data.kubernetesVersion;
 
                         // safe version to vuetufy gloabl scope for use in components
                         this.$vuetify.version = this.version;
+                        this.$vuetify.kubernetesVersion = this.kubernetesVersion;
                         this.$vuetify.isAuthenticated = result.data.isAuthenticated;
                         this.$vuetify.buildPipeline = result.data.buildPipeline;
 
                         if (result.status === 200) {
                             this.isAuthenticated = true;
+                        }
+
+                        if (result.data.kubernetesVersion === "unknown") {
+                            //this.$router.push('/setup')
+                            console.log("kubernetesVersion: " + result.data.kubernetesVersion);
+                            this.banner.show = true;
+                            this.banner.message = "Kubernetes not reachable";
+                            this.banner.bgcolor = "red";
+                            this.banner.fontcolor = "white";
+
+                            // TODO: use Pinia to maintain a global state
+                            // https://pinia.vuejs.org/introduction.html
+                            // https://vuex.vuejs.org/
+                            // https://vuex.vuejs.org/api/
+                            //this.$store.dispatch('setKubernetesVersion', result.data.kubernetesVersion); 
                         }
                     })
                     .catch((err) => {

@@ -103,7 +103,20 @@ export default {
     },
     mounted() {
         this.loadPipelinesList();
+        
+        // sleep for 1 second till session is loaded
+        setTimeout(() => {
+            if (this.$vuetify.kubernetesVersion === "unknown") {
+                // TODO: use Pinia to maintain a global state
+                // https://pinia.vuejs.org/introduction.html
+                // https://vuex.vuejs.org/
+                // https://vuex.vuejs.org/api/
+                console.log("cant reach kubernetes");
+            }
+        }, 1000);
+        
     },
+
     components: {
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
