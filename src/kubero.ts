@@ -49,7 +49,6 @@ export class Kubero {
 
     public getKubernetesVersion() {
         if (this.kubectl.kubeVersion) {
-            console.log('getKubernetesVersion: '+this.kubectl.kubeVersion.gitVersion);
             return this.kubectl.kubeVersion.gitVersion;
         } else {
             return 'unknown';

@@ -33,15 +33,15 @@ import { version } from 'os';
 
 export class Kubectl {
     private kc: KubeConfig;
-    private versionApi: VersionApi;
-    private coreV1Api: CoreV1Api;
-    private appsV1Api: AppsV1Api;
-    private metricsApi: Metrics;
-    private storageV1Api: StorageV1Api;
-    private batchV1Api: BatchV1Api;
-    private customObjectsApi: CustomObjectsApi;
+    private versionApi: VersionApi = {} as VersionApi;
+    private coreV1Api: CoreV1Api = {} as CoreV1Api;
+    private appsV1Api: AppsV1Api = {} as AppsV1Api;
+    private metricsApi: Metrics = {} as Metrics;
+    private storageV1Api: StorageV1Api = {} as StorageV1Api;
+    private batchV1Api: BatchV1Api = {} as BatchV1Api;
+    private customObjectsApi: CustomObjectsApi = {} as CustomObjectsApi;
     public kubeVersion: VersionInfo | void;
-    private patchUtils: PatchUtils;
+    private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
     public config: IKuberoConfig;
 
@@ -68,14 +68,19 @@ export class Kubectl {
             }
         }
 
-        this.versionApi = this.kc.makeApiClient(VersionApi);
-        this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
-        this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
-        this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
-        this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
-        this.metricsApi = new Metrics(this.kc);
-        this.patchUtils = new PatchUtils();
-        this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
+        try {
+            this.versionApi = this.kc.makeApiClient(VersionApi);
+            this.coreV1Api = this.kc.makeApiClient(CoreV1Api);
+            this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
+            this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
+            this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
+            this.metricsApi = new Metrics(this.kc);
+            this.patchUtils = new PatchUtils();
+            this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
+        } catch (error) {
+            debug.log("error creating api clients. Check kubeconfig, cluster connectivity and context");
+            debug.log(error);
+        }
 
         this.kubeVersion = new VersionInfo();
         this.getKubeVersion()
