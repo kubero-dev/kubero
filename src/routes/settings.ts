@@ -17,15 +17,15 @@ Router.get('/cli/settings', bearerMiddleware, async function (req: Request, res:
                 "bearerFormat": 'JWT',
             }
     }] */
-    let addonslist = await req.app.locals.settings.getSettings();
-    res.send(addonslist)
+    const settings = await req.app.locals.settings.getSettings();
+    res.send(settings)
 });
 
 // get the settings
 Router.get('/settings', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero settings'
-    let settings = await req.app.locals.settings.getSettings();
+    const settings = await req.app.locals.settings.getSettings();
     res.send(settings)
 });
 

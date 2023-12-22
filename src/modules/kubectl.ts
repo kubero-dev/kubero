@@ -270,7 +270,7 @@ export class Kubectl {
         return app;
     }
 
-    public async getAppsList(namespace: string, context: string) {
+    public async getAppsList(namespace: string, context: string): Promise<IKubectlAppList> {
         this.kc.setCurrentContext(context);
         try {
             let appslist = await this.customObjectsApi.listNamespacedCustomObject(
@@ -372,15 +372,15 @@ export class Kubectl {
     }
 
     public async getKuberoconfig(): Promise<V1ConfigMap | void> {
-        let config = await this.coreV1Api.readNamespacedConfigMap(
-            'kubero-config',
-            'kubero' // TODO: This should be configurable
-        ).catch((error: any) => {
-            debug.log(error);
-        })
-
-        if (config) {
+        try {
+            const config = await this.coreV1Api.readNamespacedConfigMap(
+                'kubero-config',
+                'kubero' // TODO: This should be configurable
+            )
             return config.body;
+        } catch (error) {
+            //debug.log(error);
+            debug.log("getKuberoconfig: error getting config");
         }
     }
 
