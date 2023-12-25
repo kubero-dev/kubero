@@ -1011,17 +1011,17 @@ export default {
           {
               text: 'PIPELINE:'+this.pipeline,
               disabled: false,
-              href: '#/pipeline/'+this.pipeline+'/apps',
+              href: `#/pipeline/${this.pipeline}/apps`,
           },
           {
               text: 'PHASE:'+this.phase,
               disabled: false,
-              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+              href: this.getAppBreadcrumbLink(),
           },
           {
               text: 'APP:'+this.app,
               disabled: false,
-              href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+              href: this.getAppBreadcrumbLink(),
           }
       ],
       advanced: false,
@@ -1290,6 +1290,13 @@ export default {
         breadcrumbs: () => import('../breadcrumbs.vue'),
     },
     methods: {
+      getAppBreadcrumbLink() {
+        if (this.app == 'new') {
+          return `#/pipeline/${this.pipeline}/apps`;
+        } else {
+          return `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`;
+        }
+      },
       loadClusterIssuers(){
         axios.get('/api/config/clusterissuers').then(response => {
           this.letsecryptClusterIssuer = response.data.id;
