@@ -6,11 +6,11 @@
   "author": "Gianni Carafa",
   "scripts": {
     "install": "npx tsc",
-    "build": "npx tsc",
+    "build": "npx tsc -t es2022 ",
     "start": "node dist/index.js",
     "swaggerwatch": "npx swagger-ui-watcher swagger.json",
     "swaggergen": "node ./swagger.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q  --ext 'ts,json' dist/index.js\"",
+    "dev": "concurrently \"npx tsc -t es2022 --watch\" \"nodemon -q  --ext 'ts,json' dist/index.js\"",
     "debug": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
     "test": "ENV_FILE=.env.test jest"
   },

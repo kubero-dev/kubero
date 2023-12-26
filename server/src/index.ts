@@ -19,7 +19,7 @@ configure(app, server);
 
 const maxAge = process.env.NODE_ENV === 'development' ? '1s' : '1h';
 
-const publicPath = resolve(__dirname, '../client/dist');
+const publicPath = resolve(__dirname, '../../../client-new/dist');
 const staticConf = { maxAge: maxAge, etag: true };
 
 app.use(history());
