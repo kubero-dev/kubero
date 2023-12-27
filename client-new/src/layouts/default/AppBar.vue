@@ -44,39 +44,3 @@ export default defineComponent({
   },
 });
 </script>
-
-
-<!--
-<script lang="ts" setup>
-import axios from 'axios';
-import { onMounted, ref } from 'vue';
-
-
-let banner = ref({
-  show: false,
-  message: '',
-  bgcolor: ''
-});
-
-let popup = ref('false');
-
-function getBanner() {
-  axios.get('/api/banner').then((response: any) => {
-    banner = response.data;
-  })
-}
-
-function getPopUp() {
-  const p = localStorage.getItem('popup');
-  if (p != null && p != undefined) {
-    popup.value = p;
-  }
-}
-
-onMounted(() => {
-  getBanner();
-  getPopUp();
-})
-
-</script>
--->

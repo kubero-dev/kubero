@@ -3,9 +3,13 @@ import { defineStore } from 'pinia'
 export const useKuberoStore = defineStore('kubero', {
     state: () => ({
         kubero: {
-            name: "kubero",
-            version: "0.0.1",
-            description: "Kubero is a Kubernetes dashboard",
+            version: "dev",
+            templatesEnabled: true,
+            session: false,
+            nextGenSession: {
+                username: "",
+                token: "",
+            },
         },
         buildPipeline: false,
     }),

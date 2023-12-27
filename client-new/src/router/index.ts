@@ -7,13 +7,45 @@ const routes = [
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
-        path: '',
+        path: '/',
         name: 'Pipelines',
         // route level code-splitting
-        // this generates a separate chunk (Home-[hash].js) for this route
+        // this generates a separate chunk (Pipeline-[hash].js) for this route
         // which is lazy-loaded when the route is visited.
-        //component: () => import('@/views/Home.vue'),
         component: () => import('@/views/Pipeline.vue'),
+      },
+    ],
+  },
+  {
+    path: '/addons',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/addons',
+        name: 'Addons',
+        component: () => import('@/views/Addons.vue'),
+      },
+    ],
+  },
+  {
+    path: '/events',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/events',
+        name: 'Events',
+        component: () => import('@/views/Events.vue'),
+      },
+    ],
+  },
+  {
+    path: '/templates',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/templates',
+        name: 'Templates',
+        component: () => import('@/views/Templates.vue'),
       },
     ],
   },

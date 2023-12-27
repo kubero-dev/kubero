@@ -11,7 +11,7 @@
                         <v-btn
                         elevation="2"
                         color="primary"
-                        :to="{ name: 'New Pipeline'}"
+                        href="/pipeline/new"
                         >New Pipeline</v-btn>
                     </v-col>
                 </v-row>
