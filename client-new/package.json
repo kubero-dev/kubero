@@ -11,16 +11,20 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
+    "axios": "^1.6.2",
     "core-js": "^3.29.0",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "roboto-fontface": "*",
     "vue": "^3.3.0",
     "vue-router": "^4.2.0",
-    "vuetify": "^3.4.0",
-    
-    "axios": "^1.6.2"
+    "vue-socket.io-extended": "^4.2.0",
+    "vuetify": "^3.4.0"
   },
   "devDependencies": {
     "@babel/types": "^7.21.4",
+    "@types/lodash.get": "^4.4.9",
+    "@types/lodash.set": "^4.3.9",
     "@types/node": "^18.15.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",

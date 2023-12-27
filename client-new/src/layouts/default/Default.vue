@@ -1,12 +1,13 @@
 <template>
   <v-app>
-    <default-bar />
-
+    <app-bar />
+    <nav-drawer/>
     <default-view />
   </v-app>
 </template>
 
 <script lang="ts" setup>
-  import DefaultBar from './AppBar.vue'
+  import AppBar from './AppBar.vue'
+  import NavDrawer from './NavDrawer.vue'
   import DefaultView from './View.vue'
 </script>
