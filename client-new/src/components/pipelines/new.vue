@@ -256,7 +256,7 @@ type Git = {
     provider: string,
 }
 
-type gitrepoItems = {
+type gitrepoItem = {
     name: string,
     description: string,
     url: string,
@@ -284,7 +284,7 @@ export default defineComponent({
       domain: '',
       reviewapps: true,
       gitrepo: '',
-      gitrepoItems: [],
+      gitrepoItems: [] as string[],
       contextList: [] as contextList[], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,

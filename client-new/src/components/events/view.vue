@@ -85,7 +85,7 @@ export default defineComponent({
         .then(response => {
             // sort by creationTimestamp
             response.data.sort((a: Event, b: Event) => {
-                return new Date(b.metadata.creationTimestamp) - new Date(a.metadata.creationTimestamp);
+                return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
             });
 
             for (let i = 0; i < response.data.length; i++) {

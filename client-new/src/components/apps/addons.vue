@@ -53,14 +53,14 @@
       persistent
       max-width="600px"
     >
-      <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ props }">
 
         <v-col cols="12">
             <v-btn
             elevation="2"
             icon
             small
-            v-on="on"
+            v-bind="props"
             @click="openNewDialog()"
             >
                 <v-icon dark >

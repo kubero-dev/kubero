@@ -150,8 +150,8 @@
                                             </v-chip>
                                         </template>
 
-                                        <template v-slot:expanded-item="{ headers, item }">
-                                            <td :colspan="headers.length">
+                                        <template v-slot:expanded-row="{ columns, item }">
+                                            <td :colspan="columns.length">
                                                 <div class="row sp-details">
                                                     {{ item }}
                                                 </div>

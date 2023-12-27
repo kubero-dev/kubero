@@ -157,13 +157,13 @@
                   key="1"
                   label="Nixpacks"
                   value="nixpacks"
-                  :disabled="!$vuetify.buildPipeline"
+                  :disabled="!buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="2"
                   label="Dockerfile"
                   value="dockerfile"
-                  :disabled="!$vuetify.buildPipeline"
+                  :disabled="!buildPipeline"
                 ></v-radio>
               </v-radio-group>
             </v-col>
@@ -196,7 +196,7 @@
                 <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
               </v-alert>
 
-              <v-alert variation="text" color="blue" type="info" v-if="!$vuetify.buildPipeline">
+              <v-alert variation="text" color="blue" type="info" v-if="!buildPipeline">
                 <h3>
                   Buildpipeline not configured
                 </h3>
@@ -987,6 +987,10 @@
 import axios from "axios";
 import Addons from "./addons.vue";
 import { defineComponent } from 'vue'
+//import { useKuberoStore } from '@/stores/kubero'
+import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
+
 
 type App = {
     name: string,
@@ -1007,7 +1011,7 @@ type Cronjob = {
   name: string,
   schedule: string,
   image: string,
-  command: string,
+  command: any,
   restartPolicy: string,
 }
 
@@ -1027,9 +1031,23 @@ type Volume = {
 }
 
 type Addon = {
-  id: string,
-  name: string,
-  version: string,
+    id: string,
+    kind: string,
+    version: string,
+    env: string[],
+    icon: string,
+    displayName: string,
+    resourceDefinitions: any,
+    formfields: FormField[],
+}
+
+type FormField = {
+    name: string,
+    label: string,
+    type: string,
+    default: string | number | boolean,
+    required: boolean,
+    options: string[],
 }
 
 type Ingress = {
@@ -1404,6 +1422,9 @@ export default defineComponent({
       ],
 */
     }},
+    computed: {
+      ...mapState(useKuberoStore, ['buildPipeline']),
+    },
     mounted() {
       this.loadPipeline();
       this.loadStorageClasses();

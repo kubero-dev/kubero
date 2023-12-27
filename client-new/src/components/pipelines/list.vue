@@ -18,7 +18,7 @@
 
                 <v-row v-if="pipelines && pipelines.length < 1" class="delay-visible-enter-active">
                     <v-col cols="12" style="text-align: center;">
-                        <img src="@assets/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
+                        <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
                         <h2>Ready to start building your first pipeline?</h2>
                     </v-col>
                 </v-row>
@@ -151,6 +151,7 @@ export default defineComponent({
     },
     data () { return {
         pipelines: [] as Pipeline[], 
+        apps: {} as any, // TODO: create type from loadPipelinesList()
 
         breadcrumbItems: [
             {
