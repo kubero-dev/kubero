@@ -2,98 +2,99 @@
     <v-container>
         <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
 
-                <v-row class="justify-space-between">
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                        <h1>Pipelines</h1>
-                    </v-col>
-                    <v-spacer />
-                    <v-col class="text-right">
-                        <v-btn
-                        elevation="2"
-                        color="primary"
-                        href="/pipeline/new"
-                        >New Pipeline</v-btn>
-                    </v-col>
-                </v-row>
+        <v-row class="justify-space-between">
+            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+                <h1>Pipelines</h1>
+            </v-col>
+            <v-spacer />
+            <v-col class="text-right">
+                <v-btn
+                elevation="2"
+                color="primary"
+                href="/pipeline/new"
+                >New Pipeline</v-btn>
+            </v-col>
+        </v-row>
 
-                <v-row v-if="pipelines && pipelines.length < 1" class="delay-visible-enter-active">
-                    <v-col cols="12" style="text-align: center;">
-                        <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
-                        <h2>Ready to start building your first pipeline?</h2>
-                    </v-col>
-                </v-row>
+        <v-row v-if="pipelines && pipelines.length < 1" class="delay-visible-enter-active">
+            <v-col cols="12" style="text-align: center;">
+                <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
+                <h2>Ready to start building your first pipeline?</h2>
+            </v-col>
+        </v-row>
 
-                <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
-                    <v-col cols="12">
-                        <v-card elevation="2" outlined color="cardBackground">
-                            <v-card-text>
-                                <v-row>
-                                    <v-col cols="12" sm="12" md="6">
-                                        <a :href="'/#/pipeline/'+item.name+'/apps'">
-                                            <v-card-title>
-                                                <v-icon left :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
-                                                <span class="text-h5">{{ item.name }}</span>
-                                            </v-card-title>
-                                            <v-card-text>
-                                                <span>{{ item.git.repository.description }}</span>
-                                            </v-card-text>
-                                        </a>
-                                    </v-col>
-                                    <v-col cols="12" sm="12" md="5" style="padding: 26px;">
-                                            <v-chip
-                                                v-for="phase in item.phases" :key="phase.name"
-                                                small
-                                                label
-                                                class="ma-1"
-                                                :color="phase.enabled ? 'green' : ''"
-                                                :text-color="phase.enabled  ? 'white' : ''"
-                                                >
-                                                <v-icon left color="white" v-if="phase.name.includes('review')">
-                                                    mdi-eye-refresh-outline
-                                                </v-icon>
-                                                {{ phase.name }}
-                                            </v-chip>
-                                    </v-col>
-
-                                    <v-col cols="12" sm="12" md="1">
-                                        <v-btn
-                                        elevation="2"
-                                        fab
+        <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
+            <v-col cols="12">
+                <v-card elevation="2" outlined color="cardBackground">
+                    <v-card-text>
+                        <v-row>
+                            <v-col cols="12" sm="12" md="6">
+                                <a :href="'/#/pipeline/'+item.name+'/apps'">
+                                    <v-card-title>
+                                        <v-icon left :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
+                                        <span class="text-h5">{{ item.name }}</span>
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <span>{{ item.git.repository.description }}</span>
+                                    </v-card-text>
+                                </a>
+                            </v-col>
+                            <v-col cols="12" sm="12" md="5" style="padding: 26px;">
+                                    <v-chip
+                                        v-for="phase in item.phases" :key="phase.name"
                                         small
-                                        class="ma-2"
-                                        color="secondary"
-                                        @click="deletePipeline(item.name)"
+                                        label
+                                        class="ma-1"
+                                        :color="phase.enabled ? 'green' : ''"
+                                        :text-color="phase.enabled  ? 'white' : ''"
                                         >
-                                            <v-icon>
-                                                mdi-delete
-                                            </v-icon>
-                                        </v-btn>
-                                        <v-btn
-                                        elevation="2"
-                                        fab
-                                        small
-                                        class="ma-2"
-                                        color="secondary"
-                                        :href="'#/pipeline/'+item.name"
-                                        >
-                                            <v-icon>
-                                                mdi-pencil
-                                            </v-icon>
-                                        </v-btn>
-                                    </v-col>
+                                        <v-icon left color="white" v-if="phase.name.includes('review')">
+                                            mdi-eye-refresh-outline
+                                        </v-icon>
+                                        {{ phase.name }}
+                                    </v-chip>
+                            </v-col>
 
-                                </v-row>
-                            </v-card-text>
+                            <v-col cols="12" sm="12" md="1">
+                                <v-btn
+                                elevation="2"
+                                fab
+                                small
+                                class="ma-2"
+                                color="secondary"
+                                @click="deletePipeline(item.name)"
+                                >
+                                    <v-icon>
+                                        mdi-delete
+                                    </v-icon>
+                                </v-btn>
+                                <v-btn
+                                elevation="2"
+                                fab
+                                small
+                                class="ma-2"
+                                color="secondary"
+                                :href="'#/pipeline/'+item.name"
+                                >
+                                    <v-icon>
+                                        mdi-pencil
+                                    </v-icon>
+                                </v-btn>
+                            </v-col>
 
-                        </v-card>
-                    </v-col>
-                </v-row>
+                        </v-row>
+                    </v-card-text>
+
+                </v-card>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from 'vue'
+import breadcrumbs from "../breadcrumbs.vue";
 
 type Pipeline = {
     name: string,
@@ -147,7 +148,7 @@ export default defineComponent({
     },
 
     components: {
-        breadcrumbs: () => import('../breadcrumbs.vue'),
+        breadcrumbs: breadcrumbs,
     },
     data () { return {
         pipelines: [] as Pipeline[], 
