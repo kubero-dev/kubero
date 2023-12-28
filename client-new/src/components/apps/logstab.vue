@@ -18,7 +18,7 @@
         </v-row>
         <v-row style="height: 1100px">
             <v-col cols="12" sm="12" md="12">
-                <logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy></logs>
+                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy />
             </v-col>
         </v-row>
 
@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import Logs from './logs.vue'
 
 export default defineComponent({
     props: {
@@ -50,7 +51,7 @@ export default defineComponent({
     data: () => ({
     }),
     components: {
-        logs: () => import('./logs.vue'),
+        Logs,
     },
     methods: {
         openInWindow() {

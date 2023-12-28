@@ -111,7 +111,7 @@
             title="Details"
             color="deep-purple lighten-2"
             variant="text"
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
+            :href="'/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
         >
             <v-icon
                 >mdi-page-next-outline
@@ -121,7 +121,7 @@
             title="Edit"
             color="deep-purple lighten-2"
             variant="text"
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
+            :href="'/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
         >
             <v-icon
                 >mdi-pencil

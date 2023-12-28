@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+        <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
 
         <v-container class="d-flex justify-space-between align-center mb-2">
             <v-tabs v-model="tab"  class="background">
@@ -25,51 +25,48 @@
             <v-list>
                 <v-list-item-group>
                     <v-list-item
-                        @click="ActionEditApp">
-                        <v-list-item-icon>
-                            <v-icon small>mdi-pencil</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-content>
-                            <v-list-item-title>Edit App</v-list-item-title>
-                        </v-list-item-content>
+                        @click="ActionEditApp"
+                        prepend-icon="mdi-pencil"
+                        title="Edit App">
                     </v-list-item>
                     <v-list-item
-                        @click="ActionOpenApp">
-                        <v-list-item-icon>
-                            <v-icon small>mdi-open-in-new</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>Open App</v-list-item-title>
+                        @click="ActionOpenApp"
+                        prepend-icon="mdi-open-in-new"
+                        title="Open App">
                     </v-list-item>
                     <v-list-item 
                         disabled
-                        @click="ActionStartDownload">
-                        <v-list-item-icon>
-                            <v-icon small>mdi-download</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>Download Config</v-list-item-title>
+                        @click="ActionStartDownload"
+                        prepend-icon="mdi-download"
+                        title="Download Config">
                     </v-list-item>
                 </v-list-item-group>
             </v-list>
             </v-menu>
         </v-container>
         
-        <v-tabs-items v-model="tab">
-            <v-tab-item transition="false" class="background">
-                <logs :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
-            </v-tab-item>
-            <v-tab-item transition="false" class="background">
-                <events :pipeline="pipeline" :phase="phase" :app="app"/>
-            </v-tab-item>
-            <v-tab-item transition="false" class="background">
-                <vulnerabilities :pipeline="pipeline" :phase="phase" :app="app"/>
-            </v-tab-item>
-        </v-tabs-items>
+        <v-window v-model="tab">
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
+            </v-window-item>
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <Events :pipeline="pipeline" :phase="phase" :app="app"/>
+            </v-window-item>
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <Vulnerabilities :pipeline="pipeline" :phase="phase" :app="app"/>
+            </v-window-item>
+        </v-window>
     </v-container>
 </template>
 
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from 'vue'
+import Breadcrumbs from "../breadcrumbs.vue";
+import Events from "./events.vue";
+import LogsTab from "./logstab.vue";
+import Vulnerabilities from "./vulnerabilities.vue";
+
 
 export default defineComponent({
     data () {
@@ -79,22 +76,22 @@ export default defineComponent({
                 {
                     text: 'DASHBOARD',
                     disabled: false,
-                    href: '#/',
+                    href: '/',
                 },
                 {
                     text: 'PIPELINE:'+this.pipeline,
                     disabled: false,
-                    href: '#/pipeline/'+this.pipeline+'/apps',
+                    href: '/pipeline/'+this.pipeline+'/apps',
                 },
                 {
                     text: 'PHASE:'+this.phase,
                     disabled: true,
-                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+                    href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 },
                 {
                     text: 'APP:'+this.app,
                     disabled: true,
-                    href: `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
+                    href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 }
             ],
             pipelineData: {},
@@ -151,10 +148,10 @@ export default defineComponent({
     },
 
     components: {
-        events : () => import('./events.vue'),
-        logs : () => import('./logstab.vue'),
-        vulnerabilities : () => import('./vulnerabilities.vue'),
-        breadcrumbs: () => import('../breadcrumbs.vue'),
+        Breadcrumbs,
+        Events,
+        LogsTab,
+        Vulnerabilities
     },
     props: {
       pipeline: {
