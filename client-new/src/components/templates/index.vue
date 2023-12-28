@@ -24,15 +24,20 @@
                     style="padding-bottom: 40px;"
                     height="320px"
                     color="cardBackground">
-                    <v-list-item-content class="justify-center">
+                    <v-list-item-content>
 
-                        <v-avatar
-                            size="57"
-                            rounded
-                            ><img
-                            :src="template.icon"
-                            :alt="template.name"
-                            ></v-avatar>
+                        <div  class="d-flex justify-center">
+                            <v-avatar
+                                size="57"
+                                rounded
+                                style="margin-top: 20px;"
+                                >
+                                <v-img
+                                    :src="template.icon"
+                                    :alt="template.name"
+                                ></v-img>
+                            </v-avatar>
+                        </div>
                         <v-card-title>
                             <a :href="template.website" target="_blank">{{ template.name }}</a>
                         </v-card-title>
