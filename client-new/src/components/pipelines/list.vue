@@ -1,6 +1,6 @@
     <template>
     <v-container>
-        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+        <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
@@ -148,7 +148,7 @@ export default defineComponent({
     },
 
     components: {
-        breadcrumbs: breadcrumbs,
+        Breadcrumbs: breadcrumbs,
     },
     data () { return {
         pipelines: [] as Pipeline[], 
@@ -157,7 +157,7 @@ export default defineComponent({
             {
                 text: 'DASHBOARD',
                 disabled: true,
-                href: '#/',
+                href: '/',
             }
         ],
     }},

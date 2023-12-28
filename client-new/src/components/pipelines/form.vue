@@ -238,26 +238,6 @@ type BuildpackStepConfig = {
   },
 }
 
-type Phase = {
-    name: string,
-    context: string,
-    enabled: boolean,
-    apps: Array<any>,
-}
-
-
-type Git = {
-    ssh_url: string,
-    provider: string,
-}
-
-type gitrepoItem = {
-    name: string,
-    description: string,
-    url: string,
-    enabled: boolean,
-}[]
-
 export default defineComponent({
     props: {
       pipeline: {

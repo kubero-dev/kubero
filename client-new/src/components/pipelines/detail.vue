@@ -1,7 +1,7 @@
 <template>
     <div>
     <v-container>
-        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+        <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
     </v-container>
     <v-container :fluid="true">
         <h1>{{ pipeline }}</h1>
@@ -45,6 +45,7 @@
 import axios from "axios";
 import Appcard from "./appcard.vue";
 import PRcard from "./prcard.vue";
+import Breadcrumbs from "../breadcrumbs.vue";
 
 import { defineComponent } from 'vue'
 
@@ -93,7 +94,7 @@ export default defineComponent({
     props: {
       pipeline: {
         type: String,
-        default: "MISSSING"
+        default: "MISSING"
       },
     },
     data () {return {
@@ -101,12 +102,12 @@ export default defineComponent({
             {
                 text: 'DASHBOARD',
                 disabled: false,
-                href: '#/',
+                href: '/',
             },
             {
                 text: 'PIPELINE:'+this.pipeline,
                 disabled: true,
-                href: '#/pipeline/'+this.pipeline+'/apps',
+                href: '/pipeline/'+this.pipeline+'/apps',
             }
         ],
         reviewapps: false,
@@ -133,7 +134,7 @@ export default defineComponent({
     components: {
         PRcard,
         Appcard,
-        breadcrumbs: () => import('../breadcrumbs.vue'),
+        Breadcrumbs,
     },
     methods: {
       async loadPipeline() {
