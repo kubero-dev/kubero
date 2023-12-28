@@ -14,24 +14,24 @@
                     style="padding-bottom: 40px;"
                     color="cardBackground">
                     <v-list-item-content class="justify-center">
-
+                        <div  class="d-flex justify-center" style="margin-top: 20px;">
                             <v-avatar
                                 size="57"
                                 rounded
-                                ><img
+                                ><v-img
                                 :src="addon.icon"
                                 :alt="addon.displayName"
-                                >
+                                ></v-img>
+                            </v-avatar>
                             <v-badge
                                 v-if="addon.beta"
                                 color="blue"
                                 content="beta"
-
-                                style="inset: auto auto -15px -15px;"
                                 >
-                            </v-badge></v-avatar>
+                            </v-badge>
+                        </div>
                         <v-card-title>
-                            <a :href="addon.url">{{ addon.displayName }}</a>
+                            <a :href="addon.url" target="_blank">{{ addon.displayName }}</a>
                         </v-card-title>
                         <!--
                         <v-card-subtitle>
