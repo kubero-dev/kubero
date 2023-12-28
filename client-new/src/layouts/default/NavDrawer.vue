@@ -98,6 +98,15 @@
   </v-navigation-drawer>
 </template>
 
+<script lang="ts" setup>
+import { useTheme } from 'vuetify'
+const theme = useTheme()
+
+function toggleTheme() {
+    theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
+}
+</script>
+
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
@@ -116,9 +125,6 @@ export default defineComponent({
       ...mapState(useKuberoStore, ['kubero']),
     },
     methods: {
-        toggleTheme() {
-            //this.$vuetify.theme.dark = !this.$vuetify.theme.dark;
-        },
         logout() {
             //this.$store.dispatch('logout');
             //this.$router.push('/login');
