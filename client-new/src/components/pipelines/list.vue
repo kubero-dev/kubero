@@ -152,7 +152,6 @@ export default defineComponent({
     },
     data () { return {
         pipelines: [] as Pipeline[], 
-        apps: {} as any, // TODO: create type from loadPipelinesList()
 
         breadcrumbItems: [
             {
@@ -167,7 +166,7 @@ export default defineComponent({
         const self = this;
         axios.get(`/api/pipelines`)
         .then(response => {
-            self.apps = response.data.items;
+            self.pipelines = response.data.items;
         })
         .catch(error => {
             console.log(error);
