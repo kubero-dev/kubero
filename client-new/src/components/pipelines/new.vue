@@ -238,11 +238,6 @@ type BuildpackStepConfig = {
   },
 }
 
-type contextList = {
-  text: string,
-  value: string,
-}
-
 type Phase = {
     name: string,
     context: string,
@@ -285,7 +280,7 @@ export default defineComponent({
       reviewapps: true,
       gitrepo: '',
       gitrepoItems: [] as string[],
-      contextList: [] as contextList[], // a list of kubernets contexts in the kubeconfig to select from
+      contextList: [] as string[], // a list of kubernets contexts in the kubeconfig to select from
       repositoriesList: { // a list of available repositories to connect with
         github: false,
         gitea: false,
@@ -380,10 +375,7 @@ export default defineComponent({
       getContextList() {
         axios.get('/api/config/k8s/context').then(response => {
           for (let i = 0; i < response.data.length; i++) {
-            this.contextList.push({
-              text: response.data[i].name,
-              value: response.data[i].name,
-            });
+            this.contextList.push(response.data[i].name);
           }
           if (response.data.length > 0) {
             this.phases[0].context = response.data[0].name;

@@ -9,8 +9,7 @@
         <v-list-item 
             link to="/"
             prepend-icon="mdi-server"
-            title="Dashboard"
-            >
+            title="Dashboard">
         </v-list-item>
         <v-list-item 
             link to="/addons"

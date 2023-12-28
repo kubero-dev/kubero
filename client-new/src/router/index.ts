@@ -14,6 +14,11 @@ const routes = [
         // which is lazy-loaded when the route is visited.
         component: () => import('@/views/Pipeline.vue'),
       },
+      {
+        path: '/pipeline/:pipeline',
+        name: 'Pipeline Form',
+        component: () => import('@/components/pipelines/new.vue'),
+      },
     ],
   },
   {
