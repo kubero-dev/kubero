@@ -3,9 +3,10 @@
       <template v-slot:item="{ item}">
       <v-breadcrumbs-item
           :href="item.href"
+          :to="item.to"
           :disabled="item.disabled"
       >
-      <v-icon v-if="item.icon">{{ item.icon }}</v-icon> {{ item.text }}
+        <v-icon v-if="item.icon">{{ item.icon }}</v-icon> {{ item.text }}
       </v-breadcrumbs-item>
       </template>
   </v-breadcrumbs>

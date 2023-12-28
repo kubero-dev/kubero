@@ -27,6 +27,8 @@
                         icon="mdi-plus"
                         :to="{ name: 'App Form', params: { phase: phase.name }}"
                         class="mt-5 navBG"
+                        color="secondary"
+                        style="margin-bottom: 5px;"
                         >
                         </v-btn>
                     </v-col>
@@ -98,12 +100,12 @@ export default defineComponent({
             {
                 text: 'DASHBOARD',
                 disabled: false,
-                href: '/',
+                to: { name: 'Pipelines', params: {}}
             },
             {
                 text: 'PIPELINE:'+this.pipeline,
                 disabled: true,
-                href: '/pipeline/'+this.pipeline+'/apps',
+                to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
             }
         ],
         reviewapps: false,

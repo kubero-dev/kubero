@@ -11,7 +11,7 @@
                 <v-btn
                 elevation="2"
                 color="primary"
-                href="/pipeline/new"
+                :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
                 >New Pipeline</v-btn>
             </v-col>
         </v-row>
@@ -25,19 +25,17 @@
 
         <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
             <v-col cols="12">
-                <v-card elevation="2" outlined color="cardBackground">
+                <v-card elevation="2" outlined color="cardBackground" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" sm="12" md="6">
-                                <a :href="'/pipeline/'+item.name+'/apps'">
                                     <v-card-title>
-                                        <v-icon left :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
+                                        <v-icon start :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
                                     </v-card-title>
                                     <v-card-text>
                                         <span>{{ item.git.repository.description }}</span>
                                     </v-card-text>
-                                </a>
                             </v-col>
                             <v-col cols="12" sm="12" md="5" style="padding: 26px;">
                                     <v-chip
@@ -48,9 +46,7 @@
                                         :color="phase.enabled ? 'green' : ''"
                                         :text-color="phase.enabled  ? 'white' : ''"
                                         >
-                                        <v-icon left color="white" v-if="phase.name.includes('review')">
-                                            mdi-eye-refresh-outline
-                                        </v-icon>
+                                        <v-icon start v-if="phase.name.includes('review')" icon="mdi-eye-refresh-outline"></v-icon>
                                         {{ phase.name }}
                                     </v-chip>
                             </v-col>
@@ -64,7 +60,7 @@
                                 color="secondary"
                                 @click="deletePipeline(item.name)"
                                 >
-                                    <v-icon>
+                                    <v-icon color="primary">
                                         mdi-delete
                                     </v-icon>
                                 </v-btn>
@@ -76,7 +72,7 @@
                                 color="secondary"
                                 :href="'/pipeline/'+item.name"
                                 >
-                                    <v-icon>
+                                    <v-icon color="primary">
                                         mdi-pencil
                                     </v-icon>
                                 </v-btn>

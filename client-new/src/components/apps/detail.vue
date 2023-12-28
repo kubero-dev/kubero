@@ -76,12 +76,12 @@ export default defineComponent({
                 {
                     text: 'DASHBOARD',
                     disabled: false,
-                    href: '/',
+                    to: { name: 'Pipelines', params: {}}
                 },
                 {
                     text: 'PIPELINE:'+this.pipeline,
                     disabled: false,
-                    href: '/pipeline/'+this.pipeline+'/apps',
+                    to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
                 },
                 {
                     text: 'PHASE:'+this.phase,

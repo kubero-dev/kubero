@@ -18,11 +18,11 @@ export default createVuetify({
     themes: {
       dark: {
         colors: {
-          primary: '#8560A9',
-          secondary: '#5CBBF6',
+          primary: '#563774',
+          secondary: '#1B1B1B',
           //secondary: colors.grey.darken3,
           navBG: '#262626',
-          background: '#121212',
+          cardBackground: '#212121',
   
           accent: '#8c9eff',
           error: '#b71c1c',
@@ -31,7 +31,7 @@ export default createVuetify({
       light: {
         colors: {
           primary: '#8560A9',
-          secondary: '#5CBBF6',
+          secondary: '#E0E0E0',
           //secondary: colors.grey.lighten2,
           cardBackground: '#FAFAFA',
           navBG: '#F7F8FB',
