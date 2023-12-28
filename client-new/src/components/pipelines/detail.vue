@@ -25,7 +25,7 @@
                         <v-btn
                         elevation="2"
                         icon="mdi-plus"
-                        :to="{ name: 'App Form', params: { phase: phase.name }}"
+                        :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
                         class="mt-5 navBG"
                         color="secondary"
                         style="margin-bottom: 5px;"

@@ -30,7 +30,7 @@
                         <v-row>
                             <v-col cols="12" sm="12" md="6">
                                     <v-card-title>
-                                        <v-icon start :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
+                                        <v-icon start size="small" :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
                                     </v-card-title>
                                     <v-card-text>

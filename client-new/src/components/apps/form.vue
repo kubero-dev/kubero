@@ -1130,22 +1130,22 @@ export default defineComponent({
           {
               text: 'DASHBOARD',
               disabled: false,
-              href: '/',
+              to: { name: 'Pipelines', params: {}}
           },
           {
               text: 'PIPELINE:'+this.pipeline,
               disabled: false,
-              href: `/pipeline/${this.pipeline}/apps`,
+              to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
           },
           {
               text: 'PHASE:'+this.phase,
               disabled: false,
-              href: this.getAppBreadcrumbLink(),
+              to: this.getAppBreadcrumbLink(),
           },
           {
               text: 'APP:'+this.app,
               disabled: false,
-              href: this.getAppBreadcrumbLink(),
+              to: this.getAppBreadcrumbLink(),
           }
       ],
       advanced: false,
@@ -1455,9 +1455,9 @@ export default defineComponent({
     methods: {
       getAppBreadcrumbLink() {
         if (this.app == 'new') {
-          return `/pipeline/${this.pipeline}/apps`;
+          return { name: 'Pipeline Apps', params: { pipeline: this.pipeline }};
         } else {
-          return `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`;
+          return { name: 'App Dashboard', params: { pipeline: this.pipeline, phase: this.phase, app: this.app }};
         }
       },
       loadClusterIssuers(){

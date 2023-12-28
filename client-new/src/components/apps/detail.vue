@@ -140,7 +140,7 @@ export default defineComponent({
             window.open(`https://app.${this.appData.spec.domain}`, '_blank');
         },
         ActionEditApp() {
-            this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/${this.app}`);
+            this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/apps/${this.app}`);
         },
         ActionStartDownload() {
             console.log("ActionStartDownload");

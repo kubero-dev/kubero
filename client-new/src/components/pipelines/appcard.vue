@@ -111,7 +111,7 @@
             title="Details"
             color="deep-purple lighten-2"
             variant="text"
-            :href="'/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
+            :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
             <v-icon
                 >mdi-page-next-outline
@@ -121,7 +121,7 @@
             title="Edit"
             color="deep-purple lighten-2"
             variant="text"
-            :href="'/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
+            :to="{ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
             <v-icon
                 >mdi-pencil

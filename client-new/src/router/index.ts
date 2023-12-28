@@ -27,7 +27,7 @@ const routes = [
         component: () => import('@/components/pipelines/detail.vue'),
       },
       {
-        path: "/pipeline/:pipeline/:phase/apps/new",
+        path: "/pipeline/:pipeline/:phase/apps/:app",
         name: "App Form",
         props: true,
         component: () => import('@/components/apps/form.vue'),
