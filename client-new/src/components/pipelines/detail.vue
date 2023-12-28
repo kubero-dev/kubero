@@ -24,14 +24,10 @@
 
                         <v-btn
                         elevation="2"
-                        icon
-                        large
+                        icon="mdi-plus"
                         :to="{ name: 'New App', params: { phase: phase.name }}"
                         class="mt-5 navBG"
                         >
-                            <v-icon>
-                                mdi-plus
-                            </v-icon>
                         </v-btn>
                     </v-col>
 
@@ -156,6 +152,10 @@ export default defineComponent({
       },
       async loadPullrequests() {
         const self = this;
+
+        if (this.git.provider == "") {
+            return;
+        }
 
         const gitrepoB64 = btoa(this.git.ssh_url);
 

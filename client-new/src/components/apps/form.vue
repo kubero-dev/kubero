@@ -1,7 +1,7 @@
 <template>
   <v-form v-model="valid">
     <v-container>
-      <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+      <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
             <h2 v-if="app=='new'">
@@ -71,6 +71,7 @@
           <v-switch
             v-model="ssl"
             label="SSL"
+            density="compact"
           ></v-switch>
         </v-col>
       </v-row>
@@ -107,8 +108,8 @@
       >
       <!-- DEPLOYMENT -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Deployment</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Deployment</v-expansion-panel-title>
+        <v-expansion-panel-text class="cardBackground">
 
           <v-row>
             <v-col
@@ -331,13 +332,13 @@
               ></v-text-field>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
       <!-- SECURITY -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-header>
-        <v-expansion-panel-content class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-title>
+        <v-expansion-panel-text class="secondary">
 
           <v-row  v-if="deploymentstrategy == 'git'">
             <v-col
@@ -461,14 +462,14 @@
             </v-col>
           </v-row>
 
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
 
       <!-- NETWORKING -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Networking</v-expansion-panel-header>
-        <v-expansion-panel-content class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Networking</v-expansion-panel-title>
+        <v-expansion-panel-text class="secondary">
 
           <v-row>
             <v-col
@@ -514,14 +515,14 @@
             </v-col>
           </v-row>
 
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
 
       <!-- CORS -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium secondary">Cors</v-expansion-panel-header>
-        <v-expansion-panel-content class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Cors</v-expansion-panel-title>
+        <v-expansion-panel-text class="secondary">
 
           <v-row>
             <v-col
@@ -606,13 +607,13 @@
 
 
 
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Environment Variables</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Environment Variables</v-expansion-panel-title>
+        <v-expansion-panel-text class="cardBackground">
           <v-row v-for="envvar in envvars" v-bind:key="envvar.name">
             <v-col
               cols="12"
@@ -666,13 +667,13 @@
               </v-btn>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
       <!-- RESOURCES -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Resources</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Resources</v-expansion-panel-title>
+        <v-expansion-panel-text class="cardBackground">
           <v-row>
             <v-col
               cols="12"
@@ -682,6 +683,8 @@
                 v-model="podsize"
                 :items="podsizes"
                 label="Podsize"
+                item-title="text"
+                item-value="value"
                 @change="updatePodsize"
               ></v-select>
             </v-col>
@@ -759,13 +762,13 @@
               ></v-range-slider>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
       <!-- VOLUMES -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Volumes</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Volumes</v-expansion-panel-title>
+        <v-expansion-panel-text class="cardBackground">
           <div v-for="volume in extraVolumes" v-bind:key="volume.name">
             <v-row>
               <v-col
@@ -853,13 +856,13 @@
               </v-btn>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
 
       <!-- CRONJOBS -->
       <v-expansion-panel>
-        <v-expansion-panel-header class="text-uppercase text-caption-2 font-weight-medium cardBackground">Cronjobs</v-expansion-panel-header>
-        <v-expansion-panel-content class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Cronjobs</v-expansion-panel-title>
+        <v-expansion-panel-text class="cardBackground">
           <div v-for="cronjob in cronjobs" v-bind:key="cronjob.name">
             <v-row>
               <v-col
@@ -937,7 +940,7 @@
               </v-btn>
             </v-col>
           </v-row>
-        </v-expansion-panel-content>
+        </v-expansion-panel-text>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -990,6 +993,7 @@ import { defineComponent } from 'vue'
 //import { useKuberoStore } from '@/stores/kubero'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
+import Breadcrumbs from "../breadcrumbs.vue";
 
 
 type App = {
@@ -1126,12 +1130,12 @@ export default defineComponent({
           {
               text: 'DASHBOARD',
               disabled: false,
-              href: '#/',
+              href: '/',
           },
           {
               text: 'PIPELINE:'+this.pipeline,
               disabled: false,
-              href: `#/pipeline/${this.pipeline}/apps`,
+              href: `/pipeline/${this.pipeline}/apps`,
           },
           {
               text: 'PHASE:'+this.phase,
@@ -1446,14 +1450,14 @@ export default defineComponent({
     },
     components: {
         Addons,
-        breadcrumbs: () => import('../breadcrumbs.vue'),
+        Breadcrumbs,
     },
     methods: {
       getAppBreadcrumbLink() {
         if (this.app == 'new') {
-          return `#/pipeline/${this.pipeline}/apps`;
+          return `/pipeline/${this.pipeline}/apps`;
         } else {
-          return `#/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`;
+          return `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`;
         }
       },
       loadClusterIssuers(){
@@ -1984,10 +1988,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-.v-expansion-panel-content {
+.v-expansion-panel-text {
     background: cardBackground;
 }
-.v-expansion-panel-header {
+.v-expansion-panel-title {
     background: cardBackground;
 }
 

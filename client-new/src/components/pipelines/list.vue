@@ -94,7 +94,7 @@
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from 'vue'
-import breadcrumbs from "../breadcrumbs.vue";
+import Breadcrumbs from "../breadcrumbs.vue";
 
 type Pipeline = {
     name: string,
@@ -148,7 +148,7 @@ export default defineComponent({
     },
 
     components: {
-        Breadcrumbs: breadcrumbs,
+        Breadcrumbs,
     },
     data () { return {
         pipelines: [] as Pipeline[], 

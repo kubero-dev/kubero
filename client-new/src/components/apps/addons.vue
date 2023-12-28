@@ -81,6 +81,8 @@
                 :items="availableAddons"
                 label="Addon"
                 outlined
+                item-title="text"
+                item-value="value"
                 v-if="mode==='create'"
                 @change="addonChange($event)"
                 ></v-select>
