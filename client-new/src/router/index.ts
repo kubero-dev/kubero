@@ -17,7 +17,14 @@ const routes = [
       {
         path: '/pipeline/:pipeline',
         name: 'Pipeline Form',
+        props: true,
         component: () => import('@/components/pipelines/new.vue'),
+      },
+      {
+        path: '/pipeline/:pipeline/apps',
+        name: 'Pipeline Apps',
+        props: true,
+        component: () => import('@/components/pipelines/detail.vue'),
       },
     ],
   },

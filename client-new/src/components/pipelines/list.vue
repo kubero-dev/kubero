@@ -29,7 +29,7 @@
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" sm="12" md="6">
-                                <a :href="'/#/pipeline/'+item.name+'/apps'">
+                                <a :href="'/pipeline/'+item.name+'/apps'">
                                     <v-card-title>
                                         <v-icon left :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
@@ -74,7 +74,7 @@
                                 small
                                 class="ma-2"
                                 color="secondary"
-                                :href="'#/pipeline/'+item.name"
+                                :href="'/pipeline/'+item.name"
                                 >
                                     <v-icon>
                                         mdi-pencil
