@@ -13,6 +13,7 @@
               <v-avatar
                 size="57"
                 rounded
+                style="margin-top: 20px;"
               ><img
               :src="addon.icon"
               :alt="addon.displayName"

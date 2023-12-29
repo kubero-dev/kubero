@@ -78,6 +78,7 @@
             <v-list-item 
                 link href="https://discord.gg/tafRPMWS4r" 
                 target="_blank"
+                class="discord"
                 prepend-icon="mdi-discord"
                 title="Discord">
             </v-list-item>
@@ -137,3 +138,21 @@ export default defineComponent({
 });
 
 </script>
+
+<style scoped>
+
+.discord{
+    background-image: url('./../img/icons/discord.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+
+.discord::before {
+    height: 23px;
+    width: 23px;
+    visibility: hidden;
+    content: "";
+}
+</style>

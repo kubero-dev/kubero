@@ -16,7 +16,9 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'">{{ app.name }}</a></v-card-title>
+    <v-card-title>
+      <router-link :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}">{{ app.name }}</router-link>
+    </v-card-title>
 
     <v-card-text>
         <v-row

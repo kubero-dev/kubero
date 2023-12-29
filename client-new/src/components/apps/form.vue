@@ -173,14 +173,14 @@
               md="8"
             >
             
-              <v-alert variation="text" color="#8560a9" border="end" v-if="buildstrategy == 'plain'">
+              <v-alert variant="tonal" text="asdf" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
                 <h3>
                   Plain
                 </h3>
                 <div>This is the default for kubero. Your code is running on official images. The code will be built for every pod. This the fastes way, to run your code, but becomes more inefficient with every replica.</div>
               </v-alert>
 
-              <v-alert variation="text" color="#8560a9" v-if="buildstrategy == 'nixpacks'">
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'nixpacks'">
                 <h3>
                   Nixpacks
                 </h3>
@@ -190,14 +190,13 @@
                 </div>
               </v-alert>
 
-              <v-alert variation="text" color="#8560a9" v-if="buildstrategy == 'dockerfile'">
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'dockerfile'">
                 <h3>
                   Dockerfile
                 </h3>
                 <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
               </v-alert>
-
-              <v-alert variation="text" color="blue" type="info" v-if="!buildPipeline">
+              <v-alert variant="tonal" type="info" border="start" v-if="!buildPipeline" style="margin-top: 20px;">
                 <h3>
                   Buildpipeline not configured
                 </h3>

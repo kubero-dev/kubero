@@ -28,7 +28,7 @@
                 <v-card elevation="2" outlined color="cardBackground" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" sm="12" md="6">
+                            <v-col cols="12" sm="12" md="5">
                                     <v-card-title>
                                         <v-icon start size="small" :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
@@ -51,7 +51,7 @@
                                     </v-chip>
                             </v-col>
 
-                            <v-col cols="12" sm="12" md="1">
+                            <v-col cols="12" sm="12" md="2">
                                 <v-btn
                                 elevation="2"
                                 fab

@@ -45,14 +45,16 @@
                         <v-card-subtitle>
                             <v-chip
                                 label
-                                small
+                                size="small"
                                 class="mr-2"
-                            ><v-icon left small>mdi-star</v-icon>{{ template.stars }}</v-chip>
+                                prepend-icon="mdi-star"
+                            >{{ template.stars }}</v-chip>
                             <v-chip
                                 label
-                                small
+                                size="small"
+                                prepend-icon="mdi-file-certificate"
                                 v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"
-                            ><v-icon left small>mdi-file-certificate</v-icon>{{ template.spdx_id }}</v-chip>
+                            >{{ template.spdx_id }}</v-chip>
                         </v-card-subtitle>
 
                         <v-card-text>
@@ -210,7 +212,7 @@ export default defineComponent({
         },
         openInstall(templatename: string, pipeline: string, phase: string, catalogId: number) {
             // redirect to install page
-            window.location.href = `/#/pipeline/${pipeline}/${phase}/apps/new?template=${templatename}&catalogId=${catalogId}`;
+            this.$router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templatename, catalogId: catalogId }})
 
         },
         openInstallDialog(template: Template) {
