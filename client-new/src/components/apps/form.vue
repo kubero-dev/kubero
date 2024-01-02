@@ -108,8 +108,8 @@
       >
       <!-- DEPLOYMENT -->
       <v-expansion-panel>
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Deployment</v-expansion-panel-title>
-        <v-expansion-panel-text class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Deployment</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
 
           <v-row>
             <v-col
@@ -336,8 +336,8 @@
 
       <!-- SECURITY -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Security</v-expansion-panel-title>
-        <v-expansion-panel-text class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
 
           <v-row  v-if="deploymentstrategy == 'git'">
             <v-col
@@ -467,8 +467,8 @@
 
       <!-- NETWORKING -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Networking</v-expansion-panel-title>
-        <v-expansion-panel-text class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
 
           <v-row>
             <v-col
@@ -520,8 +520,8 @@
 
       <!-- CORS -->
       <v-expansion-panel v-if="advanced">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium secondary">Cors</v-expansion-panel-title>
-        <v-expansion-panel-text class="secondary">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Cors</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
 
           <v-row>
             <v-col
@@ -611,8 +611,8 @@
 
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel>
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Environment Variables</v-expansion-panel-title>
-        <v-expansion-panel-text class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
           <v-row v-for="envvar in envvars" v-bind:key="envvar.name">
             <v-col
               cols="12"
@@ -671,8 +671,8 @@
 
       <!-- RESOURCES -->
       <v-expansion-panel>
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Resources</v-expansion-panel-title>
-        <v-expansion-panel-text class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Resources</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
           <v-row>
             <v-col
               cols="12"
@@ -766,8 +766,8 @@
 
       <!-- VOLUMES -->
       <v-expansion-panel>
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Volumes</v-expansion-panel-title>
-        <v-expansion-panel-text class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Volumes</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
           <div v-for="volume in extraVolumes" v-bind:key="volume.name">
             <v-row>
               <v-col
@@ -860,8 +860,8 @@
 
       <!-- CRONJOBS -->
       <v-expansion-panel>
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium cardBackground">Cronjobs</v-expansion-panel-title>
-        <v-expansion-panel-text class="cardBackground">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Cronjobs</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
           <div v-for="cronjob in cronjobs" v-bind:key="cronjob.name">
             <v-row>
               <v-col

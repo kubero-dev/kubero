@@ -25,10 +25,10 @@
 
         <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
             <v-col cols="12">
-                <v-card elevation="2" outlined color="cardBackground" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
+                <v-card elevation="2" outlined color="cardBackground">
                     <v-card-text>
                         <v-row>
-                            <v-col cols="12" sm="12" md="5">
+                            <v-col cols="12" sm="12" md="5"  style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                                     <v-card-title>
                                         <v-icon start size="small" :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
@@ -37,7 +37,7 @@
                                         <span>{{ item.git.repository.description }}</span>
                                     </v-card-text>
                             </v-col>
-                            <v-col cols="12" sm="12" md="5" style="padding: 26px;">
+                            <v-col cols="12" sm="12" md="5" style="padding: 26px; cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                                     <v-chip
                                         v-for="phase in item.phases" :key="phase.name"
                                         small
@@ -70,7 +70,7 @@
                                 small
                                 class="ma-2"
                                 color="secondary"
-                                :href="'/pipeline/'+item.name"
+                                :to="{ name: 'Pipeline Form', params: { pipeline: item.name }}"
                                 >
                                     <v-icon color="primary">
                                         mdi-pencil
@@ -178,7 +178,7 @@ export default defineComponent({
         axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
-            //this.loadPipelinesList();
+            this.loadPipelinesList();
         })
         .catch(error => {
             console.log(error);

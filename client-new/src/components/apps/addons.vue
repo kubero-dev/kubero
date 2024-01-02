@@ -2,51 +2,50 @@
   <v-form v-model="valid">
 
   <v-row class="pt-5">
-      <v-col v-for="addon in addons" v-bind:key="addon.kind"
-        cols="12"
-        md="3"
-      >
+    <v-col v-for="addon in addons" v-bind:key="addon.kind"
+      cols="12"
+      md="3"
+    >
 
-        <v-card class="cardBackground">
-          <v-list-item-content class="justify-center">
-            <div class="mx-auto text-center">
-              <v-avatar
-                size="57"
-                rounded
-                style="margin-top: 20px;"
-              ><img
-              :src="addon.icon"
+      <v-card color="cardBackground">
+        <v-list-item-content class="justify-center">
+          <div class="mx-auto text-center">
+            <v-avatar
+              size="57"
+              rounded
+              style="margin-top: 20px;"
+              :image="addon.icon"
               :alt="addon.displayName"
-              >
-              </v-avatar>
-              <h3>{{ addon.displayName }}</h3>
-              <p class="text-caption mt-1">
-                {{ addon.id }}
-              </p>
-              <v-divider class="my-3"></v-divider>
-              <v-btn
-                depressed
-                variant="text"
-                color="primary"
-                @click="editAddon(addon)"
-              >
-                edit
-              </v-btn>
-              <v-btn
-                depressed
-                variant="text"
-                color="red"
-                @click="deleteAddon(addon)"
-              >
-                delete
-              </v-btn>
-            </div>
-          </v-list-item-content>
-        </v-card>
+            >
+            </v-avatar>
+            <h3>{{ addon.displayName }}</h3>
+            <p class="text-caption mt-1">
+              {{ addon.id }}
+            </p>
+            <v-divider class="my-3"></v-divider>
+            <v-btn
+              depressed
+              variant="text"
+              color="primary"
+              @click="editAddon(addon)"
+            >
+              edit
+            </v-btn>
+            <v-btn
+              depressed
+              variant="text"
+              color="red"
+              @click="deleteAddon(addon)"
+            >
+              delete
+            </v-btn>
+          </div>
+        </v-list-item-content>
+      </v-card>
 
 
-      </v-col>
-    </v-row>
+    </v-col>
+  </v-row>
 
   <v-row>
     <v-dialog
