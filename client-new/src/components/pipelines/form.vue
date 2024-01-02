@@ -56,13 +56,13 @@
           cols="12"
           md="8"
         >
-        <v-tabs icons-and-text v-model="repotab" color="#8560A9" @change="loadRepository">
-            <v-tab href="#github" :disabled="repositoriesList.github == false || !newPipeline">Github <v-icon>mdi-github</v-icon> </v-tab>
-            <v-tab href="#gitea" :disabled="repositoriesList.gitea == false || !newPipeline">Gitea <v-icon class="gitea"></v-icon></v-tab>
-            <v-tab href="#gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline">Gitlab <v-icon>mdi-gitlab</v-icon></v-tab>
-            <!--<v-tab href="#onedev" disabled>oneDev <v-icon class="onedev"></v-icon></v-tab>-->
-            <v-tab href="#gogs" :disabled="repositoriesList.gogs == false || !newPipeline">Gogs <v-icon class="gogs"></v-icon></v-tab>
-            <v-tab href="#bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline">Bitbucket <v-icon>mdi-bitbucket</v-icon></v-tab>
+        <v-tabs v-model="repotab" color="#8560A9" stacked centered @change="loadRepository">
+            <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2">mdi-github</v-icon>Github</v-tab>
+            <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
+            <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
+            <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
+            <v-tab value="gogs" :disabled="repositoriesList.gogs == false || !newPipeline"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
+            <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
         </v-tabs>
         </v-col>
       </v-row>
@@ -114,7 +114,7 @@
           cols="12"
           md="4"
         >
-              <v-alert class="alert"
+              <v-alert class="alert mb-5"
                 type="success"
                 elevation="6"
                 transition="scale-transition"
@@ -138,6 +138,8 @@
             v-model="buildpack"
             :items="buildpackList"
             label="Buildpack *"
+            item-title="text"
+            item-text="value"
             @change="updateBuildpack"
           ></v-select>
         </v-col>
@@ -148,7 +150,7 @@
           <v-row v-for="phase in phases" :key="phase.name">
             <v-col
               cols="12"
-              md="2"
+              md="3"
             >
               <v-switch
                 v-model="phase.enabled"
@@ -378,6 +380,7 @@ export default defineComponent({
               value: response.data[i],
             });
           }
+          this.buildpack = response.data[0];
         });
       },
       connectRepo() {

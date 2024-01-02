@@ -36,7 +36,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="6"
+          md="7"
         >
           <v-text-field
             v-model="appname"
@@ -65,7 +65,7 @@
         </v-col>
         <v-col
           cols="3"
-          md="1"
+          md="2"
           pullright
         >
           <v-switch
@@ -79,7 +79,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="6"
+          md="7"
         >
             <v-text-field
               v-model="containerPort"
@@ -91,7 +91,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="6"
+          md="7"
         >
         <v-switch
             v-model="advanced"
@@ -114,7 +114,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="7"
             >
             <v-radio-group
               v-model="deploymentstrategy"
@@ -173,7 +173,7 @@
               md="8"
             >
             
-              <v-alert variant="tonal" text="asdf" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
                 <h3>
                   Plain
                 </h3>

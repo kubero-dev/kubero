@@ -85,7 +85,7 @@
                 item-title="text"
                 item-value="value"
                 v-if="mode==='create'"
-                @change="addonChange($event)"
+                v-model="selectedAddon"
                 ></v-select>
               </v-col>
 
@@ -104,6 +104,8 @@
                     :items="availableStorageClasses"
                     :label="field.label"
                     :rules="baseSelectRule"
+                    item-title="text"
+                    item-value="value"
                     dense
                     v-model="field.default"
                 ></v-select>
@@ -111,6 +113,8 @@
                     v-if="field.type === 'select' && typeof field.default === 'object'"
                     :items="field.options"
                     :label="field.label"
+                    item-title="text"
+                    item-value="value"
                     dense
                     v-model="field.default"
                 ></v-select>
@@ -238,7 +242,12 @@ export default defineComponent({
         dialog: false,
         mode: 'create',
         availableStorageClasses: [] as StorageClass[],
-        availableAddons: [] as AddonOption[],
+        availableAddons: [
+            {
+                text: '',
+                value: {} as Addon,
+            },
+        ] as AddonOption[],
         selectedAddon: {} as Addon,
         baseRule: [
           (v: any) => !!v || 'Field is required',
@@ -318,10 +327,6 @@ export default defineComponent({
             .catch(error => {
                 console.log(error);
             });
-        },
-        addonChange(event: Addon) {
-            //console.log(event);
-            this.selectedAddon = event;
         },
         submitForm() {
             this.dialog = false;

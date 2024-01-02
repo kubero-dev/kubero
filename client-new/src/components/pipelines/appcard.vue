@@ -23,18 +23,18 @@
     <v-card-text>
         <v-row
             v-if="app.deploymentstrategy != 'docker'"
-            class="mx-0"
+            class="mx-0 my-1"
         >
-            <v-icon left small>mdi-git</v-icon>
+            <v-icon start style="vertical-align:baseline">mdi-git</v-icon>
             <div class="grey--text text-subtitle-1">
                 {{ app.gitrepo.ssh_url }}
             </div>
         </v-row>
         <v-row
             v-if="app.deploymentstrategy == 'docker'"
-            class="mx-0"
+            class="mx-0 my-1"
         >
-            <v-icon left small>mdi-docker</v-icon>
+            <v-icon start x-small>mdi-docker</v-icon>
             <div class="grey--text text-subtitle-1">
                 {{ app.image.repository }}:{{ app.image.tag }}
             </div>
@@ -105,9 +105,7 @@
             variant="text"
             @click="restartApp()"
         >
-            <v-icon
-                >mdi-reload-alert
-            </v-icon>
+            <v-icon>mdi-reload-alert</v-icon>
         </v-btn>
         <v-btn
             title="Details"
@@ -115,9 +113,7 @@
             variant="text"
             :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
-            <v-icon
-                >mdi-page-next-outline
-            </v-icon>
+            <v-icon>mdi-page-next-outline</v-icon>
         </v-btn>
         <v-btn
             title="Edit"
@@ -125,9 +121,7 @@
             variant="text"
             :to="{ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
-            <v-icon
-                >mdi-pencil
-            </v-icon>
+            <v-icon>mdi-pencil</v-icon>
         </v-btn>
         <v-btn
             title="Open App"
@@ -136,21 +130,16 @@
             variant="text"
             :href="'//'+app.domain" target="_blank"
         >
-            <v-icon
-                >mdi-open-in-new
-            </v-icon>
+            <v-icon>mdi-open-in-new</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
             title="Delete App"
             depressed
-            color="primary lighten-2"
+            color="deep-purple lighten-2"
             @click="deleteApp()"
         >
-            <v-icon
-              color="white"
-                >mdi-delete
-            </v-icon>
+            <v-icon>mdi-delete</v-icon>
         </v-btn>
     </v-card-actions>
 </v-card>

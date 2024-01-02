@@ -1,7 +1,7 @@
 <template>
 <v-card
     :loading="loadingState"
-    class="mt-5 pullrequest"
+    class="mt-5 ml-1 pullrequest"
     outlined
     elevation="0"
     color="cardBackground"
@@ -15,16 +15,8 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-actions>
-      <v-list-item class="grow">
-        <v-list-item-avatar color="grey darken-3" style="height: 35px; min-width: 35px; width: 35px;">
-          <v-img
-            class="elevation-6"
-            :alt="pullrequest.user.login"
-            :src="pullrequest.user.avatar_url"
-          ></v-img>
-        </v-list-item-avatar>
-
+    <v-card-text>
+      <v-list-item :prepend-avatar="pullrequest.user.avatar_url">
         <v-list-item-content>
           <v-list-item-subtitle>{{ pullrequest.user.login }}</v-list-item-subtitle>
           <v-list-item-title style="white-space: inherit; min-width: 250px;"><a :href="pullrequest.html_url" target="_blank">{{ pullrequest.title }}</a></v-list-item-title>
@@ -33,37 +25,9 @@
           <v-list-item-subtitle><v-icon small>mdi-source-commit-start</v-icon>{{ this.pullrequest.created_at }}</v-list-item-subtitle>
           -->
         </v-list-item-content>
-
-        
-        <v-list-item-action>
-            <v-btn
-                title="Start Review App"
-                depressed
-                color="primary lighten-2"
-                @click="startReviewApp()"
-                v-if="!pullrequest.locked"
-            >
-                <v-icon
-                    color="white"
-                    >mdi-play-box-outline
-                </v-icon>
-            </v-btn>
-            <v-btn
-                title="Start Review App"
-                depressed
-                color="primary lighten-2"
-                disabled
-                v-if="pullrequest.locked"
-            >
-                <v-icon
-                    color="white"
-                    >mdi-play-box-lock-outline
-                </v-icon>
-            </v-btn>
-        </v-list-item-action>
       </v-list-item>
-    </v-card-actions>
-    <v-card-subtitle class="pr-data">
+    </v-card-text>
+    <v-card-subtitle class="pr-data mb-5">
         <v-row>
             <v-col>
                 <v-chip label class="mr-1"><span v-if="pullrequest.autodeploy">Autodeploy | </span>{{ pullrequest.branch }}</v-chip>
@@ -72,8 +36,35 @@
                 <v-icon small>mdi-source-commit-start</v-icon> {{ formatDate(pullrequest.created_at) }}<br>
                 <v-icon small>mdi-source-pull</v-icon> {{ formatDate(pullrequest.updated_at)}}
             </v-col>
-    </v-row>
+        </v-row>
     </v-card-subtitle>
+    <v-divider></v-divider>
+    
+    <v-card-actions>
+
+        <v-btn
+            title="Start Review App"
+            @click="startReviewApp()"
+            color="deep-purple lighten-2"
+            variant="text"
+            v-if="!pullrequest.locked"
+        >
+            <v-icon
+                >mdi-play-box-outline
+            </v-icon>
+        </v-btn>
+        <v-btn
+            title="Start Review App"
+            color="deep-purple lighten-2"
+            variant="text"
+            disabled
+            v-if="pullrequest.locked"
+        >
+            <v-icon
+                >mdi-play-box-lock-outline
+            </v-icon>
+        </v-btn>
+    </v-card-actions>
 </v-card>
 </template>
 

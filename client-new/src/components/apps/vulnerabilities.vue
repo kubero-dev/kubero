@@ -175,9 +175,8 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
+                            variant="tonal"
                             border="start"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
                         >
                             <h3>No vulnerabilityscans available</h3>
                             To scan this app for vulnerabfilities, please trigger a rescan.

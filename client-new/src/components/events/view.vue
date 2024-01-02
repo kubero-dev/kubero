@@ -1,5 +1,5 @@
 <template>
-    <v-container :fluid="true">
+    <v-container>
         <h1>Events</h1>
         <v-layout>
                 <v-row
@@ -10,8 +10,9 @@
                             v-for="event in events" :key="event.metadata.uid"
                             :color=event.color
                             :icon=event.icon
+                            dot-color="var(--v-primary-base)"
                             fill-dot>
-                            <v-card class="cardBackground elevation-2">
+                            <v-card class="elevation-2">
                             <v-card-title class="text-h5">
                                 {{ event.message }}
                             </v-card-title>
@@ -34,9 +35,8 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
+                            variant="tonal"
                             border="start"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 
@@ -111,13 +111,13 @@ export default defineComponent({
 
                 switch (response.data[i].reason) {
                     case "Created":
-                        event.icon = "mdi-folder-plus-outline";
+                        event.icon = "mdi-bell-plus-outline";
                         break;
                     case "Deleted":
-                        event.icon = "mdi-folder-remove-outline";
+                        event.icon = "mdi-bell-remove-outline";
                         break;
                     default:
-                        event.icon = "mdi-folder-outline";
+                        event.icon = "mdi-bell-outline";
                 }
                 self.events.push(event);
             }

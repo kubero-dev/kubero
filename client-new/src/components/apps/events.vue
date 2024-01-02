@@ -51,9 +51,8 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
+                            variant="tonal"
                             border="start"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 

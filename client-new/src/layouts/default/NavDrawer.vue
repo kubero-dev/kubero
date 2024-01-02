@@ -29,13 +29,13 @@
         </v-list-item>
         <v-list-item 
             link to="/settings" 
-            v-if="kubero.session"
+            v-if="kubero.isAuthenticated"
             prepend-icon="mdi-cog-outline"
             title="Settings">
         </v-list-item>
         <v-list-item 
             @click="logout()" 
-            v-if="kubero.session"
+            v-if="kubero.isAuthenticated"
             prepend-icon="mdi-logout"
             title="Logout">
         </v-list-item>
@@ -113,6 +113,7 @@ theme.global.name.value = localStorage.getItem("theme") || 'light';
 </script>
 
 <script lang="ts">
+import axios from "axios";
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
@@ -130,10 +131,16 @@ export default defineComponent({
       ...mapState(useKuberoStore, ['kubero']),
     },
     methods: {
-        logout() {
-            //this.$store.dispatch('logout');
-            //this.$router.push('/login');
-        }
+        logout: () => {
+            axios.get("/api/logout")
+            .then((response) => {
+                console.log("Logged out"+response)
+                window.location.reload()
+            })
+            .catch((errors) => {
+                console.log("Cannot logout "+errors)
+            })
+        },
     },
     mounted() {
         //this.templatesEnabled = this.$store.state.templatesEnabled;
@@ -147,16 +154,11 @@ export default defineComponent({
 
 .discord{
     background-image: url('./../img/icons/discord.svg');
-    background-size: contain;
+    background-size: 28px;
     background-repeat: no-repeat;
-    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    background-position-x: 5px;
+    background-position-y: 15px;
+    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
-}
-
-.discord::before {
-    height: 23px;
-    width: 23px;
-    visibility: hidden;
-    content: "";
 }
 </style>

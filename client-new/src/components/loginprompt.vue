@@ -10,13 +10,12 @@
         class="ma-10"
         >
         <v-card-text>
-        <div v-if="authMethods.local">
+        <div v-if="authMethods.local" class="py-5">
             <v-alert
                 v-show="error"
-                outlined
                 type="warning"
-                prominent
                 border="start"
+                class="mb-5"
                 >Wrong username or password!
             </v-alert>
             <form v-on:submit="login">
@@ -37,11 +36,9 @@
                     type="submit"
                 >Login</v-btn>
             </form>
-            <p></p>
         </div>
         <v-divider v-if="authMethods.local && authMethods.github"></v-divider>
-        <p></p>
-        <div v-if="authMethods.github">
+        <div v-if="authMethods.github" class="py-5">
             <v-btn
                 block
                 depressed
@@ -57,7 +54,7 @@
         </div>        <p></p>
         <v-divider v-if="(authMethods.local || authMethods.github) && authMethods.oauth2"></v-divider>
         <p></p>
-        <div v-if="authMethods.oauth2">
+        <div v-if="authMethods.oauth2" class="py-5">
             <v-btn
                 block
                 depressed
