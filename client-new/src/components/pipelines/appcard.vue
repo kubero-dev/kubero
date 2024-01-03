@@ -226,11 +226,15 @@ export default defineComponent({
         "low": undefined,
         "unknown": undefined
       },
+      metricsInterval: 0 as unknown as NodeJS.Timeout,
     }),
     mounted() {
         this.loadMetrics();
-        setInterval(this.loadMetrics, 10000);
+        this.metricsInterval = setInterval(this.loadMetrics, 4000);
         this.loadVulnSummary();
+    },
+    unmounted() {
+        clearInterval(this.metricsInterval);
     },
     methods: {
         deleteApp() {

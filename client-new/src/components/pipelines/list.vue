@@ -89,8 +89,9 @@
 
 <script lang="ts">
 import axios from "axios";
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
+import { useSocketIO } from '../../socket.io';
 
 type Pipeline = {
     name: string,
@@ -110,39 +111,45 @@ type PipelineList = {
     items: Pipeline[]
 }
 
-type PipelineInstance = {
-    name: string,
-    git: {
-        repository: {
-            admin: boolean,
-            description: string,
-        }
-    },
-    phases: {
-        name: string,
-        enabled: boolean,
-    }[]
-}
+const { socket } = useSocketIO();
+socket.on('connect', () => {
+    console.log("Websocket connected");
+});
 
-type PipelineInstanceList = {
-    items: PipelineInstance[]
-}
+socket.on('updatedPipelines', async (instances: any) => {
+    console.log("updatedPipelines", instances);
+    loadPipelinesList();
+});
 
+
+const pipelines = ref([] as Pipeline[]);
+async function loadPipelinesList() {
+    axios.get(`/api/pipelines`)
+    .then(response => {
+        console.log("pipelinesReloaded");
+        pipelines.value = response.data.items;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
 
 export default defineComponent({
-    sockets: {
-        async updatedPipelines(instances: PipelineInstanceList) {
+    name: 'Pipelines List',
+    setup() {
+        console.log("created");
+        /*socket.on('updatedPipelines', async (instances: any) => {
             console.log("updatedPipelines", instances);
-            let _apps = await this.loadPipelinesList();
-            if (_apps !== undefined) {
-                this.pipelines = _apps;
-            }
-        },
+            loadPipelinesList();
+        });
+        */
+        return {
+            pipelines,
+        }
     },
     mounted() {
-        this.loadPipelinesList();
+        loadPipelinesList();
     },
-
     components: {
         Breadcrumbs,
     },
@@ -178,7 +185,7 @@ export default defineComponent({
         axios.delete(`/api/pipelines/${app}`)
         .then(response => {
             console.log(response);
-            this.loadPipelinesList();
+            ///this.loadPipelinesList();
         })
         .catch(error => {
             console.log(error);
