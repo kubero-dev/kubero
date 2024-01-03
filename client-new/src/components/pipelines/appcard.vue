@@ -25,7 +25,7 @@
             v-if="app.deploymentstrategy != 'docker'"
             class="mx-0 my-1"
         >
-            <v-icon start style="vertical-align:baseline">mdi-git</v-icon>
+            <v-icon start style="vertical-align:baseline" color="kubero">mdi-git</v-icon>
             <div class="grey--text text-subtitle-1">
                 {{ app.gitrepo.ssh_url }}
             </div>
@@ -34,7 +34,7 @@
             v-if="app.deploymentstrategy == 'docker'"
             class="mx-0 my-1"
         >
-            <v-icon start x-small>mdi-docker</v-icon>
+            <v-icon start x-small color="kubero">mdi-docker</v-icon>
             <div class="grey--text text-subtitle-1">
                 {{ app.image.repository }}:{{ app.image.tag }}
             </div>
@@ -47,12 +47,12 @@
 
     <table style="width: 100%;" v-if="vulnSummary.unknown != undefined">
       <tr>
-        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ vulnSummary.unknown }} UNKNOWN</td>
-        <td title="LOW" class="vuln-summary severity-low">{{ vulnSummary.low }} LOW</td>
-        <td title="MEDIUM" class="vuln-summary severity-medium">{{ vulnSummary.medium }} MEDIUM</td>
-        <td title="HIGH" class="vuln-summary severity-high">{{ vulnSummary.high }} HIGH</td>
-        <td title="CRITICAL" class="vuln-summary severity-critical">{{ vulnSummary.critical }} CRITICAL</td>
-        <td title="TOTAL" class="vuln-summary severity-total">{{ vulnSummary.total }} TOTAL</td>
+        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ vulnSummary.unknown }}<br>UNKNOWN</td>
+        <td title="LOW" class="vuln-summary severity-low">{{ vulnSummary.low }}<br>LOW</td>
+        <td title="MEDIUM" class="vuln-summary severity-medium">{{ vulnSummary.medium }}<br>MEDIUM</td>
+        <td title="HIGH" class="vuln-summary severity-high">{{ vulnSummary.high }}<br>HIGH</td>
+        <td title="CRITICAL" class="vuln-summary severity-critical">{{ vulnSummary.critical }}<br>CRITICAL</td>
+        <td title="TOTAL" class="vuln-summary severity-total">{{ vulnSummary.total }}<br>TOTAL</td>
       </tr>
     </table>
 
@@ -85,13 +85,11 @@
     <v-card-text>
       <v-avatar
         rounded
-        v-for="addon in app.addons" :key="addon.id">
-        <img
-          :src="addon.icon"
-          :alt="addon.displayName"
-
-          style="padding: 10px"
-        >
+        v-for="addon in app.addons" :key="addon.id"
+        class="pa-2"
+        color="gray lighten-5"
+        :image="addon.icon"
+        :alt="addon.displayName">
       </v-avatar>
     </v-card-text>
     <v-divider></v-divider>

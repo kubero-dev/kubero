@@ -16,14 +16,15 @@
             -->
                 <v-row
                     v-if="events.length > 0">
-                    <v-timeline align-top dense>
+                    <v-timeline align-top dense side="end">
 
                         <v-timeline-item
                             v-for="event in events" :key="event.uid"
                             :color=event.color
                             :icon=event.icon
+                            dot-color="var(--v-primary-base)"
                             fill-dot>
-                            <v-card class="cardBackground darken-2">
+                            <v-card class="mx-3 elevation-2" color="cardBackground ">
                                 <v-card-title class="cardBackground darken-2">
                                     [{{ event.reason }}] {{ event.message }}
                                 </v-card-title>
@@ -56,7 +57,7 @@
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see events older events, you have to increase the TTL in the 
+                            see older events, you have to increase the TTL in the 
                             <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
 
                         </v-alert>
@@ -146,13 +147,13 @@ export default defineComponent({
 
                 switch (response.data[i].type) {
                     case "Normal":
-                        event.color = "grey lighten-2";
+                        event.color = "gray lighten-2";
                         break;
                     case "Warning":
                         event.color = "red lighten-4";
                         break;
                     default:
-                        event.color = "grey lighten-2";
+                        event.color = "gray lighten-2";
                 }
 
                 switch (response.data[i].reason) {

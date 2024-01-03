@@ -3,8 +3,8 @@ kubero:
   banner:
     show: false
     message: "Welcome to Kubero!"
-    bgcolor: "#8560A9"
-    fontcolor: "azure"
+    bgcolor: "#8560a963"
+    fontcolor: "#00000087"
   defaultannotations:
     apps:
     pipelines:

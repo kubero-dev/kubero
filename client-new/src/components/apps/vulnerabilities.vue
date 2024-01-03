@@ -102,13 +102,10 @@
                                 <h3 class="headline mb-0">Summary</h3>
                             </v-card-title>
                             <v-card-text>
-                                <vc-donut
-                                    :size="50" unit="%" :thickness="60"
-                                    has-legend legend-placement="right"
-                                    :auto-adjust-text-size="true"
-                                    :total=vulnScanResult.logsummary.total
-                                    :sections="vulnSummary">
-                                </vc-donut>
+
+                                <Doughnut
+                                    :data="vulnerabilitiesDoughnut"
+                                ></Doughnut>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -192,6 +189,12 @@
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from 'vue'
+
+import { Doughnut } from 'vue-chartjs'
+import { Chart as ChartJS,  Tooltip, Legend, ArcElement } from 'chart.js'
+
+ChartJS.register( Tooltip, Legend, ArcElement)
+
 type ScanResult = {
     scanned: boolean;
     logs: {
@@ -204,6 +207,7 @@ type ScanResult = {
     };
     logsummary: {
         total: number;
+        critical: number;
         high: number;
         medium: number;
         low: number;
@@ -263,30 +267,31 @@ export default defineComponent({
             //{ text: 'Score', value: 'Severity' },
             { text: 'CVSS', value: 'CVSS', sortable: false, filterable: false,},
         ],
-        interval: null as any, //TODO: should be type 'Timer'
-    }),
-    computed: {
-        // a computed getter
-        vulnSummary() {
-            let ret = [];
-            const color = {
-                "critical": "#ff8080",
-                "high": "#ff946d",
-                "medium": "#ffd07a",
-                "low": "#fdfda0",
-                "unknown": "lightgrey",
-            } as severityColors;
-            
-            for (const [severity, count]  of Object.entries(this.vulnScanResult.logsummary)) {
-                if (severity == "total") {
-                    continue;
-                }
-                ret.push({ label: count+" "+severity.toUpperCase(), value: count, color: color[severity as keyof typeof color] });
-            }
-            return ret;
+        interval: null as any, //TODO: should be type 'Timer',
+        vulnerabilitiesDoughnut: {
+            labels: [
+                'Critical',
+                'High',
+                'Medium',
+                'Low',
+                'Unknown'
+            ],
+            datasets: [{
+                /*label: 'Vulnerabilities',*/
+                data: [] as number[],
+                backgroundColor: [
+                '#ff8080',
+                '#ff946d',
+                '#ffd07a',
+                '#fdfda0',
+                'lightgrey',
+                ],
+                hoverOffset: 4
+            }]
         }
-    },
+    }),
     components: {
+        Doughnut
     },
     props: {
       pipeline: {
@@ -324,6 +329,14 @@ export default defineComponent({
 
             if (this.vulnScanResult.status == "ok") {
                 this.renderVulnerabilities = true;
+
+                this.vulnerabilitiesDoughnut.datasets[0].data = [
+                    this.vulnScanResult.logsummary.critical,
+                    this.vulnScanResult.logsummary.high,
+                    this.vulnScanResult.logsummary.medium,
+                    this.vulnScanResult.logsummary.low,
+                    this.vulnScanResult.logsummary.unknown,
+                ];
             }
 
             if (this.vulnScanResult.status != "running") {

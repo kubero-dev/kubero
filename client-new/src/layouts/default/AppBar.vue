@@ -1,6 +1,6 @@
 <template>
   <v-app-bar dense max-height="50" :color="banner.bgcolor" v-if="banner.show && popup!='true'">
-      <v-toolbar-title style="width: 100%; text-align: center; color: azure;">{{ banner.message }}</v-toolbar-title>
+      <v-toolbar-title style="width: 100%; text-align: center; color: {{ banner.fontcolor }};">{{ banner.message }}</v-toolbar-title>
   </v-app-bar>
 </template>
 
@@ -16,7 +16,8 @@ export default defineComponent({
       banner: {
         show: false,
         message: '',
-        bgcolor: ''
+        bgcolor: '',
+        fontcolor: ''
       },
       popup: 'false'
     }
@@ -28,6 +29,7 @@ export default defineComponent({
         this.banner.show = response.data.show;
         this.banner.message = response.data.message;
         this.banner.bgcolor = response.data.bgcolor;
+        this.banner.fontcolor = response.data.fontcolor;
       })
     },
 

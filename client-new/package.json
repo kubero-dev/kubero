@@ -12,12 +12,14 @@
   "dependencies": {
     "@mdi/font": "7.0.96",
     "axios": "^1.6.2",
+    "chart.js": "^4.4.1",
     "core-js": "^3.29.0",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "vue": "^3.3.0",
+    "vue-chartjs": "^5.3.0",
     "vue-router": "^4.2.0",
     "vue-socket.io-extended": "^4.2.0",
     "vuetify": "^3.4.0"

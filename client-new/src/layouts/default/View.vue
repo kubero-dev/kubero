@@ -59,3 +59,40 @@ export default defineComponent({
     },
 })
 </script>
+
+<style>
+
+.severity-unknown {
+    background-color: lightgrey !important;
+    color: #0000008a !important;
+}
+.severity-low {
+    background-color: #fdfda0 !important;
+    color: #0000008a !important;
+}
+.severity-medium {
+    background-color: #ffd07a !important;
+    color: #0000008a !important;
+}
+.severity-high {
+    background-color: #ff946d !important;
+    color: #0000008a !important;
+}
+.severity-critical {
+    background-color: #ff8080 !important;
+    color: #0000008a !important;
+}
+.severity-total {
+    background-color: gray !important;
+    color: whitesmoke!important;
+}
+
+.theme--light.v-chip:not(.v-chip--active) {
+    background: #e6e6e6;
+}
+
+.theme--dark.v-chip:not(.v-chip--active) {
+    background: #2c2c2c;
+}
+
+</style>
