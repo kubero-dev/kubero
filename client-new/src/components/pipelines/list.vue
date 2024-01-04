@@ -107,23 +107,19 @@ type Pipeline = {
     }[]
 }
 
-type PipelineList = {
-    items: Pipeline[]
-}
-
 const { socket } = useSocketIO();
 socket.on('connect', () => {
     console.log("Websocket connected");
 });
 
-socket.on('updatedPipelines', async (instances: any) => {
+socket.on('updatedPipelines', (instances: any) => {
     console.log("updatedPipelines", instances);
     loadPipelinesList();
 });
 
 
 const pipelines = ref([] as Pipeline[]);
-async function loadPipelinesList() {
+function loadPipelinesList() {
     axios.get(`/api/pipelines`)
     .then(response => {
         console.log("pipelinesReloaded");
@@ -138,11 +134,6 @@ export default defineComponent({
     name: 'Pipelines List',
     setup() {
         console.log("created");
-        /*socket.on('updatedPipelines', async (instances: any) => {
-            console.log("updatedPipelines", instances);
-            loadPipelinesList();
-        });
-        */
         return {
             pipelines,
         }

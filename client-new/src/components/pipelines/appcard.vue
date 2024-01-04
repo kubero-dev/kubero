@@ -145,7 +145,8 @@
 
 <script lang="ts">
 import axios from "axios";
-import { defineComponent } from 'vue'
+import { ref, defineComponent } from 'vue'
+import { useSocketIO } from '../../socket.io';
 
 type Metric = {
     name: string,
@@ -161,14 +162,33 @@ type Metric = {
     }
 }
 
+const { socket } = useSocketIO();
+
+const deleted = ref(false);
+const pipeline = ref("");
+const phase = ref("");
+const appName = ref("");
+const metricsInterval = ref(0 as unknown as NodeJS.Timeout);
+socket.on('deleteApp', async (EAppName: string, EPipelineName: string, EPhaseName: string) => {
+    console.log("deleteApp", appName);
+    if (appName.value == EAppName && pipeline.value == EPipelineName && phase.value == EPhaseName) {
+        deleted.value = true;
+        clearInterval(metricsInterval.value);
+    }
+});
+
 export default defineComponent({
-    sockets: {
-        async deleteApp(appName: string, pipelineName: string, phaseName: string) {
-            console.log("deleteApp", appName);
-            if (this.app.name == appName && this.pipeline == pipelineName && this.phase == phaseName) {
-                this.deleted = true;
-            }
-        },
+    setup(props) {
+        appName.value = props.app.name;
+        pipeline.value = props.pipeline;
+        phase.value = props.phase;
+        return {
+            deleted,
+            pipeline,
+            phase,
+            appName,
+            metricsInterval,
+        }
     },
     props: {
       pipeline: {
@@ -230,11 +250,11 @@ export default defineComponent({
     }),
     mounted() {
         this.loadMetrics();
-        this.metricsInterval = setInterval(this.loadMetrics, 4000);
+        metricsInterval.value = setInterval(this.loadMetrics, 40000);
         this.loadVulnSummary();
     },
     unmounted() {
-        clearInterval(this.metricsInterval);
+        clearInterval(metricsInterval.value);
     },
     methods: {
         deleteApp() {
