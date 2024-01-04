@@ -8,6 +8,7 @@
                 <v-btn
                     block
                     @click="startVulnScan()"
+                    color="secondary"
                     :disabled="scanning"
                     >
                     <v-icon v-if="scanning == false">mdi-refresh</v-icon>

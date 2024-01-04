@@ -10,6 +10,7 @@
                 <v-btn
                     class="ma-2"
                     @click="openInWindow"
+                    color="secondary"
                     >Open Logs
                     <v-icon right dark >mdi-open-in-new</v-icon>
                 </v-btn>

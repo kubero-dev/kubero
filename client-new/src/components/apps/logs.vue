@@ -1,18 +1,16 @@
 <template>
     <div style="height: 95%;">
-    <v-tabs class="console-bar">
-        <template>
+        <v-tabs class="console-bar">
             <v-tab @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('fetcher')">fetch</v-tab>
-        </template>
-    </v-tabs>
-    <div class="console" id="console">
-        <div v-for="line in loglines" :key="line.id">
-        {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
-        {{ line.log }}
+        </v-tabs>
+        <div class="console" id="console">
+            <div v-for="line in loglines" :key="line.id">
+            {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
+            {{ line.log }}
+            </div>
         </div>
-    </div>
     </div>
 </template>
 
@@ -119,11 +117,11 @@ a:link { text-decoration: none;}
     vertical-align:inherit;
 }
 
-.theme--light.v-tabs.console-bar > .v-tabs-bar .v-tab:not(.v-tab--active) {
+.v-tabs.console-bar {
     color: #9F9F9F;
 }
 
-.theme--light.v-tabs.console-bar > .v-tabs-bar {
+.v-tabs.console-bar {
     background-color: #1E1E1E; /*#444*/
 }
 
