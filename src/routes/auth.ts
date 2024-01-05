@@ -34,6 +34,7 @@ Router.all("/session", (req: Request, res: Response) => {
         "version": process.env.npm_package_version,
         "buildPipeline": buildPipeline,
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
+        "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
         //"templatesEnabled": true,
     }
     res.status(status).send(message)

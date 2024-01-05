@@ -47,6 +47,14 @@ export class Kubero {
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
     }
 
+    public getKubernetesVersion() {
+        if (this.kubectl.kubeVersion) {
+            return this.kubectl.kubeVersion.gitVersion;
+        } else {
+            return 'unknown';
+        }
+    }
+
     public updateState() {
         this.pipelineStateList = [];
         this.appStateList = [];

@@ -12,8 +12,9 @@ services:
       # change the KUBERO_CONTEXT to the name of your local kind cluster context
       # you can find the name by running `kubectl config get-contexts`
       # Must be the same as the context name in the kubeconfig file !
+      #- KUBECONFIG_BASE64=
       - KUBECONFIG_PATH=./kubeconfig
-      - KUBERO_CONTEXT=kind-kubero-001 
+      - KUBERO_CONTEXT=inClusterContext
       - KUBERO_NAMESPACE=kubero
       - KUBERO_SESSION_KEY=randomString
     ports:
@@ -27,5 +28,5 @@ services:
     volumes:
       # run `kind get kubeconfig --internal --name kubero-001 > ./kubeconfig-docker` to get the right config
       # modify the server in the config to use the external kubernetes port from your host machine
-      - ./kubeconfig-002-docker:/app/server/kubeconfig
+      - ./kubeconfig:/app/server/kubeconfig
       - ./config.yaml:/app/server/config.yaml

@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import debug from 'debug';
 import http from 'http';
 dotenv.config();
-import {before, after} from './configure';
+import {configure} from './configure';
 
 debug('app:server')
 
@@ -15,8 +15,7 @@ const server = http.createServer(app)
 const port: String = process.env.PORT || "2000";
 
 // API
-before(app);
-after(app, server);
+configure(app, server);
 
 const maxAge = process.env.NODE_ENV === 'development' ? '1s' : '1h';
 
