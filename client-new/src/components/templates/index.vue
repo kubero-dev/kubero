@@ -8,7 +8,6 @@
         </v-row>
         <v-row>
             <v-tabs v-if="templates.catalogs.length > 1">
-                <template>
                     <v-tab
                         v-for="(catalog, index) in Object.entries(templates.catalogs)"
                         :key="index"
@@ -16,8 +15,9 @@
                     >
                         {{ catalog[1].name }}
                     </v-tab>
-                </template>
             </v-tabs>
+        </v-row>
+        <v-row>
             <v-col cols="12" sm="12" md="3"
             v-for="template in services.services" :key="template.name">
                 <v-card
