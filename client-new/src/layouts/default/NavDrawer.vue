@@ -78,9 +78,9 @@
             <v-list-item 
                 link href="https://discord.gg/tafRPMWS4r" 
                 target="_blank"
-                class="discord"
                 prepend-icon="mdi-discord"
                 title="Discord">
+                <img src="./../../../public/img/icons/discord.svg" class="image-icon"/>
             </v-list-item>
             <!--
             <v-list-item 
@@ -152,13 +152,26 @@ export default defineComponent({
 
 <style scoped>
 
-.discord{
-    background-image: url('./../img/icons/discord.svg');
-    background-size: 28px;
-    background-repeat: no-repeat;
-    background-position-x: 5px;
-    background-position-y: 15px;
-    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+img.image-icon {
+    width: 23px; 
+    height: 23px; 
+    margin-right: 10px; 
+    left: 9px; 
+    top: 11px; 
+    position: absolute;
+}
+
+/* style for the light theme */
+.v-theme--light img.image-icon {
+    filter: brightness(0) saturate(100%) invert(37%) sepia(5%) saturate(133%) hue-rotate(202deg) brightness(97%) contrast(84%);
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+
+/* style for the dark theme */
+.v-theme--dark img.image-icon {
+    filter: brightness(0) saturate(100%) invert(86%) sepia(6%) saturate(7%) hue-rotate(331deg) brightness(90%) contrast(86%);
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
 }
 </style>
