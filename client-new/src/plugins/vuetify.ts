@@ -22,6 +22,7 @@ export default createVuetify({
           primary: '#563774',
           secondary: '#1B1B1B',
           cardBackground: '#212121',
+          "on-cardBackground": '#CCC',
           navBG: '#262626',
           kubero: '#684888',
           
@@ -31,10 +32,11 @@ export default createVuetify({
       },
       light: {
         colors: {
-          "on-background": "#222",
+          "on-background": "#333",
           primary: '#8560A9',
           secondary: '#E0E0E0',
           cardBackground: '#FAFAFA',
+          "on-cardBackground": '#444',
           navBG: '#F7F8FB',
           kubero: '#684888',
 
