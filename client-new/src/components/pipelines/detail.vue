@@ -152,7 +152,6 @@ socket.on('updatedApps', async (instances: Array<App>) => {
 
 export default defineComponent({
     setup(props) {
-        console.log("created");
         pipeline.value = props.pipeline;
         return {
             phases,

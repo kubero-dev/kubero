@@ -17,7 +17,8 @@
 
 <script lang="ts">
 import axios from "axios";
-import { defineComponent } from 'vue'
+import { ref, reactive, defineComponent } from 'vue'
+import { useSocketIO } from '../../socket.io';
 
 type LogLine = {
     app: string;
@@ -32,11 +33,26 @@ type LogLine = {
     color: string;
 }
 
+const { socket } = useSocketIO();
+const loglines = ref([] as LogLine[]);
+
+socket.on('log', (data: LogLine) => {
+    //console.log("log", data);
+    loglines.value.unshift(data)
+});
+
+
 export default defineComponent({
     sockets: {
         log: function(data: LogLine) {
             this.loglines.unshift(data)
         },
+    },
+    setup() {
+        return {
+            loglines,
+            socket,
+        }
     },
     mounted() {
         this.getLogHistory('web')
@@ -83,18 +99,16 @@ export default defineComponent({
     }),
     methods: {
         socketJoin() {
-            /*
-            this.$socket.client.emit("join", {
+            console.log("socketJoin", `${this.pipeline}-${this.phase}-${this.app}`);
+            socket.emit("join", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
             });
-            */
         },
         socketLeave() {
-            /*
-            this.$socket.client.emit("leave", {
+            console.log("socketLeave", `${this.pipeline}-${this.phase}-${this.app}`);
+            socket.emit("leave", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
             });
-            */
         },
         startLogs() {
             axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}`).then(() => {

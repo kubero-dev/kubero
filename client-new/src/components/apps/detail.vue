@@ -40,6 +40,11 @@
                         prepend-icon="mdi-download"
                         title="Download Config">
                     </v-list-item>
+                    <v-list-item 
+                        disabled
+                        prepend-icon="mdi-console"
+                        title="Open Console">
+                    </v-list-item>
                 </v-list-item-group>
             </v-list>
             </v-menu>
