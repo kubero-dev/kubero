@@ -111,26 +111,8 @@ export default defineComponent({
     mounted() {
         this.loadPipeline();
         this.loadApp();
-        this.socketJoin();
-    },
-    beforeDestroy() {
-        this.socketLeave();
     },
     methods: {
-        socketLeave() {
-            /*
-            this.$socket.client.emit("leave", {
-                room: `${this.pipeline}-${this.phase}-${this.app}`,
-            });
-            */
-        },
-        socketJoin() {
-            /*
-            this.$socket.client.emit("join", {
-                room: `${this.pipeline}-${this.phase}-${this.app}`,
-            });
-            */
-        },
         loadPipeline() {
             axios.get('/api/pipelines/'+this.pipeline).then(response => {
                 this.pipelineData = response.data;

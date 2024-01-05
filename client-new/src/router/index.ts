@@ -84,6 +84,18 @@ const routes = [
       },
     ],
   },
+  {
+    path: '/popup',
+    component: () => import('@/layouts/default/Popup.vue'),
+    children: [
+      {
+        path: '/popup/logs/:pipeline/:phase/:app/:deploymentstrategy',
+        name: 'Pupup Logs',
+        props: true,
+        component: () => import('@/components/apps/logs.vue'),
+      },
+    ],
+  },
 ]
 
 const router = createRouter({

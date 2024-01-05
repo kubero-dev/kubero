@@ -56,7 +56,7 @@ export default defineComponent({
     },
     methods: {
         openInWindow() {
-            window.open(`#/pipeline/${this.pipeline}/${this.phase}/${this.app}/logspopup?popup=true`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
+            window.open(`/popup/logs/${this.pipeline}/${this.phase}/${this.app}/${this.deploymentstrategy}`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
         }
     },
 });
