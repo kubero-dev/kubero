@@ -164,6 +164,13 @@ export default defineComponent({
     mounted() {
         loadPipeline();
     },
+    unmounted() {
+        socket.off('deleteApp');
+        socket.off('updatedApps');
+
+        // empty the phases array
+        phases.value = [] as Array<Phase>;
+    },
     props: {
       pipeline: {
         type: String,
