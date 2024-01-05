@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
 import { IPullrequest } from './git/types';
 import { App } from './modules/application';
 import { Buildpack } from './modules/config';
@@ -152,7 +152,14 @@ export class Kubero {
         this.kubectl.createEvent('Normal', 'Created', 'pipeline.created', 'created new pipeline: '+pipeline.name);
 
         // update agents
-        this._io.emit('updatedPipelines', "created");
+        const message = {
+            'action': 'created',
+            'pipelineName':pipeline.name,
+            'data': {
+                'pipeline': pipeline
+            }
+        } as IMessage;
+        this._io.emit('updatedPipelines', message);
     }
 
     // updates a new pipeline in the same namespace as the kubero app
@@ -179,7 +186,14 @@ export class Kubero {
         this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
 
         // update agents
-        this._io.emit('updatedPipelines', "updated");
+        const message = {
+            'action': 'updated',
+            'pipelineName':pipeline.name,
+            'data': {
+                'pipeline': pipeline
+            }
+        } as IMessage;
+        this._io.emit('updatedPipelines', message);
     }
 
 
@@ -236,7 +250,14 @@ export class Kubero {
 
                 await new Promise(resolve => setTimeout(resolve, 5000)); // needs some extra time to delete the namespace
                 this.updateState();
-                this._io.emit('updatedPipelines', "deleted");
+                const message = {
+                    'action': 'deleted',
+                    'pipelineName':pipelineName,
+                    'data': {
+                        'pipeline': pipeline
+                    }
+                } as IMessage;
+                this._io.emit('updatedPipelines', message);
                 this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
             }
         })
@@ -263,8 +284,17 @@ export class Kubero {
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
             this.appStateList.push(app);
+            const message = {
+                'action': 'created',
+                'pipelineName':app.pipeline,
+                'phaseName':app.phase,
+                'appName': app.name,
+                'data': {
+                    'app': app
+                }
+            } as IMessage;
 
-            this._io.emit('updatedApps', "created");
+            this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
 
@@ -288,8 +318,15 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
-            this._io.emit('updatedApps', "updated");
             this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+            const message = {
+                'action': 'updated',
+                'pipelineName':app.pipeline,
+                'phaseName':app.phase,
+                'appName': app.name,
+                'data': app
+            } as IMessage;
+            this._io.emit('updatedApps', message);
         }
     }
 
@@ -307,7 +344,13 @@ export class Kubero {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
             this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-            this._io.emit('deleteApp',appName, pipelineName, phaseName);
+            const message = {
+                'action': 'deleted',
+                'pipelineName':pipelineName,
+                'phaseName':pipelineName,
+                'appName': appName
+            } as IMessage;
+            this._io.emit('updatedApps', message);
         }
     }
 
@@ -376,11 +419,11 @@ export class Kubero {
 
             let message = {
                 'action': 'restarted',
-                'pipeline':pipelineName,
-                'phase':phaseName,
-                'app': appName
-            }
-            //this._io.emit('restartedApp', message);
+                'pipelineName':pipelineName,
+                'phaseName':phaseName,
+                'appName': appName
+            } as IMessage;
+            this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         }
     }
@@ -400,11 +443,14 @@ export class Kubero {
 
             let message = {
                 'action': 'rebuild',
-                'pipeline':app.pipeline,
-                'phase':app.phase,
-                'app': app.name
-            }
-            //this._io.emit('restartedApp', message);
+                'pipelineName':app.pipeline,
+                'phaseName':app.phase,
+                'appName': app.name,
+                'data': {
+                    'app': app
+                }
+            } as IMessage;
+            this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Rebuild', 'app.restarted', 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         }
     }
@@ -500,8 +546,17 @@ export class Kubero {
         let apps = await this.getAppsByBranch(webhook.branch);
 
         for (const app of apps) {
-
-            this._io.emit('updatedApps', "created");
+            const message = {
+                'action': 'pushed',
+                'pipelineName':app.pipeline,
+                'phaseName':app.phase,
+                'appName': app.name,
+                'data': {
+                    'app': app,
+                    'webhook': webhook
+                }
+            } as IMessage;
+            this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
             this.rebuildApp(app);
         }
@@ -1212,7 +1267,13 @@ export class Kubero {
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
             this.kubectl.deployApp(namespace, appName, tag);
-            this._io.emit('updatedApps', "deplyment_started");
+            this._io.emit('updatedApps', {
+                'action': 'deployed', 
+                'data': {
+                    'name': appName, 
+                    'pipeline': pipelineName, 
+                    'phase': phaseName
+                }});
         }
     }
 

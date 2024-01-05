@@ -330,3 +330,11 @@ export interface ILoglines {
     color: string,
     log: string,
 }
+
+export interface IMessage {
+    action: string,
+    appName?: string,
+    pipelineName: string,
+    phaseName: string,
+    data?: any
+}

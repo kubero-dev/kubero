@@ -108,9 +108,11 @@ type Pipeline = {
 }
 
 const { socket } = useSocketIO();
+/*
 socket.on('connect', () => {
     console.log("Websocket connected");
 });
+*/
 
 socket.on('updatedPipelines', (instances: any) => {
     console.log("updatedPipelines", instances);
