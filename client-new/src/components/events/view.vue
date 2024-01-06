@@ -4,7 +4,7 @@
         <v-layout>
                 <v-row
                 v-if="events.length > 0">
-                    <v-timeline align-top dense>
+                    <v-timeline align-top dense side="end">
                         <v-timeline-item
                             v-for="event in events" :key="event.metadata.uid"
                             :color=event.color

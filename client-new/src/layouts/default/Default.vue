@@ -45,7 +45,7 @@ function triggerToast(icon: SweetAlertIcon, title: string, text: string) {
       toast: true,
       position: 'top-end',
       showConfirmButton: false,
-      timer: 6000,
+      timer: 3000,
       timerProgressBar: true,
       icon: icon,
       title: title,

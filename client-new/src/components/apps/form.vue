@@ -613,7 +613,7 @@
       <v-expansion-panel>
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-          <v-row v-for="envvar in envvars" v-bind:key="envvar.name">
+            <v-row v-for="(envvar, index) in envvars" :key="index">
             <v-col
               cols="12"
               md="5"
@@ -709,9 +709,9 @@
               <v-slider
                 v-model="webreplicas"
                 label="Web Pods"
-                hint="Im a hint"
                 max="10"
                 min="0"
+                step="1"
                 thumb-label="always"
               ></v-slider>
             </v-col>
@@ -724,9 +724,9 @@
               <v-slider
                 v-model="workerreplicas"
                 label="Worker Pods"
-                hint="Im a hint"
                 max="10"
                 min="0"
+                step="1"
                 thumb-label="always"
               ></v-slider>
             </v-col>
@@ -742,6 +742,8 @@
                 label="Web Pods"
                 max="10"
                 min="0"
+                step="1"
+                hint="pods"
                 thumb-label="always"
               ></v-range-slider>
             </v-col>
@@ -757,6 +759,8 @@
                 label="Worker Pods"
                 max="10"
                 min="0"
+                step="1"
+                hint="pods"
                 thumb-label="always"
               ></v-range-slider>
             </v-col>
@@ -827,7 +831,7 @@
               </v-col>
               <v-col
                 cols="12"
-                md="1"
+                md="3"
               >
                 <v-switch
                   v-model="volume.accessModes[0]"
@@ -1408,7 +1412,7 @@ export default defineComponent({
       domainRules: [
         (v: any) => !!v || 'Domain is required',
         (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
-        (v: any) => /^([a-z0-9|-]+[a-z0-9]{1,}\.)*[a-z0-9|-]+[a-z0-9]{1,}\.[a-z]{2,}$/.test(v) || 'Not a domain',
+        (v: any) => /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,8})$/.test(v) || 'Not a domain',
       ],
       cronjobScheduleRules: [
         (v: any) => !!v || 'Schedule is required',
