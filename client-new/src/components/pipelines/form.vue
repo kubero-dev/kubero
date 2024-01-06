@@ -56,8 +56,8 @@
           cols="12"
           md="8"
         >
-        <v-tabs v-model="repotab" color="#8560A9" stacked centered @change="loadRepository">
-            <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2">mdi-github</v-icon>Github</v-tab>
+        <v-tabs v-model="repotab" stacked centered @change="loadRepository">
+            <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
             <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
             <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
             <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
@@ -596,7 +596,8 @@ export default defineComponent({
     background-image: url('./../../../public/img/icons/gogs.svg');
     background-size: contain;
     background-repeat: no-repeat;
-    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    filter: brightness(0) saturate(100%) invert(28%) sepia(0%) saturate(78%) hue-rotate(197deg) brightness(95%) contrast(83%);
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
 }
 
@@ -612,7 +613,8 @@ export default defineComponent({
     background-image: url('./../../../public/img/icons/onedev.svg');
     background-size: contain;
     background-repeat: no-repeat;
-    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    filter: brightness(0) saturate(100%) invert(28%) sepia(0%) saturate(78%) hue-rotate(197deg) brightness(95%) contrast(83%);
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
 }
 
@@ -627,7 +629,8 @@ export default defineComponent({
     background-image: url('./../../../public/img/icons/gitea.svg');
     background-size: contain;
     background-repeat: no-repeat;
-    filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
+    filter: brightness(0) saturate(100%) invert(28%) sepia(0%) saturate(78%) hue-rotate(197deg) brightness(95%) contrast(83%);
+    /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
 }
 
