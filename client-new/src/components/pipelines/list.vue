@@ -92,6 +92,7 @@ import axios from "axios";
 import { ref, defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
 import { useSocketIO } from '../../socket.io';
+import Swal from 'sweetalert2';
 
 type Pipeline = {
     name: string,
@@ -168,24 +169,39 @@ export default defineComponent({
             console.log(error);
         });
       },
-      deletePipeline(app: string) {
+      deletePipeline(pipeline: string) {
 
-        const element = document.querySelector(`#${app}`) as HTMLElement;
-        if (element) {
-            element.style.display = "none";
-        }
-
-        axios.delete(`/api/pipelines/${app}`)
-        .then(response => {
-            console.log(response);
-            ///this.loadPipelinesList();
+        Swal.fire({
+            title: "Delete Pipeline",
+            text: "Do you want to delete this pipeline? This action cannot be undone. It will delete all the apps and data associated with this pipeline.",
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "Delete",
+            cancelButtonText: "Cancel",
+            confirmButtonColor: "--var(kubero)",
         })
-        .catch(error => {
-            console.log(error);
+        .then((result) => {
+            if (result.isConfirmed) {
+                const element = document.querySelector(`#${pipeline}`) as HTMLElement;
+                if (element) {
+                    element.style.display = "none";
+                }
+
+                axios.delete(`/api/pipelines/${pipeline}`)
+                .then(response => {
+                    console.log(response);
+                    ///this.loadPipelinesList();
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+            }
+            return;
         });
+
       },
-      editPipeline(app: string) {
-        this.$router.push({ name: 'Edit Pipeline', params: { name: app } });
+      editPipeline(pipeline: string) {
+        this.$router.push({ name: 'Edit Pipeline', params: { name: pipeline } });
       },
     },
 });
