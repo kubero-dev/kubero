@@ -216,6 +216,7 @@ export class Kubero {
         let pipeline = await this.kubectl.getPipeline(pipelineName)
         .catch(error => {
             debug.log(error);
+            return undefined;
         });
 
         if (pipeline) {
@@ -381,6 +382,10 @@ export class Kubero {
         debug.debug('listApps in '+pipelineName);
         await this.kubectl.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         const kpipeline = await this.kubectl.getPipeline(pipelineName);
+
+        if (!kpipeline.spec || !kpipeline.spec.git || !kpipeline.spec.git.keys) {
+            return;
+        }
 
         delete kpipeline.spec.git.keys.priv
         delete kpipeline.spec.git.keys.pub

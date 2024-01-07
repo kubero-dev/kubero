@@ -166,15 +166,38 @@ Router.delete('/cli/pipelines/:pipeline', bearerMiddleware, async function (req:
                 "bearerFormat": 'JWT',
             }
     }] */
-    await req.app.locals.kubero.deletePipeline(encodeURI(req.params.pipeline));
-    res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
+    try {
+        await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+        res.send("pipeline "+encodeURI(req.params.pipeline)+" deleted");
+    } catch (error) {
+        console.log(error);
+        res.status(503);
+        res.send("delete failed");
+    }
 });
 
 Router.delete('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Delete an app'
-    await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send("deleted");
+    try {
+        await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+    
+        // sanityze params
+        const pipeline = encodeURI(req.params.pipeline);
+        const phase = encodeURI(req.params.phase);
+        const app = encodeURI(req.params.app);
+        const response = {
+            message: "deleted "+pipeline+" "+phase+" "+app,
+            pipeline: pipeline,
+            phase: phase,
+            app: app
+        };
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(503);
+        res.send("delete failed");
+    }
 });
 
 Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async function (req: Request, res: Response) {
@@ -187,19 +210,25 @@ Router.delete('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async fu
                 "bearerFormat": 'JWT',
             }
     }] */
-    await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
-
-    // sanityze params
-    const pipeline = encodeURI(req.params.pipeline);
-    const phase = encodeURI(req.params.phase);
-    const app = encodeURI(req.params.app);
-    const response = {
-        message: "deleted "+pipeline+" "+phase+" "+app,
-        pipeline: pipeline,
-        phase: phase,
-        app: app
-    };
-    res.send(response);
+    try {
+        await req.app.locals.kubero.deleteApp(req.params.pipeline, req.params.phase, req.params.app);
+    
+        // sanityze params
+        const pipeline = encodeURI(req.params.pipeline);
+        const phase = encodeURI(req.params.phase);
+        const app = encodeURI(req.params.app);
+        const response = {
+            message: "deleted "+pipeline+" "+phase+" "+app,
+            pipeline: pipeline,
+            phase: phase,
+            app: app
+        };
+        res.send(response);
+    } catch (error) {
+        console.log(error);
+        res.status(503);
+        res.send("delete failed");
+    }
 });
 
 Router.get('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async function (req: Request, res: Response) {
@@ -212,23 +241,44 @@ Router.get('/cli/pipelines/:pipeline/:phase/:app', bearerMiddleware, async funct
                 "bearerFormat": 'JWT',
             }
     }] */
-    let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
-
-    // TODO: the response should be sanitised the same way as in the the UI
-    res.send(app.body);
+    try {
+        let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
+        if (app == undefined) {
+            res.status(404);
+            res.send("not found");
+            return;
+        }
+        // TODO: the response should be sanitised the same way as in the the UI
+        res.send(app.body);
+    } catch (error) {
+        console.log(error);
+        res.status(404);
+        res.send("not found");
+    }
 });
 
 Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get app details'
-    let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
+    try {
+        let app = await req.app.locals.kubero.getApp(req.params.pipeline, req.params.phase, req.params.app);
+        if (app == undefined) {
+            res.status(404);
+            res.send("not found");
+            return;
+        }
 
-    const a = new App(app.body.spec as IApp);
+        const a = new App(app.body.spec as IApp);
 
-    res.send({
-        resourceVersion: app.body.metadata.resourceVersion,
-        spec: a
-    });
+        res.send({
+            resourceVersion: app.body.metadata.resourceVersion,
+            spec: a
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(404);
+        res.send("not found");
+    }
 });
 
 Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (req: Request, res: Response) {
@@ -241,20 +291,38 @@ Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (re
                 "bearerFormat": 'JWT',
             }
     }] */
-    let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
-    res.send(apps);
+    try {
+        let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
+        res.send(apps);
+    } catch (error) {
+        console.log(error);
+        res.status(404);
+        res.send("not found");
+    }
 });
 
 Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get all apps in a pipeline'
-    let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
-    res.send(apps);
+    try {
+        let apps = await req.app.locals.kubero.getPipelineWithApps(req.params.pipeline);
+        res.send(apps);
+    } catch (error) {
+        console.log(error);
+        res.status(404);
+        res.send("not found");
+    }
 });
 
 Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Restart an app'
-    req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
-    res.send("restarted");
+    try {
+        await req.app.locals.kubero.restartApp(req.params.pipeline, req.params.phase, req.params.app);
+        res.send("restarted");
+    } catch (error) {
+        console.log(error);
+        res.status(503);
+        res.send("restart failed");
+    }
 });

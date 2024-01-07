@@ -189,11 +189,13 @@ export class Kubectl {
             pipelineName
         ).catch(error => {
             debug.log(error);
+            throw error;
         });
         if (pipeline) {
             return pipeline.body as IKubectlPipeline;
         } else {
-            return {} as IKubectlPipeline;
+            throw new Error("Pipeline not found");
+            //return {} as IKubectlPipeline;
         }
     }
 
