@@ -136,7 +136,6 @@ function loadPipelinesList() {
 export default defineComponent({
     name: 'Pipelines List',
     setup() {
-        console.log("created");
         return {
             pipelines,
         }
@@ -178,7 +177,8 @@ export default defineComponent({
             showCancelButton: true,
             confirmButtonText: "Delete",
             cancelButtonText: "Cancel",
-            confirmButtonColor: "--var(kubero)",
+            confirmButtonColor: "rgb(var(--v-theme-kubero))",
+            background: "rgb(var(--v-theme-surface))",
         })
         .then((result) => {
             if (result.isConfirmed) {

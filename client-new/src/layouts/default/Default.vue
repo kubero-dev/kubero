@@ -51,6 +51,7 @@ function triggerToast(icon: SweetAlertIcon, title: string, text: string) {
       title: title,
       html: text,
       showCancelButton: false,
+      background: "rgb(var(--v-theme-surface))",
     })
 }
 </script>

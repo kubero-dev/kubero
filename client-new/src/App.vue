@@ -2,11 +2,6 @@
   <router-view />
 </template>
 
-<script lang="ts" setup>
-import { useSocketIO } from './socket.io';
-const { socket } = useSocketIO();
-</script>
-
 <style>
 a {
   text-decoration: none;
