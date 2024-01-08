@@ -35,7 +35,7 @@
                         title="Open App">
                     </v-list-item>
                     <v-list-item 
-                        disabled
+                        :disabled="appData.spec.deploymentstrategy != 'docker'"
                         @click="ActionStartDownload"
                         prepend-icon="mdi-download"
                         title="Download Config">
@@ -131,6 +131,15 @@ export default defineComponent({
         },
         ActionStartDownload() {
             console.log("ActionStartDownload");
+            axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app+'/download').then(response => {
+                //console.log(response.data);
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', this.app+'.yaml');
+                document.body.appendChild(link);
+                link.click();
+            });
         }
     },
 

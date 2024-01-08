@@ -126,6 +126,38 @@ export interface IApp {
 */
 }
 
+
+export interface ITemplate {
+    name: string,
+    deploymentstrategy: 'git' | 'docker',
+    envVars: {}[],
+    image : {
+        repository: string,
+        tag: string,
+        pullPolicy?: 'Always',
+        containerPort: number,
+        run: {
+            repository: string,
+            readOnlyAppStorage?: boolean,
+            tag: string,
+            readOnly?: boolean,
+            securityContext: ISecurityContext
+        }
+    }
+
+    web: {
+        replicaCount: number
+    }
+
+    worker: {
+        replicaCount: number
+    }
+
+    extraVolumes: IExtraVolume[],
+    cronjobs: ICronjob[]
+    addons: IAddon[]
+}
+
 export interface ISecurityContext {
     readOnlyRootFilesystem: boolean;
     allowPrivilegeEscalation: boolean;
@@ -215,6 +247,7 @@ export interface IKubectlMetadata {
     namespace?: string;
     resourceVersion?: string;
     uid?: string;
+    finalizers?: [Array: Object];
 }
 export interface IKubectlPipeline {
     apiVersion: string;
@@ -234,7 +267,14 @@ export interface IKubectlApp
   apiVersion: string;
   kind: string;
   metadata: IKubectlMetadata
-  spec: IApp
+  spec: IApp ;
+}
+export interface IKubectlTemplate
+{
+  apiVersion: string;
+  kind: string;
+  metadata: IKubectlMetadata
+  spec: ITemplate;
 }
 
 export interface IKubectlAppList {

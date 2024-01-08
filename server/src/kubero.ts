@@ -2,7 +2,7 @@ import debug from 'debug';
 import { Server } from "socket.io";
 import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
 import { IPullrequest } from './git/types';
-import { App } from './modules/application';
+import { App, KubectlTemplate } from './modules/application';
 import { Buildpack } from './modules/config';
 import { GithubApi } from './git/github';
 import { BitbucketApi } from './git/bitbucket';
@@ -375,6 +375,17 @@ export class Kubero {
             let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
             return app;
         }
+    }
+
+    public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
+        const app = await this.getApp(pipelineName, phaseName, appName);
+        const a = app?.body as IKubectlApp;
+        let t =  new KubectlTemplate(a.spec as IApp);
+
+        //Convert template to Yaml
+        const template = YAML.stringify(t, {indent: 4, resolveKnownTags: true});
+
+        return template
     }
 
     // list all apps in a pipeline

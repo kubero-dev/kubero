@@ -326,3 +326,28 @@ Router.get('/pipelines/:pipeline/:phase/:app/restart', authMiddleware, async fun
         res.send("restart failed");
     }
 });
+
+Router.get('/pipelines/:pipeline/:phase/:app/download', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get app details'
+    let format = "json"
+    if (req.query.format == 'yaml') {
+        format = "yaml"
+    }
+
+    try {
+        let template = await req.app.locals.kubero.getTemplate(req.params.pipeline, req.params.phase, req.params.app, format);
+        if (template == undefined) {
+            res.status(404);
+            res.send("not found");
+            return;
+        }
+        res.setHeader('Content-Disposition', 'attachment; filename='+req.params.app+'.yaml')
+        res.type("text/plain; charset=utf-8");
+        res.send(template);
+    } catch (error) {
+        console.log(error);
+        res.status(404);
+        res.send("not found");
+    }
+});

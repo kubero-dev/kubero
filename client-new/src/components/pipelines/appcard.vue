@@ -1,7 +1,7 @@
 <template>
 <v-card
     :loading="loadingState"
-    class="mt-5"
+    class="mt-5 mx-1"
     outlined
     elevation="2"
     color="cardBackground"

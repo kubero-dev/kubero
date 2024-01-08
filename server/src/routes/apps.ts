@@ -318,6 +318,7 @@ Router.get('/apps', authMiddleware, async function (req: Request, res: Response)
     res.send(await req.app.locals.kubero.getAppStateList());
 });
 
+// Deploy a prebuilt app tag
 // Used GET instead of POST to make it easier to use from the CLI
 // Not used in the UI yet
 Router.get('/cli/apps/:pipeline/:phase/:app/deploy/:tag', bearerMiddleware, async function (req: Request, res: Response) {
