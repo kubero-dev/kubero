@@ -35,19 +35,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: build
-        run: |
-          yarn install
-          yarn build
-          cd client
-          npm install
-          npm run build
-
-      - name: Set version
-        id: version
-        run: |
-          echo ${GITHUB_REF#refs/tags/v} > dist/VERSION
-
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
