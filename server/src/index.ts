@@ -19,7 +19,8 @@ configure(app, server);
 
 const maxAge = process.env.NODE_ENV === 'development' ? '1s' : '1h';
 
-const publicPath = resolve(__dirname, '../../client-new/dist'); // TODO change to client-new an fix path for docker image
+const publicDir = path.join(__dirname, 'public');
+const publicPath = resolve(__dirname, publicDir); // TODO change to client-new an fix path for docker image
 const staticConf = { maxAge: maxAge, etag: true };
 
 app.use(history());

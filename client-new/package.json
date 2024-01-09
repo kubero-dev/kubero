@@ -1,7 +1,7 @@
 {
-  "name": "client-new",
-  "version": "0.0.0",
+  "name": "kubero-ui",
   "private": true,
+  "license": "GPL-3.0",
   "scripts": {
     "dev": "vite",
     "watch": "vue-tsc --noEmit && vite build --watch",
@@ -19,6 +19,7 @@
     "pinia": "^2.1.7",
     "roboto-fontface": "*",
     "socket.io-client": "^4.7.3",
+    "sweetalert2": "^11.10.2",
     "vue": "^3.3.0",
     "vue-chartjs": "^5.3.0",
     "vue-router": "^4.2.0",

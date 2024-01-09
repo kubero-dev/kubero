@@ -41,6 +41,10 @@ export default defineConfig({
     },
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
+  build: {
+    outDir: '../server/dist/public',
+    emptyOutDir: true,
+  },
   server: {
     port: 3000,
   },
