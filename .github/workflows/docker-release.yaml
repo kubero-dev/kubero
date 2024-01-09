@@ -39,19 +39,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: build
-        run: |
-          yarn install
-          yarn build
-          cd client
-          npm install
-          npm run build
-
-      - name: Set version
-        id: version
-        run: |
-          echo ${GITHUB_REF#refs/tags/v} > dist/VERSION
-
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign
@@ -94,9 +81,10 @@ jobs:
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
         id: kubero-build-and-push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
+          build-args: VERSION=${GITHUB_REF#refs/tags/v}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.kubero-meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
