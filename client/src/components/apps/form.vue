@@ -1472,9 +1472,17 @@ export default defineComponent({
         Breadcrumbs,
     },
     methods: {
+      whiteListDomains(domainsList: string[]) {
+        for (let i = 0; i < domainsList.length; i++) {
+            if (domainsList[i] == this.domain) {
+              domainsList.splice(i, 1);
+            }
+          }
+        return domainsList;
+      },
       getDomains() {
         axios.get('/api/domains').then(response => {
-          this.takenDomains = response.data;
+          this.takenDomains = this.whiteListDomains(response.data);
         });
       },
       checkDomainAvailability(domain: string) {
@@ -1712,6 +1720,9 @@ export default defineComponent({
             if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
               this.buildpack.run.readOnlyAppStorage = true;
             }
+
+            // remove loaded domain from taken domains
+            this.takenDomains = this.whiteListDomains(this.takenDomains);
           });
         }
       },
