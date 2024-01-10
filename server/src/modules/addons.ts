@@ -16,8 +16,9 @@ import { KuberoCouchDB } from '../addons/kuberoCouchDB';
 import { KuberoKafka } from '../addons/kuberoKafka';
 import { KuberoMail } from '../addons/kuberoMail';
 import { KuberoRabbitMQ } from '../addons/kuberoRabbitMQ';
+import { Cockroachdb } from '../addons/cockroachDB';
 import { MongoDB } from '../addons/mongoDB';
-import { Minio } from '../addons/minio';
+import { Tenant } from '../addons/minio';
 import { Tunnel } from '../addons/cloudflare';
 import { IPlugin } from '../addons/plugin';
 
@@ -127,7 +128,10 @@ export class Addons {
         const mongoDB = new MongoDB(this.CRDList)
         this.addonsList.push(mongoDB)
 
-        const minio = new Minio(this.CRDList)
+        const cockroachdb = new Cockroachdb(this.CRDList)
+        this.addonsList.push(cockroachdb)
+
+        const minio = new Tenant(this.CRDList)
         this.addonsList.push(minio)
     }
 
