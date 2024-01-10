@@ -22,7 +22,8 @@ import {
     PodMetricsList,
     NodeMetric,
     StorageV1Api,
-    BatchV1Api
+    BatchV1Api,
+    NetworkingV1Api,
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
 import { App, KubectlApp } from './application';
@@ -40,6 +41,7 @@ export class Kubectl {
     private storageV1Api: StorageV1Api = {} as StorageV1Api;
     private batchV1Api: BatchV1Api = {} as BatchV1Api;
     private customObjectsApi: CustomObjectsApi = {} as CustomObjectsApi;
+    private networkingV1Api: NetworkingV1Api = {} as NetworkingV1Api;
     public kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
@@ -74,6 +76,7 @@ export class Kubectl {
             this.appsV1Api = this.kc.makeApiClient(AppsV1Api);
             this.storageV1Api = this.kc.makeApiClient(StorageV1Api);
             this.batchV1Api = this.kc.makeApiClient(BatchV1Api);
+            this.networkingV1Api = this.kc.makeApiClient(NetworkingV1Api);
             this.metricsApi = new Metrics(this.kc);
             this.patchUtils = new PatchUtils();
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
@@ -320,6 +323,7 @@ export class Kubectl {
             deploymentName,
             namespace,
             patch,
+            undefined,
             undefined,
             undefined,
             undefined,
@@ -984,5 +988,10 @@ export class Kubectl {
             debug.log('ERROR: '+error);
         });
     };
+    
+    public async getAllIngress(): Promise<any> {
+        const ingresses = await this.networkingV1Api.listIngressForAllNamespaces();
+        return ingresses.body.items;
+    }
 
 }

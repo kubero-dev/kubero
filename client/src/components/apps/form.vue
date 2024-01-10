@@ -1151,6 +1151,7 @@ export default defineComponent({
               to: this.getAppBreadcrumbLink(),
           }
       ],
+      takenDomains: [] as string[],
       advanced: false,
       panel: [0],
       valid: false,
@@ -1412,7 +1413,8 @@ export default defineComponent({
       domainRules: [
         (v: any) => !!v || 'Domain is required',
         (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
-        (v: any) => /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,8})$/.test(v) || 'Not a domain',
+        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || 'Not a domain',
+        (v: any) => this.checkDomainAvailability(v) || 'Domain already taken',
       ],
       cronjobScheduleRules: [
         (v: any) => !!v || 'Schedule is required',
@@ -1438,6 +1440,7 @@ export default defineComponent({
       this.loadPodsizeList();
       this.loadBuildpacks();
       this.loadClusterIssuers();
+      this.getDomains();
       if (this.app != 'new') {
         this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
       }
@@ -1456,6 +1459,18 @@ export default defineComponent({
         Breadcrumbs,
     },
     methods: {
+      getDomains() {
+        axios.get('/api/domains').then(response => {
+          this.takenDomains = response.data;
+        });
+      },
+      checkDomainAvailability(domain: string) {
+        if (this.takenDomains.includes(domain)) {
+          return false;
+        } else {
+          return true;
+        }
+      },
       getAppBreadcrumbLink() {
         if (this.app == 'new') {
           return { name: 'Pipeline Apps', params: { pipeline: this.pipeline }};
