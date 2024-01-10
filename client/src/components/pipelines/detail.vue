@@ -1,10 +1,10 @@
 <template>
     <div>
     <v-container>
-        <breadcrumbs :items="breadcrumbItems"></breadcrumbs>
+        <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
     </v-container>
     <v-container :fluid="true">
-        <h1>{{ this.pipeline }}</h1>
+        <h1>{{ pipeline }}</h1>
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
@@ -24,14 +24,12 @@
 
                         <v-btn
                         elevation="2"
-                        icon
-                        large
-                        :to="{ name: 'New App', params: { phase: phase.name }}"
+                        icon="mdi-plus"
+                        :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
                         class="mt-5 navBG"
+                        color="secondary"
+                        style="margin-bottom: 5px;"
                         >
-                            <v-icon>
-                                mdi-plus
-                            </v-icon>
                         </v-btn>
                     </v-col>
 
@@ -41,29 +39,142 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
 import Appcard from "./appcard.vue";
 import PRcard from "./prcard.vue";
+import Breadcrumbs from "../breadcrumbs.vue";
+import { useSocketIO } from '../../socket.io';
 
-export default {
-    sockets: {
-        async updatedApps(instances) {
-            console.log("updatedApps", instances);
-            this.loadPipeline();
-        },
-        async deleteApp(instances) {
-            console.log("deleteApp", instances);
-            this.loadPipeline();
-        },
+import { reactive, ref, defineComponent } from 'vue'
+
+type Phase = {
+    name: string,
+    context: string,
+    enabled: boolean,
+    apps: Array<App>,
+}
+
+type App = {
+    name: string,
+    enabled: boolean,
+    autodeploy: boolean,
+}
+
+type Git = {
+    ssh_url: string,
+    provider: string,
+}
+
+type Pullrequest = {
+    number: number,
+    branch: string,
+    title: string,
+    ssh_url: string,
+    created_at: string,
+    updated_at: string,
+}
+const { socket } = useSocketIO();
+
+const phases = ref([] as Array<Phase>);
+const reviewapps = ref(false);
+const git = reactive({} as Git);
+const pullrequests = ref([] as Array<Pullrequest>);
+const pipeline = ref("");
+
+
+async function loadPipeline() {
+    axios.get('/api/pipelines/' + pipeline.value + '/apps')
+    .then(response => {
+        console.log("loadPipeline Phases", response.data.phases);
+        phases.value = response.data.phases;
+        reviewapps.value = response.data.reviewapps;
+        git.ssh_url = response.data.git.repository.ssh_url;
+        git.provider = response.data.git.provider;
+        if (reviewapps.value) {
+            loadPullrequests();
+        }
+        return response.data.phases;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
+async function loadPullrequests() {
+    if (git.provider == "") {
+        return;
+    }
+
+    const gitrepoB64 = btoa(git.ssh_url);
+
+    axios.get('/api/repo/'+git.provider+'/' + gitrepoB64 + '/pullrequests')
+    .then(response => {
+
+        pullrequests.value = [] as Array<Pullrequest>;
+
+        // iterate over response.data and search in phases[0].name for a match
+        // if not found, add the pullrequest to the phase.apps array
+        response.data.forEach((pr: Pullrequest) => {
+            let found = false;
+            phases.value[0].apps.forEach((app: App) => {
+                if (app.name == pr.branch) {
+                    found = true;
+                }
+            });
+            if (!found) {
+                pullrequests.value.push(pr);
+            }
+        });
+
+        //pullrequests.value = response.data;
+        return response.data;
+    })
+    .catch(error => {
+        console.log(error);
+    });
+}
+
+socket.on('deleteApp', async (instances: Array<App>) => {
+    console.log("deleteApp", instances);
+    // sleep 1 second to give the app time to start
+    await new Promise(r => setTimeout(r, 1000));
+    loadPipeline();
+});
+
+socket.on('updatedApps', async (instances: Array<App>) => {
+    console.log("updatedApps", instances);
+    // sleep 1 second to give the app time to start
+    await new Promise(r => setTimeout(r, 1000));
+    loadPipeline();
+});
+
+
+export default defineComponent({
+    setup(props) {
+        pipeline.value = props.pipeline;
+        return {
+            phases,
+            reviewapps,
+            git,
+            pullrequests,
+            pipeline,
+        }
     },
     mounted() {
-        this.loadPipeline();
+        loadPipeline();
+    },
+    unmounted() {
+        socket.off('deleteApp');
+        socket.off('updatedApps');
+
+        // empty the phases array
+        phases.value = [] as Array<Phase>;
     },
     props: {
       pipeline: {
         type: String,
-        default: "MISSSING"
+        default: "MISSING"
       },
     },
     data () {return {
@@ -71,27 +182,27 @@ export default {
             {
                 text: 'DASHBOARD',
                 disabled: false,
-                href: '#/',
+                to: { name: 'Pipelines', params: {}}
             },
             {
                 text: 'PIPELINE:'+this.pipeline,
                 disabled: true,
-                href: '#/pipeline/'+this.pipeline+'/apps',
+                to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
             }
         ],
         reviewapps: false,
-        phases: false,
+        //phases: [] as Array<Phase>,
         git: {
             ssh_url: "",
             provider: ""
         },
-        pullrequests: [],
+        //pullrequests: [] as Array<Pullrequest>,
     }},
     computed: {
         activePhases() {
-            let phases = [];
+            let phases = [] as Array<Phase>;
             if (this.phases) {
-                this.phases.forEach(phase => {
+                this.phases.forEach((phase: Phase) => {
                     if (phase.enabled) {
                         phases.push(phase);
                     }
@@ -103,57 +214,12 @@ export default {
     components: {
         PRcard,
         Appcard,
-        breadcrumbs: () => import('../breadcrumbs.vue'),
+        Breadcrumbs,
     },
+    
     methods: {
-      async loadPipeline() {
-        const self = this;
-        axios.get('/api/pipelines/' + this.pipeline + '/apps')
-        .then(response => {
-            self.phases = response.data.phases;
-            self.reviewapps = response.data.reviewapps;
-            self.git.ssh_url = response.data.git.repository.ssh_url;
-            self.git.provider = response.data.git.provider;
-            if (self.reviewapps) {
-                self.loadPullrequests();
-            }
-            return response.data.phases;
-        })
-        .catch(error => {
-            console.log(error);
-        });
-      },
-      async loadPullrequests() {
-        const self = this;
-
-        const gitrepoB64 = btoa(this.git.ssh_url);
-
-        axios.get('/api/repo/'+this.git.provider+'/' + gitrepoB64 + '/pullrequests')
-        .then(response => {
-
-            self.pullrequests = [];
-
-            // iterate over response.data and search in self.phases[0].name for a match
-            // if not found, add the pullrequest to the phase.apps array
-            response.data.forEach(pr => {
-                let found = false;
-                self.phases[0].apps.forEach(app => {
-                    if (app.name == pr.branch) {
-                        found = true;
-                    }
-                });
-                if (!found) {
-                    self.pullrequests.push(pr);
-                }
-            });
-
-            //self.pullrequests = response.data;
-            return response.data;
-        })
-        .catch(error => {
-            console.log(error);
-        });
-      },
+        loadPipeline,
+        loadPullrequests,
     },
-}
+})
 </script>

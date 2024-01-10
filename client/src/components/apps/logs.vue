@@ -1,28 +1,58 @@
 <template>
     <div style="height: 95%;">
-    <v-tabs class="console-bar">
-        <template>
+        <v-tabs class="console-bar">
             <v-tab @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('fetcher')">fetch</v-tab>
-        </template>
-    </v-tabs>
-    <div class="console" id="console">
-        <div v-for="line in loglines" :key="line.id">
-        {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
-        {{ line.log }}
+        </v-tabs>
+        <div class="console" id="console">
+            <div v-for="line in loglines" :key="line.id">
+            {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
+            {{ line.log }}
+            </div>
         </div>
-    </div>
     </div>
 </template>
 
-<script>
+
+<script lang="ts">
 import axios from "axios";
-export default {
+import { ref, reactive, defineComponent } from 'vue'
+import { useSocketIO } from '../../socket.io';
+
+type LogLine = {
+    app: string;
+    container: string;
+    id: string;
+    log: string;
+    phase: string;
+    pipeline: string;
+    pod: string;
+    podID: string;
+    time: number;
+    color: string;
+}
+
+const { socket } = useSocketIO();
+const loglines = ref([] as LogLine[]);
+
+socket.on('log', (data: LogLine) => {
+    //console.log("log", data);
+    loglines.value.unshift(data)
+});
+
+
+export default defineComponent({
     sockets: {
-        log: function(data) {
+        log: function(data: LogLine) {
             this.loglines.unshift(data)
         },
+    },
+    setup() {
+        return {
+            loglines,
+            socket,
+        }
     },
     mounted() {
         this.getLogHistory('web')
@@ -65,16 +95,18 @@ export default {
                 time: 1656970421989
             },
             */
-        ],
+        ] as LogLine[],
     }),
     methods: {
         socketJoin() {
-            this.$socket.client.emit("join", {
+            console.log("socketJoin", `${this.pipeline}-${this.phase}-${this.app}`);
+            socket.emit("join", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
             });
         },
         socketLeave() {
-            this.$socket.client.emit("leave", {
+            console.log("socketLeave", `${this.pipeline}-${this.phase}-${this.app}`);
+            socket.emit("leave", {
                 room: `${this.pipeline}-${this.phase}-${this.app}`,
             });
         },
@@ -83,13 +115,13 @@ export default {
                 console.log("logs started");
             });
         },
-        getLogHistory(container) {
+        getLogHistory(container: string) {
             axios.get(`/api/logs/${this.pipeline}/${this.phase}/${this.app}/${container}/history`).then((response) => {
                 this.loglines = response.data;
             });
         },
     },
-}
+});
 </script>
 
 <style lang="scss">
@@ -99,11 +131,11 @@ a:link { text-decoration: none;}
     vertical-align:inherit;
 }
 
-.theme--light.v-tabs.console-bar > .v-tabs-bar .v-tab:not(.v-tab--active) {
+.v-tabs.console-bar {
     color: #9F9F9F;
 }
 
-.theme--light.v-tabs.console-bar > .v-tabs-bar {
+.v-tabs.console-bar {
     background-color: #1E1E1E; /*#444*/
 }
 

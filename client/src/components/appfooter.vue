@@ -9,7 +9,7 @@
     </v-col>
   </v-footer>
 </template>
-<script>
+<script lang="ts">
 export default {
 
   props: [

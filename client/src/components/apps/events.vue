@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Events for {{ this.app }}</h1>
+                <h1>Events for {{ app }}</h1>
             </v-col>
         </v-row>
         <v-layout class="flex-column">
@@ -16,14 +16,15 @@
             -->
                 <v-row
                     v-if="events.length > 0">
-                    <v-timeline align-top dense>
+                    <v-timeline align-top dense side="end">
 
                         <v-timeline-item
                             v-for="event in events" :key="event.uid"
                             :color=event.color
                             :icon=event.icon
+                            dot-color="var(--v-primary-base)"
                             fill-dot>
-                            <v-card class="cardBackground darken-2">
+                            <v-card class="mx-3 elevation-2" color="cardBackground ">
                                 <v-card-title class="cardBackground darken-2">
                                     [{{ event.reason }}] {{ event.message }}
                                 </v-card-title>
@@ -51,13 +52,12 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
-                            border="left"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
+                            variant="tonal"
+                            border="start"
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see events older events, you have to increase the TTL in the 
+                            see older events, you have to increase the TTL in the 
                             <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
 
                         </v-alert>
@@ -68,9 +68,22 @@
     </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
+import { defineComponent } from 'vue'
+
+type Event = {
+    action: string,
+    eventTime: string,
+    uid: string,
+    type: string,
+    reason: string,
+    message: string,
+    color: string,
+    icon: string,
+}
+
+export default defineComponent({
     sockets: {
     },
     mounted() {
@@ -90,7 +103,7 @@ export default {
                 icon: "mdi-folder-outline",
             },
             */
-        ],
+        ] as Event[],
     }),
     components: {
     },
@@ -117,8 +130,8 @@ export default {
         axios.get(`/api/events?namespace=${namespace}`)
         .then(response => {
             // sort by creationTimestamp
-            response.data.sort((a, b) => {
-                return new Date(b.metadata.creationTimestamp) - new Date(a.metadata.creationTimestamp);
+            response.data.sort((a: any, b: any) => {
+                return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
             });
 
             for (let i = 0; i < response.data.length; i++) {
@@ -130,17 +143,17 @@ export default {
                     type: response.data[i].type,
                     reason: response.data[i].reason,
                     uid: response.data[i].metadata.uid,
-                }
+                } as Event;
 
                 switch (response.data[i].type) {
                     case "Normal":
-                        event.color = "grey lighten-2";
+                        event.color = "gray lighten-2";
                         break;
                     case "Warning":
                         event.color = "red lighten-4";
                         break;
                     default:
-                        event.color = "grey lighten-2";
+                        event.color = "gray lighten-2";
                 }
 
                 switch (response.data[i].reason) {
@@ -161,7 +174,7 @@ export default {
         });
       },
     },
-}
+});
 </script>
 
 <style lang="scss">

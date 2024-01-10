@@ -2,18 +2,19 @@
     <v-container>
         <v-row class="justify-space-between mb-2">
             <v-col cols="10" sm="10" md="10" lg="10" xl="10">
-                <h1>Vulnerabilities in {{ this.app }}</h1>
+                <h1>Vulnerabilities in {{ app }}</h1>
             </v-col>
             <v-col>
                 <v-btn
                     block
                     @click="startVulnScan()"
-                    :disabled="this.scanning"
+                    color="secondary"
+                    :disabled="scanning"
                     >
-                    <v-icon v-if="this.scanning == false">mdi-refresh</v-icon>
+                    <v-icon v-if="scanning == false">mdi-refresh</v-icon>
 
                     <v-progress-circular
-                        v-if="this.scanning == true"
+                        v-if="scanning == true"
                         indeterminate
                         size="18"
                         width="2"
@@ -26,8 +27,8 @@
         </v-row>
         <v-layout class="flex-column">
 
-                <v-row v-if="this.renderVulnerabilities">
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
+                <v-row v-if="renderVulnerabilities">
+                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Metadata</h3>
@@ -37,50 +38,50 @@
                                     <tbody>
                                         <tr>
                                             <th>Last Scan</th>
-                                            <td>{{ this.vulnScanResult.logPod.startTime }}</td>
+                                            <td>{{ vulnScanResult.logPod.startTime }}</td>
                                         </tr>
                                         <tr>
                                             <th>Artefact</th>
                                             <td>
                                                 <span
-                                                    v-if="this.vulnScanResult.logs.ArtifactType == 'repository'"
+                                                    v-if="vulnScanResult.logs.ArtifactType == 'repository'"
                                                     class="mx-0"
                                                 >
                                                     <v-icon left small>mdi-git</v-icon>
                                                 </span>
                                                 <span
-                                                    v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'"
+                                                    v-if="vulnScanResult.logs.ArtifactType == 'container_image'"
                                                     class="mx-0"
                                                 >
                                                     <v-icon left small>mdi-docker</v-icon>
                                                 </span>
-                                                {{ this.vulnScanResult.logs.ArtifactName }}</td>
+                                                {{ vulnScanResult.logs.ArtifactName }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Arch</th>
-                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.architecture }}</td>
+                                            <td>{{ vulnScanResult.logs.Metadata.ImageConfig.architecture }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Created</th>
-                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.created }}</td>
+                                            <td>{{ vulnScanResult.logs.Metadata.ImageConfig.created }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>OS</th>
-                                            <td>{{ this.vulnScanResult.logs.Metadata.OS.Family }} {{ this.vulnScanResult.logs.Metadata.OS.Name }}</td>
+                                            <td>{{ vulnScanResult.logs.Metadata.OS.Family }} {{ vulnScanResult.logs.Metadata.OS.Name }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Layers</th>
-                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.rootfs.diff_ids.length }}</td>
+                                            <td>{{ vulnScanResult.logs.Metadata.ImageConfig.rootfs.diff_ids.length }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Working Dir</th>
-                                            <td>{{ this.vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
+                                            <td>{{ vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
                                         </tr>
-                                        <tr v-if="this.vulnScanResult.logs.ArtifactType == 'container_image'">
+                                        <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
                                             <th>Exposed Ports</th>
                                             <td>
                                                 <v-chip
-                                                    v-for="(item, key, index) in this.vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="index"
+                                                    v-for="(item, key, index) in vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="index"
                                                     small
                                                     label
                                                     class="ma-1"
@@ -96,26 +97,23 @@
                             </v-card-text>
                         </v-card>
                     </v-col>
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="this.renderVulnerabilities" >
+                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Summary</h3>
                             </v-card-title>
                             <v-card-text>
-                                <vc-donut
-                                    :size="50" unit="%" :thickness="60"
-                                    has-legend legend-placement="right"
-                                    :auto-adjust-text-size="true"
-                                    :total=this.vulnScanResult.logsummary.total
-                                    :sections="vulnSummary">
-                                </vc-donut>
+
+                                <Doughnut
+                                    :data="vulnerabilitiesDoughnut"
+                                ></Doughnut>
                             </v-card-text>
                         </v-card>
                     </v-col>
                 </v-row>
                 <v-row>
-                    <v-col cols="12" sm="12" md="12" lg="12" xl="12" v-if="this.renderVulnerabilities" >
-                        <span v-for="target in this.vulnScanResult.logs.Results" :key="target.Target">
+                    <v-col cols="12" sm="12" md="12" lg="12" xl="12" v-if="renderVulnerabilities" >
+                        <span v-for="target in vulnScanResult.logs.Results" :key="target.Target">
                             <v-card class="mb-6" v-if="target.Class != 'secret'" elevation="2" outlined color="cardBackground">
                                 <v-card-title>
                                     <h3 class="headline mb-0">{{ target.Target }}</h3>
@@ -150,8 +148,8 @@
                                             </v-chip>
                                         </template>
 
-                                        <template v-slot:expanded-item="{ headers, item }">
-                                            <td :colspan="headers.length">
+                                        <template v-slot:expanded-row="{ columns, item }">
+                                            <td :colspan="columns.length">
                                                 <div class="row sp-details">
                                                     {{ item }}
                                                 </div>
@@ -166,7 +164,7 @@
                 </v-row>
 
                 <v-row
-                    v-if="!this.renderVulnerabilities">
+                    v-if="!renderVulnerabilities">
                     <v-col
                     cols="12"
                     md="6"
@@ -175,9 +173,8 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
-                            border="left"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
+                            variant="tonal"
+                            border="start"
                         >
                             <h3>No vulnerabilityscans available</h3>
                             To scan this app for vulnerabfilities, please trigger a rescan.
@@ -190,9 +187,70 @@
     </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
+import { defineComponent } from 'vue'
+
+import { Doughnut } from 'vue-chartjs'
+import { Chart as ChartJS,  Tooltip, Legend, ArcElement } from 'chart.js'
+
+ChartJS.register( Tooltip, Legend, ArcElement)
+
+type ScanResult = {
+    scanned: boolean;
+    logs: {
+        ArtifactID: string;
+        ArtifactType: string;
+        ArtifactName: string;
+        Metadata: any;
+        Results: Target[];
+        Summary: any;
+    };
+    logsummary: {
+        total: number;
+        critical: number;
+        high: number;
+        medium: number;
+        low: number;
+        unknown: number;
+    };
+    status: string;
+    logPod: {
+        startTime: string;
+        endTime: string;
+        podName: string;
+        podStatus: string;
+        podPhase: string;
+        podMessage: string;
+    };
+}
+
+type Target = {
+    Target: string;
+    Class: string;
+    Vulnerabilities: Vulnerability[];
+}
+
+type Vulnerability = {
+    VulnerabilityID: string;
+    PkgName: string;
+    Title: string;
+    Severity: string;
+    PrimaryURL: string;
+    CVSS: any;
+    Metadata: any;
+}
+
+
+type severityColors = {
+    critical: string;
+    high: string;
+    medium: string;
+    low: string;
+    unknown: string;
+}
+
+export default defineComponent({
     sockets: {
     },
     mounted() {
@@ -200,23 +258,7 @@ export default {
     },
     data: () => ({
         scanning: false,
-        vulnScanResult: {
-                "scanned": false,
-                "logs": {
-                    "ArtifactID": "",
-                    "ArtifactType": "",
-                    "Metadata": {},
-                    "Results": [],
-                    "Summary": {},
-                },
-                "logsummary": {
-                    "total": 0,
-                    "high": 0,
-                    "medium": 0,
-                    "low": 0,
-                    "unknown": 0,
-                },
-            },
+        vulnScanResult: {} as ScanResult,
         renderVulnerabilities: false,
         vulnExpanded: [],
         vulnHeaders: [
@@ -226,28 +268,31 @@ export default {
             //{ text: 'Score', value: 'Severity' },
             { text: 'CVSS', value: 'CVSS', sortable: false, filterable: false,},
         ],
-    }),
-    computed: {
-        // a computed getter
-        vulnSummary() {
-            let ret = [];
-            const color = {
-                "critical": "#ff8080",
-                "high": "#ff946d",
-                "medium": "#ffd07a",
-                "low": "#fdfda0",
-                "unknown": "lightgrey",
-            }
-            for (const [severity, count]  of Object.entries(this.vulnScanResult.logsummary)) {
-                if (severity == "total") {
-                    continue;
-                }
-                ret.push({ label: count+" "+severity.toUpperCase(), value: count, color: color[severity] });
-            }
-            return ret;
+        interval: null as any, //TODO: should be type 'Timer',
+        vulnerabilitiesDoughnut: {
+            labels: [
+                'Critical',
+                'High',
+                'Medium',
+                'Low',
+                'Unknown'
+            ],
+            datasets: [{
+                /*label: 'Vulnerabilities',*/
+                data: [] as number[],
+                backgroundColor: [
+                '#ff8080',
+                '#ff946d',
+                '#ffd07a',
+                '#fdfda0',
+                'lightgrey',
+                ],
+                hoverOffset: 4
+            }]
         }
-    },
+    }),
     components: {
+        Doughnut
     },
     props: {
       pipeline: {
@@ -285,6 +330,14 @@ export default {
 
             if (this.vulnScanResult.status == "ok") {
                 this.renderVulnerabilities = true;
+
+                this.vulnerabilitiesDoughnut.datasets[0].data = [
+                    this.vulnScanResult.logsummary.critical,
+                    this.vulnScanResult.logsummary.high,
+                    this.vulnScanResult.logsummary.medium,
+                    this.vulnScanResult.logsummary.low,
+                    this.vulnScanResult.logsummary.unknown,
+                ];
             }
 
             if (this.vulnScanResult.status != "running") {
@@ -336,11 +389,11 @@ export default {
         return ret;
       },
       */
-      getMaxCVSS(cvss) {
-        let ret = "N/A";
+      getMaxCVSS(cvss: any) {
+        let ret = 0;
 
         if (cvss != null) {
-            const scores = Object.values(cvss).map(value => value.V3Score || value.V2Score).filter(Boolean);
+            const scores = Object.values(cvss).map((value: any) => value.V3Score || value.V2Score).filter(Boolean);
             if (scores.length > 0) {
                 ret = Math.max(...scores);
             }
@@ -349,7 +402,7 @@ export default {
         return ret;
       },
     },
-}
+});
 </script>
 
 <style lang="scss">

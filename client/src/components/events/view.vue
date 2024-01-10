@@ -1,17 +1,17 @@
 <template>
-    <v-container :fluid="true">
+    <v-container>
         <h1>Events</h1>
         <v-layout>
                 <v-row
                 v-if="events.length > 0">
-                    <v-timeline align-top dense>
-                        <!--  v-for="n in 10" :key="n" -->
+                    <v-timeline align-top dense side="end">
                         <v-timeline-item
                             v-for="event in events" :key="event.metadata.uid"
                             :color=event.color
                             :icon=event.icon
+                            dot-color="var(--v-primary-base)"
                             fill-dot>
-                            <v-card class="cardBackground elevation-2">
+                            <v-card class="elevation-2">
                             <v-card-title class="text-h5">
                                 {{ event.message }}
                             </v-card-title>
@@ -34,13 +34,12 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
-                            border="left"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
+                            variant="tonal"
+                            border="start"
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see events older events, you have to increase the TTL in the 
+                            see older events, you have to increase the TTL in the 
                             <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
 
                         </v-alert>
@@ -52,11 +51,23 @@
 
 
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
+import { defineComponent } from 'vue'
+
+type Event = {
+    message: string;
+    metadata: {
+        creationTimestamp: string;
+        uid: string;
+    };
+    color: string;
+    icon: string;
+}
+
+export default defineComponent({
     sockets: {
-        async updatedEvents(events) {
+        async updatedEvents(events: Event[]) {
             console.log("updatedEvents", events);
         },
     },
@@ -64,7 +75,7 @@ export default {
         this.loadEvents();
     },
     data: () => ({
-        events: [],
+        events: [] as Event[],
     }),
     methods: {
       async loadEvents() {
@@ -72,8 +83,8 @@ export default {
         axios.get(`/api/events`)
         .then(response => {
             // sort by creationTimestamp
-            response.data.sort((a, b) => {
-                return new Date(b.metadata.creationTimestamp) - new Date(a.metadata.creationTimestamp);
+            response.data.sort((a: Event, b: Event) => {
+                return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
             });
 
             for (let i = 0; i < response.data.length; i++) {
@@ -84,7 +95,7 @@ export default {
                         creationTimestamp: date.toLocaleDateString() + " " + date.toLocaleTimeString(),
                         uid: response.data[i].metadata.uid,
                     },
-                }
+                } as Event;
 
                 switch (response.data[i].type) {
                     case "Normal":
@@ -99,13 +110,13 @@ export default {
 
                 switch (response.data[i].reason) {
                     case "Created":
-                        event.icon = "mdi-folder-plus-outline";
+                        event.icon = "mdi-bell-plus-outline";
                         break;
                     case "Deleted":
-                        event.icon = "mdi-folder-remove-outline";
+                        event.icon = "mdi-bell-remove-outline";
                         break;
                     default:
-                        event.icon = "mdi-folder-outline";
+                        event.icon = "mdi-bell-outline";
                 }
                 self.events.push(event);
             }
@@ -115,7 +126,7 @@ export default {
         });
       },
     },
-}
+});
 </script>
 
 <style scoped>
