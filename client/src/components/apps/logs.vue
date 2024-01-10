@@ -61,6 +61,7 @@ export default defineComponent({
     },
     unmounted() {
         this.socketLeave()
+        this.loglines = []
     },
     props: {
       pipeline: {
