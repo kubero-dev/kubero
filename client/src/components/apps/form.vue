@@ -155,6 +155,11 @@
                   value="plain"
                 ></v-radio>
                 <v-radio
+                  key="2"
+                  label="External CI/CD"
+                  value="external"
+                ></v-radio>
+                <v-radio
                   key="1"
                   label="Nixpacks"
                   value="nixpacks"
@@ -177,7 +182,7 @@
                 <h3>
                   Plain
                 </h3>
-                <div>This is the default for kubero. Your code is running on official images. The code will be built for every pod. This the fastes way, to run your code, but becomes more inefficient with every replica.</div>
+                <div>This is the default for kubero. Your code is running on official images. The code will be built for every pod. This is the fastes way, to run your code, but becomes more inefficient with every replica.</div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'nixpacks'">
@@ -196,6 +201,14 @@
                 </h3>
                 <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
               </v-alert>
+
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'external'">
+                <h3>
+                  External CI/CD
+                </h3>
+                <div>You are building your image on a external CI/CD and deploy it by changing the image tag thrue the API</div>
+              </v-alert>
+
               <v-alert variant="tonal" type="info" border="start" v-if="!buildPipeline" style="margin-top: 20px;">
                 <h3>
                   Buildpipeline not configured
@@ -221,7 +234,7 @@
             </v-row>
           </div>
 -->
-
+          <div v-if="buildstrategy != 'external'">
           <v-row>
             <v-col
               cols="12"
@@ -299,12 +312,12 @@
               ></v-text-field>
             </v-col>
           </v-row>
-
-        </div>
+        </div> <!-- end of buildstrategy != external -->
+        </div> <!-- end of deploymentstrategy == git -->
 
           <!-- DEPLOYMENT STRATEGY CONTAINER -->
           <v-row
-            v-if="deploymentstrategy == 'docker'">
+            v-if="deploymentstrategy == 'docker' || (deploymentstrategy == 'git' && buildstrategy == 'external' )">
             <v-col
               cols="12"
               md="6"
@@ -318,7 +331,7 @@
             </v-col>
           </v-row>
           <v-row
-            v-if="deploymentstrategy == 'docker'">
+            v-if="deploymentstrategy == 'docker' || (deploymentstrategy == 'git' && buildstrategy == 'external' )">
             <v-col
               cols="12"
               md="6"
