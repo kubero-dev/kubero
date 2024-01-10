@@ -4,7 +4,8 @@ import { Auth } from '../modules/auth';
 export const Router = express.Router();
 export const auth = new Auth();
 auth.init();
-export const authMiddleware = auth.authMiddleware; // requires allways a authentification
+export const allwaysAuthMiddleware = auth.authMiddleware; // requires allways a authentification
+export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
 
 Router.get('/cli/settings', bearerMiddleware, async function (req: Request, res: Response) {
@@ -22,7 +23,7 @@ Router.get('/cli/settings', bearerMiddleware, async function (req: Request, res:
 });
 
 // get the settings
-Router.get('/settings', authMiddleware, async function (req: Request, res: Response) {
+Router.get('/settings', allwaysAuthMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero settings'
     const settings = await req.app.locals.settings.getSettings();
@@ -44,4 +45,12 @@ Router.get('/banner', async function (req: Request, res: Response) {
 
     let banner = await req.app.locals.kubero.config.kubero?.banner || defaultbanner;
     res.send(banner)
+});
+
+Router.get('/domains', authMiddleware, async function (req: Request, res: Response) {
+
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get a list of all configured domains on this cluster'
+    const domains = await req.app.locals.settings.getDomains();
+    res.send(domains)
 });

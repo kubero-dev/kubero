@@ -5,6 +5,7 @@
     "useDefineForClassFields": true,
     "module": "ESNext",
     "moduleResolution": "Node",
+    //"rootDirs": ["./src/", "./node_modules/"],
     "strict": true,
     "jsx": "preserve",
     "resolveJsonModule": true,
