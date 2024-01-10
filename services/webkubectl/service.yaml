@@ -1,0 +1,9 @@
+name: Web Kubectl
+description: 'Run kubectl command in web browser'
+tags:
+- kubernetes
+source: https://github.com/KubeOperator/webkubectl
+website: https://github.com/KubeOperator/webkubectl
+icon: https://avatars.githubusercontent.com/u/52770786?s=200&v=4
+screenshots:
+- https://github.com/KubeOperator/webkubectl/raw/master/web-resources/webkubectl.gif
