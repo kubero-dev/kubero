@@ -58,8 +58,6 @@ export abstract class Plugin {
 
     public async init(availableCRDs: any) {
 
-        console.log("init : "+this.id, this.constructor.name)
-
         // load data from local Operators
         this.operator_data = this.loadOperatorData(availableCRDs);
 
@@ -70,6 +68,12 @@ export abstract class Plugin {
         this.loadCRDFromArtefacthubData();
 
         this.loadAdditionalResourceDefinitions();
+
+        if (this.enabled) {
+            console.log("✅ "+this.id, this.constructor.name)
+        } else {
+            console.log("❌ "+this.id, this.constructor.name)
+        }
 
 
     }
@@ -145,6 +149,7 @@ export abstract class Plugin {
 
     private loadOperatorData(availableOperators: any): any {
         for (const operatorCRD of availableOperators) {
+            console.log(operatorCRD.spec.names.kind, this.constructor.name)
             if (operatorCRD.spec.names.kind === this.constructor.name) {
                 this.enabled = true;
                 this.version.installed = operatorCRD.spec.version
