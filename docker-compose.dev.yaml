@@ -5,7 +5,7 @@ services:
     build: .
     #command: ["tail", "-f", "/dev/null"] # for debugging
     env_file:
-      - .env
+      - server/.env
     environment:
       - KUBERO_CONTEXT=kind-kubero-001 # make sure you use the context name from your mounted kubeconfig
     ports:
@@ -15,7 +15,7 @@ services:
     volumes:
       #- .:/app
       - ./kubeconfig-docker:/app/server/kubeconfig # change the port 6443 to the outside port of your local kind cluster control plane
-      - ./config.yaml:/app/server/config.yaml
+      - ./server/config.yaml:/app/server/config.yaml
   gitea:
     image: gitea/gitea:latest
     container_name: gitea
