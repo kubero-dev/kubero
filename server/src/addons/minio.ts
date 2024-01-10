@@ -1,7 +1,7 @@
 import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 
 // Classname must be same as the CRD's Name
-export class Minio extends Plugin implements IPlugin {
+export class Tenant extends Plugin implements IPlugin {
     public id: string = 'minio-operator';//same as operator name
     public displayName = 'Minio'
     public icon = '/img/addons/Minio.png'
