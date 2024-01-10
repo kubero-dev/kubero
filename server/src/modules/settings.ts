@@ -30,4 +30,14 @@ export class Settings {
         return config
     }
 
+    public async getDomains(): Promise<any> {
+        let allIngress = await this.kubectl.getAllIngress()
+        let domains: string[] = []
+        allIngress.forEach((ingress: any) => {
+            ingress.spec.rules.forEach((rule: any) => {
+                domains.push(rule.host)
+            })
+        })
+        return domains
+    }
 }
