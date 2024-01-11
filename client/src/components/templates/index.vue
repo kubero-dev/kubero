@@ -79,43 +79,42 @@
             v-model="dialog"
             max-width="890"
             >
-            <v-card>
-                <v-card-title class="text-h5">
-                    {{clickedTemplate.name}}
-                </v-card-title>
-                <v-card-text>
-                    {{clickedTemplate.description}}
-                </v-card-text>
-                <v-card-text v-if="clickedTemplate.screenshots && clickedTemplate.screenshots.length > 0">
-                    <v-carousel>
-                        <v-carousel-item
-                        v-for="(screenshot, i) in clickedTemplate.screenshots"
-                        :key="i"
-                        :src="screenshot"
-                        >
-                        </v-carousel-item>
-                    </v-carousel>
-                </v-card-text>
-                <v-card-text>
-                    <v-select
-                        :items="pipelines"
-                        label="Pipeline"
-                        v-model="pipeline"
-                    ></v-select>
-                    <v-select
-                        :items="phases[pipeline]"
-                        label="Phase"
-                        v-model="phase"
-                    ></v-select>
-                    <v-btn
-                        color="primary"
-                        dark
-                        :disabled="!pipeline || !phase"
-                        @click="openInstall(clickedTemplate.dirname, pipeline, phase, catalogId)"
-                        >
-                        Install
-                    </v-btn>
-                </v-card-text>
+            <v-card :title="clickedTemplate.name">
+                <v-card-item>
+                    <v-card-text>
+                        {{clickedTemplate.description}}
+                    </v-card-text>
+                    <v-card-text v-if="clickedTemplate.screenshots && clickedTemplate.screenshots.length > 0">
+                        <v-carousel>
+                            <v-carousel-item
+                            v-for="(screenshot, i) in clickedTemplate.screenshots"
+                            :key="i"
+                            :src="screenshot"
+                            >
+                            </v-carousel-item>
+                        </v-carousel>
+                    </v-card-text>
+                    <v-card-text>
+                        <v-select
+                            :items="pipelines"
+                            label="Pipeline"
+                            v-model="pipeline"
+                        ></v-select>
+                        <v-select
+                            :items="phases[pipeline]"
+                            label="Phase"
+                            v-model="phase"
+                        ></v-select>
+                        <v-btn
+                            color="primary"
+                            dark
+                            :disabled="!pipeline || !phase"
+                            @click="openInstall(clickedTemplate.dirname, pipeline, phase, catalogId)"
+                            >
+                            Install
+                        </v-btn>
+                    </v-card-text>
+                </v-card-item>
             </v-card>
         </v-dialog>
 

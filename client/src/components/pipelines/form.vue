@@ -144,7 +144,7 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-card elevation="2" class="cardBackground mt-8">
+      <v-card elevation="2" class="mt-8" color="cardBackground">
         <v-card-title>Phases</v-card-title>
         <v-card-text>
           <v-row v-for="phase in phases" :key="phase.name">
