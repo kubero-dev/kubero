@@ -85,7 +85,7 @@ export class Cockroachdb extends Plugin implements IPlugin {
 
     public resourceDefinitions: any = {
         'Cockroachdb': {
-            apiVersion: "cockroachdb.roachprod.crdb.io/v1alpha1",
+            apiVersion: "charts.operatorhub.io/v1alpha1",
             kind: "Cockroachdb",
             metadata: {
               name: "cockroachdbinstance",
@@ -108,3 +108,6 @@ export class Cockroachdb extends Plugin implements IPlugin {
     }
 
 }
+
+
+
