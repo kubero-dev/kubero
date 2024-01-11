@@ -29,7 +29,7 @@ export class KuberoMysql extends Plugin implements IPlugin {
             label: 'Storage Class',
             // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
             name: 'spec.mysql.global.storageClass',
-            default: 'default',
+            default: 'standard',
             required: true
         },
         'KuberoMysql.spec.mysql.primary.persistence.size':{

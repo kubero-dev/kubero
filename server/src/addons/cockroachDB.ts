@@ -65,7 +65,7 @@ export class Cockroachdb extends Plugin implements IPlugin {
             description: 'Size of the storage'
         },
         'Cockroachdb.spec.storage.persistentVolume.storageClass':{
-            type: 'text',
+            type: 'select-storageclass',
             label: 'Sorage Class',
             name: 'MongoDB.spec.storage.storageClass',
             default: 'standard',
@@ -81,6 +81,30 @@ export class Cockroachdb extends Plugin implements IPlugin {
     constructor(availableOperators: any) {
         super();
         super.init(availableOperators);
+    }
+
+    public resourceDefinitions: any = {
+        'Cockroachdb': {
+            apiVersion: "cockroachdb.roachprod.crdb.io/v1alpha1",
+            kind: "Cockroachdb",
+            metadata: {
+              name: "cockroachdbinstance",
+            },
+            spec: {
+              cache: "25%",
+              'max-sql-memory': "25%",
+              'single-node': false,
+              statefulset: {
+                replicas: 3
+              },
+              storage: {
+                persistentVolume: {
+                  storageSize: "1Gi",
+                  storageClass: "standard"
+                }
+              }
+            }
+        }
     }
 
 }

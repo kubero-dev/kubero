@@ -65,12 +65,13 @@ export abstract class Plugin {
         await this.loadMetadataFromArtefacthub();
 
         // load CRD from artefacthub, or alterantively from local operator, as a fallback use the CRD from the plugin
-        this.loadCRDFromArtefacthubData();
+        this.loadCRD();
 
         this.loadAdditionalResourceDefinitions();
 
         if (this.enabled) {
             console.log("✅ "+this.id, this.constructor.name)
+            //console.log(this.resourceDefinitions) // debug CRD
         } else {
             console.log("❌ "+this.id, this.constructor.name)
         }
@@ -101,13 +102,21 @@ export abstract class Plugin {
         
     }
 
-    private loadCRDFromArtefacthubData() {
+    private loadCRD() {
+        if (this.resourceDefinitions[this.kind] !== undefined) {
+            // CRD already loaded from operator
+            return;
+        }
         if (this.artefact_data.crds === undefined) {
             console.log("No CRDs defined in artefacthub for "+this.id)
             this.loadCRDFromOperatorData();
             return;
+        } else {
+            this.loadCRDFromArtefacthubData();
         }
+    }
 
+    private loadCRDFromArtefacthubData() {
         for (const artefactCRD of this.artefact_data.crds) {
             if (artefactCRD.kind === this.kind) {
                 // search in artefact data for the crd
@@ -149,7 +158,7 @@ export abstract class Plugin {
 
     private loadOperatorData(availableOperators: any): any {
         for (const operatorCRD of availableOperators) {
-            console.log(operatorCRD.spec.names.kind, this.constructor.name)
+            // console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
             if (operatorCRD.spec.names.kind === this.constructor.name) {
                 this.enabled = true;
                 this.version.installed = operatorCRD.spec.version
