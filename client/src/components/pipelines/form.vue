@@ -144,29 +144,33 @@
           ></v-select>
         </v-col>
       </v-row>
-      <v-card elevation="2" class="mt-8" color="cardBackground">
+      <v-card elevation="2" color="cardBackground">
         <v-card-title>Phases</v-card-title>
         <v-card-text>
-          <v-row v-for="phase in phases" :key="phase.name">
+          <v-row v-for="phase in phases" :key="phase.name" class="my-0">
             <v-col
               cols="12"
               md="3"
+              class="py-0"
             >
               <v-switch
                 v-model="phase.enabled"
                 :label="phase.name"
                 :disabled="phase.name == 'review' && (repository_status.connected === false || gitops === false)"
+                dense
               ></v-switch>
             </v-col>
             <v-col
               cols="12"
               md="4"
+              class="py-0"
             >
               <v-select
                 v-model="phase.context"
                 :items="contextList"
                 label="Cluster"
                 v-if="phase.enabled"
+                dense
               ></v-select>
             </v-col>
           </v-row>

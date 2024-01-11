@@ -42,7 +42,7 @@
             v-model="appname"
             :rules="nameRules"
             :counter="60"
-            :readonly="app!='new'"
+            :disabled="app!='new'"
             label="App name"
             v-on:input="changeName(appname)"
             required
@@ -107,9 +107,9 @@
         multiple
       >
       <!-- DEPLOYMENT -->
-      <v-expansion-panel>
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Deployment</v-expansion-panel-title>
-        <v-expansion-panel-text color="cardBackground">
+        <v-expansion-panel-text>
 
           <v-row>
             <v-col
@@ -348,7 +348,7 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel v-if="advanced">
+      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -479,7 +479,7 @@
 
 
       <!-- NETWORKING -->
-      <v-expansion-panel v-if="advanced">
+      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -532,7 +532,7 @@
 
 
       <!-- CORS -->
-      <v-expansion-panel v-if="advanced">
+      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Cors</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -623,7 +623,7 @@
       </v-expansion-panel>
 
       <!-- ENVIRONMENT VARS -->
-      <v-expansion-panel>
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
             <v-row v-for="(envvar, index) in envvars" :key="index">
@@ -683,7 +683,7 @@
       </v-expansion-panel>
 
       <!-- RESOURCES -->
-      <v-expansion-panel>
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Resources</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
           <v-row>
@@ -782,7 +782,7 @@
       </v-expansion-panel>
 
       <!-- VOLUMES -->
-      <v-expansion-panel>
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Volumes</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
           <div v-for="volume in extraVolumes" v-bind:key="volume.name">
@@ -876,7 +876,7 @@
       </v-expansion-panel>
 
       <!-- CRONJOBS -->
-      <v-expansion-panel>
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Cronjobs</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
           <div v-for="cronjob in cronjobs" v-bind:key="cronjob.name">
