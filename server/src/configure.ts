@@ -17,6 +17,7 @@ import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
 import { Settings } from './modules/settings';
+import { Audit, AuditEntry } from './modules/audit';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
 import * as fs from 'fs';
@@ -57,9 +58,30 @@ export const configure = async (app: Express, server: Server) => {
 
     // Attache socket.io to server
     let sockets = init(server);
-    const kubero = new Kubero(sockets);
 
-    // sleep 5 seconds to wait for kubernetes availability test
+    const audit = new Audit(
+        process.env.KUBERO_AUDIT_DB_PATH || './db', 
+        parseInt(process.env.KUBERO_AUDIT_LIMIT || '1000') 
+    );
+    await audit.init();
+    app.locals.audit = audit;
+
+    const auditEntry: AuditEntry = {
+        user: '',
+        severity: 'normal',
+        action: 'start',
+        namespace: '',
+        phase: '',
+        app: '',
+        pipeline: '',
+        resource: 'system',
+        message: 'server started',
+    }
+    audit.logDelayed(auditEntry); // wait till db is created
+
+    const kubero = new Kubero(sockets, audit);
+
+    // sleep 1 seconds to wait for kubernetes availability test
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     kubero.updateState();

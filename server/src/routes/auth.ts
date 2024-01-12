@@ -35,7 +35,7 @@ Router.all("/session", (req: Request, res: Response) => {
         "buildPipeline": buildPipeline,
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
         "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
-        //"templatesEnabled": true,
+        "auditEnabled": req.app.locals.audit.getAuditEnabled()
     }
     res.status(status).send(message)
 })

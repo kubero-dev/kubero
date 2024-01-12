@@ -4,21 +4,23 @@
         <v-layout>
                 <v-row
                 v-if="events.length > 0">
-                    <v-timeline align-top dense side="end">
+                    <v-timeline align-top side="end">
                         <v-timeline-item
-                            v-for="event in events" :key="event.metadata.uid"
+                            v-for="event in events" :key="event.metadata.id"
                             :color=event.color
                             :icon=event.icon
                             dot-color="var(--v-primary-base)"
                             fill-dot>
-                            <v-card class="elevation-2">
-                            <v-card-title class="text-h5">
-                                {{ event.message }}
-                            </v-card-title>
-                            <v-card-text>
-                                {{ event.metadata.creationTimestamp }}
-                            </v-card-text>
-                            </v-card>
+                            <div class="d-flex">
+                                <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
+                                <div>
+                                    <strong> {{ event.title }}</strong>
+                                    <div class="text-caption">
+                                        {{ event.metadata.timestamp }} · v{{ event.metadata.id }} · {{ event.message }}
+                                    </div>
+                                </div>
+                            </div>
+                            <v-divider v-if="event !== events[events.length - 1]" ></v-divider>
                         </v-timeline-item>
 
                     </v-timeline>
@@ -56,10 +58,11 @@ import axios from "axios";
 import { defineComponent } from 'vue'
 
 type Event = {
+    title: string;
     message: string;
     metadata: {
-        creationTimestamp: string;
-        uid: string;
+        timestamp: string;
+        id: string;
     };
     color: string;
     icon: string;
@@ -78,53 +81,64 @@ export default defineComponent({
         events: [] as Event[],
     }),
     methods: {
-      async loadEvents() {
-        const self = this;
-        axios.get(`/api/events`)
-        .then(response => {
-            // sort by creationTimestamp
-            response.data.sort((a: Event, b: Event) => {
-                return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
+        async loadEvents(){
+            const self = this;
+            axios.get(`/api/audit`, {
+                params: {
+                    limit: 25,
+                }
+            })
+            .then(response => {
+                //console.log(response.data);
+
+                const auditEntries = response.data.audit as any[];
+
+                for (let i = 0; i < auditEntries.length; i++) {
+                    const date = new Date(auditEntries[i].timestamp)
+                    const event = {
+                        title: auditEntries[i].action + " " + auditEntries[i].resource,
+                        message: auditEntries[i].message,
+                        metadata: {
+                            //timestamp: date.toLocaleDateString() + " " + date.toLocaleTimeString(),
+                            timestamp: date.toDateString() + " " + date.toLocaleTimeString(),
+                            id: auditEntries[i].id,
+                        },
+                    } as Event;
+
+                    switch (auditEntries[i].severity) {
+                        case "normal":
+                            event.color = "grey lighten-2";
+                            break;
+                        case "info":
+                            event.color = "primary lighten-4";
+                            break;
+                        case "warning":
+                            event.color = "orange lighten-4";
+                            break;
+                        case "error":
+                            event.color = "red lighten-4";
+                            break;
+                        default:
+                            event.color = "grey lighten-2";
+                    }
+
+                    switch (auditEntries[i].resource) {
+                        case "system":
+                            event.icon = "mdi-bell-plus-outline";
+                            break;
+                        case "app":
+                            event.icon = "mdi-bell-remove-outline";
+                            break;
+                        default:
+                            event.icon = "mdi-bell-outline";
+                    }
+                    self.events.push(event);
+                }
+            })
+            .catch(error => {
+                console.log(error);
             });
-
-            for (let i = 0; i < response.data.length; i++) {
-                const date = new Date(response.data[i].metadata.creationTimestamp)
-                const event = {
-                    message: response.data[i].message,
-                    metadata: {
-                        creationTimestamp: date.toLocaleDateString() + " " + date.toLocaleTimeString(),
-                        uid: response.data[i].metadata.uid,
-                    },
-                } as Event;
-
-                switch (response.data[i].type) {
-                    case "Normal":
-                        event.color = "grey lighten-2";
-                        break;
-                    case "Warning":
-                        event.color = "red lighten-4";
-                        break;
-                    default:
-                        event.color = "grey lighten-2";
-                }
-
-                switch (response.data[i].reason) {
-                    case "Created":
-                        event.icon = "mdi-bell-plus-outline";
-                        break;
-                    case "Deleted":
-                        event.icon = "mdi-bell-remove-outline";
-                        break;
-                    default:
-                        event.icon = "mdi-bell-outline";
-                }
-                self.events.push(event);
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        });
-      },
+        },
     },
 });
 </script>

@@ -4,6 +4,7 @@ import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubec
 import { IPullrequest } from './git/types';
 import { App, KubectlTemplate } from './modules/application';
 import { Buildpack } from './modules/config';
+import { Audit } from './modules/audit';
 import { GithubApi } from './git/github';
 import { BitbucketApi } from './git/bitbucket';
 import { GiteaApi } from './git/gitea';
@@ -33,8 +34,9 @@ export class Kubero {
     private pipelineStateList: IPipeline[] = [];
     private podLogStreams: string[]= []
     public config: IKuberoConfig;
+    private audit: Audit;
 
-    constructor(io: Server) {
+    constructor(io: Server, audit: Audit) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
         this.kubectl = new Kubectl(this.config);
         this._io = io;
@@ -45,6 +47,8 @@ export class Kubero {
         this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
         this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
+
+        this.audit = audit;
     }
 
     public getKubernetesVersion() {
@@ -65,12 +69,12 @@ export class Kubero {
                 for (const phase of pipeline.phases) {
 
                     if (phase.enabled == true) {
-                        debug.log("Checking Namespace: "+pipeline.name+"-"+phase.name);
+                        debug.log("Loading Namespace: "+pipeline.name+"-"+phase.name);
                         this.listAppsInNamespace(pipeline.name, phase.name)
                         .then(appsList => {
                             if (appsList) {
                                 for (const app of appsList.items) {
-                                    debug.log("added App to state: "+app.spec.name);
+                                    debug.log("Loading App: "+app.spec.name);
                                     this.appStateList.push(app.spec);
                                 }
                             }
@@ -150,6 +154,17 @@ export class Kubero {
         this.updateState();
 
         this.kubectl.createEvent('Normal', 'Created', 'pipeline.created', 'created new pipeline: '+pipeline.name);
+        this.audit?.log({
+            user: '',
+            severity: 'normal',
+            action: 'create',
+            namespace: '',
+            phase: '',
+            app: '',
+            pipeline: pipeline.name,
+            resource: 'pipeline',
+            message: 'created new pipeline: '+pipeline.name
+        });
 
         // update agents
         const message = {
@@ -184,6 +199,17 @@ export class Kubero {
         this.updateState();
 
         this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
+        this.audit?.log({
+            user: '',
+            severity: 'normal',
+            action: 'update',
+            namespace: '',
+            phase: '',
+            app: '',
+            pipeline: pipeline.name,
+            resource: 'pipeline',
+            message: 'updated pipeline: '+pipeline.name
+        });
 
         // update agents
         const message = {
@@ -260,6 +286,17 @@ export class Kubero {
                 } as IMessage;
                 this._io.emit('updatedPipelines', message);
                 this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
+                this.audit?.log({
+                    user: '',
+                    severity: 'normal',
+                    action: 'delete',
+                    namespace: '',
+                    phase: '',
+                    app: '',
+                    pipeline: pipelineName,
+                    resource: 'pipeline',
+                    message: 'deleted pipeline: '+pipelineName
+                });
             }
         })
         .catch(error => {
@@ -297,6 +334,18 @@ export class Kubero {
 
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'create',
+                namespace: app.name+'-'+app.phase,
+                phase: app.phase,
+                app: app.name,
+                pipeline: app.pipeline,
+                resource: 'app',
+                message: 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
+            });
+
         }
 
     }
@@ -320,6 +369,17 @@ export class Kubero {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
             this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'update',
+                namespace: app.name+'-'+app.phase,
+                phase: app.phase,
+                app: app.name,
+                pipeline: app.pipeline,
+                resource: 'app',
+                message: 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
+            });
             const message = {
                 'action': 'updated',
                 'pipelineName':app.pipeline,
@@ -345,6 +405,17 @@ export class Kubero {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
             this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'delete',
+                namespace: appName+'-'+phaseName,
+                phase: phaseName,
+                app: appName,
+                pipeline: pipelineName,
+                resource: 'app',
+                message: 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName
+            });
             const message = {
                 'action': 'deleted',
                 'pipelineName':pipelineName,
@@ -441,6 +512,17 @@ export class Kubero {
             } as IMessage;
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'restart',
+                namespace: appName+'-'+phaseName,
+                phase: phaseName,
+                app: appName,
+                pipeline: pipelineName,
+                resource: 'app',
+                message: 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName
+            });
         }
     }
 
@@ -468,6 +550,17 @@ export class Kubero {
             } as IMessage;
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Rebuild', 'app.restarted', 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'restart',
+                namespace: app.name+'-'+app.phase,
+                phase: app.phase,
+                app: app.name,
+                pipeline: app.pipeline,
+                resource: 'app',
+                message: 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
+            });
         }
     }
 /*
@@ -574,6 +667,17 @@ export class Kubero {
             } as IMessage;
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
+            this.audit?.log({
+                user: '',
+                severity: 'normal',
+                action: 'push',
+                namespace: app.name+'-'+app.phase,
+                phase: app.phase,
+                app: app.name,
+                pipeline: app.pipeline,
+                resource: 'app',
+                message: 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase
+            });
             this.rebuildApp(app);
         }
     }
@@ -770,6 +874,17 @@ export class Kubero {
 
                 this.newApp(app);
                 this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+branch+' in '+ ssh_url);
+                this.audit?.log({
+                    user: '',
+                    severity: 'normal',
+                    action: 'pr.opened',
+                    namespace: app.name+'-'+app.phase,
+                    phase: app.phase,
+                    app: app.name,
+                    pipeline: app.pipeline,
+                    resource: 'app',
+                    message: 'opened pull request: '+branch+' in '+ ssh_url
+                });
             }
         }
     }
@@ -788,6 +903,17 @@ export class Kubero {
 
                     this.deleteApp(app.pipeline, app.phase, websaveTitle);
                     this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+branch+' in '+ ssh_url);
+                    this.audit?.log({
+                        user: '',
+                        severity: 'normal',
+                        action: 'pr.closed',
+                        namespace: app.name+'-'+app.phase,
+                        phase: app.phase,
+                        app: app.name,
+                        pipeline: app.pipeline,
+                        resource: 'app',
+                        message: 'closed pull request: '+branch+' in '+ ssh_url
+                    });
             }
         }
     }

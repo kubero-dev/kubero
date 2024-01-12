@@ -8,7 +8,7 @@ export function init(httpServer: HttpServer) {
     debug('initializing');
 
     const io = new Server(httpServer, { /* options */ });
-    console.log('socket.io started')
+    console.log('⚡️[server]: socket.io started')
     io.on('connection', client => {
         debug.debug('socket.io connected')
 
