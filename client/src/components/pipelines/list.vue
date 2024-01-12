@@ -178,7 +178,9 @@ export default defineComponent({
             confirmButtonText: "Delete",
             cancelButtonText: "Cancel",
             confirmButtonColor: "rgb(var(--v-theme-kubero))",
-            background: "rgb(var(--v-theme-surface))",
+            background: "rgb(var(--v-theme-cardBackground))",
+            /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+            color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
         })
         .then((result) => {
             if (result.isConfirmed) {
