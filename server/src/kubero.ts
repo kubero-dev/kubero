@@ -5,6 +5,7 @@ import { IPullrequest } from './git/types';
 import { App, KubectlTemplate } from './modules/application';
 import { Buildpack } from './modules/config';
 import { Audit } from './modules/audit';
+import { User } from './modules/auth';
 import { GithubApi } from './git/github';
 import { BitbucketApi } from './git/bitbucket';
 import { GiteaApi } from './git/gitea';
@@ -21,6 +22,7 @@ import { Stream } from 'stream';
 debug('app:kubero')
 
 import { Kubectl } from './modules/kubectl';
+import { use } from 'passport';
 
 export class Kubero {
     public kubectl: Kubectl;
@@ -141,7 +143,7 @@ export class Kubero {
     }
 
     // creates a new pipeline in the same namespace as the kubero app
-    public async newPipeline(pipeline: IPipeline) {
+    public async newPipeline(pipeline: IPipeline, user: User) {
         debug.debug('create Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -155,7 +157,7 @@ export class Kubero {
 
         this.kubectl.createEvent('Normal', 'Created', 'pipeline.created', 'created new pipeline: '+pipeline.name);
         this.audit?.log({
-            user: '',
+            user: user.username,
             severity: 'normal',
             action: 'create',
             namespace: '',
@@ -178,7 +180,7 @@ export class Kubero {
     }
 
     // updates a new pipeline in the same namespace as the kubero app
-    public async updatePipeline(pipeline: IPipeline, resourceVersion: string) {
+    public async updatePipeline(pipeline: IPipeline, resourceVersion: string, user: User) {
         debug.debug('update Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -200,7 +202,7 @@ export class Kubero {
 
         this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
         this.audit?.log({
-            user: '',
+            user: user.username,
             severity: 'normal',
             action: 'update',
             namespace: '',
@@ -263,7 +265,7 @@ export class Kubero {
     }
 
     // delete a pipeline and all its namespaces/phases
-    public deletePipeline(pipelineName: string) {
+    public deletePipeline(pipelineName: string, user: User) {
         debug.debug('deletePipeline: '+pipelineName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -287,7 +289,7 @@ export class Kubero {
                 this._io.emit('updatedPipelines', message);
                 this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
                 this.audit?.log({
-                    user: '',
+                    user: user.username,
                     severity: 'normal',
                     action: 'delete',
                     namespace: '',
@@ -306,7 +308,7 @@ export class Kubero {
     }
 
     // create a new app in a specified pipeline and phase
-    public async newApp(app: App) {
+    public async newApp(app: App, user: User) {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -335,7 +337,7 @@ export class Kubero {
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
             this.audit?.log({
-                user: '',
+                user: user.username,
                 severity: 'normal',
                 action: 'create',
                 namespace: app.name+'-'+app.phase,
@@ -351,7 +353,7 @@ export class Kubero {
     }
 
     // update an app in a pipeline and phase
-    public async updateApp(app: App, resourceVersion: string) {
+    public async updateApp(app: App, resourceVersion: string, user: User) {
         debug.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
         await this.setContext(app.pipeline, app.phase);
 
@@ -370,7 +372,7 @@ export class Kubero {
             // IMPORTANT TODO : Update this.appStateList !!
             this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
             this.audit?.log({
-                user: '',
+                user: user.username,
                 severity: 'normal',
                 action: 'update',
                 namespace: app.name+'-'+app.phase,
@@ -392,7 +394,7 @@ export class Kubero {
     }
 
     // delete a app in a pipeline and phase
-    public async deleteApp(pipelineName: string, phaseName: string, appName: string) {
+    public async deleteApp(pipelineName: string, phaseName: string, appName: string, user: User) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -406,7 +408,7 @@ export class Kubero {
             this.removeAppFromState(pipelineName, phaseName, appName);
             this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
             this.audit?.log({
-                user: '',
+                user: user.username,
                 severity: 'normal',
                 action: 'delete',
                 namespace: appName+'-'+phaseName,
@@ -497,7 +499,7 @@ export class Kubero {
         return pipeline;
     }
 
-    public restartApp(pipelineName: string, phaseName: string, appName: string) {
+    public restartApp(pipelineName: string, phaseName: string, appName: string, user: User) {
         debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
@@ -513,7 +515,7 @@ export class Kubero {
             this._io.emit('updatedApps', message);
             this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
             this.audit?.log({
-                user: '',
+                user: user.username,
                 severity: 'normal',
                 action: 'restart',
                 namespace: appName+'-'+phaseName,
@@ -872,10 +874,14 @@ export class Kubero {
                 }
                 let app = new App(appOptions);
 
-                this.newApp(app);
+                const user = {
+                    username: 'unknown'
+                } as User;
+
+                this.newApp(app, user);
                 this.kubectl.createEvent('Normal', 'Opened', 'pr.opened', 'opened pull request: '+branch+' in '+ ssh_url);
                 this.audit?.log({
-                    user: '',
+                    user: user.username,
                     severity: 'normal',
                     action: 'pr.opened',
                     namespace: app.name+'-'+app.phase,
@@ -901,10 +907,14 @@ export class Kubero {
                 app.gitrepo.ssh_url === ssh_url &&
                 app.branch === branch) {
 
-                    this.deleteApp(app.pipeline, app.phase, websaveTitle);
+                    const user = {
+                        username: 'unknown'
+                    } as User;
+
+                    this.deleteApp(app.pipeline, app.phase, websaveTitle, user);
                     this.kubectl.createEvent('Normal', 'Closed', 'pr.closed', 'closed pull request: '+branch+' in '+ ssh_url);
                     this.audit?.log({
-                        user: '',
+                        user: user.username,
                         severity: 'normal',
                         action: 'pr.closed',
                         namespace: app.name+'-'+app.phase,

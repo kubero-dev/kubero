@@ -112,7 +112,7 @@ export class Audit {
 
     public get(limit: number = 100): Promise<AuditEntry[]> {
         if (!this.enabled) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 resolve([]);
             });
         }
@@ -128,7 +128,7 @@ export class Audit {
 
     public getFiltered(limit: number = 100, filter: string = ''): Promise<AuditEntry[]> {
         if (!this.enabled) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 resolve([]);
             });
         }
@@ -144,7 +144,7 @@ export class Audit {
 
     public getAppEntries(app: string, limit: number = 100): Promise<AuditEntry[]> {
         if (!this.enabled) {
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve) => {
                 resolve([]);
             });
         }

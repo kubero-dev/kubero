@@ -11,7 +11,7 @@ import { RouterLogs } from "./routes/logs";
 import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
-import { Router as RouterServices } from "./routes/services";
+import { Router as RouterTemplates } from "./routes/templates";
 import { Router as RouterSecurity } from "./routes/security";
 import { init } from './socket'
 import { Kubero } from './kubero';
@@ -51,7 +51,7 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api', RouterPipelines);
     app.use('/api', RouterRepo);
     app.use('/api', RouterSettings);
-    app.use('/api', RouterServices);
+    app.use('/api', RouterTemplates);
     app.use('/api', RouterSecurity);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
@@ -67,7 +67,7 @@ export const configure = async (app: Express, server: Server) => {
     app.locals.audit = audit;
 
     const auditEntry: AuditEntry = {
-        user: '',
+        user: 'kubero',
         severity: 'normal',
         action: 'start',
         namespace: '',

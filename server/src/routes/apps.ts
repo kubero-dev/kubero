@@ -141,7 +141,8 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
 
 
     const app = createApp(req);
-    req.app.locals.kubero.newApp(app);
+    const user = auth.getUser(req);
+    req.app.locals.kubero.newApp(app, user);
     res.send("new");
 });
 
@@ -149,8 +150,9 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
 Router.post('/apps', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Create a new app'
+    const user = auth.getUser(req);
     const app = createApp(req);
-    req.app.locals.kubero.newApp(app);
+    req.app.locals.kubero.newApp(app, user);
     res.send("new");
 });
 
@@ -254,7 +256,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     // #swagger.summary = 'Update an app in a specific pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'App object', required: true, type: 'object' }
 
-    let appconfig: IApp = {
+    const appconfig: IApp = {
         name: req.params.app,
         pipeline: req.params.pipeline,
         phase: req.params.phase,
@@ -290,9 +292,10 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     // WARNING: renaming the addon will cause dataloss !!!
     //normalizeAddonName(appconfig);
 
-    let app = new App(appconfig);
+    const app = new App(appconfig);
 
-    req.app.locals.kubero.updateApp(app, req.body.resourceVersion);
+    const user = auth.getUser(req);
+    req.app.locals.kubero.updateApp(app, req.body.resourceVersion, user);
 
     res.send("updated");
 });

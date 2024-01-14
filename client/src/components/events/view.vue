@@ -14,7 +14,7 @@
                             <div class="d-flex">
                                 <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
                                 <div>
-                                    <strong> {{ event.title }}</strong>
+                                    <strong>{{ event.user }}: </strong> {{ event.title }}
                                     <div class="text-caption">
                                         {{ event.metadata.timestamp }} · v{{ event.metadata.id }} · {{ event.message }}
                                     </div>
@@ -58,6 +58,7 @@ import axios from "axios";
 import { defineComponent } from 'vue'
 
 type Event = {
+    user: string;
     title: string;
     message: string;
     metadata: {
@@ -96,6 +97,7 @@ export default defineComponent({
                 for (let i = 0; i < auditEntries.length; i++) {
                     const date = new Date(auditEntries[i].timestamp)
                     const event = {
+                        user: auditEntries[i].user,
                         title: auditEntries[i].action + " " + auditEntries[i].resource,
                         message: auditEntries[i].message,
                         metadata: {

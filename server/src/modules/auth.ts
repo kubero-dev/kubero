@@ -10,7 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as crypto from "crypto"
 import axios from 'axios';
 
-type User =  {
+export type User =  {
     id: number,
     method: string,
     username: string,
@@ -211,7 +211,7 @@ export class Auth {
         })
     }
 
-    public authMiddleware(req: Request, res: Response, next: NextFunction) {
+    public authMiddleware(req: Request, res: Response, next: NextFunction): void {
         if (typeof(req.isAuthenticated) !== "function"  || !req.isAuthenticated()) {
             debug.debug("not authenticated")
             res.status(401).send('You are not authenticated')
@@ -225,7 +225,7 @@ export class Auth {
         return next()
     }
 
-    public getAuthMiddleware() {
+    public getAuthMiddleware(): any {
         if (this.authentication === true) {
             return this.authMiddleware;
         } else {
@@ -236,5 +236,22 @@ export class Auth {
 
     public getBearerMiddleware() {
         return this.passport.authenticate('bearer', { session: false })
+    }
+
+    public getUser(req: Request): User {
+        let user: User = {
+            id: 0,
+            method: '',
+            username: 'anonymous'
+        }
+
+        if (req.isAuthenticated()) {
+            const sessionWithPassport = req.session as any & { passport: User };
+            user = sessionWithPassport.passport.user;
+        }
+
+        //console.log("extractUser: "+JSON.stringify(user))
+
+        return user;
     }
 }
