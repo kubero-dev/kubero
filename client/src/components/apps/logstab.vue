@@ -2,9 +2,11 @@
     <v-container>
         <v-row>
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+                <!--
                 <h1>
                     Logs for {{ app }}
                 </h1>
+                -->
             </v-col>
             <v-col cols="6" sm="6" md="6" lg="6" xl="6" class="d-flex justify-end">
                 <v-btn

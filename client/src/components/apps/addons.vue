@@ -22,23 +22,25 @@
             <p class="text-caption mt-1">
               {{ addon.id }}
             </p>
-            <v-divider class="my-3"></v-divider>
-            <v-btn
-              depressed
-              variant="text"
-              color="primary"
-              @click="editAddon(addon)"
-            >
-              edit
-            </v-btn>
-            <v-btn
-              depressed
-              variant="text"
-              color="red"
-              @click="deleteAddon(addon)"
-            >
-              delete
-            </v-btn>
+            <div v-if="showButtons">
+              <v-divider class="my-3"></v-divider>
+              <v-btn
+                depressed
+                variant="text"
+                color="primary"
+                @click="editAddon(addon)"
+              >
+                edit
+              </v-btn>
+              <v-btn
+                depressed
+                variant="text"
+                color="red"
+                @click="deleteAddon(addon)"
+              >
+                delete
+              </v-btn>
+            </div>
           </div>
         </v-list-item-content>
       </v-card>
@@ -53,7 +55,7 @@
       persistent
       max-width="600px"
     >
-      <template v-slot:activator="{ props }">
+      <template v-slot:activator="{ props }" v-if="showButtons">
 
         <v-col cols="12">
             <v-btn
@@ -234,6 +236,10 @@ export default defineComponent({
         appname: {
             type: String,
             default: ''
+        },
+        showButtons: {
+            type: Boolean,
+            default: true
         },
     },
     data: () => ({
