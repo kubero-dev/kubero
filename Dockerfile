@@ -31,7 +31,7 @@ COPY --from=build /build/server/node_modules /app/server/node_modules
 COPY --from=build /build/server/swagger.json /app/swagger.json
 
 
-RUN echo $VERSION > VERSION
+RUN echo $VERSION > /app/server/VERSION
 
 WORKDIR /app/server
 
