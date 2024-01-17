@@ -34,7 +34,7 @@
                                 <h3 class="headline mb-0">Metadata</h3>
                             </v-card-title>
                             <v-card-text>
-                                <v-table density="compact">
+                                <v-table density="compact" style="background:rgb(var(--v-theme-cardBackground))">
                                     <tbody>
                                         <tr>
                                             <th>Last Scan</th>
@@ -132,7 +132,8 @@
                                         :items-per-page=5
                                         :footer-props="{
                                             'items-per-page-options': [5, 10, 25, { text: 'ALL', value: -1 }]
-                                        }">
+                                        }"
+                                        style="background:rgb(var(--v-theme-cardBackground))">
                                         <!-- eslint-disable-next-line vue/valid-v-slot -->
                                         <template v-slot:item.VulnerabilityID="{ item }">
                                             <a :href="item.PrimaryURL" target="_blank"><nobr>{{ item.VulnerabilityID }}</nobr></a>
@@ -406,6 +407,10 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+.v-card {
+    margin-left: 1px;
+    margin-right: 2px;
+}
 .v-table__wrapper {
     background-color: #000;
 }

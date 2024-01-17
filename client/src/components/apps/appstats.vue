@@ -4,10 +4,11 @@
             <v-sheet
                 width="100%"
                 tile
+                color="rgb(var(--v-theme-background))"
             >
                 <div class="mb-5">
                     <h1>{{ appData.spec.name }}</h1>
-                    <v-table density="compact" background-color="#000">
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <tbody>
                         <tr>
                             <th>Domain</th>
@@ -87,7 +88,7 @@
                 </div>
                 <div class="mb-5 mt-10">
                     <h3>Environment Variables</h3>
-                    <v-table density="compact">
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
                         <tr>
                             <th class="text-left">
@@ -139,7 +140,7 @@
                 </div>
                 <div class="mb-5">
                     <h3>Cronjobs</h3>
-                    <v-table density="compact">
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
                         <tr>
                             <th class="text-left">
