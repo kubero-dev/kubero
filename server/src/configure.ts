@@ -37,7 +37,7 @@ export const configure = async (app: Express, server: Server) => {
     }));
     app.use(bodyParser.json());
     if (auth.authentication === true) {
-        console.log("initialize Passport");
+        console.log("Enable Authentication");
 
         app.use(auth.passport.initialize());
         app.use(auth.passport.session());

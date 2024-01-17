@@ -52,7 +52,7 @@ export class Auth {
     init() {
 
         if (this.authmethods.local) {
-            console.log("initialize Local Auth");
+            //console.log("initialize Local Auth");
 
             try {
                 const b = Buffer.from(process.env.KUBERO_USERS as string, 'base64').toString('ascii')

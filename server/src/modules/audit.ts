@@ -46,7 +46,7 @@ export class Audit {
             if (err) {
                 console.error(err.message);
             }
-            console.log('Connected to the kubero database.');
+            console.log('Enabled audit logging');
             this.createTables();
         });
     }

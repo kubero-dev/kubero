@@ -8,7 +8,7 @@
             >
                 <div class="mb-5">
                     <h1>{{ appData.spec.name }}</h1>
-                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))" v-if="appData.spec.gitrepo != undefined">
                         <tbody>
                         <tr>
                             <th>Domain</th>

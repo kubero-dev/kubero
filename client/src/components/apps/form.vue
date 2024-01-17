@@ -1280,7 +1280,7 @@ export default defineComponent({
       branch: 'main',
       branchesList: [] as string[],
       docker: {
-        image: '',
+        image: 'ghcr.io/kubero-dev/idler',
         tag: 'latest',
       },
       autodeploy: true,
