@@ -6,6 +6,7 @@
     elevation="0"
     color="cardBackground"
     v-if="deleted === false"
+    style="max-width: 600px;"
     >
     <template slot="progress">
       <v-progress-linear

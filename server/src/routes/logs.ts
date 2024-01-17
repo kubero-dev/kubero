@@ -52,6 +52,32 @@ Router.get('/events', authMiddleware, async function (req: Request, res: Respons
     res.send(events);
 });
 
+Router.get('/audit', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the Kubero audit log'
+    const limit = req.query.limit || 100;
+    const pipeline = req.query.pipeline || '';
+    const phase = req.query.phase || '';
+    const app = req.query.app || '';
+
+    let audit;
+    if (pipeline !== '' && phase !== '' && app !== '') {
+        audit = await req.app.locals.audit.getAppEntries(pipeline, phase, app, limit);
+    } else {
+        audit = await req.app.locals.audit.get(limit);
+    }
+
+    const count = await req.app.locals.audit.count();
+    const response = {
+        audit: audit,
+        count: count,
+        limit: limit
+    }
+
+    res.send(response);
+    
+});
+
 Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get metrics for a specific app'

@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-space-between mb-2">
             <v-col cols="10" sm="10" md="10" lg="10" xl="10">
-                <h1>Vulnerabilities in {{ app }}</h1>
+                <!--<h1>Vulnerabilities in {{ app }}</h1>-->
             </v-col>
             <v-col>
                 <v-btn
@@ -34,7 +34,7 @@
                                 <h3 class="headline mb-0">Metadata</h3>
                             </v-card-title>
                             <v-card-text>
-                                <v-simple-table dense>
+                                <v-table density="compact">
                                     <tbody>
                                         <tr>
                                             <th>Last Scan</th>
@@ -93,7 +93,7 @@
                                             </td>
                                         </tr>
                                     </tbody>
-                                </v-simple-table>
+                                </v-table>
                             </v-card-text>
                         </v-card>
                     </v-col>
@@ -405,10 +405,12 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.theme--light.v-data-table {
-    background-color: unset;
+<style lang="scss" scoped>
+.v-table__wrapper {
+    background-color: #000;
 }
-
+.v-btn--disabled {
+    color: rgba(var(--v-theme-on-surface),.26) !important;
+}
 
 </style>

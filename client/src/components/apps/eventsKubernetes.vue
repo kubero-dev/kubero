@@ -1,22 +1,28 @@
 <template>
-    <v-container>
-        <v-row class="justify-space-between">
-            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                Event stream for <strong>{{ app }}</strong>
-            </v-col>
-        </v-row>
-        <v-layout class="flex-column">
-            <!--
-                    <v-row  v-for="event in events" :key="event.uid">
-                        <v-col cols="3"><nobr>{{ event.eventTime }}</nobr></v-col>
-                        <v-col>{{ event.type }}</v-col>
-                        <v-col>{{ event.reason }} {{ event.action }}</v-col>
-                        <v-col cols="6">{{ event.message }}</v-col>
-                    </v-row>
-            -->
-                <v-row
-                    v-if="events.length > 0">
-                    <v-timeline align-top dense truncate-line="both" side="end" class="my-10">
+    <div>
+        <v-alert
+            outlined
+            type="info"
+            variant="tonal"
+            border="start"
+            v-if="events.length === 0"
+            class="p-5"
+        >
+            <h3>No Kubernetes events found</h3>
+            The default TTL for events in the Kube-API is 1 hour. If you want to 
+            see older events, you have to increase the TTL in the 
+            <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
+
+        </v-alert>
+
+        <v-card
+        color="cardBackground"
+        v-if="events.length > 0">
+            <v-card-title>
+                <h3 class="text-h5">Kubernetes Events</h3>
+            </v-card-title>
+            <v-card-text class="mt-10">
+                    <v-timeline align-top dense truncate-line="both" side="end">
 
                         <v-timeline-item
                             v-for="event in events" :key="event.uid"
@@ -48,35 +54,14 @@
                             </v-card>
                             -->
                         </v-timeline-item>
+
+
                     </v-timeline>
 
-                </v-row>
+            </v-card-text>
+        </v-card>
 
-
-                <v-row
-                    v-if="events.length === 0">
-                    <v-col
-                    cols="12"
-                    md="6"
-                    style="margin-top: 20px;"
-                    >
-                        <v-alert
-                            outlined
-                            type="info"
-                            variant="tonal"
-                            border="start"
-                        >
-                            <h3>No events found</h3>
-                            The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see older events, you have to increase the TTL in the 
-                            <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
-
-                        </v-alert>
-                    </v-col>
-                </v-row>
-        </v-layout>
-
-    </v-container>
+    </div>
 </template>
 
 <script lang="ts">
@@ -97,10 +82,19 @@ type Event = {
 }
 
 export default defineComponent({
-    sockets: {
-    },
-    mounted() {
-        this.loadEvents();
+    props: {
+      pipeline: {
+        type: String,
+        default: "MISSING"
+      },
+      phase: {
+        type: String,
+        default: "MISSING"
+      },
+      app: {
+        type: String,
+        default: "new"
+      }
     },
     data: () => ({
         events: [
@@ -118,21 +112,8 @@ export default defineComponent({
             */
         ] as Event[],
     }),
-    components: {
-    },
-    props: {
-      pipeline: {
-        type: String,
-        default: "MISSING"
-      },
-      phase: {
-        type: String,
-        default: "MISSING"
-      },
-      app: {
-        type: String,
-        default: "new"
-      }
+    mounted() {
+        this.loadEvents();
     },
     methods: {
       async loadEvents() {

@@ -11,12 +11,13 @@ import { RouterLogs } from "./routes/logs";
 import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
-import { Router as RouterServices } from "./routes/services";
+import { Router as RouterTemplates } from "./routes/templates";
 import { Router as RouterSecurity } from "./routes/security";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
 import { Settings } from './modules/settings';
+import { Audit, AuditEntry } from './modules/audit';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
 import * as fs from 'fs';
@@ -50,16 +51,37 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api', RouterPipelines);
     app.use('/api', RouterRepo);
     app.use('/api', RouterSettings);
-    app.use('/api', RouterServices);
+    app.use('/api', RouterTemplates);
     app.use('/api', RouterSecurity);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 
     // Attache socket.io to server
     let sockets = init(server);
-    const kubero = new Kubero(sockets);
 
-    // sleep 5 seconds to wait for kubernetes availability test
+    const audit = new Audit(
+        process.env.KUBERO_AUDIT_DB_PATH || './db', 
+        parseInt(process.env.KUBERO_AUDIT_LIMIT || '1000') 
+    );
+    await audit.init();
+    app.locals.audit = audit;
+
+    const auditEntry: AuditEntry = {
+        user: 'kubero',
+        severity: 'normal',
+        action: 'start',
+        namespace: '',
+        phase: '',
+        app: '',
+        pipeline: '',
+        resource: 'system',
+        message: 'server started',
+    }
+    audit.logDelayed(auditEntry); // wait till db is created
+
+    const kubero = new Kubero(sockets, audit);
+
+    // sleep 1 seconds to wait for kubernetes availability test
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     kubero.updateState();

@@ -44,6 +44,7 @@ export default defineComponent({
                         this.kubero.kubernetesVersion = result.data.kubernetesVersion;
                         this.kubero.isAuthenticated = result.data.isAuthenticated;
                         this.kubero.buildPipeline = result.data.buildPipeline;
+                        this.kubero.auditEnabled = result.data.auditEnabled;
 
                     })
                     .catch((err) => {

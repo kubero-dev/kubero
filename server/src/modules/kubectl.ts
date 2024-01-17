@@ -53,19 +53,19 @@ export class Kubectl {
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
         if (process.env.KUBECONFIG_BASE64) {
-            debug.log("load kubectl config from base64");
+            debug.log("Use kubectl config from base64");
             let buff = Buffer.from(process.env.KUBECONFIG_BASE64, 'base64');
             const kubeconfig = buff.toString('ascii');
             this.kc.loadFromString(kubeconfig);
         } else if(process.env.KUBECONFIG_PATH) {
-            debug.log("load kubectl config from file");
+            debug.log("Use kubectl config from file");
             this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
         } else{
             try {
                 this.kc.loadFromCluster();
-                debug.log("kubeconfig loaded from cluster");
+                debug.log("Kubeconfig loaded from cluster");
             } catch (error) {
-                debug.log("error loading from cluster");
+                debug.log("Error loading from cluster");
                 debug.log(error);
             }
         }

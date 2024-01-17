@@ -4,6 +4,7 @@
 
         <v-container class="d-flex justify-space-between align-center mb-2">
             <v-tabs v-model="tab"  class="background">
+                <v-tab class="background">Overview</v-tab>
                 <v-tab class="background">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
                 <v-tab class="background">Vulnerabilities</v-tab>
@@ -18,8 +19,8 @@
                 dark
                 v-bind="props"
                 >
-                        <v-icon color="white">mdi-menu-open</v-icon>
-                Actions
+                    <v-icon color="white">mdi-menu-open</v-icon>
+                    Actions
                 </v-btn>
             </template>
             <v-list>
@@ -27,12 +28,17 @@
                     <v-list-item
                         @click="ActionEditApp"
                         prepend-icon="mdi-pencil"
-                        title="Edit App">
+                        title="Edit">
                     </v-list-item>
                     <v-list-item
                         @click="ActionOpenApp"
                         prepend-icon="mdi-open-in-new"
                         title="Open App">
+                    </v-list-item>
+                    <v-list-item 
+                        disabled
+                        prepend-icon="mdi-reload-alert"
+                        title="Restart">
                     </v-list-item>
                     <v-list-item 
                         :disabled="appData.spec.deploymentstrategy != 'docker'"
@@ -45,12 +51,21 @@
                         prepend-icon="mdi-console"
                         title="Open Console">
                     </v-list-item>
+                    <v-divider class="my-3"></v-divider>
+                    <v-list-item 
+                        disabled
+                        prepend-icon="mdi-delete"
+                        title="Delete">
+                    </v-list-item>
                 </v-list-item-group>
             </v-list>
             </v-menu>
         </v-container>
         
         <v-window v-model="tab">
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <Overview :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
+            </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
             </v-window-item>
@@ -68,6 +83,7 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
+import Overview from "./overview.vue";
 import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
@@ -121,6 +137,7 @@ export default defineComponent({
         loadApp() {
             axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
                 this.appData = response.data;
+                console.log(this.appData);
             });
         },
         ActionOpenApp() {
@@ -147,7 +164,8 @@ export default defineComponent({
         Breadcrumbs,
         Events,
         LogsTab,
-        Vulnerabilities
+        Vulnerabilities,
+        Overview,
     },
     props: {
       pipeline: {

@@ -1,5 +1,5 @@
 ARG VERSION=2.0.0
-FROM node:18-alpine AS build
+FROM node:21-alpine AS build
 ENV NODE_ENV=development
 
 WORKDIR /build
@@ -9,7 +9,6 @@ RUN cd server && \
     yarn install && \
     npm run build && \
     yarn swaggergen && \
-    echo $VERSION > VERSION && \
     cd ..
 COPY client ./client
 RUN cd client && \
@@ -18,6 +17,10 @@ RUN cd client && \
     cd ..
 
 FROM build AS release
+
+LABEL maintainer='www.kubero.dev'
+LABEL version=$VERSION
+
 ENV NODE_ENV=production
 
 WORKDIR /app/

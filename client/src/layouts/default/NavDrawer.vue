@@ -24,6 +24,7 @@
         </v-list-item>
         <v-list-item 
             link to="/events"
+            v-if="kubero.auditEnabled"
             prepend-icon="mdi-file-document-check-outline"
             title="Events">
         </v-list-item>

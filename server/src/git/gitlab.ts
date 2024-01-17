@@ -20,7 +20,7 @@ export class GitlabApi extends Repo {
         super("gitlab");
 
         console.log("Gitlab API: "+baseURL)
-        console.log("Gitlab token: "+token)
+        //console.log("Gitlab token: "+token)
 
         this.gitlab = new GitlabClient({
             token: token,
