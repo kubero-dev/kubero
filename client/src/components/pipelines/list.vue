@@ -171,7 +171,7 @@ export default defineComponent({
       deletePipeline(pipeline: string) {
 
         Swal.fire({
-            title: "Delete Pipeline",
+            title: "Delete Pipeline ”" + pipeline + "” ?",
             text: "Do you want to delete this pipeline? This action cannot be undone. It will delete all the apps and data associated with this pipeline.",
             icon: "question",
             showCancelButton: true,

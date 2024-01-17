@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                Event stream for <strong>{{ app }}</strong>
+                Kubernetes event stream for <strong>{{ app }}</strong>
             </v-col>
         </v-row>
         <v-layout class="flex-column">

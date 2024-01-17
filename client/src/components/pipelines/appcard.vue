@@ -147,6 +147,7 @@
 <script lang="ts">
 import axios from "axios";
 import {  defineComponent } from 'vue'
+import Swal from 'sweetalert2';
 
 type Metric = {
     name: string,
@@ -232,17 +233,33 @@ export default defineComponent({
     methods: {
         deleteApp() {
 
-          axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
-            .then(response => {
-              //this.$router.push(`/pipeline/${this.pipeline}/apps`);
-              console.log("deleteApp");
-              this.deleted = true;
-              console.log(response);
+          Swal.fire({
+                title: "Delete App ”" + this.app.name + "” ?",
+                text: "Do you want to delete this App? This action cannot be undone. It will delete all the data associated with this app.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "rgb(var(--v-theme-kubero))",
+                background: "rgb(var(--v-theme-cardBackground))",
+                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
             })
-            .catch(error => {
-              console.log(error);
+            .then((result) => {
+                if (result.isConfirmed) {
+                  axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
+                    .then(response => {
+                      //this.$router.push(`/pipeline/${this.pipeline}/apps`);
+                      console.log("deleteApp");
+                      this.deleted = true;
+                      console.log(response);
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+                return;
+                }
             });
-
         },
         async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)

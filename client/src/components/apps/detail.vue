@@ -36,7 +36,7 @@
                         title="Open App">
                     </v-list-item>
                     <v-list-item 
-                        disabled
+                        @click="restartApp"
                         prepend-icon="mdi-reload-alert"
                         title="Restart">
                     </v-list-item>
@@ -47,13 +47,13 @@
                         title="Download Template">
                     </v-list-item>
                     <v-list-item 
-                        disabled
+                        @click="openConsole"
                         prepend-icon="mdi-console"
                         title="Open Console">
                     </v-list-item>
                     <v-divider class="my-3"></v-divider>
                     <v-list-item 
-                        disabled
+                        @click="deleteApp"
                         prepend-icon="mdi-delete"
                         title="Delete">
                     </v-list-item>
@@ -87,11 +87,13 @@ import Overview from "./overview.vue";
 import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
+import Swal from 'sweetalert2';
 
 
 export default defineComponent({
     data () {
         return {
+            loadingState: false,
             tab: null,
             breadcrumbItems: [
                 {
@@ -157,7 +159,63 @@ export default defineComponent({
                 document.body.appendChild(link);
                 link.click();
             });
-        }
+        },
+        deleteApp() {
+            Swal.fire({
+                title: "Delete App ”" + this.app + "” ?",
+                text: "Do you want to delete this App? This action cannot be undone. It will delete all the data associated with this app.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "rgb(var(--v-theme-kubero))",
+                background: "rgb(var(--v-theme-cardBackground))",
+                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
+            })
+            .then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
+                    .then(response => {
+                        // sleep 1 second
+                        setTimeout(() => {
+                            this.$router.push(`/pipeline/${this.pipeline}/apps`);
+                        }, 1000);
+                        console.log("deleteApp");
+                        console.log(response);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
+                return;
+                }
+            });
+        },
+        async restartApp() {
+            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}/restart`)
+            .then(response => {
+                console.log(response);
+                this.loadingState = true;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
+            // TODO - this is a hack to wait for the restart to complete. It is not so easy to get the status of the restart.
+            await new Promise(r => setTimeout(r, 15000));
+            this.loadingState = false;
+        },
+        openConsole() {
+            Swal.fire({
+                title: "Open Console",
+                text: "This feature is not yet implemented. It will be available in a future release.",
+                icon: "info",
+                background: "rgb(var(--v-theme-cardBackground))",
+                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
+            })
+            //window.open(`https://${this.appData.spec.domain}`, '_blank');
+        },
     },
 
     components: {
