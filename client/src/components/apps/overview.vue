@@ -2,7 +2,7 @@
     <v-container>
         <v-row>
             <v-col cols="12" sm="12" md="6" lg="6" xl="6">
-                <Appstats :appData="appData" :pipelineData="pipelineData"></Appstats>
+                <Appstats :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"></Appstats>
             </v-col>
             <v-col cols="12" sm="12" md="6" lg="6" xl="6">
                 <Audit :pipeline="pipeline" :phase="phase" :app="app"></Audit>

@@ -7,15 +7,86 @@
             >
                 <div class="mb-5">
                     <h1>{{ appData.spec.name }}</h1>
+                    <v-table density="compact" background-color="#000">
+                        <tbody>
+                        <tr>
+                            <th>Domain</th>
+                            <td>{{ appData.spec.domain }}</td>
+                        </tr>
+                        <tr>
+                            <th>Deployment Strategy</th>
+                            <td>{{ appData.spec.deploymentstrategy }}</td>
+                        </tr>
+                        <tr v-if="appData.spec.deploymentstrategy == 'git' && appData.spec.deploymentstrategy == 'plain'">
+                            <th>Buildpack</th>
+                            <td>{{ appData.spec.buildpack }}</td>
+                        </tr>
+                        <tr v-if="appData.spec.deploymentstrategy == 'git'">
+                            <th>Build Strategy</th>
+                            <td>{{ appData.spec.buildstrategy }}</td>
+                        </tr>
+                        <tr v-if="appData.spec.deploymentstrategy == 'git'">
+                            <th>Git Repo</th>
+                            <td><a :href="appData.spec.gitrepo.clone_url" target="_blank">{{ appData.spec.gitrepo.clone_url }}:{{ appData.spec.branch }}</a></td>
+                        </tr>
+                        <tr v-if="appData.spec.deploymentstrategy == 'git'">
+                            <th>Autodeploy</th>
+                            <td>{{ appData.spec.autodeploy }}</td>
+                        </tr>
+                        <tr>
+                            <th>Pod Size</th>
+                            <td>{{ appData.spec.podsize.description }}</td>
+                        </tr>
+                        <tr>
+                            <th>Autoscale</th>
+                            <td>{{ appData.spec.autoscale }}</td>
+                        </tr>
+                        <tr>
+                            <th>Web Replicas</th>
+                            <td>{{ appData.spec.web.replicaCount }}</td>
+                        </tr>
+                        <tr>
+                            <th>Worker Replicas</th>
+                            <td>{{ appData.spec.worker.replicaCount }}</td>
+                        </tr>
+                        </tbody>
+                    </v-table>
+                    <!--
                     <div><b>Deployment Strategy : </b>{{ appData.spec.deploymentstrategy }}</div>
                     <div><b>Domain : </b>{{ appData.spec.ingress.hosts[0].host }}</div>
                     <div><b>podsize : </b>{{ appData.spec.podsize.description }}</div>
                     <div><b>autoscale : </b>{{ appData.spec.autoscale }}</div>
                     <div><b>web : </b>{{ appData.spec.web.replicaCount }}</div>
                     <div><b>worker : </b>{{ appData.spec.worker.replicaCount }}</div>
+                    -->
                 </div>
-                <div class="mb-5">
-                    <h3>ENV Vars</h3>
+                <div class="mb-3">
+                    <h3>Consumption</h3>
+                </div>
+                <div class="px-5" v-if="metricsDisplay == 'bars'">
+                    <v-row>
+                        <v-col cols="6" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
+                        <v-col cols="6" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+                    </v-row>
+                    <v-row v-for="metric in metrics" :key="metric.name" style="height:20px">
+                        <v-col cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
+                        <v-col cols="6" class="text-right"><v-progress-linear :value="metric.memory.percentage" color="#8560A9" class="float-left" ></v-progress-linear></v-col>
+                    </v-row>
+                </div>
+                <div class="px-5" v-if="metricsDisplay == 'table'">
+                    <v-row>
+                        <v-col cols="8" class="pb-0 text-left text-caption font-weight-light">Pod</v-col>
+                        <v-col cols="2" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
+                        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+                    </v-row>
+                    <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
+                        <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
+                        <v-col cols="2" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
+                        <v-col cols="2" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+                    </v-row>
+                </div>
+                <div class="mb-5 mt-10">
+                    <h3>Environment Variables</h3>
                     <v-table density="compact">
                         <thead>
                         <tr>
@@ -103,6 +174,7 @@
 </template>
 
 <script lang="ts">
+import axios from "axios";
 import { defineComponent } from 'vue'
 //import { AppData } from '@/types/appData'
 import Addons from './addons.vue'
@@ -317,8 +389,34 @@ type appData = {
     }
 }
 
+type Metric = {
+    name: string,
+    cpu: {
+        percentage: number,
+        usage: number,
+        unit: string,
+    },
+    memory: {
+        percentage: number,
+        usage: number,
+        unit: string,
+    }
+}
+
 export default defineComponent({
     props: {
+        pipeline: {
+            type: String,
+            default: "MISSING"
+        },
+        phase: {
+            type: String,
+            default: "MISSING"
+        },
+        app: {
+            type: String,
+            default: "new"
+        },
         appData: {
             type: Object,
             default: () => {}
@@ -330,10 +428,59 @@ export default defineComponent({
     },
     data () {
         return {
+            metrics: [] as Metric[],
+            metricsDisplay: "bars",
+            metricsInterval: 0 as any, // can't find the right type for this
         }
     },
     components: {
         Addons,
     },
+    mounted() {
+        this.loadMetrics();
+        this.metricsInterval = setInterval(this.loadMetrics, 40000);
+    },
+    unmounted() {
+        clearInterval(this.metricsInterval);
+    },
+    methods: {
+
+        loadMetrics() {
+            axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app}`)
+            .then(response => {
+                for (var i = 0; i < response.data.length; i++) {
+                    if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {
+                        this.metricsDisplay = "table";
+                    }
+                    if (
+                      (response.data[i].cpu.percentage == null && response.data[i].memory.percentage == null) &&
+                      (response.data[i].cpu.usage != null && response.data[i].memory.usage != null)
+                     ){
+                        this.metricsDisplay = "table";
+                    }
+                }
+                this.metrics = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+    },
 });
 </script>
+
+<style scoped>
+#metrics:nth-child(even) {
+  background-color: rgba(133, 96, 169, .1);
+}
+#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
+}
+
+.theme--light#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
+}
+.theme--dark#metrics:nth-child(odd) {
+  background-color: rgba(133, 96, 169, .2);
+}
+</style>

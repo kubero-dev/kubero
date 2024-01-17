@@ -219,7 +219,7 @@ export default defineComponent({
         "low": undefined,
         "unknown": undefined
       },
-      metricsInterval: 0 as unknown as NodeJS.Timeout,
+      metricsInterval: 0 as any, // can't find the right type for this "as unknown as NodeJS.Timeout,"
     }),
     mounted() {
         this.loadMetrics();
