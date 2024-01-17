@@ -1,4 +1,3 @@
-ARG VERSION=2.0.0
 FROM node:21-alpine AS build
 ENV NODE_ENV=development
 
@@ -17,6 +16,7 @@ RUN cd client && \
     cd ..
 
 FROM build AS release
+ARG VERSION=unknown
 
 LABEL maintainer='www.kubero.dev'
 LABEL version=$VERSION
@@ -31,7 +31,7 @@ COPY --from=build /build/server/node_modules /app/server/node_modules
 COPY --from=build /build/server/swagger.json /app/swagger.json
 
 
-RUN echo $VERSION > /app/server/VERSION
+RUN echo -n $VERSION > /app/server/VERSION
 
 WORKDIR /app/server
 
