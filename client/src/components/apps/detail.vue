@@ -44,7 +44,7 @@
                         :disabled="appData.spec.deploymentstrategy != 'docker'"
                         @click="ActionStartDownload"
                         prepend-icon="mdi-download"
-                        title="Download Config">
+                        title="Download Template">
                     </v-list-item>
                     <v-list-item 
                         disabled
