@@ -51,12 +51,6 @@ type AuditEvent = {
     icon: string,
 }
 
-type Audit = {
-    audit: AuditEvent[],
-    count: number,
-    limit: number,
-}
-
 
 export default defineComponent({
     props: {

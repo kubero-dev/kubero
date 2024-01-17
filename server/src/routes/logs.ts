@@ -56,7 +56,17 @@ Router.get('/audit', authMiddleware, async function (req: Request, res: Response
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero audit log'
     const limit = req.query.limit || 100;
-    const audit = await req.app.locals.audit.get(limit);
+    const pipeline = req.query.pipeline || '';
+    const phase = req.query.phase || '';
+    const app = req.query.app || '';
+
+    let audit;
+    if (pipeline !== '' && phase !== '' && app !== '') {
+        audit = await req.app.locals.audit.getAppEntries(pipeline, phase, app, limit);
+    } else {
+        audit = await req.app.locals.audit.get(limit);
+    }
+
     const count = await req.app.locals.audit.count();
     const response = {
         audit: audit,

@@ -142,14 +142,14 @@ export class Audit {
         });
     }
 
-    public getAppEntries(app: string, limit: number = 100): Promise<AuditEntry[]> {
+    public getAppEntries(pipeline: string, phase: string, app: string, limit: number = 100): Promise<AuditEntry[]> {
         if (!this.enabled) {
             return new Promise((resolve) => {
                 resolve([]);
             });
         }
         return new Promise((resolve, reject) => {
-            this.db?.all(`SELECT * FROM audit WHERE app = ? ORDER BY timestamp DESC LIMIT ?`, [app, limit], (err, rows) => {
+            this.db?.all(`SELECT * FROM audit WHERE pipeline = ? AND phase = ? AND app = ? ORDER BY timestamp DESC LIMIT ?`, [pipeline, phase, app, limit], (err, rows) => {
                 if (err) {
                     reject(err);
                 }

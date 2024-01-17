@@ -3,49 +3,27 @@
         <h1>Events</h1>
         <v-layout>
                 <v-row
-                v-if="events.length > 0">
-                    <v-timeline align-top side="end">
+                v-if="auditEvents.length > 0">
+                    <v-timeline align-top truncate-line="start" side="end" class="mt-10">
                         <v-timeline-item
-                            v-for="event in events" :key="event.metadata.id"
+                            v-for="event in auditEvents" :key="event.id"
                             :color=event.color
-                            :icon=event.icon
+                            :icon=getIcon(event.action)
                             dot-color="var(--v-primary-base)"
                             fill-dot>
                             <div class="d-flex">
                                 <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
                                 <div>
-                                    <strong>{{ event.user }}: </strong> {{ event.title }}
+                                    <strong>{{ event.user }}: </strong>  {{ event.action }} {{ event.resource }}
                                     <div class="text-caption">
-                                        {{ event.metadata.timestamp }} · v{{ event.metadata.id }} · {{ event.message }}
+                                        {{ event.timestamp }} · v{{ event.id }} · {{ event.message }}
                                     </div>
                                 </div>
                             </div>
-                            <v-divider v-if="event !== events[events.length - 1]" ></v-divider>
+                            <v-divider v-if="event !== auditEvents[auditEvents.length - 1]" ></v-divider>
                         </v-timeline-item>
 
                     </v-timeline>
-                </v-row>
-
-                <v-row
-                    v-if="events.length === 0">
-                    <v-col
-                    cols="12"
-                    md="6"
-                    style="margin-top: 20px;"
-                    >
-                        <v-alert
-                            outlined
-                            type="info"
-                            variant="tonal"
-                            border="start"
-                        >
-                            <h3>No events found</h3>
-                            The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see older events, you have to increase the TTL in the 
-                            <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
-
-                        </v-alert>
-                    </v-col>
                 </v-row>
         </v-layout>
     </v-container>
@@ -57,16 +35,26 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 
-type Event = {
-    user: string;
-    title: string;
-    message: string;
-    metadata: {
-        timestamp: string;
-        id: string;
-    };
-    color: string;
-    icon: string;
+type AuditEvent = {
+    id: string,
+    timestamp: string,
+    user: string,
+    action: string,
+    namespace: string,
+    phase: string,
+    app: string,
+    pipeline: string,
+    resource: string,
+    message: string,
+    severity: string,
+    color: string,
+    icon: string,
+}
+
+type Audit = {
+    audit: AuditEvent[],
+    count: number,
+    limit: number,
 }
 
 export default defineComponent({
@@ -76,69 +64,39 @@ export default defineComponent({
         },
     },
     mounted() {
-        this.loadEvents();
+        this.loadAudit();
     },
     data: () => ({
-        events: [] as Event[],
+        auditEvents: [] as AuditEvent[],
+        limit: 50,
+        count: 0,
     }),
     methods: {
-        async loadEvents(){
-            const self = this;
-            axios.get(`/api/audit`, {
-                params: {
-                    limit: 25,
-                }
-            })
-            .then(response => {
-                //console.log(response.data);
-
-                const auditEntries = response.data.audit as any[];
-
-                for (let i = 0; i < auditEntries.length; i++) {
-                    const date = new Date(auditEntries[i].timestamp)
-                    const event = {
-                        user: auditEntries[i].user,
-                        title: auditEntries[i].action + " " + auditEntries[i].resource,
-                        message: auditEntries[i].message,
-                        metadata: {
-                            //timestamp: date.toLocaleDateString() + " " + date.toLocaleTimeString(),
-                            timestamp: date.toDateString() + " " + date.toLocaleTimeString(),
-                            id: auditEntries[i].id,
-                        },
-                    } as Event;
-
-                    switch (auditEntries[i].severity) {
-                        case "normal":
-                            event.color = "grey lighten-2";
-                            break;
-                        case "info":
-                            event.color = "primary lighten-4";
-                            break;
-                        case "warning":
-                            event.color = "orange lighten-4";
-                            break;
-                        case "error":
-                            event.color = "red lighten-4";
-                            break;
-                        default:
-                            event.color = "grey lighten-2";
-                    }
-
-                    switch (auditEntries[i].resource) {
-                        case "system":
-                            event.icon = "mdi-bell-plus-outline";
-                            break;
-                        case "app":
-                            event.icon = "mdi-bell-remove-outline";
-                            break;
-                        default:
-                            event.icon = "mdi-bell-outline";
-                    }
-                    self.events.push(event);
-                }
-            })
-            .catch(error => {
-                console.log(error);
+        getIcon(action: string) {
+            if (action === "create") return "mdi-creation";
+            if (action === "update") return "mdi-pencil";
+            if (action === "delete") return "mdi-delete";
+            if (action === "start") return "mdi-play";
+            if (action === "stop") return "mdi-stop";
+            if (action === "restart") return "mdi-restart";
+            if (action === "scale") return "mdi-arrow-expand-vertical";
+            if (action === "rollback") return "mdi-history";
+            if (action === "promote") return "mdi-arrow-up-bold";
+            if (action === "demote") return "mdi-arrow-down-bold";
+            if (action === "approve") return "mdi-check";
+            if (action === "reject") return "mdi-close";
+            if (action === "pause") return "mdi-pause";
+            if (action === "resume") return "mdi-play";
+            if (action === "deploy") return "mdi-rocket";
+            if (action === "undeploy") return "mdi-rocket";
+            if (action === "release") return "mdi-rocket";
+            if (action === "rollback") return "mdi-rocket";
+            return "mdi-rocket";
+        },
+        loadAudit() {
+            axios.get('/api/audit', { params: { limit: this.limit } }).then(response => {
+                this.auditEvents = response.data.audit;
+                this.count = response.data.count;
             });
         },
     },
