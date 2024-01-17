@@ -10,7 +10,7 @@
                     <v-timeline-item
                         v-for="event in auditEvents" :key="event.id"
                         :color=event.color
-                        :icon=event.icon
+                        :icon=getIcon(event.action)
                         dot-color="var(--v-primary-base)"
                         fill-dot>
                         <div>
@@ -87,6 +87,27 @@ export default defineComponent({
         
     },
     methods: {
+        getIcon(action: string) {
+            if (action === "create") return "mdi-creation";
+            if (action === "update") return "mdi-pencil";
+            if (action === "delete") return "mdi-delete";
+            if (action === "start") return "mdi-play";
+            if (action === "stop") return "mdi-stop";
+            if (action === "restart") return "mdi-restart";
+            if (action === "scale") return "mdi-arrow-expand-vertical";
+            if (action === "rollback") return "mdi-history";
+            if (action === "promote") return "mdi-arrow-up-bold";
+            if (action === "demote") return "mdi-arrow-down-bold";
+            if (action === "approve") return "mdi-check";
+            if (action === "reject") return "mdi-close";
+            if (action === "pause") return "mdi-pause";
+            if (action === "resume") return "mdi-play";
+            if (action === "deploy") return "mdi-rocket";
+            if (action === "undeploy") return "mdi-rocket";
+            if (action === "release") return "mdi-rocket";
+            if (action === "rollback") return "mdi-rocket";
+            return "mdi-rocket";
+        },
         loadAudit() {
             axios.get('/api/audit', { params: { limit: this.limit, pipeline: this.pipeline, phase: this.phase, app: this.app } }).then(response => {
                 this.auditEvents = response.data.audit;
