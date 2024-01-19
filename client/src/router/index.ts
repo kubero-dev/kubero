@@ -52,13 +52,13 @@ const routes = [
     ],
   },
   {
-    path: '/events',
+    path: '/activity',
     component: () => import('@/layouts/default/Default.vue'),
     children: [
       {
-        path: '/events',
-        name: 'Events',
-        component: () => import('@/views/Events.vue'),
+        path: '/activity',
+        name: 'Activity',
+        component: () => import('@/views/Activity.vue'),
       },
     ],
   },

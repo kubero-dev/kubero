@@ -18,10 +18,10 @@
             title="Templates">
         </v-list-item>
         <v-list-item 
-            link to="/events"
+            link to="/activity"
             v-if="kubero.auditEnabled"
             prepend-icon="mdi-bell-outline"
-            title="Events">
+            title="Activity">
         </v-list-item>
         <v-list-item 
             link to="/addons"

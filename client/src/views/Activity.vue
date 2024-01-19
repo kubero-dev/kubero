@@ -3,5 +3,5 @@
 </template>
 
 <script lang="ts" setup>
-import Events from '@/components/events/view.vue'
+import Events from '@/components/activity/view.vue'
 </script>
