@@ -178,7 +178,7 @@
                             border="start"
                         >
                             <h3>No vulnerabilityscans available</h3>
-                            To scan this app for vulnerabfilities, please trigger a rescan.
+                            To scan this app for vulnerabilities, please trigger a rescan.
 
                         </v-alert>
                     </v-col>

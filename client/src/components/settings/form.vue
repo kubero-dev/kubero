@@ -7,7 +7,7 @@
                 General Kubero Settings
             </h2>
             <p class="text-justify">
-                Currently ready only
+                The configuration valures are readonly in this version. Please edit the values in the Kubero CRD directly.
             </p>
         </v-col>
       </v-row>
@@ -370,7 +370,7 @@ export default defineComponent({
             self.settings = response.data;
         })
         .catch(error => {
-            console.log(error);
+            console.log('loadSettings', error);
         });
       }
     },

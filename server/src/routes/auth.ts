@@ -35,7 +35,8 @@ Router.all("/session", (req: Request, res: Response) => {
         "buildPipeline": buildPipeline,
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
         "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
-        "auditEnabled": req.app.locals.audit.getAuditEnabled()
+        "auditEnabled": req.app.locals.audit.getAuditEnabled(),
+        //"websocketToken": process.env.KUBERO_WS_TOKEN,
     }
     res.status(status).send(message)
 })
@@ -51,6 +52,7 @@ Router.get('/auth/github/callback',
   auth.passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
+    res.cookie('kubero.websocketToken', process.env.KUBERO_WS_TOKEN);
     res.redirect('/');
   });
 
@@ -65,6 +67,7 @@ Router.get('/auth/oauth2/callback',
   auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
+    res.cookie('kubero.websocketToken', process.env.KUBERO_WS_TOKEN);
     res.redirect('/');
   });
 
@@ -90,6 +93,10 @@ Router.post('/login', function(req: Request, res: Response, next: NextFunction) 
         }
 
         req.login(user, err => {
+            if (err) {
+                return next(err);
+            }
+            res.cookie('kubero.websocketToken', process.env.KUBERO_WS_TOKEN);
             console.log("logged in")
             res.send("Logged in");
         });

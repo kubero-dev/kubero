@@ -108,7 +108,7 @@
                         </tbody>
                     </v-table>
                 </div>
-                <div class="mb-5">
+                <div class="mb-5" v-if="appData.spec?.extraVolumes?.length > 0">
                     <h3>Volumes</h3>
                     <!--{{ appData.spec.extraVolumes }}-->
                     <v-row class="pt-5">
@@ -164,7 +164,7 @@
                         </tbody>
                     </v-table>
                 </div>
-                <div class="mb-5">
+                <div class="mb-5" v-if="appData.spec?.addons?.length > 0">
                     <h3>Addons</h3>
                     <Addons :addons="appData.spec.addons" :showButtons="false"/>
                 </div>

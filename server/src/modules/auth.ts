@@ -18,7 +18,7 @@ export type User =  {
 }
 
 export class Auth {
-    public passport: any;
+    public passport;
     public authmethods = {
         local: false,
         github: false,
@@ -178,7 +178,7 @@ export class Auth {
             ));
         }
 
-        this.passport.serializeUser((user: User, done: any) => {
+        this.passport.serializeUser((user: any, done: any) => {
             debug.debug(JSON.stringify(user))
             done(null, user)
         })
@@ -245,7 +245,7 @@ export class Auth {
             username: 'anonymous'
         }
 
-        if (req.isAuthenticated()) {
+        if (typeof(req.isAuthenticated) == "function" && req.isAuthenticated()) {
             const sessionWithPassport = req.session as any & { passport: User };
             user = sessionWithPassport.passport.user;
         }

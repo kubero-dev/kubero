@@ -12,21 +12,21 @@
             title="Dashboard">
         </v-list-item>
         <v-list-item 
-            link to="/addons"
-            prepend-icon="mdi-bookshelf"
-            title="Add-Ons">
-        </v-list-item>
-        <v-list-item 
             link to="/templates" 
             v-if="kubero.templatesEnabled"
-            prepend-icon="mdi-palette-outline"
+            prepend-icon="mdi-list-box-outline"
             title="Templates">
         </v-list-item>
         <v-list-item 
             link to="/events"
             v-if="kubero.auditEnabled"
-            prepend-icon="mdi-file-document-check-outline"
+            prepend-icon="mdi-bell-outline"
             title="Events">
+        </v-list-item>
+        <v-list-item 
+            link to="/addons"
+            prepend-icon="mdi-bookshelf"
+            title="Add-Ons">
         </v-list-item>
         <v-list-item 
             link to="/settings" 

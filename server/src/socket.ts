@@ -4,10 +4,21 @@ debug('app:socket')
 import { Server as HttpServer } from 'http';
 import { Server } from "socket.io";
 
-export function init(httpServer: HttpServer) {
+export function init(httpServer: HttpServer, authentication: boolean = false) {
     debug('initializing');
 
     const io = new Server(httpServer, { /* options */ });
+
+    io.use((socket, next) => {
+        if (!authentication) return next(); // skip authentication if not enabled
+
+        const token = socket.handshake.auth.token;
+        //console.log('socket.io auth :::: ', token);
+        if (!token) return next(new Error("missing token"));
+        if (token !== process.env.KUBERO_WS_TOKEN) return next(new Error("invalid token"));
+        return next();
+    });
+
     console.log('⚡️[server]: socket.io started')
     io.on('connection', client => {
         debug.debug('socket.io connected')

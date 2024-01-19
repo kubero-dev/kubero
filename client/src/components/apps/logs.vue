@@ -18,7 +18,7 @@
 <script lang="ts">
 import axios from "axios";
 import { ref, reactive, defineComponent } from 'vue'
-import { useSocketIO } from '../../socket.io';
+import { useKuberoStore } from '../../stores/kubero'
 
 type LogLine = {
     app: string;
@@ -33,7 +33,7 @@ type LogLine = {
     color: string;
 }
 
-const { socket } = useSocketIO();
+const socket = useKuberoStore().kubero.socket as any;
 const loglines = ref([] as LogLine[]);
 
 socket.on('log', (data: LogLine) => {
@@ -43,11 +43,6 @@ socket.on('log', (data: LogLine) => {
 
 
 export default defineComponent({
-    sockets: {
-        log: function(data: LogLine) {
-            this.loglines.unshift(data)
-        },
-    },
     setup() {
         return {
             loglines,

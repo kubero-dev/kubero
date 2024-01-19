@@ -20,9 +20,8 @@
 
                         <v-timeline-item
                             v-for="event in events" :key="event.uid"
-                            :color=event.color
+                            :dot-color=event.color
                             :icon=event.icon
-                            dot-color="var(--v-primary-base)"
                             fill-dot>
                             <div class="d-flex">
                                 <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
@@ -139,13 +138,14 @@ export default defineComponent({
         const self = this;
         const namespace = this.pipeline + "-" + this.phase;
         //axios.get(`/api/events?namespace=${this.$route.query.namespace}`)
-        console.log("loadEvents", namespace);
+        //console.log("loadEvents", namespace);
         axios.get(`/api/events?namespace=${namespace}`)
         .then(response => {
             // sort by creationTimestamp
             response.data.sort((a: any, b: any) => {
                 return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
             });
+            response.data.reverse()
 
             for (let i = 0; i < response.data.length; i++) {
                 const date = new Date(response.data[i].metadata.creationTimestamp)
@@ -167,21 +167,96 @@ export default defineComponent({
 
                 switch (response.data[i].type) {
                     case "Normal":
-                        event.color = "gray lighten-2";
+                        event.color = "rgba(var(--v-primary-base))";
                         break;
                     case "Warning":
-                        event.color = "red lighten-4";
+                        event.color = "rgba(var(--v-theme-error))";
                         break;
                     default:
-                        event.color = "gray lighten-2";
+                        event.color = "rgba(var(--v-primary-base))";
                 }
 
-                switch (response.data[i].reason) {
-                    case "Created":
-                        event.icon = "mdi-folder-plus-outline";
+                switch (event.involvedResource) {
+                    case "Pod":
+                        event.icon = "mdi-folder-outline";
                         break;
-                    case "Deleted":
-                        event.icon = "mdi-folder-remove-outline";
+                    case "Deployment":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "Service":
+                        event.icon = "mdi-folder-network-outline";
+                        break;
+                    case "Ingress":
+                        event.icon = "mdi-folder-network-outline";
+                        break;
+                    case "PersistentVolumeClaim":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "PersistentVolume":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "ReplicaSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "StatefulSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "ConfigMap":
+                        event.icon = "mdi-folder-settings-outline";
+                        break;
+                    case "Secret":
+                        event.icon = "mdi-folder-key-outline";
+                        break;
+                    case "Job":
+                        event.icon = "mdi-folder-clock-outline";
+                        break;
+                    case "CronJob":
+                        event.icon = "mdi-folder-clock-outline";
+                        break;
+                    case "DaemonSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "HorizontalPodAutoscaler":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "PodDisruptionBudget":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "ServiceAccount":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "Role":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "RoleBinding":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "ClusterRole":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "ClusterRoleBinding":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "StorageClass":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "VolumeAttachment":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "CustomResourceDefinition":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "MutatingWebhookConfiguration":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "ValidatingWebhookConfiguration":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "PodSecurityPolicy":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "PodSecurityPolicy":
+                        event.icon = "mdi-folder-star-outline";
                         break;
                     default:
                         event.icon = "mdi-folder-outline";

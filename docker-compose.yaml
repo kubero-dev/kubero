@@ -6,6 +6,8 @@ services:
     container_name: "kubero-ui"
     build:
       context: .
+      args:
+        - VERSION=Local-Build
       dockerfile: Dockerfile
     image: ghcr.io/kubero-dev/kubero/kubero:latest
     #command: ["tail", "-f", "/dev/null"]

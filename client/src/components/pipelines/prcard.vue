@@ -92,7 +92,7 @@ export default defineComponent({
     }),
     methods: {
         async startReviewApp() {
-            console.log("startReviewApp", this.pullrequest.number);
+            //console.log("startReviewApp", this.pullrequest.number);
             this.loadingState = true;
 
             axios.post("/api/repo/pullrequest/start", {
@@ -101,7 +101,7 @@ export default defineComponent({
                 ssh_url: this.pullrequest.ssh_url,
                 pipelineName: this.pipeline,
             }).then((response) => {
-                console.log("startReviewApp", response);
+                //console.log("startReviewApp", response);
             }).catch((error) => {
                 console.log("startReviewApp", error);
             });

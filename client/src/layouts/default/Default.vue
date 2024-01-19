@@ -11,14 +11,25 @@
   import NavDrawer from './NavDrawer.vue'
   import DefaultView from './View.vue'
   
-  import { useSocketIO } from '../../socket.io';
   import { SweetAlertIcon} from 'sweetalert2'
   import Swal from 'sweetalert2'
 
 </script>
 
 <script lang="ts">
-const { socket } = useSocketIO();
+
+import { useKuberoStore } from '../../stores/kubero'
+import { useCookies } from "vue3-cookies";
+import { useSocketIO } from '../../socket.io';
+
+const { cookies } = useCookies();
+const token = cookies.get("kubero.websocketToken");
+//console.log("COOKIE token", token);
+const { socket } = useSocketIO(token);
+
+// Write socket to pinia
+const kuberoStore = useKuberoStore();
+kuberoStore.kubero.socket = socket;
 
 type Message = {
     action: string,
@@ -35,7 +46,7 @@ socket.on('updatedApps', (message: Message) => {
 });
 
 socket.on('updatedPipelines', (message: Message) => {
-    console.log("updatedPipelines", message);
+    //console.log("updatedPipelines", message);
     const text = `Pipeline <b>${message.pipelineName}</b> ${message.action}`;
     triggerToast('success', 'Pipeline '+message.action, text);
 });

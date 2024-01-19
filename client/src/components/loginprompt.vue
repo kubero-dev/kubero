@@ -97,7 +97,7 @@ export default defineComponent({
             axios
                 .get("/api/auth/methods")
                 .then((result) => {
-                    console.log(result.data)
+                    //console.log(result.data)
                     this.authMethods = result.data
                 })
                 .catch((err) => {
@@ -115,7 +115,7 @@ export default defineComponent({
                 }
                 axios.post("/api/login", data)
                     .then((response) => {
-                        console.log("Logged in"+response)
+                        //console.log("Logged in"+response)
                         router.push("/")
                     })
                     .catch((errors) => {

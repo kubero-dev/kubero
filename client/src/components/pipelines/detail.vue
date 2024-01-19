@@ -44,7 +44,7 @@ import axios from "axios";
 import Appcard from "./appcard.vue";
 import PRcard from "./prcard.vue";
 import Breadcrumbs from "../breadcrumbs.vue";
-import { useSocketIO } from '../../socket.io';
+import { useKuberoStore } from '../../stores/kubero'
 
 import { reactive, ref, defineComponent } from 'vue'
 
@@ -74,7 +74,7 @@ type Pullrequest = {
     created_at: string,
     updated_at: string,
 }
-const { socket } = useSocketIO();
+const socket = useKuberoStore().kubero.socket as any;
 
 const phases = ref([] as Array<Phase>);
 const reviewapps = ref(false);
@@ -86,7 +86,7 @@ const pipeline = ref("");
 async function loadPipeline() {
     axios.get('/api/pipelines/' + pipeline.value + '/apps')
     .then(response => {
-        console.log("loadPipeline Phases", response.data.phases);
+        //console.log("loadPipeline Phases", response.data.phases);
         phases.value = response.data.phases;
         reviewapps.value = response.data.reviewapps;
         git.ssh_url = response.data.git.repository.ssh_url;
@@ -136,7 +136,7 @@ async function loadPullrequests() {
 }
 
 socket.on('deleteApp', async (instances: Array<App>) => {
-    console.log("deleteApp", instances);
+    //console.log("deleteApp", instances);
     // sleep 1 second to give the app time to start
     await new Promise(r => setTimeout(r, 1000));
     loadPipeline();

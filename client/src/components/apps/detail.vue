@@ -139,7 +139,7 @@ export default defineComponent({
         loadApp() {
             axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
                 this.appData = response.data;
-                console.log(this.appData);
+                //console.log(this.appData);
             });
         },
         ActionOpenApp() {
@@ -149,7 +149,6 @@ export default defineComponent({
             this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/apps/${this.app}`);
         },
         ActionStartDownload() {
-            console.log("ActionStartDownload");
             axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app+'/download').then(response => {
                 //console.log(response.data);
                 const url = window.URL.createObjectURL(new Blob([response.data]));
@@ -181,8 +180,7 @@ export default defineComponent({
                         setTimeout(() => {
                             this.$router.push(`/pipeline/${this.pipeline}/apps`);
                         }, 1000);
-                        console.log("deleteApp");
-                        console.log(response);
+                        //console.log("deleteApp", response);
                     })
                     .catch(error => {
                         console.log(error);
@@ -194,7 +192,7 @@ export default defineComponent({
         async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}/restart`)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.loadingState = true;
             })
             .catch(error => {

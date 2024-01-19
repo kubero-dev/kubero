@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { Server } from 'http';
 import session from 'express-session';
@@ -29,6 +30,7 @@ export const configure = async (app: Express, server: Server) => {
     process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');;
 
     app.use(cors())
+    app.use(cookieParser())
     app.use(session({
         name: 'KuberoSession',
         secret: KUBERO_SESSION_KEY,
@@ -57,7 +59,10 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api/docs', SwaggerUi.serve, swagger);
 
     // Attache socket.io to server
-    let sockets = init(server);
+    let sockets = init(server, auth.authentication);
+
+    // create websocket and set it as en variable
+    process.env.KUBERO_WS_TOKEN = crypto.randomBytes(20).toString('hex');
 
     const audit = new Audit(
         process.env.KUBERO_AUDIT_DB_PATH || './db', 
