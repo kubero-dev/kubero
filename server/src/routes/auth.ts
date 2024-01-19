@@ -52,6 +52,7 @@ Router.get('/auth/github/callback',
   auth.passport.authenticate('github', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
+    res.cookie('kubero.websocketToken', process.env.KUBERO_WS_TOKEN);
     res.redirect('/');
   });
 
@@ -66,6 +67,7 @@ Router.get('/auth/oauth2/callback',
   auth.passport.authenticate('oauth2', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
+    res.cookie('kubero.websocketToken', process.env.KUBERO_WS_TOKEN);
     res.redirect('/');
   });
 
