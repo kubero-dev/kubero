@@ -388,8 +388,8 @@ export default defineComponent({
         });
       },
       connectRepo() {
-        console.log(this.gitrepo);
-        console.log(this.repotab);
+        //console.log(this.gitrepo);
+        //console.log(this.repotab);
         switch (this.repotab) {
           case 'github':
             this.connectRepository('github')
@@ -558,7 +558,7 @@ export default defineComponent({
         })
         .then(response => {
           this.pipelineName = '';
-          console.log(response);
+          //console.log(response);
           this.$router.push({path: '/'});
         })
         .catch(error => {
@@ -580,7 +580,7 @@ export default defineComponent({
         })
         .then(response => {
           this.pipelineName = '';
-          console.log(response);
+          //console.log(response);
           this.$router.push({path: '/'});
         })
         .catch(error => {

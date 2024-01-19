@@ -139,7 +139,7 @@ export default defineComponent({
         const self = this;
         const namespace = this.pipeline + "-" + this.phase;
         //axios.get(`/api/events?namespace=${this.$route.query.namespace}`)
-        console.log("loadEvents", namespace);
+        //console.log("loadEvents", namespace);
         axios.get(`/api/events?namespace=${namespace}`)
         .then(response => {
             // sort by creationTimestamp

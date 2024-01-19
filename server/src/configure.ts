@@ -59,7 +59,7 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api/docs', SwaggerUi.serve, swagger);
 
     // Attache socket.io to server
-    let sockets = init(server);
+    let sockets = init(server, auth.authentication);
 
     // create websocket and set it as en variable
     process.env.KUBERO_WS_TOKEN = crypto.randomBytes(20).toString('hex');

@@ -245,7 +245,7 @@ export class Auth {
             username: 'anonymous'
         }
 
-        if (req.isAuthenticated()) {
+        if (typeof(req.isAuthenticated) == "function" && req.isAuthenticated()) {
             const sessionWithPassport = req.session as any & { passport: User };
             user = sessionWithPassport.passport.user;
         }

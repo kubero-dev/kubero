@@ -86,7 +86,7 @@ const pipeline = ref("");
 async function loadPipeline() {
     axios.get('/api/pipelines/' + pipeline.value + '/apps')
     .then(response => {
-        console.log("loadPipeline Phases", response.data.phases);
+        //console.log("loadPipeline Phases", response.data.phases);
         phases.value = response.data.phases;
         reviewapps.value = response.data.reviewapps;
         git.ssh_url = response.data.git.repository.ssh_url;
@@ -136,7 +136,7 @@ async function loadPullrequests() {
 }
 
 socket.on('deleteApp', async (instances: Array<App>) => {
-    console.log("deleteApp", instances);
+    //console.log("deleteApp", instances);
     // sleep 1 second to give the app time to start
     await new Promise(r => setTimeout(r, 1000));
     loadPipeline();

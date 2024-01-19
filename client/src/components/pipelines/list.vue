@@ -111,17 +111,14 @@ type Pipeline = {
 const socket = useKuberoStore().kubero.socket as any;
 
 socket.on('updatedPipelines', (instances: any) => {
-    console.log("updatedPipelines", instances);
+    //console.log("updatedPipelines", instances);
     loadPipelinesList();
 });
-console.log("setSocket updatedPipelines");
-
 
 const pipelines = ref([] as Pipeline[]);
 function loadPipelinesList() {
     axios.get(`/api/pipelines`)
     .then(response => {
-        console.log("pipelinesReloaded");
         pipelines.value = response.data.items;
     })
     .catch(error => {
@@ -139,7 +136,6 @@ export default defineComponent({
     },
     mounted() {
         loadPipelinesList();
-        //this.aaaaa();
     },
     components: {
         Breadcrumbs,
@@ -156,17 +152,6 @@ export default defineComponent({
         ],
     }},
     methods: {
-      aaaaa() {
-        // wait 1 second to give the socket time to connect
-        setTimeout(() => {
-            this.socket.on('updatedPipelines', (instances: any) => {
-                console.log("updatedPipelines", instances);
-                loadPipelinesList();
-            });
-            console.log("setSocket");
-        }, 2000);
-        
-      },
       async loadPipelinesList() {
         const self = this;
         axios.get(`/api/pipelines`)
@@ -200,8 +185,8 @@ export default defineComponent({
 
                 axios.delete(`/api/pipelines/${pipeline}`)
                 .then(response => {
-                    console.log(response);
-                    ///this.loadPipelinesList();
+                    //console.log(response);
+                    //this.loadPipelinesList(); //reload not needed?
                 })
                 .catch(error => {
                     console.log(error);

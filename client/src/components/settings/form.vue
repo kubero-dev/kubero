@@ -370,7 +370,7 @@ export default defineComponent({
             self.settings = response.data;
         })
         .catch(error => {
-            console.log(error);
+            console.log('loadSettings', error);
         });
       }
     },

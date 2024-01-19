@@ -250,9 +250,9 @@ export default defineComponent({
                   axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
                     .then(response => {
                       //this.$router.push(`/pipeline/${this.pipeline}/apps`);
-                      console.log("deleteApp");
+                      //console.log("deleteApp");
                       this.deleted = true;
-                      console.log(response);
+                      //console.log(response);
                     })
                     .catch(error => {
                       console.log(error);
@@ -264,7 +264,7 @@ export default defineComponent({
         async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.loadingState = true;
             })
             .catch(error => {
