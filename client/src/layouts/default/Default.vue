@@ -11,14 +11,28 @@
   import NavDrawer from './NavDrawer.vue'
   import DefaultView from './View.vue'
   
-  import { useSocketIO } from '../../socket.io';
   import { SweetAlertIcon} from 'sweetalert2'
   import Swal from 'sweetalert2'
 
 </script>
 
 <script lang="ts">
-const { socket } = useSocketIO();
+
+import { useKuberoStore } from '../../stores/kubero'
+import { useCookies } from "vue3-cookies";
+import { useSocketIO } from '../../socket.io';
+
+const { cookies } = useCookies();
+const token = cookies.get("kubero.websocketToken");
+console.log("COOKIE token", token);
+const { socket } = useSocketIO(token);
+
+// Write socket to pinia
+const kuberoStore = useKuberoStore();
+kuberoStore.kubero.socket = socket;
+
+
+//const socket = useKuberoStore().kubero.socket as any;
 
 type Message = {
     action: string,

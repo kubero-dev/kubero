@@ -91,7 +91,7 @@
 import axios from "axios";
 import { ref, defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
-import { useSocketIO } from '../../socket.io';
+import { useKuberoStore } from '../../stores/kubero'
 import Swal from 'sweetalert2';
 
 type Pipeline = {
@@ -108,17 +108,13 @@ type Pipeline = {
     }[]
 }
 
-const { socket } = useSocketIO();
-/*
-socket.on('connect', () => {
-    console.log("Websocket connected");
-});
-*/
+const socket = useKuberoStore().kubero.socket as any;
 
 socket.on('updatedPipelines', (instances: any) => {
     console.log("updatedPipelines", instances);
     loadPipelinesList();
 });
+console.log("setSocket updatedPipelines");
 
 
 const pipelines = ref([] as Pipeline[]);
@@ -138,10 +134,12 @@ export default defineComponent({
     setup() {
         return {
             pipelines,
+            socket,
         }
     },
     mounted() {
         loadPipelinesList();
+        //this.aaaaa();
     },
     components: {
         Breadcrumbs,
@@ -158,6 +156,17 @@ export default defineComponent({
         ],
     }},
     methods: {
+      aaaaa() {
+        // wait 1 second to give the socket time to connect
+        setTimeout(() => {
+            this.socket.on('updatedPipelines', (instances: any) => {
+                console.log("updatedPipelines", instances);
+                loadPipelinesList();
+            });
+            console.log("setSocket");
+        }, 2000);
+        
+      },
       async loadPipelinesList() {
         const self = this;
         axios.get(`/api/pipelines`)
