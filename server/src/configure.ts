@@ -1,5 +1,6 @@
 import { Express } from 'express';
 import cookieParser from 'cookie-parser';
+import helmet from "helmet";
 import cors from 'cors';
 import { Server } from 'http';
 import session from 'express-session';
@@ -44,6 +45,13 @@ export const configure = async (app: Express, server: Server) => {
         app.use(auth.passport.initialize());
         app.use(auth.passport.session());
     }
+
+    app.use(helmet({
+            contentSecurityPolicy: false,
+            strictTransportSecurity: false,
+            crossOriginOpenerPolicy: false,
+            crossOriginEmbedderPolicy: false,
+         }));
 
     app.use('/api', RouterAddons);
     app.use('/api', RouterAuth);
