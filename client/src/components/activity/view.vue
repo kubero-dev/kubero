@@ -3,7 +3,7 @@
         <h1>Events</h1>
         <v-layout>
                 <v-row
-                v-if="auditEvents.length > 0">
+                v-if="auditEvents.length > 0" class="mb-10">
                     <v-timeline align-top truncate-line="start" side="end" class="mt-10">
                         <v-timeline-item
                             v-for="event in auditEvents" :key="event.id"
