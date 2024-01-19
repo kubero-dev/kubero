@@ -76,8 +76,8 @@
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
         <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
-        <v-col cols="2" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
-        <v-col cols="2" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+        <v-col cols="2" class="py-0 text-left"><nobr>{{metric.cpu.usage}}{{metric.cpu.unit}}</nobr></v-col>
+        <v-col cols="2" class="py-0 text-right"><nobr>{{metric.memory.usage}}{{metric.memory.unit}}</nobr></v-col>
       </v-row>
     </v-card-text>
     <v-divider></v-divider>
