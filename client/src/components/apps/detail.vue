@@ -24,40 +24,38 @@
                 </v-btn>
             </template>
             <v-list>
-                <v-list-group>
-                    <v-list-item
-                        @click="ActionEditApp"
-                        prepend-icon="mdi-pencil"
-                        title="Edit">
-                    </v-list-item>
-                    <v-list-item
-                        @click="ActionOpenApp"
-                        prepend-icon="mdi-open-in-new"
-                        title="Open App">
-                    </v-list-item>
-                    <v-list-item 
-                        @click="restartApp"
-                        prepend-icon="mdi-reload-alert"
-                        title="Restart">
-                    </v-list-item>
-                    <v-list-item 
-                        :disabled="appData.spec.deploymentstrategy != 'docker'"
-                        @click="ActionStartDownload"
-                        prepend-icon="mdi-download"
-                        title="Download Template">
-                    </v-list-item>
-                    <v-list-item 
-                        @click="openConsole"
-                        prepend-icon="mdi-console"
-                        title="Open Console">
-                    </v-list-item>
-                    <v-divider class="my-3"></v-divider>
-                    <v-list-item 
-                        @click="deleteApp"
-                        prepend-icon="mdi-delete"
-                        title="Delete">
-                    </v-list-item>
-                </v-list-group>
+                <v-list-item
+                    @click="ActionEditApp"
+                    prepend-icon="mdi-pencil"
+                    title="Edit">
+                </v-list-item>
+                <v-list-item
+                    @click="ActionOpenApp"
+                    prepend-icon="mdi-open-in-new"
+                    title="Open App">
+                </v-list-item>
+                <v-list-item 
+                    @click="restartApp"
+                    prepend-icon="mdi-reload-alert"
+                    title="Restart">
+                </v-list-item>
+                <v-list-item 
+                    :disabled="appData.spec.deploymentstrategy != 'docker'"
+                    @click="ActionStartDownload"
+                    prepend-icon="mdi-download"
+                    title="Download Template">
+                </v-list-item>
+                <v-list-item 
+                    @click="openConsole"
+                    prepend-icon="mdi-console"
+                    title="Open Console">
+                </v-list-item>
+                <v-divider class="my-3"></v-divider>
+                <v-list-item 
+                    @click="deleteApp"
+                    prepend-icon="mdi-delete"
+                    title="Delete">
+                </v-list-item>
             </v-list>
             </v-menu>
         </v-container>

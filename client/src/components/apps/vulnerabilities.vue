@@ -136,7 +136,7 @@
                                         style="background:rgb(var(--v-theme-cardBackground))">
                                         <!-- eslint-disable-next-line vue/valid-v-slot -->
                                         <template v-slot:item.VulnerabilityID="{ item }">
-                                            <a :href="item.PrimaryURL" target="_blank"><nobr>{{ item.VulnerabilityID }}</nobr></a>
+                                            <a :href="item.PrimaryURL" target="_blank"><span style="white-space: nowrap;">{{ item.VulnerabilityID }}</span></a>
                                         </template>
 
                                         <!-- eslint-disable-next-line vue/valid-v-slot -->
