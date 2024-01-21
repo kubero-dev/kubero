@@ -17,16 +17,16 @@
     </template>
 
     <v-card-text>
-      <v-list-item :prepend-avatar="pullrequest.user.avatar_url">
-        <v-list-item-content>
+      <v-list :prepend-avatar="pullrequest.user.avatar_url" bg-color="cardBackground">
+        <v-list-item>
           <v-list-item-subtitle>{{ pullrequest.user.login }}</v-list-item-subtitle>
           <v-list-item-title style="white-space: inherit; min-width: 250px;"><a :href="pullrequest.html_url" target="_blank">{{ pullrequest.title }}</a></v-list-item-title>
           <!--
           <v-list-item-subtitle><v-icon small>mdi-source-pull</v-icon>{{ this.pullrequest.updated_at }}</v-list-item-subtitle>
           <v-list-item-subtitle><v-icon small>mdi-source-commit-start</v-icon>{{ this.pullrequest.created_at }}</v-list-item-subtitle>
           -->
-        </v-list-item-content>
-      </v-list-item>
+        </v-list-item>
+      </v-list>
     </v-card-text>
     <v-card-subtitle class="pr-data mb-5">
         <v-row>

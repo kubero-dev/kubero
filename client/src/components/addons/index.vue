@@ -13,7 +13,7 @@
                     :disabled="!addon.enabled"
                     style="padding-bottom: 40px;"
                     color="cardBackground">
-                    <v-list-item-content class="justify-center">
+                    <v-list-item class="justify-center">
                         <div  class="d-flex justify-center" style="margin-top: 20px;">
                             <v-avatar
                                 size="57"
@@ -43,7 +43,7 @@
                             {{ addon.description }}
                             <!--Operator: <a :href="addon.url">{{ addon.id }}</a>-->
                         </v-card-text>
-                    </v-list-item-content>
+                    </v-list-item>
                 </v-card>
                 <div class="text-center" style="height:0px" v-if="!addon.enabled">
                 <v-btn

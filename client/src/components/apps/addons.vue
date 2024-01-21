@@ -8,7 +8,7 @@
     >
 
       <v-card color="cardBackground">
-        <v-list-item-content class="justify-center">
+        <v-list-item class="justify-center">
           <div class="mx-auto text-center">
             <v-avatar
               size="57"
@@ -42,7 +42,7 @@
               </v-btn>
             </div>
           </div>
-        </v-list-item-content>
+        </v-list-item>
       </v-card>
 
 

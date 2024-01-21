@@ -24,7 +24,7 @@
                 </v-btn>
             </template>
             <v-list>
-                <v-list-item-group>
+                <v-list-group>
                     <v-list-item
                         @click="ActionEditApp"
                         prepend-icon="mdi-pencil"
@@ -57,7 +57,7 @@
                         prepend-icon="mdi-delete"
                         title="Delete">
                     </v-list-item>
-                </v-list-item-group>
+                </v-list-group>
             </v-list>
             </v-menu>
         </v-container>

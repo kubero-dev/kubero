@@ -24,7 +24,7 @@
                     style="padding-bottom: 40px;"
                     height="320px"
                     color="cardBackground">
-                    <v-list-item-content>
+                    <v-list-item>
 
                         <div  class="d-flex justify-center">
                             <v-avatar
@@ -61,7 +61,7 @@
                             {{ template.description }}
                             <!--Operator: <a :href="template.url">{{ template.id }}</a>-->
                         </v-card-text>
-                    </v-list-item-content>
+                    </v-list-item>
                 </v-card>
                 <div class="text-center" style="height:0px" v-if="!template.enabled">
                 <v-btn
