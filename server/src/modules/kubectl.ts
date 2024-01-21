@@ -25,7 +25,7 @@ import {
     BatchV1Api,
     NetworkingV1Api,
 } from '@kubernetes/client-node'
-import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig} from '../types';
+import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
 import { KubectlPipeline } from './pipeline';
 import { IAddon, IAddonMinimal } from './addons';
@@ -555,6 +555,79 @@ export class Kubectl {
         return metrics.items;
     }
 
+    private getPodUptimeMS(pod: V1Pod): number {
+        const startTime = pod.status?.startTime;
+        if (startTime) {
+            const start = new Date(startTime);
+            const now = new Date();
+            const uptime = now.getTime() - start.getTime();
+            return uptime;
+        }
+        return -1;
+    }
+
+    public async getPodUptimes(namespace: string): Promise<Object> {
+        const pods = await this.coreV1Api.listNamespacedPod(namespace);
+        const ret = Object();
+        for (let i = 0; i < pods.body.items.length; i++) {
+            const pod = pods.body.items[i];
+            const uptime = this.getPodUptimeMS(pod);
+            if (pod.metadata && pod.metadata.name) {
+                ret[pod.metadata.name] = {
+                    ms: uptime,
+                    formatted: this.formatUptime(uptime)
+                }
+            }
+        }
+        return ret;
+    }
+
+    private formatUptime(uptime: number): string {
+        // 0-120s show seconds
+        // 2-10m show minutes and seconds
+        // 10-120m show minutes
+        // 2-48h show hours and minutes
+        // 2-30d show days and hours
+        // >30d show date
+
+        if (uptime < 0) {
+            return '';
+        }
+        if (uptime < 120000) {
+            const seconds = Math.floor(uptime / 1000);
+            return seconds + "s";
+        }
+        if (uptime < 600000) {
+            const minutes = Math.floor(uptime / (1000 * 60));
+            const seconds = Math.floor((uptime - (minutes * 1000 * 60)) / 1000);
+            if (seconds > 0) {
+                return minutes + "m" + seconds + "s";
+            }
+            return minutes + "m";
+        }
+        if (uptime < 7200000) {
+            const minutes = Math.floor(uptime / (1000 * 60));
+            return minutes + "m";
+        }
+        if (uptime < 172800000) {
+            const hours = Math.floor(uptime / (1000 * 60 * 60));
+            const minutes = Math.floor((uptime - (hours * 1000 * 60 * 60)) / (1000 * 60));
+            if (minutes > 0) {
+                return hours + "h" + minutes + "m";
+            }
+            return hours + "h";
+        }
+        //if (uptime < 2592000000) {
+            const days = Math.floor(uptime / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((uptime - (days * 1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            if (hours > 0) {
+                return days + "d" + hours + "h";
+            }
+            return days + "d";
+        //}
+        
+    }
+    
     public async getStorageglasses(): Promise<Object[]> {
         let ret = [];
         try {

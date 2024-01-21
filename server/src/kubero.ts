@@ -71,12 +71,12 @@ export class Kubero {
                 for (const phase of pipeline.phases) {
 
                     if (phase.enabled == true) {
-                        debug.log("Loading Namespace: "+pipeline.name+"-"+phase.name);
+                        debug.log("🔁 Loading Namespace: "+pipeline.name+"-"+phase.name);
                         this.listAppsInNamespace(pipeline.name, phase.name)
                         .then(appsList => {
                             if (appsList) {
                                 for (const app of appsList.items) {
-                                    debug.log("Loading App: "+app.spec.name);
+                                    debug.log("🔁 Loading App: "+app.spec.name);
                                     this.appStateList.push(app.spec);
                                 }
                             }
@@ -1183,6 +1183,11 @@ export class Kubero {
 
     public getEvents(namespace: string) {
         return this.kubectl.getEvents(namespace);
+    }
+
+    public getPodUptime(pipelineName: string, phaseName: string) {
+        const namespace = pipelineName+'-'+phaseName;
+        return this.kubectl.getPodUptimes(namespace);
     }
 
     public getPodMetrics(pipelineName: string, phaseName: string, appName: string) {

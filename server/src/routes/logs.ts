@@ -8,6 +8,7 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 
 import debug from 'debug';
+//import rateLimit from 'express-rate-limit';
 debug('app:routes')
 
 Router.get('/logs/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
@@ -51,7 +52,13 @@ Router.get('/events', authMiddleware, async function (req: Request, res: Respons
     const events = await req.app.locals.kubero.getEvents(namespace);
     res.send(events);
 });
-
+/*
+const limiter = rateLimit({
+    windowMs: 60 * 1000, // 1 minute
+    max: 10, // limit each IP to 10 requests per windowMs
+});
+*/
+//Router.get('/audit', authMiddleware, limiter, async function (req: Request, res: Response) {
 Router.get('/audit', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Kubero audit log'
@@ -76,6 +83,14 @@ Router.get('/audit', authMiddleware, async function (req: Request, res: Response
 
     res.send(response);
     
+});
+
+Router.get('/uptimes/:pipeline/:phase/', authMiddleware, async function (req: Request, res: Response) {
+    const uptimes = await req.app.locals.kubero.getPodUptime(
+        req.params.pipeline,
+        req.params.phase
+    );
+    res.send(uptimes);
 });
 
 Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {

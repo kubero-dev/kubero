@@ -74,16 +74,18 @@
                         <v-col cols="6" class="text-right"><v-progress-linear :value="metric.memory.percentage" color="#8560A9" class="float-left" ></v-progress-linear></v-col>
                     </v-row>
                 </div>
-                <div class="px-5" v-if="metricsDisplay == 'table'">
+                <div class="px-3" v-if="metricsDisplay == 'table'">
                     <v-row>
                         <v-col cols="8" class="pb-0 text-left text-caption font-weight-light">Pod</v-col>
-                        <v-col cols="2" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
-                        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+                        <v-col cols="1" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
+                        <v-col cols="1" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+                        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Uptime</v-col>
                     </v-row>
                     <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
                         <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
-                        <v-col cols="2" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
-                        <v-col cols="2" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+                        <v-col cols="1" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
+                        <v-col cols="1" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+                        <v-col cols="2" class="py-0 text-right">{{metric.uptime.formatted}}</v-col>
                     </v-row>
                 </div>
                 <div class="mb-5 mt-10">
@@ -392,6 +394,10 @@ type appData = {
 
 type Metric = {
     name: string,
+    uptime: {
+        formatted: string,
+        ms: number,
+    },
     cpu: {
         percentage: number,
         usage: number,
@@ -432,19 +438,30 @@ export default defineComponent({
             metrics: [] as Metric[],
             metricsDisplay: "bars",
             metricsInterval: 0 as any, // can't find the right type for this
+            uptimes: {} as any,
         }
     },
     components: {
         Addons,
     },
     mounted() {
-        this.loadMetrics();
+        this.loadUptimes();
         this.metricsInterval = setInterval(this.loadMetrics, 40000);
     },
     unmounted() {
         clearInterval(this.metricsInterval);
     },
     methods: {
+        loadUptimes() {
+            axios.get(`/api/uptimes/${this.pipeline}/${this.phase}`)
+            .then(response => {
+                this.uptimes = response.data;
+                this.loadMetrics();
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
 
         loadMetrics() {
             axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app}`)
@@ -459,6 +476,7 @@ export default defineComponent({
                      ){
                         this.metricsDisplay = "table";
                     }
+                    response.data[i].uptime = this.uptimes[response.data[i].name];
                 }
                 this.metrics = response.data;
             })
