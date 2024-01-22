@@ -1419,13 +1419,13 @@ export default defineComponent({
       ],
       repositoryRules: [
         //v => !!v || 'Repository is required',
-        (v: any) => v.length <= 60 || 'Repository must be less than 60 characters',
+        (v: any) => v.length <= 120 || 'Repository must be less than 120 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         (v: any) => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
       domainRules: [
         (v: any) => !!v || 'Domain is required',
-        (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
+        (v: any) => v.length <= 253 || 'Name must be less than 253 characters',
         (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || 'Not a domain',
         (v: any) => this.checkDomainAvailability(v) || 'Domain already taken',
       ],

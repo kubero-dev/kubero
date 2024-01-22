@@ -332,8 +332,8 @@ export default defineComponent({
         (v: any) => /^[a-z0-9][a-z0-9-]*$/.test(v) || 'Allowed characters : [a-z0-9-]',
       ],
       domainRules: [
-        (v: any) => v.length <= 90 || 'Name must be less than 90 characters',
-        (v: any) => /^(([a-zA-Z]{1})|([a-zA-Z]{1}[a-zA-Z]{1})|([a-zA-Z]{1}[0-9]{1})|([0-9]{1}[a-zA-Z]{1})|([a-zA-Z0-9][a-zA-Z0-9-_]{1,61}[a-zA-Z0-9]))\.([a-zA-Z]{2,6}|[a-zA-Z0-9-]{2,30}\.[a-zA-Z]{2,8})$/.test(v) || 'Not a domain',
+        (v: any) => v.length <= 253 || 'Name must be less than 253 characters',
+        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || 'Not a domain',
       ],
       repositoryRules: [
         (v: any) => !!v || 'Repository is required',
