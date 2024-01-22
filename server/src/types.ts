@@ -378,3 +378,11 @@ export interface IMessage {
     phaseName: string,
     data?: any
 }
+
+export interface Uptime {
+    days: number,
+    hours: number,
+    minutes: number,
+    seconds: number,
+    milliseconds: number
+}
