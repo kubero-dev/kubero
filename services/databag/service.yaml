@@ -1,0 +1,13 @@
+name: Databag
+description: 'A tiny selfhosted federated messenger for the decentralized web.'
+tags:
+- chat
+- messenger
+- federated
+- decentralized
+source: https://github.com/balzack/databag
+website: https://github.com/balzack/databag
+icon: https://raw.githubusercontent.com/balzack/databag/main/doc/icon_v2.png
+screenshots:
+- https://raw.githubusercontent.com/balzack/databag/main/doc/mobile.png
+- https://github.com/balzack/databag/blob/main/doc/browser.png
