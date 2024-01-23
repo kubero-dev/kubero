@@ -785,7 +785,7 @@
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Volumes</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-          <div v-for="volume in extraVolumes" v-bind:key="volume.name">
+          <div v-for="(volume, index) in extraVolumes" :key="index">
             <v-row>
               <v-col
                 cols="12"
@@ -846,12 +846,11 @@
                 cols="12"
                 md="3"
               >
-                <v-switch
+                <v-select
                   v-model="volume.accessModes[0]"
-                  label="Read/Write Many"
-                  true-value="ReadWriteMany"
-                  false-value="ReadWriteOnce"
-                ></v-switch>
+                  :items="['ReadWriteOnce', 'ReadWriteMany', 'ReadOnlyMany']"
+                  label="Access Mode"
+                ></v-select>
               </v-col>
             </v-row>
           </div>
@@ -879,7 +878,7 @@
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Cronjobs</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-          <div v-for="cronjob in cronjobs" v-bind:key="cronjob.name">
+          <div v-for="(cronjob, index) in cronjobs" :key="index">
             <v-row>
               <v-col
                 cols="12"

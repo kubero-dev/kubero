@@ -129,8 +129,8 @@ export class Auth {
                     debug.debug( JSON.stringify(profile));
 
                     const orgas = await axios.get(profile._json.organizations_url)
-
-                    //const orgAllowd = process.env.GITHUB_ORG || false
+                    //console.log("orgas: "+JSON.stringify(orgas.data))
+                    //const orgAllowed = process.env.GITHUB_ORG || false
                     const org = orgas.data.find((o: any) => {
                         return o.login === process.env.GITHUB_CLIENT_ORG
                     } )
@@ -144,8 +144,8 @@ export class Auth {
 
                         done(null, user);
                     } else {
-                        console.log(profile.username+' is not in allowd organisation '+process.env.GITHUB_CLIENT_ORG)
-                        done(null, false, { message: 'Not in allowd organisation'})
+                        console.log(profile.username+' is not in allowed organisation '+process.env.GITHUB_CLIENT_ORG)
+                        done(null, false, { message: 'Not in allowed organisation'})
                     }
                 })
             );
