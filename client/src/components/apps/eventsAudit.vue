@@ -1,34 +1,48 @@
 <template>
-    <v-card 
-    color="cardBackground">
-        <v-card-title>
-            <h3 class="text-h5">Activity</h3>
-        </v-card-title>
-        <v-card-text class="mt-10">
-            <v-row>
-                <v-timeline align-top truncate-line="start" side="end" class="mr-5">
-                    <v-timeline-item
-                        v-for="event in auditEvents" :key="event.id"
-                        :color=event.color
-                        :icon=getIcon(event.action)
-                        dot-color="var(--v-primary-base)"
-                        fill-dot>
-                        <div>
-                            <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
+    <div>
+        <v-card 
+        color="cardBackground"
+        v-if="auditEvents.length >0">
+            <v-card-title>
+                <h3 class="text-h5">Activity</h3>
+            </v-card-title>
+            <v-card-text class="mt-10">
+                <v-row>
+                    <v-timeline align-top truncate-line="start" side="end" class="mr-5">
+                        <v-timeline-item
+                            v-for="event in auditEvents" :key="event.id"
+                            :color=event.color
+                            :icon=getIcon(event.action)
+                            dot-color="var(--v-primary-base)"
+                            fill-dot>
                             <div>
-                                <strong>{{ event.user }}: </strong> {{ event.action }} {{ event.resource }}
-                                <div class="text-caption">
-                                    {{ event.timestamp }} · v{{ event.id }} · {{ event.message }}
+                                <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
+                                <div>
+                                    <strong>{{ event.user }}: </strong> {{ event.action }} {{ event.resource }}
+                                    <div class="text-caption">
+                                        {{ event.timestamp }} · v{{ event.id }} · {{ event.message }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <v-divider v-if="event !== auditEvents[auditEvents.length - 1]" ></v-divider>
-                    </v-timeline-item>
+                            <v-divider v-if="event !== auditEvents[auditEvents.length - 1]" ></v-divider>
+                        </v-timeline-item>
 
-                </v-timeline>
-            </v-row>
-        </v-card-text>
-    </v-card>
+                    </v-timeline>
+                </v-row>
+            </v-card-text>
+        </v-card>
+
+        <v-alert
+            outlined
+            type="info"
+            variant="tonal"
+            border="start"
+            v-if="auditEvents.length <1">
+            <h3>Audit</h3>
+            The audi log is ether empty or disabled.
+
+        </v-alert>
+    </div>
 </template>
 
 <script lang="ts">
