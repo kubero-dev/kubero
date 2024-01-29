@@ -37,6 +37,7 @@ export class Kubero {
     private podLogStreams: string[]= []
     public config: IKuberoConfig;
     private audit: Audit;
+    private execStreams: {[key: string]: {websocket: WebSocket, stream: Stream}} = {};
 
     constructor(io: Server, audit: Audit) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
@@ -975,6 +976,68 @@ export class Kubero {
 
     public getPodSizeList(){
         return this.config.podSizeList;
+    }
+
+    public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            const streamname = `${pipelineName}-${phaseName}-${appName}-${containerName}`;
+
+            if ( process.env.KUBERO_READONLY == 'true'){
+                console.log('KUBERO_READONLY is set to true, not deleting app');
+                return;
+            }
+
+            if ( this.execStreams[streamname] ) {
+                if (this.execStreams[streamname].websocket.readyState == this.execStreams[streamname].websocket.OPEN) {
+                    console.log('execInContainer: execStream already running');
+                    return;
+                } else {
+                    console.log('execInContainer: execStream already running but not open, deleting');
+                    delete this.execStreams[streamname];
+                }
+            }
+
+            const execStream = new Stream.PassThrough();
+
+            const namespace = pipelineName+'-'+phaseName;
+            const ws =  await this.kubectl.execInContainer(namespace, podName, containerName, command, execStream)
+            .catch(error => {
+                console.log(error);
+                return;
+            });
+
+            if (!ws || ws.readyState != ws.OPEN) {
+                console.log('execInContainer: ws is undefined or not open');
+                return;
+            }
+
+            let stream = {
+                websocket: ws as unknown as WebSocket,
+                stream: execStream as Stream
+            };
+            this.execStreams[streamname] = stream;
+
+            // sending the terminal output to the client
+            ws.on('message', (data: Buffer) => {
+                const roomname = `${pipelineName}-${phaseName}-${appName}-terminal`;
+                //console.log('execInContainer message', roomname, data.toString());
+                this._io.to(roomname).emit('consoleresponse', data.toString())
+            });
+
+            // Sending the terminal input to the container
+            this._io.on('connection', client => {
+                //console.log('connection');
+                client.on('terminal', (data: any) => {
+                    //console.log('terminal input', data.data);
+                    //console.log('ws.OPEN', ws.readyState == ws.OPEN);
+                    //console.log(ws.url);
+                    //console.log(ws.eventNames());
+                    execStream.write(data.data);
+                }
+                )}
+            );
+        }
     }
 
     private logcolor(str: string) {
