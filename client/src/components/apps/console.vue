@@ -1,11 +1,43 @@
 <template>
     <div style="height: 95%;">
+        <v-row justify="space-around" class="console-bar">
+            <v-col cols="12" sm="5" md="5" lg="5">
+                <v-select
+                    v-model="pod"
+                    label="Pod"
+                    class="pa-1 ml-3"
+                    :items=pods
+                    item-title="name"
+                    return-object
+                ></v-select>
+            </v-col>
+            <v-col cols="12" sm="3" md="3" lg="3">
+                <v-select
+                    v-model="container"
+                    label="Container"
+                    class="pa-1"
+                    :items=pod.containers
+                ></v-select>
+            </v-col>
+            <v-col cols="12" sm="2" md="2" lg="2">
+                <v-combobox
+                    v-model="command"
+                    label="Command"
+                    class="pa-1"
+                    :items="commands"
+                ></v-combobox>
+            </v-col>
+            <v-col cols="12" sm="2" md="2" lg="2" class="mt-4">
+                <v-btn @click="connect" color="primary" v-if="!connected">Run</v-btn>
+                <v-btn @click="disconnect" color="primary" v-if="connected">Exit</v-btn>
+            </v-col>
+        </v-row>
+        <!--
         <v-tabs class="console-bar">
             <v-tab>run</v-tab>
         </v-tabs>
-        <div class="consolea" id="terminal"></div>
-        <v-sheet class="consolea" id="terminali">
-        </v-sheet>
+        -->
+        <div id="terminal"></div>
     </div>
 </template>
 
@@ -18,43 +50,14 @@ import { useKuberoStore } from '../../stores/kubero'
 
 const socket = useKuberoStore().kubero.socket as any;
 
-let termOptionsaaaa = {
-    cursorBlink: true,
-    /*cursorStyle: 'underline',*/
-    fontSize: 14,
-    fontFamily: 'Inconsolata',
-    fontWeight: 'normal',
-    fontWeightBold: 'bold',
-    lineHeight: 1,
-    letterSpacing: 0,
-    allowTransparency: true,
-    theme: {
-        foreground: '#fff',
-        background: '#000',
-        cursor: '#fff',
-        cursorAccent: '#000',
-        selection: 'rgba(255, 255, 255, 0.3)',
-        black: '#000000',
-        red: '#ff0000',
-        green: '#33ff00',
-        yellow: '#ffff00',
-        blue: '#0066ff',
-        magenta: '#cc00ff',
-        cyan: '#00ffff',
-        white: '#d0d0d0',
-        brightBlack: '#808080',
-        brightRed: '#ff0000',
-        brightGreen: '#33ff00',
-        brightYellow: '#ffff00',
-        brightBlue: '#0066ff',
-        brightMagenta: '#cc00ff',
-        brightCyan: '#00ffff',
-        brightWhite: '#ffffff',
-    },
-} as ITerminalOptions;
-
+type Pod = {
+    name: string,
+    containers: string[],
+}
 
 let termOptions = {
+    cols: 110,
+    rows: 40,
     cursorBlink: true,
     cursorInactiveStyle: 'underline',
 } as ITerminalOptions;
@@ -68,11 +71,8 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.createTerminal()
-        this.socketJoin()
-        //this.attacheToContainer()
-        this.execInContainer()
-        //this.startLogs()
+        this.loadPods()
+        //this.connectToFirstPod()
     },
     unmounted() {
         this.socketLeave()
@@ -93,19 +93,59 @@ export default defineComponent({
     },
     computed: {
         room(): string {
-            return `${this.pipeline}-${this.phase}-${this.app}-terminal`;
-        },
+            return `${this.pipeline}-${this.phase}-${this.app}-${this.pod.name}-${this.container}-terminal`;
+        }
     },
     data: () => ({
-        containersList: ['MISSING', 'example'] as string[],
-        container: "MISSING",
+        connected: false,
+        commands: ['sh', 'bash'] as string[],
+        command: 'sh' as string,
+        container: "MISSING" as string,
+        pods: [{name: 'kubectl-kuberoapp-web-786b847d9f-4dw96', containers: ['kubero-web', 'example']}] as Pod[],
+        pod: {name: 'kubectl-kuberoapp-web-786b847d9f-4dw96', containers: ['kubero-web', 'example']} as Pod,
     }),
     methods: {
+        loadPods() {
+            axios.get(`/api/status/pods/${this.pipeline}/${this.phase}`).then((response) => {
+                //this.loadContainers();
+                for (let pod of response.data) {
+                    const p = {name: pod.name, containers: pod.containers.map((c: any) => c.name)} as Pod;
+                    this.pods.push(p);
+                }
+            });
+        },
+        disconnect() {
+            socket.emit("terminal", {
+                room: this.room,
+                data: "exit\r\nexit\r\nexit\r\nexit\r\nexit\r\n",
+            });
+            // wait a bit for the exit to be processed
+            setTimeout(() => {
+                this.socketLeave()
+            }, 1000);
+            this.connected = false;
+            term.dispose()
+        },
+        connect() {
+            this.createTerminal()
+            this.socketJoin()
+            this.execInContainer()
+            this.connected = true;
+        },
+        connectToFirstPod() {
+            if (this.pods.length == 0) {
+                return
+            }
+            this.pod = this.pods[0];
+            this.container = this.pod.containers[0];
+            this.connect()
+        },
         createTerminal() {
             //const room = `${this.pipeline}-${this.phase}-${this.app}-terminal`;
             term.open(document.getElementById('terminal') as HTMLElement);
             //term.write('Hello from \x1B[1;3;31mxterm.js\x1B[0m $ ')
             //term.clear()
+            term.focus()
             
             socket.on("terminal", (data: any) => {
                 console.log("terminal", data);
@@ -117,7 +157,7 @@ export default defineComponent({
             })
 
             term.onData((data) => {
-                console.log("onData", data);
+                //console.log("onData", data);
 
                 socket.emit("terminal", {
                     room: this.room,
@@ -198,20 +238,26 @@ export default defineComponent({
         },
         socketLeave() {
             console.log("socketLeave", this.room);
+            term.write("exit\r\n")
             socket.emit("leave", {
                 room: this.room,
             });
         },
-        execInContainer() {
+        execInContainer2() {
             axios.get(`/api/console/${this.pipeline}/${this.phase}/${this.app}/exec`).then(() => {
                 console.log(`attached to container ${this.container}`);
             });
         },
-        attacheToContainer() {
-            axios.get(`/api/console/${this.pipeline}/${this.phase}/${this.app}/attache`).then(() => {
+        execInContainer(){
+            axios.post(`/api/console/${this.pipeline}/${this.phase}/${this.app}/exec`, {
+                podName: this.pod.name,
+                containerName: this.container,
+                command: this.command,
+            }).then(() => {
                 console.log(`attached to container ${this.container}`);
             });
-        },
+
+        }
     },
 });
 </script>
@@ -228,6 +274,15 @@ a:link { text-decoration: none;}
 }
 
 .v-tabs.console-bar {
+    background-color: #1E1E1E; /*#444*/
+}
+
+.v-row.console-bar {
+    background-color: #1E1E1E; /*#444*/
+    color: #9F9F9F;
+}
+
+.v-application {
     background-color: #1E1E1E; /*#444*/
 }
 

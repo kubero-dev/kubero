@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, Workload, WorkloadContainer, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
 import { IPullrequest } from './git/types';
 import { App, KubectlTemplate } from './modules/application';
 import { Buildpack } from './modules/config';
@@ -981,7 +981,7 @@ export class Kubero {
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
-            const streamname = `${pipelineName}-${phaseName}-${appName}-${containerName}`;
+            const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}`;
 
             if ( process.env.KUBERO_READONLY == 'true'){
                 console.log('KUBERO_READONLY is set to true, not deleting app');
@@ -1020,7 +1020,7 @@ export class Kubero {
 
             // sending the terminal output to the client
             ws.on('message', (data: Buffer) => {
-                const roomname = `${pipelineName}-${phaseName}-${appName}-terminal`;
+                const roomname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;
                 //console.log('execInContainer message', roomname, data.toString());
                 this._io.to(roomname).emit('consoleresponse', data.toString())
             });
@@ -1495,6 +1495,47 @@ export class Kubero {
                     'phase': phaseName
                 }});
         }
+    }
+
+    public async getPods(pipelineName: string, phaseName: string): Promise<Workload[]> {
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        let workloads: Workload[] = [];
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            const workload = await this.kubectl.getPods(namespace, contextName);
+            //return workload
+            for (const pod of workload) {
+                let workload = {
+                    name: pod.metadata?.name,
+                    namespace: pod.metadata?.namespace,
+                    phase: phaseName,
+                    pipeline: pipelineName,
+                    status: pod.status?.phase,
+                    age: pod.metadata?.creationTimestamp,
+                    startTime: pod.status?.startTime,
+                    containers: [] as WorkloadContainer[],
+                } as Workload;
+                
+                //for (const container of pod.spec?.containers || []) {
+                const containersCount = pod.spec?.containers?.length || 0;
+                for (let i = 0; i < containersCount; i++) {
+                    workload.containers.push({
+                        name: pod.spec?.containers[i].name,
+                        image: pod.spec?.containers[i].image,
+                        restartCount: pod.status?.containerStatuses?.[i]?.restartCount,
+                        ready: pod.status?.containerStatuses?.[i]?.ready,
+                        started: pod.status?.containerStatuses?.[i]?.started,
+                    } as WorkloadContainer);
+                }
+
+                workloads.push(workload);
+            }
+        }
+        console.log(workloads);
+        return workloads;
     }
 
 }

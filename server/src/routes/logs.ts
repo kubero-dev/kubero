@@ -136,3 +136,35 @@ Router.get('/console/:pipeline/:phase/:app/exec', authMiddleware, async function
     await req.app.locals.kubero.execInContainer(req.params.pipeline, req.params.phase, req.params.app, podName, containerName, command, user);
     res.send(console);
 });
+
+Router.post('/console/:pipeline/:phase/:app/exec', authMiddleware, async function (req: Request, res: Response) {
+    // https://github.com/kubernetes-client/javascript/blob/master/examples/typescript/exec/exec-example.ts
+    
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Start a container console'
+    req.params.pipeline = "test";
+    req.params.phase = "production";
+    req.params.app = "go-httpbin";
+
+    const user = 'nobody'
+
+    const podName = req.body.podName;
+    const containerName = req.body.containerName;
+    const command = req.body.command;
+
+    await req.app.locals.kubero.execInContainer(req.params.pipeline, req.params.phase, req.params.app, podName, containerName, command, user);
+    res.send(console);
+});
+
+Router.get('/status/pods/:pipeline/:phase', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the Pod workload from an Namespace'
+    
+    req.app.locals.kubero.getPods(req.params.pipeline, req.params.phase)
+        .then((result: any) => {
+            res.send(result);
+        })
+        .catch((err: any) => {
+            res.status(500).send(err);
+        });
+});
