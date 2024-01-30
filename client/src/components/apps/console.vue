@@ -9,6 +9,7 @@
                     :items=pods
                     item-title="name"
                     return-object
+                    :disabled="connected"
                 ></v-select>
             </v-col>
             <v-col cols="12" sm="3" md="3" lg="3">
@@ -16,6 +17,7 @@
                     v-model="container"
                     label="Container"
                     class="pa-1"
+                    :disabled="connected"
                     :items=pod.containers
                 ></v-select>
             </v-col>
@@ -24,6 +26,7 @@
                     v-model="command"
                     label="Command"
                     class="pa-1"
+                    :disabled="connected"
                     :items="commands"
                 ></v-combobox>
             </v-col>
@@ -101,8 +104,8 @@ export default defineComponent({
         commands: ['sh', 'bash'] as string[],
         command: 'sh' as string,
         container: "MISSING" as string,
-        pods: [{name: 'kubectl-kuberoapp-web-786b847d9f-4dw96', containers: ['kubero-web', 'example']}] as Pod[],
-        pod: {name: 'kubectl-kuberoapp-web-786b847d9f-4dw96', containers: ['kubero-web', 'example']} as Pod,
+        pods: [] as Pod[],
+        pod: {} as Pod,
     }),
     methods: {
         loadPods() {
@@ -112,6 +115,8 @@ export default defineComponent({
                     const p = {name: pod.name, containers: pod.containers.map((c: any) => c.name)} as Pod;
                     this.pods.push(p);
                 }
+                this.pod = this.pods[0];
+                this.container = this.pod.containers[0];
             });
         },
         disconnect() {
