@@ -109,7 +109,7 @@ export default defineComponent({
     }),
     methods: {
         loadPods() {
-            axios.get(`/api/status/pods/${this.pipeline}/${this.phase}`).then((response) => {
+            axios.get(`/api/status/pods/${this.pipeline}/${this.phase}/${this.app}`).then((response) => {
                 //this.loadContainers();
                 for (let pod of response.data) {
                     const p = {name: pod.name, containers: pod.containers.map((c: any) => c.name)} as Pod;
@@ -123,13 +123,17 @@ export default defineComponent({
             socket.emit("terminal", {
                 room: this.room,
                 data: "exit\r\nexit\r\nexit\r\nexit\r\nexit\r\n",
+                //data: "exit\r\n",
             });
             // wait a bit for the exit to be processed
             setTimeout(() => {
                 this.socketLeave()
             }, 1000);
-            this.connected = false;
+            //this.connected = false;
             term.dispose()
+
+            // close popup window
+            window.close()
         },
         connect() {
             this.createTerminal()

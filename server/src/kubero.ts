@@ -37,7 +37,7 @@ export class Kubero {
     private podLogStreams: string[]= []
     public config: IKuberoConfig;
     private audit: Audit;
-    private execStreams: {[key: string]: {websocket: WebSocket, stream: Stream}} = {};
+    private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
 
     constructor(io: Server, audit: Audit) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
@@ -52,6 +52,22 @@ export class Kubero {
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
 
         this.audit = audit;
+
+
+        this._io.on('connection', client => {
+            client.on('terminal', (data: any) => {
+                //console.log('terminal input', data.data);
+                //console.log('ws.OPEN', ws.readyState == ws.OPEN);
+                //console.log(ws.url);
+                //console.log(ws.eventNames());
+                //execStream.write(data.data);
+                if (this.execStreams[data.room]) {
+                    this.execStreams[data.room].stream.write(data.data);
+                }
+                //this.execStreams[data.room].stream.write(data.data);
+            }
+            )}
+        );
     }
 
     public getKubernetesVersion() {
@@ -981,7 +997,7 @@ export class Kubero {
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
-            const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}`;
+            const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;
 
             if ( process.env.KUBERO_READONLY == 'true'){
                 console.log('KUBERO_READONLY is set to true, not deleting app');
@@ -993,8 +1009,12 @@ export class Kubero {
                     console.log('execInContainer: execStream already running');
                     return;
                 } else {
-                    console.log('execInContainer: execStream already running but not open, deleting');
+                    console.log('CLOSED', this.execStreams[streamname].websocket.CLOSED)
+                    console.log('execInContainer: execStream already running but not open, deleting :', this.execStreams[streamname].websocket.readyState);
                     delete this.execStreams[streamname];
+
+                    // wait a bit to make sure the stream is closed
+                    await new Promise(resolve => setTimeout(resolve, 3000));
                 }
             }
 
@@ -1014,29 +1034,14 @@ export class Kubero {
 
             let stream = {
                 websocket: ws as unknown as WebSocket,
-                stream: execStream as Stream
+                stream: execStream
             };
             this.execStreams[streamname] = stream;
 
             // sending the terminal output to the client
             ws.on('message', (data: Buffer) => {
-                const roomname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;
-                //console.log('execInContainer message', roomname, data.toString());
-                this._io.to(roomname).emit('consoleresponse', data.toString())
+                this._io.to(streamname).emit('consoleresponse', data.toString())
             });
-
-            // Sending the terminal input to the container
-            this._io.on('connection', client => {
-                //console.log('connection');
-                client.on('terminal', (data: any) => {
-                    //console.log('terminal input', data.data);
-                    //console.log('ws.OPEN', ws.readyState == ws.OPEN);
-                    //console.log(ws.url);
-                    //console.log(ws.eventNames());
-                    execStream.write(data.data);
-                }
-                )}
-            );
         }
     }
 
@@ -1497,7 +1502,7 @@ export class Kubero {
         }
     }
 
-    public async getPods(pipelineName: string, phaseName: string): Promise<Workload[]> {
+    public async getPods(pipelineName: string, phaseName: string, appName: string): Promise<Workload[]> {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
 
@@ -1508,6 +1513,11 @@ export class Kubero {
             const workload = await this.kubectl.getPods(namespace, contextName);
             //return workload
             for (const pod of workload) {
+                // check if app label name starts with appName
+                if (!pod.metadata?.generateName?.startsWith(appName+'-kuberoapp')) {
+                    continue;
+                }
+
                 let workload = {
                     name: pod.metadata?.name,
                     namespace: pod.metadata?.namespace,

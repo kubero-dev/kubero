@@ -142,10 +142,6 @@ Router.post('/console/:pipeline/:phase/:app/exec', authMiddleware, async functio
     
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Start a container console'
-    req.params.pipeline = "test";
-    req.params.phase = "production";
-    req.params.app = "go-httpbin";
-
     const user = 'nobody'
 
     const podName = req.body.podName;
@@ -156,11 +152,11 @@ Router.post('/console/:pipeline/:phase/:app/exec', authMiddleware, async functio
     res.send(console);
 });
 
-Router.get('/status/pods/:pipeline/:phase', authMiddleware, async function (req: Request, res: Response) {
+Router.get('/status/pods/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the Pod workload from an Namespace'
     
-    req.app.locals.kubero.getPods(req.params.pipeline, req.params.phase)
+    req.app.locals.kubero.getPods(req.params.pipeline, req.params.phase, req.params.app)
         .then((result: any) => {
             res.send(result);
         })

@@ -3,7 +3,6 @@ debug('app:kubectl')
 
 import {
     KubeConfig,
-    Attach,
     Exec,
     VersionApi,
     CoreV1Api,
@@ -50,7 +49,6 @@ export class Kubectl {
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
     public config: IKuberoConfig;
-    private attach: Attach = {} as Attach;
     private exec: Exec = {} as Exec;
 
     constructor(config: IKuberoConfig) {
@@ -85,7 +83,6 @@ export class Kubectl {
             this.networkingV1Api = this.kc.makeApiClient(NetworkingV1Api);
             this.metricsApi = new Metrics(this.kc);
             this.patchUtils = new PatchUtils();
-            this.attach = new Attach(this.kc);
             this.exec = new Exec(this.kc)
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
         } catch (error) {

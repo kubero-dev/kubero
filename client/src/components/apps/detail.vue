@@ -202,15 +202,17 @@ export default defineComponent({
             this.loadingState = false;
         },
         openConsole() {
+            /*
             Swal.fire({
                 title: "Open Console",
                 text: "This feature is not yet implemented. It will be available in a future release.",
                 icon: "info",
                 background: "rgb(var(--v-theme-cardBackground))",
-                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                /*background: "rgb(var(--v-theme-on-surface-variant))",
                 color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
             })
-            //window.open(`https://${this.appData.spec.domain}`, '_blank');
+            */
+            window.open(`/popup/console/${this.pipeline}/${this.phase}/${this.app}`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
         },
     },
 
