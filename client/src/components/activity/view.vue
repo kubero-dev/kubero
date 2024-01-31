@@ -1,6 +1,6 @@
 <template>
     <v-container>
-        <h1>Events</h1>
+        <h1>Activity</h1>
         <v-layout>
                 <v-row
                 v-if="auditEvents.length > 0" class="mb-10">

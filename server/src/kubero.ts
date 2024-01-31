@@ -994,7 +994,19 @@ export class Kubero {
         return this.config.podSizeList;
     }
 
+    public getConsoleEnabled(){
+        if (this.config.kubero?.console?.enabled == undefined) {
+            return false;
+        }
+        return this.config.kubero?.console?.enabled;
+    }
+
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
+        console.log(this.config.kubero?.console.enabled)
+        if (this.config.kubero?.console.enabled != true) {
+            console.log('Warning: console is nost set or disabled in config');
+            return;
+        }
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
             const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;

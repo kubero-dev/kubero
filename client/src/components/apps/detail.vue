@@ -48,6 +48,7 @@
                 <v-list-item 
                     @click="openConsole"
                     prepend-icon="mdi-console"
+                    :disabled="!kubero.consoleEnabled"
                     title="Open Console">
                 </v-list-item>
                 <v-divider class="my-3"></v-divider>
@@ -86,6 +87,8 @@ import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
+import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
 
 
 export default defineComponent({
@@ -123,6 +126,9 @@ export default defineComponent({
                 }
             }
         }
+    },
+    computed: {
+      ...mapState(useKuberoStore, ['kubero']),
     },
     mounted() {
         this.loadPipeline();

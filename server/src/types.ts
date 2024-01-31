@@ -341,6 +341,9 @@ export interface IKuberoConfig {
     }
     kubero: {
         namespace?: string; // deprecated v1.9.0
+        console: {
+            enabled: boolean;
+        }
         readonly: boolean;
         banner: {
             message: string;
