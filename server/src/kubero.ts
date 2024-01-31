@@ -1544,7 +1544,6 @@ export class Kubero {
                 workloads.push(workload);
             }
         }
-        console.log(workloads);
         return workloads;
     }
 

@@ -212,7 +212,7 @@ export default defineComponent({
                 color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
             })
             */
-            window.open(`/popup/console/${this.pipeline}/${this.phase}/${this.app}`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
+            window.open(`/popup/console/${this.pipeline}/${this.phase}/${this.app}`, '_blank', 'popup=yes,location=no,height=720,width=900,scrollbars=yes,status=no');
         },
     },
 
