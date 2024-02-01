@@ -32,11 +32,11 @@ Router.all("/session", (req: Request, res: Response) => {
     let message = {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
+        "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
         "buildPipeline": buildPipeline,
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
-        "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
         "auditEnabled": req.app.locals.audit.getAuditEnabled(),
-        //"websocketToken": process.env.KUBERO_WS_TOKEN,
+        "consoleEnabled": req.app.locals.kubero.getConsoleEnabled(),
     }
     res.status(status).send(message)
 })

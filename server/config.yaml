@@ -1,5 +1,7 @@
 kubero:
   readonly: false
+  console:
+    enabled: false
   banner:
     show: false
     message: "Welcome to Kubero!"

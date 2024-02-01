@@ -4,17 +4,18 @@ export const useKuberoStore = defineStore('kubero', {
     state: () => ({
         kubero: {
             version: "dev",
-            templatesEnabled: true,
             session: false,
             kubernetesVersion: "",
             isAuthenticated: false,
-            buildPipeline: false,
             socket: null as any,
             nextGenSession: {
                 username: "",
                 token: "",
             },
             auditEnabled: false,
+            templatesEnabled: true,
+            buildPipeline: false,
+            consoleEnabled: false,
         },
         buildPipeline: false,
     }),

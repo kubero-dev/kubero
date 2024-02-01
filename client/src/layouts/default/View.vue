@@ -45,6 +45,7 @@ export default defineComponent({
                         this.kubero.isAuthenticated = result.data.isAuthenticated;
                         this.kubero.buildPipeline = result.data.buildPipeline;
                         this.kubero.auditEnabled = result.data.auditEnabled;
+                        this.kubero.consoleEnabled = result.data.consoleEnabled;
 
                     })
                     .catch((err) => {

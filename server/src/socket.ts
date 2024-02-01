@@ -34,7 +34,11 @@ export function init(httpServer: HttpServer, authentication: boolean = false) {
             debug.log('joining room', join.room)
             client.join(join.room);
         });
-
+/*
+        client.on('terminal', terminal => {
+            console.log('main terminal', terminal)
+        });
+*/
         client.on('leave', leave => {
             debug.log('leaving room', leave.room)
             client.leave(leave.room);
