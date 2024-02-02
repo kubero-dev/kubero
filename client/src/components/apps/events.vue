@@ -255,9 +255,6 @@ export default defineComponent({
                     case "PodSecurityPolicy":
                         event.icon = "mdi-folder-star-outline";
                         break;
-                    case "PodSecurityPolicy":
-                        event.icon = "mdi-folder-star-outline";
-                        break;
                     default:
                         event.icon = "mdi-folder-outline";
                 }

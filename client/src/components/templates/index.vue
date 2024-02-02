@@ -111,7 +111,7 @@
                             :disabled="!pipeline || !phase"
                             @click="openInstall(clickedTemplate.dirname, pipeline, phase, catalogId)"
                             >
-                            Install
+                            Load template
                         </v-btn>
                     </v-card-text>
                 </v-card-item>
