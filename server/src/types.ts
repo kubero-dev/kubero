@@ -341,6 +341,9 @@ export interface IKuberoConfig {
     }
     kubero: {
         namespace?: string; // deprecated v1.9.0
+        console: {
+            enabled: boolean;
+        }
         readonly: boolean;
         banner: {
             message: string;
@@ -386,3 +389,25 @@ export interface Uptime {
     seconds: number,
     milliseconds: number
 }
+
+export interface Workload {
+        name: string,
+        namespace: string,
+        phase: string,
+        pipeline: string,
+        status: string,
+        restarts: number,
+        age: Date | undefined,
+        startTime: Date | undefined,
+        containers: WorkloadContainer[]
+    }
+
+    export interface WorkloadContainer {
+        name: string,
+        image: string,
+        restartCount?: number,
+        ready?: boolean,
+        started?: boolean,
+        age: Date | undefined,
+    }
+

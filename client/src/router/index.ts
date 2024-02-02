@@ -105,6 +105,12 @@ const routes = [
         props: true,
         component: () => import('@/components/apps/logs.vue'),
       },
+      {
+        path: '/popup/console/:pipeline/:phase/:app',
+        name: 'Pupup Console',
+        props: true,
+        component: () => import('@/components/apps/console.vue'),
+      }
     ],
   },
 ]

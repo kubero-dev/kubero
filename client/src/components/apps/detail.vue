@@ -48,6 +48,7 @@
                 <v-list-item 
                     @click="openConsole"
                     prepend-icon="mdi-console"
+                    :disabled="!kubero.consoleEnabled"
                     title="Open Console">
                 </v-list-item>
                 <v-divider class="my-3"></v-divider>
@@ -86,6 +87,8 @@ import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
+import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
 
 
 export default defineComponent({
@@ -123,6 +126,9 @@ export default defineComponent({
                 }
             }
         }
+    },
+    computed: {
+      ...mapState(useKuberoStore, ['kubero']),
     },
     mounted() {
         this.loadPipeline();
@@ -202,15 +208,17 @@ export default defineComponent({
             this.loadingState = false;
         },
         openConsole() {
+            /*
             Swal.fire({
                 title: "Open Console",
                 text: "This feature is not yet implemented. It will be available in a future release.",
                 icon: "info",
                 background: "rgb(var(--v-theme-cardBackground))",
-                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                /*background: "rgb(var(--v-theme-on-surface-variant))",
                 color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
             })
-            //window.open(`https://${this.appData.spec.domain}`, '_blank');
+            */
+            window.open(`/popup/console/${this.pipeline}/${this.phase}/${this.app}`, '_blank', 'popup=yes,location=no,height=720,width=900,scrollbars=yes,status=no');
         },
     },
 

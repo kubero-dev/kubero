@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { Server } from "socket.io";
-import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
+import { IApp, IPipeline, IPipelineList, IKubectlAppList, IDeployKeyPair, IKubectlPipelineList, Workload, WorkloadContainer, IKubectlApp, ILoglines, IKuberoConfig, IMessage} from './types';
 import { IPullrequest } from './git/types';
 import { App, KubectlTemplate } from './modules/application';
 import { Buildpack } from './modules/config';
@@ -37,6 +37,7 @@ export class Kubero {
     private podLogStreams: string[]= []
     public config: IKuberoConfig;
     private audit: Audit;
+    private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
 
     constructor(io: Server, audit: Audit) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
@@ -51,6 +52,22 @@ export class Kubero {
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
 
         this.audit = audit;
+
+
+        this._io.on('connection', client => {
+            client.on('terminal', (data: any) => {
+                //console.log('terminal input', data.data);
+                //console.log('ws.OPEN', ws.readyState == ws.OPEN);
+                //console.log(ws.url);
+                //console.log(ws.eventNames());
+                //execStream.write(data.data);
+                if (this.execStreams[data.room]) {
+                    this.execStreams[data.room].stream.write(data.data);
+                }
+                //this.execStreams[data.room].stream.write(data.data);
+            }
+            )}
+        );
     }
 
     public getKubernetesVersion() {
@@ -977,6 +994,69 @@ export class Kubero {
         return this.config.podSizeList;
     }
 
+    public getConsoleEnabled(){
+        if (this.config.kubero?.console?.enabled == undefined) {
+            return false;
+        }
+        return this.config.kubero?.console?.enabled;
+    }
+
+    public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
+        console.log(this.config.kubero?.console.enabled)
+        if (this.config.kubero?.console.enabled != true) {
+            console.log('Warning: console is nost set or disabled in config');
+            return;
+        }
+        const contextName = this.getContext(pipelineName, phaseName);
+        if (contextName) {
+            const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;
+
+            if ( process.env.KUBERO_READONLY == 'true'){
+                console.log('KUBERO_READONLY is set to true, not deleting app');
+                return;
+            }
+
+            if ( this.execStreams[streamname] ) {
+                if (this.execStreams[streamname].websocket.readyState == this.execStreams[streamname].websocket.OPEN) {
+                    console.log('execInContainer: execStream already running');
+                    return;
+                } else {
+                    console.log('CLOSED', this.execStreams[streamname].websocket.CLOSED)
+                    console.log('execInContainer: execStream already running but not open, deleting :', this.execStreams[streamname].websocket.readyState);
+                    delete this.execStreams[streamname];
+
+                    // wait a bit to make sure the stream is closed
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                }
+            }
+
+            const execStream = new Stream.PassThrough();
+
+            const namespace = pipelineName+'-'+phaseName;
+            const ws =  await this.kubectl.execInContainer(namespace, podName, containerName, command, execStream)
+            .catch(error => {
+                console.log(error);
+                return;
+            });
+
+            if (!ws || ws.readyState != ws.OPEN) {
+                console.log('execInContainer: ws is undefined or not open');
+                return;
+            }
+
+            let stream = {
+                websocket: ws as unknown as WebSocket,
+                stream: execStream
+            };
+            this.execStreams[streamname] = stream;
+
+            // sending the terminal output to the client
+            ws.on('message', (data: Buffer) => {
+                this._io.to(streamname).emit('consoleresponse', data.toString())
+            });
+        }
+    }
+
     private logcolor(str: string) {
         let hash = 0;
         for (var i = 0; i < str.length; i++) {
@@ -1432,6 +1512,51 @@ export class Kubero {
                     'phase': phaseName
                 }});
         }
+    }
+
+    public async getPods(pipelineName: string, phaseName: string, appName: string): Promise<Workload[]> {
+        const contextName = this.getContext(pipelineName, phaseName);
+        const namespace = pipelineName+'-'+phaseName;
+
+        let workloads: Workload[] = [];
+
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            const workload = await this.kubectl.getPods(namespace, contextName);
+            //return workload
+            for (const pod of workload) {
+                // check if app label name starts with appName
+                if (!pod.metadata?.generateName?.startsWith(appName+'-kuberoapp')) {
+                    continue;
+                }
+
+                let workload = {
+                    name: pod.metadata?.name,
+                    namespace: pod.metadata?.namespace,
+                    phase: phaseName,
+                    pipeline: pipelineName,
+                    status: pod.status?.phase,
+                    age: pod.metadata?.creationTimestamp,
+                    startTime: pod.status?.startTime,
+                    containers: [] as WorkloadContainer[],
+                } as Workload;
+                
+                //for (const container of pod.spec?.containers || []) {
+                const containersCount = pod.spec?.containers?.length || 0;
+                for (let i = 0; i < containersCount; i++) {
+                    workload.containers.push({
+                        name: pod.spec?.containers[i].name,
+                        image: pod.spec?.containers[i].image,
+                        restartCount: pod.status?.containerStatuses?.[i]?.restartCount,
+                        ready: pod.status?.containerStatuses?.[i]?.ready,
+                        started: pod.status?.containerStatuses?.[i]?.started,
+                    } as WorkloadContainer);
+                }
+
+                workloads.push(workload);
+            }
+        }
+        return workloads;
     }
 
 }

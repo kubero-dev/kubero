@@ -8,6 +8,7 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 
 import debug from 'debug';
+import { pipeline } from 'stream';
 //import rateLimit from 'express-rate-limit';
 debug('app:routes')
 
@@ -115,4 +116,51 @@ Router.get('/metrics', authMiddleware, async function (req: Request, res: Respon
 
     const metrics = await req.app.locals.kubero.getNodeMetrics();
     res.send(metrics);
+});
+
+Router.get('/console/:pipeline/:phase/:app/exec', authMiddleware, async function (req: Request, res: Response) {
+    // https://github.com/kubernetes-client/javascript/blob/master/examples/typescript/exec/exec-example.ts
+    
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Start a container console'
+    req.params.pipeline = "test";
+    req.params.phase = "production";
+    req.params.app = "go-httpbin";
+
+    let podName = "kubectl-kuberoapp-web-786b847d9f-4dw96";
+    //podName = "go-httpbin-kuberoapp-web-86f8dd7f46-zph9h";
+    const containerName = "kuberoapp-web";
+    const command = 'sh'
+    const user = 'nobody'
+
+    await req.app.locals.kubero.execInContainer(req.params.pipeline, req.params.phase, req.params.app, podName, containerName, command, user);
+    res.send(console);
+});
+
+Router.post('/console/:pipeline/:phase/:app/exec', authMiddleware, async function (req: Request, res: Response) {
+    // https://github.com/kubernetes-client/javascript/blob/master/examples/typescript/exec/exec-example.ts
+    
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Start a container console'
+    const user = 'nobody'
+
+    const podName = req.body.podName;
+    const containerName = req.body.containerName;
+    const command = req.body.command;
+
+    await req.app.locals.kubero.execInContainer(req.params.pipeline, req.params.phase, req.params.app, podName, containerName, command, user);
+    res.send(console);
+});
+
+Router.get('/status/pods/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the Pod workload from an Namespace'
+    
+    req.app.locals.kubero.getPods(req.params.pipeline, req.params.phase, req.params.app)
+        .then((result: any) => {
+            res.send(result);
+        })
+        .catch((err: any) => {
+            res.status(500).send(err);
+        });
 });

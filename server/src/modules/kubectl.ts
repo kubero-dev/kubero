@@ -3,6 +3,7 @@ debug('app:kubectl')
 
 import {
     KubeConfig,
+    Exec,
     VersionApi,
     CoreV1Api,
     AppsV1Api,
@@ -30,7 +31,9 @@ import { App, KubectlApp } from './application';
 import { KubectlPipeline } from './pipeline';
 import { IAddon, IAddonMinimal } from './addons';
 import { version } from 'os';
-
+import { WebSocket } from 'ws';
+import stream from 'stream';
+import internal from 'stream';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -46,6 +49,7 @@ export class Kubectl {
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
     public config: IKuberoConfig;
+    private exec: Exec = {} as Exec;
 
     constructor(config: IKuberoConfig) {
         this.config = config;
@@ -79,6 +83,7 @@ export class Kubectl {
             this.networkingV1Api = this.kc.makeApiClient(NetworkingV1Api);
             this.metricsApi = new Metrics(this.kc);
             this.patchUtils = new PatchUtils();
+            this.exec = new Exec(this.kc)
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
         } catch (error) {
             debug.log("error creating api clients. Check kubeconfig, cluster connectivity and context");
@@ -1065,6 +1070,23 @@ export class Kubectl {
     public async getAllIngress(): Promise<any> {
         const ingresses = await this.networkingV1Api.listIngressForAllNamespaces();
         return ingresses.body.items;
+    }
+
+    public async execInContainer(namespace: string, podName: string, containerName: string, command: string, stdin: internal.PassThrough): Promise<WebSocket> {
+        //const command = ['ls', '-al', '.']
+        //const command = ['bash']
+        //const command = "bash"
+        const ws = await this.exec.exec(
+            namespace,
+            podName,
+            containerName,
+            command,
+            process.stdout as stream.Writable,
+            process.stderr as stream.Writable,
+            stdin,
+            true
+        );
+        return ws
     }
 
 }
