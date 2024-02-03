@@ -7,7 +7,7 @@
                 General Kubero Settings
             </h2>
             <p class="text-justify">
-                Currently ready only
+                The configuration valures are readonly in this version. Please edit the values in the Kubero CRD directly.
             </p>
         </v-col>
       </v-row>
@@ -306,9 +306,33 @@
   </v-form>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
+import { defineComponent } from 'vue'
+
+type PodSize = {
+  name: string,
+  description: string,
+  resources: {
+    requests: {
+      cpu: string,
+      memory: string,
+    },
+    limits: {
+      cpu: string,
+      memory: string,
+    }
+  }
+}
+
+type Buildpack = {
+  name: string,
+  description: string,
+  url: string,
+  enabled: boolean,
+}
+
+export default defineComponent({
     sockets: {
     },
     mounted() {
@@ -331,8 +355,8 @@ export default {
           BITBUCKET_APP_PASSWORD: "",
           GITHUB_PERSONAL_ACCESS_TOKEN: "",
         },
-        podSizeList: [],
-        buildpacks: [],
+        podSizeList: [] as PodSize[],
+        buildpacks: [] as Buildpack[],
         templateCatalogs: [],
       }
     }),
@@ -346,11 +370,11 @@ export default {
             self.settings = response.data;
         })
         .catch(error => {
-            console.log(error);
+            console.log('loadSettings', error);
         });
       }
     },
-}
+})
 </script>
 
 <style lang="scss">

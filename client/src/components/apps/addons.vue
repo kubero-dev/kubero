@@ -2,30 +2,31 @@
   <v-form v-model="valid">
 
   <v-row class="pt-5">
-      <v-col v-for="addon in addons" v-bind:key="addon.kind"
-        cols="12"
-        md="3"
-      >
+    <v-col v-for="addon in addons" v-bind:key="addon.kind"
+      cols="12"
+      md="3"
+    >
 
-        <v-card class="cardBackground">
-          <v-list-item-content class="justify-center">
-            <div class="mx-auto text-center">
-              <v-avatar
-                size="57"
-                rounded
-              ><img
-              :src="addon.icon"
+      <v-card color="cardBackground">
+        <v-list-item class="justify-center">
+          <div class="mx-auto text-center">
+            <v-avatar
+              size="57"
+              rounded
+              style="margin-top: 20px;"
+              :image="addon.icon"
               :alt="addon.displayName"
-              >
-              </v-avatar>
-              <h3>{{ addon.displayName }}</h3>
-              <p class="text-caption mt-1">
-                {{ addon.id }}
-              </p>
+            >
+            </v-avatar>
+            <h3>{{ addon.displayName }}</h3>
+            <p class="text-caption mt-1">
+              {{ addon.id }}
+            </p>
+            <div v-if="showButtons">
               <v-divider class="my-3"></v-divider>
               <v-btn
                 depressed
-                text
+                variant="text"
                 color="primary"
                 @click="editAddon(addon)"
               >
@@ -33,19 +34,20 @@
               </v-btn>
               <v-btn
                 depressed
-                text
+                variant="text"
                 color="red"
                 @click="deleteAddon(addon)"
               >
                 delete
               </v-btn>
             </div>
-          </v-list-item-content>
-        </v-card>
+          </div>
+        </v-list-item>
+      </v-card>
 
 
-      </v-col>
-    </v-row>
+    </v-col>
+  </v-row>
 
   <v-row>
     <v-dialog
@@ -53,14 +55,14 @@
       persistent
       max-width="600px"
     >
-      <template v-slot:activator="{ on }">
+      <template v-slot:activator="{ props }" v-if="showButtons">
 
         <v-col cols="12">
             <v-btn
             elevation="2"
             icon
             small
-            v-on="on"
+            v-bind="props"
             @click="openNewDialog()"
             >
                 <v-icon dark >
@@ -81,8 +83,10 @@
                 :items="availableAddons"
                 label="Addon"
                 outlined
+                item-title="text"
+                item-value="value"
                 v-if="mode==='create'"
-                @change="addonChange($event)"
+                v-model="selectedAddon"
                 ></v-select>
               </v-col>
 
@@ -101,13 +105,17 @@
                     :items="availableStorageClasses"
                     :label="field.label"
                     :rules="baseSelectRule"
+                    item-title="text"
+                    item-value="value"
                     dense
                     v-model="field.default"
                 ></v-select>
                 <v-select
-                    v-if="field.type === 'select'"
+                    v-if="field.type === 'select' && typeof field.default === 'object'"
                     :items="field.options"
                     :label="field.label"
+                    item-title="text"
+                    item-value="value"
                     dense
                     v-model="field.default"
                 ></v-select>
@@ -146,14 +154,14 @@
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
-            text
+            variant="text"
             @click="dialog = false"
           >
             Close
           </v-btn>
           <v-btn
             color="blue darken-1"
-            text
+            variant="text"
             :disabled="!valid"
             @click="submitForm"
           >
@@ -167,40 +175,90 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import axios from "axios";
-import set from 'lodash.set';
-import get from 'lodash.get';
-export default {
+import set from 'lodash/set';
+import get from 'lodash/get';
+import { defineComponent } from 'vue'
+
+type Addon = {
+    id: string,
+    kind: string,
+    version: string,
+    env: string[],
+    icon: string,
+    displayName: string,
+    resourceDefinitions: any,
+    formfields: FormField[],
+}
+
+type FormField = {
+    name: string,
+    label: string,
+    type: string,
+    default: string | number | boolean,
+    required: boolean,
+    options: string[],
+}
+
+type AddonOption = {
+    text: string,
+    value: Addon,
+}
+
+type StorageClass = {
+    text: string,
+    value: string,
+}
+
+
+type AddonFormOption = {
+    text: string,
+    value: Addon,
+}
+
+type Event = {
+    id: string,
+    kind: string,
+    version: string,
+    env: string[],
+    icon: string,
+    displayName: string,
+    resourceDefinitions: any,
+}
+
+export default defineComponent({
     props: {
         addons: {
-            type: Array,
-            default: () => []
+            type: Array<Addon>,
+            default: () => [] as Addon[],
         },
         appname: {
             type: String,
             default: ''
+        },
+        showButtons: {
+            type: Boolean,
+            default: true
         },
     },
     data: () => ({
         valid: false,
         dialog: false,
         mode: 'create',
-        availableStorageClasses: [],
-        availableAddons: [],
-        selectedAddon: {
-            id: '',
-            kind: '',
-            version: '',
-            env: [],
-            formfields: {},
-            resourceDefinitions: {}
-        },
+        availableStorageClasses: [] as StorageClass[],
+        availableAddons: [
+            {
+                text: '',
+                value: {} as Addon,
+            },
+        ] as AddonOption[],
+        selectedAddon: {} as Addon,
         baseRule: [
-          v => !!v || 'Field is required',
+          (v: any) => !!v || 'Field is required',
         ],
         baseSelectRule: [
-          v => v!=='default' || 'Select a value',
+          (v: any) => v!=='default' || 'Select a value',
         ],
     }),
     mounted() {
@@ -227,7 +285,7 @@ export default {
                 console.log(error);
             });
         },
-        deleteAddon(addon) {
+        deleteAddon(addon: Addon) {
             // remove addon from local view and kuberoapp yaml
             for (let i = 0; i < this.addons.length; i++) {
               if (this.addons[i].kind == addon.kind) {
@@ -236,7 +294,7 @@ export default {
               }
             }
         },
-        editAddon(addon){
+        editAddon(addon: Addon) {
             //console.log(addon);
             this.mode = 'edit';
 
@@ -275,10 +333,6 @@ export default {
                 console.log(error);
             });
         },
-        addonChange(event) {
-            //console.log(event);
-            this.selectedAddon = event;
-        },
         submitForm() {
             this.dialog = false;
 
@@ -286,11 +340,11 @@ export default {
             Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
 
                 // Cast number fields to int
-                if (value.type === 'number') {
+                if (value.type === 'number' && typeof value.default === 'string') {
                     value.default = parseInt(value.default);
                 }
 
-                if (value.name === 'metadata.name') {
+                if (value.name === 'metadata.name' && typeof value.default === 'string') {
                     if (!value.default.startsWith(this.appname)) {
                         value.default = this.appname+"-"+value.default
                     }
@@ -307,7 +361,7 @@ export default {
                 icon: this.selectedAddon.icon,
                 displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
-            };
+            } as Addon;
 
             //console.log(addon);
 
@@ -318,11 +372,11 @@ export default {
             }
 
         },
-        addAddon(addon) {
+        addAddon(addon: Addon) {
             this.addons.push(addon);
             this.$emit('addon-added', addon);
         },
-        updateAddon(addon) {
+        updateAddon(addon: Addon) {
             for (let i = 0; i < this.addons.length; i++) {
               if (this.addons[i].kind == addon.kind) {
                 this.addons[i] = addon;
@@ -332,5 +386,5 @@ export default {
             this.$emit('addon-updated', addon);
         },
     }
-}
+})
 </script>

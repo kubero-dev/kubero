@@ -2,7 +2,7 @@
     <v-container>
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Events for {{ this.app }}</h1>
+                Kubernetes event stream for <strong>{{ app }}</strong>
             </v-col>
         </v-row>
         <v-layout class="flex-column">
@@ -16,14 +16,26 @@
             -->
                 <v-row
                     v-if="events.length > 0">
-                    <v-timeline align-top dense>
+                    <v-timeline align-top dense truncate-line="both" side="end" class="my-10">
 
                         <v-timeline-item
                             v-for="event in events" :key="event.uid"
-                            :color=event.color
+                            :dot-color=event.color
                             :icon=event.icon
                             fill-dot>
-                            <v-card class="cardBackground darken-2">
+                            <div class="d-flex">
+                                <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
+                                <div>
+                                    <strong>{{ event.involvedResource }}</strong> {{ event.reason }} {{ event.action }}
+                                    <div class="text-caption">
+                                        {{ event.eventTime }} · {{ event.type }} <br>
+                                        {{ event.message }}
+                                    </div>
+                                </div>
+                            </div>
+                            <v-divider v-if="event !== events[events.length - 1]" ></v-divider>
+                            <!--
+                            <v-card class="mx-3 elevation-2" color="cardBackground ">
                                 <v-card-title class="cardBackground darken-2">
                                     [{{ event.reason }}] {{ event.message }}
                                 </v-card-title>
@@ -33,9 +45,8 @@
                                     {{ event.type }}
                                 </v-card-text>
                             </v-card>
+                            -->
                         </v-timeline-item>
-
-
                     </v-timeline>
 
                 </v-row>
@@ -51,13 +62,12 @@
                         <v-alert
                             outlined
                             type="info"
-                            prominent
-                            border="left"
-                            style="background-color: rgba(33, 149, 243, 0.03) !important;"
+                            variant="tonal"
+                            border="start"
                         >
                             <h3>No events found</h3>
                             The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see events older events, you have to increase the TTL in the 
+                            see older events, you have to increase the TTL in the 
                             <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
 
                         </v-alert>
@@ -68,9 +78,24 @@
     </v-container>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
+import { defineComponent } from 'vue'
+
+type Event = {
+    action: string,
+    eventTime: string,
+    uid: string,
+    type: string,
+    reason: string,
+    message: string,
+    color: string,
+    icon: string,
+    involvedObject: string,
+    involvedResource: string,
+}
+
+export default defineComponent({
     sockets: {
     },
     mounted() {
@@ -90,7 +115,7 @@ export default {
                 icon: "mdi-folder-outline",
             },
             */
-        ],
+        ] as Event[],
     }),
     components: {
     },
@@ -113,13 +138,14 @@ export default {
         const self = this;
         const namespace = this.pipeline + "-" + this.phase;
         //axios.get(`/api/events?namespace=${this.$route.query.namespace}`)
-        console.log("loadEvents", namespace);
+        //console.log("loadEvents", namespace);
         axios.get(`/api/events?namespace=${namespace}`)
         .then(response => {
             // sort by creationTimestamp
-            response.data.sort((a, b) => {
-                return new Date(b.metadata.creationTimestamp) - new Date(a.metadata.creationTimestamp);
+            response.data.sort((a: any, b: any) => {
+                return new Date(b.metadata.creationTimestamp).getMilliseconds() - new Date(a.metadata.creationTimestamp).getMilliseconds();
             });
+            response.data.reverse()
 
             for (let i = 0; i < response.data.length; i++) {
                 const date = new Date(response.data[i].metadata.creationTimestamp)
@@ -130,25 +156,104 @@ export default {
                     type: response.data[i].type,
                     reason: response.data[i].reason,
                     uid: response.data[i].metadata.uid,
+                } as Event;
+
+                if (response.data[i].involvedObject.name) {
+                    event.involvedObject = response.data[i].involvedObject.name;
+                } 
+                if (response.data[i].involvedObject.kind) {
+                    event.involvedResource = response.data[i].involvedObject.kind;
                 }
 
                 switch (response.data[i].type) {
                     case "Normal":
-                        event.color = "grey lighten-2";
+                        event.color = "rgba(var(--v-primary-base))";
                         break;
                     case "Warning":
-                        event.color = "red lighten-4";
+                        event.color = "rgba(var(--v-theme-error))";
                         break;
                     default:
-                        event.color = "grey lighten-2";
+                        event.color = "rgba(var(--v-primary-base))";
                 }
 
-                switch (response.data[i].reason) {
-                    case "Created":
-                        event.icon = "mdi-folder-plus-outline";
+                switch (event.involvedResource) {
+                    case "Pod":
+                        event.icon = "mdi-folder-outline";
                         break;
-                    case "Deleted":
-                        event.icon = "mdi-folder-remove-outline";
+                    case "Deployment":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "Service":
+                        event.icon = "mdi-folder-network-outline";
+                        break;
+                    case "Ingress":
+                        event.icon = "mdi-folder-network-outline";
+                        break;
+                    case "PersistentVolumeClaim":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "PersistentVolume":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "ReplicaSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "StatefulSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "ConfigMap":
+                        event.icon = "mdi-folder-settings-outline";
+                        break;
+                    case "Secret":
+                        event.icon = "mdi-folder-key-outline";
+                        break;
+                    case "Job":
+                        event.icon = "mdi-folder-clock-outline";
+                        break;
+                    case "CronJob":
+                        event.icon = "mdi-folder-clock-outline";
+                        break;
+                    case "DaemonSet":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "HorizontalPodAutoscaler":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "PodDisruptionBudget":
+                        event.icon = "mdi-folder-multiple-outline";
+                        break;
+                    case "ServiceAccount":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "Role":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "RoleBinding":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "ClusterRole":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "ClusterRoleBinding":
+                        event.icon = "mdi-folder-account-outline";
+                        break;
+                    case "StorageClass":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "VolumeAttachment":
+                        event.icon = "mdi-folder-zip-outline";
+                        break;
+                    case "CustomResourceDefinition":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "MutatingWebhookConfiguration":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "ValidatingWebhookConfiguration":
+                        event.icon = "mdi-folder-star-outline";
+                        break;
+                    case "PodSecurityPolicy":
+                        event.icon = "mdi-folder-star-outline";
                         break;
                     default:
                         event.icon = "mdi-folder-outline";
@@ -161,7 +266,7 @@ export default {
         });
       },
     },
-}
+});
 </script>
 
 <style lang="scss">

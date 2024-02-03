@@ -1,11 +1,12 @@
 <template>
 <v-card
     :loading="loadingState"
-    class="mt-5 pullrequest"
+    class="mt-5 ml-1 pullrequest"
     outlined
     elevation="0"
     color="cardBackground"
-    v-if="this.deleted === false"
+    v-if="deleted === false"
+    style="max-width: 600px;"
     >
     <template slot="progress">
       <v-progress-linear
@@ -15,73 +16,66 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-actions>
-      <v-list-item class="grow">
-        <v-list-item-avatar color="grey darken-3" style="height: 35px; min-width: 35px; width: 35px;">
-          <v-img
-            class="elevation-6"
-            :alt="this.pullrequest.user.login"
-            :src="this.pullrequest.user.avatar_url"
-          ></v-img>
-        </v-list-item-avatar>
-
-        <v-list-item-content>
-          <v-list-item-subtitle>{{ this.pullrequest.user.login }}</v-list-item-subtitle>
-          <v-list-item-title style="white-space: inherit; min-width: 250px;"><a :href="this.pullrequest.html_url" target="_blank">{{ this.pullrequest.title }}</a></v-list-item-title>
+    <v-card-text>
+      <v-list :prepend-avatar="pullrequest.user.avatar_url" bg-color="cardBackground">
+        <v-list-item>
+          <v-list-item-subtitle>{{ pullrequest.user.login }}</v-list-item-subtitle>
+          <v-list-item-title style="white-space: inherit; min-width: 250px;"><a :href="pullrequest.html_url" target="_blank">{{ pullrequest.title }}</a></v-list-item-title>
           <!--
           <v-list-item-subtitle><v-icon small>mdi-source-pull</v-icon>{{ this.pullrequest.updated_at }}</v-list-item-subtitle>
           <v-list-item-subtitle><v-icon small>mdi-source-commit-start</v-icon>{{ this.pullrequest.created_at }}</v-list-item-subtitle>
           -->
-        </v-list-item-content>
-
-        
-        <v-list-item-action>
-            <v-btn
-                title="Start Review App"
-                depressed
-                color="primary lighten-2"
-                @click="startReviewApp()"
-                v-if="!this.pullrequest.locked"
-            >
-                <v-icon
-                    color="white"
-                    >mdi-play-box-outline
-                </v-icon>
-            </v-btn>
-            <v-btn
-                title="Start Review App"
-                depressed
-                color="primary lighten-2"
-                disabled
-                v-if="this.pullrequest.locked"
-            >
-                <v-icon
-                    color="white"
-                    >mdi-play-box-lock-outline
-                </v-icon>
-            </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-card-actions>
-    <v-card-subtitle class="pr-data">
+        </v-list-item>
+      </v-list>
+    </v-card-text>
+    <v-card-subtitle class="pr-data mb-5">
         <v-row>
             <v-col>
-                <v-chip label class="mr-1"><span v-if="this.pullrequest.autodeploy">Autodeploy | </span>{{ this.pullrequest.branch }}</v-chip>
+                <v-chip label class="mr-1"><span v-if="pullrequest.autodeploy">Autodeploy | </span>{{ pullrequest.branch }}</v-chip>
             </v-col>
             <v-col>
-                <v-icon small>mdi-source-commit-start</v-icon> {{ this.pullrequest.created_at | formatDate}}<br>
-                <v-icon small>mdi-source-pull</v-icon> {{ this.pullrequest.updated_at | formatDate}}
+                <v-icon small>mdi-source-commit-start</v-icon> {{ formatDate(pullrequest.created_at) }}<br>
+                <v-icon small>mdi-source-pull</v-icon> {{ formatDate(pullrequest.updated_at)}}
             </v-col>
-    </v-row>
+        </v-row>
     </v-card-subtitle>
+    <v-divider></v-divider>
+    
+    <v-card-actions>
+
+        <v-btn
+            title="Start Review App"
+            @click="startReviewApp()"
+            color="deep-purple lighten-2"
+            variant="text"
+            v-if="!pullrequest.locked"
+        >
+            <v-icon
+                >mdi-play-box-outline
+            </v-icon>
+        </v-btn>
+        <v-btn
+            title="Start Review App"
+            color="deep-purple lighten-2"
+            variant="text"
+            disabled
+            v-if="pullrequest.locked"
+        >
+            <v-icon
+                >mdi-play-box-lock-outline
+            </v-icon>
+        </v-btn>
+    </v-card-actions>
 </v-card>
 </template>
 
 
-<script>
+<script lang="ts">
  import axios from "axios";
 
-export default {
+ import { defineComponent } from 'vue'
+
+export default defineComponent({
     props: {
         pipeline: {
             type: String,
@@ -98,7 +92,7 @@ export default {
     }),
     methods: {
         async startReviewApp() {
-            console.log("startReviewApp", this.pullrequest.number);
+            //console.log("startReviewApp", this.pullrequest.number);
             this.loadingState = true;
 
             axios.post("/api/repo/pullrequest/start", {
@@ -107,13 +101,16 @@ export default {
                 ssh_url: this.pullrequest.ssh_url,
                 pipelineName: this.pipeline,
             }).then((response) => {
-                console.log("startReviewApp", response);
+                //console.log("startReviewApp", response);
             }).catch((error) => {
                 console.log("startReviewApp", error);
             });
         },
-    }
-}
+        formatDate(date: string) {
+            return new Date(date).toLocaleString();
+        }
+    },
+})
 </script>
 
 <style>

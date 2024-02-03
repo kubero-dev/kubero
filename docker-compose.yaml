@@ -4,10 +4,16 @@ services:
   # If you want to run it locally, you can use kind to create a local Kubernetes cluster
   kubero:
     container_name: "kubero-ui"
+    build:
+      context: .
+      args:
+        - VERSION=Local-Build
+      dockerfile: Dockerfile
     image: ghcr.io/kubero-dev/kubero/kubero:latest
+    #command: ["tail", "-f", "/dev/null"]
     env_file:
       # copy the .env.template file to .env and change the values to your needs
-      - .env
+      - server/.env
     environment:
       # change the KUBERO_CONTEXT to the name of your local kind cluster context
       # you can find the name by running `kubectl config get-contexts`
@@ -29,4 +35,4 @@ services:
       # run `kind get kubeconfig --internal --name kubero-001 > ./kubeconfig-docker` to get the right config
       # modify the server in the config to use the external kubernetes port from your host machine
       - ./kubeconfig:/app/server/kubeconfig
-      - ./config.yaml:/app/server/config.yaml
+      - ./server/config.yaml:/app/server/config.yaml

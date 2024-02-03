@@ -1,11 +1,12 @@
 <template>
 <v-card
     :loading="loadingState"
-    class="mt-5"
+    class="mt-5 mx-1"
     outlined
     elevation="2"
     color="cardBackground"
-    v-if="this.deleted === false"
+    style="max-width: 600px;"
+    v-if="deleted === false"
     >
 
     <template slot="progress">
@@ -16,49 +17,51 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title><a :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'">{{ this.app.name }}</a></v-card-title>
+    <v-card-title>
+      <router-link :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}">{{ app.name }}</router-link>
+    </v-card-title>
 
     <v-card-text>
         <v-row
-            v-if="this.app.deploymentstrategy != 'docker'"
-            class="mx-0"
+            v-if="app.deploymentstrategy != 'docker'"
+            class="mx-0 my-1"
         >
-            <v-icon left small>mdi-git</v-icon>
+            <v-icon start style="vertical-align:baseline" color="kubero">mdi-git</v-icon>
             <div class="grey--text text-subtitle-1">
-                {{ this.app.gitrepo.ssh_url }}
+                {{ app.gitrepo.ssh_url }}
             </div>
         </v-row>
         <v-row
-            v-if="this.app.deploymentstrategy == 'docker'"
-            class="mx-0"
+            v-if="app.deploymentstrategy == 'docker'"
+            class="mx-0 my-1"
         >
-            <v-icon left small>mdi-docker</v-icon>
+            <v-icon start x-small color="kubero">mdi-docker</v-icon>
             <div class="grey--text text-subtitle-1">
-                {{ this.app.image.repository }}:{{ this.app.image.tag }}
+                {{ app.image.repository }}:{{ app.image.tag }}
             </div>
         </v-row>
         <p></p>
-        <v-chip label class="mr-1" v-if="this.app.deploymentstrategy != 'docker'"><span v-if="this.autodeploy">Autodeploy | </span>{{ this.app.branch }}</v-chip>
-        <v-chip label class="mr-1" v-if="this.app.deploymentstrategy != 'docker' && this.app.commithash">{{ this.app.commithash }}</v-chip>
+        <v-chip label class="mr-1" v-if="app.deploymentstrategy != 'docker'"><span v-if="autodeploy">Autodeploy | </span>{{ app.branch }}</v-chip>
+        <v-chip label class="mr-1" v-if="app.deploymentstrategy != 'docker' && app.commithash">{{ app.commithash }}</v-chip>
 
     </v-card-text>
 
-    <table style="width: 100%;" v-if="this.vulnSummary.unknown != undefined">
+    <table style="width: 100%;" v-if="vulnSummary.unknown != undefined">
       <tr>
-        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ this.vulnSummary.unknown }} UNKNOWN</td>
-        <td title="LOW" class="vuln-summary severity-low">{{ this.vulnSummary.low }} LOW</td>
-        <td title="MEDIUM" class="vuln-summary severity-medium">{{ this.vulnSummary.medium }} MEDIUM</td>
-        <td title="HIGH" class="vuln-summary severity-high">{{ this.vulnSummary.high }} HIGH</td>
-        <td title="CRITICAL" class="vuln-summary severity-critical">{{ this.vulnSummary.critical }} CRITICAL</td>
-        <td title="TOTAL" class="vuln-summary severity-total">{{ this.vulnSummary.total }} TOTAL</td>
+        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ vulnSummary.unknown }}<br>UNKNOWN</td>
+        <td title="LOW" class="vuln-summary severity-low">{{ vulnSummary.low }}<br>LOW</td>
+        <td title="MEDIUM" class="vuln-summary severity-medium">{{ vulnSummary.medium }}<br>MEDIUM</td>
+        <td title="HIGH" class="vuln-summary severity-high">{{ vulnSummary.high }}<br>HIGH</td>
+        <td title="CRITICAL" class="vuln-summary severity-critical">{{ vulnSummary.critical }}<br>CRITICAL</td>
+        <td title="TOTAL" class="vuln-summary severity-total">{{ vulnSummary.total }}<br>TOTAL</td>
       </tr>
     </table>
 
     <v-divider></v-divider>
     <v-card-text v-if="metricsDisplay == 'bars'">
       <v-row>
-        <v-col cols="6" class="pb-0 text-left">CPU</v-col>
-        <v-col cols="6" class="pb-0 text-right">Memory</v-col>
+        <v-col cols="6" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
+        <v-col cols="6" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" style="height:20px">
         <v-col cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
@@ -67,29 +70,27 @@
     </v-card-text>
     <v-card-text v-if="metricsDisplay == 'table'">
       <v-row>
-        <v-col cols="8" class="pb-0 text-left">Pod</v-col>
-        <v-col cols="2" class="pb-0 text-left">CPU</v-col>
-        <v-col cols="2" class="pb-0 text-right">Memory</v-col>
+        <v-col cols="8" class="pb-0 text-left text-caption font-weight-light">Pod</v-col>
+        <v-col cols="2" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
+        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
         <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
-        <v-col cols="2" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
-        <v-col cols="2" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+        <v-col cols="2" class="py-0 text-left"><span style="white-space: nowrap;">{{metric.cpu.usage}}{{metric.cpu.unit}}</span></v-col>
+        <v-col cols="2" class="py-0 text-right"><span style="white-space: nowrap;">{{metric.memory.usage}}{{metric.memory.unit}}</span></v-col>
       </v-row>
     </v-card-text>
     <v-divider></v-divider>
 
-    <span v-if="this.app.addons.length > 0">
+    <span v-if="app.addons.length > 0">
     <v-card-text>
       <v-avatar
         rounded
-        v-for="addon in this.app.addons" :key="addon.id">
-        <img
-          :src="addon.icon"
-          :alt="addon.displayName"
-
-          style="padding: 10px"
-        >
+        v-for="addon in app.addons" :key="addon.id"
+        class="pa-2"
+        color="gray lighten-5"
+        :image="addon.icon"
+        :alt="addon.displayName">
       </v-avatar>
     </v-card-text>
     <v-divider></v-divider>
@@ -100,71 +101,69 @@
         <v-btn
             title="Restart App"
             color="deep-purple lighten-2"
-            text
+            variant="text"
             @click="restartApp()"
         >
-            <v-icon
-                >mdi-reload-alert
-            </v-icon>
+            <v-icon>mdi-reload-alert</v-icon>
         </v-btn>
         <v-btn
             title="Details"
             color="deep-purple lighten-2"
-            text
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+'/detail'"
+            variant="text"
+            :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
-            <v-icon
-                >mdi-page-next-outline
-            </v-icon>
+            <v-icon>mdi-page-next-outline</v-icon>
         </v-btn>
         <v-btn
             title="Edit"
             color="deep-purple lighten-2"
-            text
-            :href="'/#/pipeline/'+pipeline+'/'+phase+'/'+app.name+''"
+            variant="text"
+            :to="{ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
-            <v-icon
-                >mdi-pencil
-            </v-icon>
+            <v-icon>mdi-pencil</v-icon>
         </v-btn>
         <v-btn
             title="Open App"
-            v-if="this.app.domain"
+            v-if="app.domain"
             color="deep-purple lighten-2"
-            text
+            variant="text"
             :href="'//'+app.domain" target="_blank"
         >
-            <v-icon
-                >mdi-open-in-new
-            </v-icon>
+            <v-icon>mdi-open-in-new</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn
             title="Delete App"
             depressed
-            color="primary lighten-2"
+            color="deep-purple lighten-2"
             @click="deleteApp()"
         >
-            <v-icon
-              color="white"
-                >mdi-delete
-            </v-icon>
+            <v-icon>mdi-delete</v-icon>
         </v-btn>
     </v-card-actions>
 </v-card>
 </template>
 
-<script>
+<script lang="ts">
 import axios from "axios";
-export default {
-    sockets: {
-        async deleteApp(appName, pipelineName, phaseName) {
-            console.log("deleteApp", appName);
-            if (this.app.name == appName && this.pipeline == pipelineName && this.phase == phaseName) {
-                this.deleted = true;
-            }
-        },
+import {  defineComponent } from 'vue'
+import Swal from 'sweetalert2';
+
+type Metric = {
+    name: string,
+    cpu: {
+        percentage: number,
+        usage: number,
+        unit: string,
     },
+    memory: {
+        percentage: number,
+        usage: number,
+        unit: string,
+    }
+}
+
+export default defineComponent({
     props: {
       pipeline: {
         type: String,
@@ -211,7 +210,7 @@ export default {
     data: () => ({
       deleted: false,
       loadingState: false,
-      metrics: [],
+      metrics: [] as Metric[],
       metricsDisplay: "dots",
       vulnSummary: {
         "total": undefined,
@@ -221,31 +220,51 @@ export default {
         "low": undefined,
         "unknown": undefined
       },
+      metricsInterval: 0 as any, // can't find the right type for this "as unknown as NodeJS.Timeout,"
     }),
     mounted() {
         this.loadMetrics();
-        setInterval(this.loadMetrics, 10000);
+        this.metricsInterval = setInterval(this.loadMetrics, 40000);
         this.loadVulnSummary();
+    },
+    unmounted() {
+        clearInterval(this.metricsInterval);
     },
     methods: {
         deleteApp() {
 
-          axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
-            .then(response => {
-              //this.$router.push(`/pipeline/${this.pipeline}/apps`);
-              console.log("deleteApp");
-              this.deleted = true;
-              console.log(response);
+          Swal.fire({
+                title: "Delete App ”" + this.app.name + "” ?",
+                text: "Do you want to delete this App? This action cannot be undone. It will delete all the data associated with this app.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Delete",
+                cancelButtonText: "Cancel",
+                confirmButtonColor: "rgb(var(--v-theme-kubero))",
+                background: "rgb(var(--v-theme-cardBackground))",
+                /*background: "rgb(var(--v-theme-on-surface-variant))",*/
+                color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
             })
-            .catch(error => {
-              console.log(error);
+            .then((result) => {
+                if (result.isConfirmed) {
+                  axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
+                    .then(response => {
+                      //this.$router.push(`/pipeline/${this.pipeline}/apps`);
+                      //console.log("deleteApp");
+                      this.deleted = true;
+                      //console.log(response);
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    });
+                return;
+                }
             });
-
         },
         async restartApp() {
             axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.loadingState = true;
             })
             .catch(error => {
@@ -286,7 +305,7 @@ export default {
             });
         },
     }
-}
+});
 </script>
 
 <style>

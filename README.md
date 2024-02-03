@@ -82,6 +82,7 @@ https://github.com/kubero-dev/buildpacks
 | <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | Percona MongoDB Cluster | [Percona](https://artifacthub.io/packages/olm/community-operators/mongodb-operator) |  |
 | <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | Crunchy Postgres Cluster | [Crunchy Data](https://artifacthub.io/packages/olm/community-operators/postgresql) |  |
 | <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> | Redis Cluster | [Opstree](https://artifacthub.io/packages/olm/community-operators/redis-operator) |  |
+| <img src="client/public/img/addons/CockroachDB.svg" width="30px" style="vertical-align: middle; margin: 10px"> | CockroachDB| [CockroachDB](https://artifacthub.io/packages/olm/community-operators/cockroachdb) |  |
 
 
 \* Ships with the Kubero Operator
