@@ -88,8 +88,9 @@ https://github.com/kubero-dev/buildpacks
 \* Ships with the Kubero Operator
 
 #### Planned Add-ons 
-- CockroachDB
+- Aerospike
 - InfluxDB
+- ArangoDB
 
 ## 60+ Application templates (similar to Heroku Buttons)
 - Wordpress
