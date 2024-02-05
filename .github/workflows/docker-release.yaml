@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -68,7 +68,7 @@ jobs:
       # https://github.com/docker/metadata-action
       - name: Extract Docker metadata
         id: kubero-meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           images: ${{ env.REGISTRY }}/${{ github.repository }}/kubero
@@ -84,7 +84,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          build-args: VERSION=${GITHUB_REF#refs/tags/v}
+          build-args: VERSION=${{github.ref_name}}
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.kubero-meta.outputs.tags }}
           platforms: linux/amd64,linux/arm64
