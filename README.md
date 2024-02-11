@@ -95,6 +95,7 @@ https://github.com/kubero-dev/buildpacks
 - [InfluxDB](https://www.influxdata.com/)
 - [MariaDB](https://mariadb.org/)
 - [Prometheus](https://prometheus.io/)
+- [ImmuDB](https://github.com/unagex/immudb-operator) 
 
 #### Longterm future Add-ons
 - [Crossplane](https://crossplane.io/)
