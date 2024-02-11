@@ -12,7 +12,7 @@
 
 
 <br>
-Kubero [pronounced: Kube Hero] is a fully self-hosted Internal Developer Platform (IDP) that brings the workflows of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks on the Dashboard or by CLI. It has a built-in CI/CD pipeline and supports multiple staging environments.
+Kubero [pronounced: Kube Hero] is a fully self-hosted Internal Developer Platform (IDP) that brings the workflows of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks. It has a built-in CI/CD pipeline and supports multiple staging environments.
 <br>
 <br>
 
@@ -38,7 +38,7 @@ Kubero will then start an init container that will clone your repository and ano
 - Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
 - Easy access of **application logs** in the UI
 - Easy and safe **restart** of the application in the UI
-- Triggered or Periodic **vulnerability scans** of your running apps
+- Triggered or periodic **vulnerability scans** of your running apps
 - Comes with an API and CLI to integrate with your existing tools
 
 ## Supported GIT repositories (hosted and self-hosted)
@@ -49,7 +49,7 @@ Kubero will then start an init container that will clone your repository and ano
 - Bitbucket
 
 ## Tested languages/frameworks
-Basically *everything* that can be packaged in a single container can be deployed by Kubero. Kubero uses official images to build and run the apps. But they can be replaced or extended to fit your needs.
+Basically *everything* that can be packaged in a single container can be deployed by Kubero.
 
 - GoLang (including Hugo, gin-gonic)
 - Python (including Flask)
