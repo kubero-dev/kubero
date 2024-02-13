@@ -19,7 +19,7 @@ Kubero [pronounced: Kube Hero] is a fully self-hosted Internal Developer Platfor
 <img src="docs/screenshots/createapp.gif">
 
 More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a> and a full video on
-<a href="https://www.youtube.com/watch?v=-_XcC_8cpis" target="_blank">YouTube</a><p>
+<a href="https://www.youtube.com/watch?v=kmqhddc6UlI" target="_blank">YouTube</a><p>
 
 ## How it Works ([DEMO](https://demo.kubero.dev))
 1. Create a pipeline with the phases you need (review, test, stage, production)
