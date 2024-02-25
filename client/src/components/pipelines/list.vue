@@ -17,9 +17,30 @@
         </v-row>
 
         <v-row v-if="pipelines && pipelines.length < 1" class="delay-visible-enter-active">
+            <v-alert
+                color="info"
+                icon="mdi-star-outline"
+                            width="40%"
+                            variant="tonal"
+                            prominent
+                            closable
+                >
+                If you find Kubero useful, please consider starring the project 
+                <a href="https://github.com/kubero-dev/kubero" target="_blank">on GitHub</a>. 
+                Your support contributes to the project's growth and development.
+            </v-alert>
             <v-col cols="12" style="text-align: center;">
                 <img src="/img/empty.svg" alt="Empty" class="empty" width="100%" style="max-width: 500px; filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);">
-                <h2>Ready to start building your first pipeline?</h2>
+
+                <h1 style="font-size: 3em;">👋 Welcome to Kubero!</h1>
+                <p>Congratulations on successfully installing Kubero! We're glad to have you on board.</p>
+                <br>
+
+                <v-btn
+                elevation="2"
+                color="primary"
+                :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
+                >Create your first pipeline</v-btn>
             </v-col>
         </v-row>
 
