@@ -59,7 +59,7 @@ Router.get('/auth/github/callback',
 Router.get('/auth/oauth2',
   // #swagger.tags = ['UI']
   // #swagger.summary = 'Authenticate with oauth2'
-  auth.passport.authenticate('oauth2', { scope: [ 'user:email' ] }));
+  auth.passport.authenticate('oauth2'));
 
 Router.get('/auth/oauth2/callback',
   // #swagger.tags = ['UI']

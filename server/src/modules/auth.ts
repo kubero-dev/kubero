@@ -152,12 +152,18 @@ export class Auth {
         }
 
         if (this.authmethods.oauth2) {
+            let scope = [ 'user:email' ];
+            if(process.env.OAUTH2_CLIENT_SCOPE) {
+                scope = process.env.OAUTH2_CLIENT_SCOPE.split(' ');
+            }
+            
             this.passport.use(new OAuth2Strategy({
                 authorizationURL: process.env.OAUTO2_CLIENT_AUTH_URL as string,
                 tokenURL: process.env.OAUTO2_CLIENT_TOKEN_URL as string,
                 clientID: process.env.OAUTH2_CLIENT_ID as string,
                 clientSecret: process.env.OAUTH2_CLIENT_SECRET as string,
-                callbackURL: process.env.OAUTH2_CLIENT_CALLBACKURL as string
+                callbackURL: process.env.OAUTH2_CLIENT_CALLBACKURL as string,
+                scope
             },
             function(accessToken: string, refreshToken: string, profile: any, done: any) {
                 debug.debug( JSON.stringify(profile));
