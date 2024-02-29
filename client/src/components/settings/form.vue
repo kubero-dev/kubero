@@ -10,6 +10,9 @@
         <v-tab value="general">General</v-tab>
         <v-tab value="podsizes">Podsizes</v-tab>
         <v-tab value="buildpacks">Buildpacks</v-tab>
+        <v-tab value="secrets">Secrets</v-tab>
+        <v-tab value="templates" disabled>Templates</v-tab>
+        <v-tab value="notifications" disabled>Notifications</v-tab>
       </v-tabs>
 
 
@@ -25,6 +28,10 @@
         <v-window-item value="buildpacks">
           <FormBuildpacks :settings="settings"></FormBuildpacks>
         </v-window-item>
+
+        <v-window-item value="secrets">
+          <FormSecrets :settings="settings"></FormSecrets>
+        </v-window-item>
       </v-window>
 
     </v-container>
@@ -38,6 +45,7 @@ import { defineComponent } from 'vue'
 import FormGeneral from './form-general.vue'
 import FormPodsizes from './form-podsizes.vue'
 import FormBuildpacks from './form-buildpacks.vue'
+import FormSecrets from './form-secrets.vue'
 
 type PodSize = {
   name: string,
@@ -94,6 +102,7 @@ export default defineComponent({
       FormGeneral,
       FormPodsizes,
       FormBuildpacks,
+      FormSecrets,
     },
     methods: {
       async loadSettings() {
