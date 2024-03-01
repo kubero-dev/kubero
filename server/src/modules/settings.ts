@@ -21,6 +21,7 @@ export class Settings {
         if (settings && settings.data) {
             const configMap = YAML.parse(settings.data["config.yaml"]) as IKuberoConfig
             config["podSizeList"] = configMap.podSizeList
+            config["kubero"] = configMap.kubero
             config["buildpacks"] = configMap.buildpacks
             config["templates"] = configMap.templates
         }

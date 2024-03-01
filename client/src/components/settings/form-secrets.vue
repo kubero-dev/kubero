@@ -1,6 +1,7 @@
 
 <template>
     <div>
+    <!--
         <v-row>
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <h2>
@@ -13,6 +14,7 @@
         </v-row>
 
         <v-divider class="ma-5"></v-divider>
+    -->
         <h4 class="text-uppercase">Github</h4>
         <v-row>
             <v-col
@@ -162,6 +164,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
+export type Settings = {
+    env: {
+        KUBERO_NAMESPACE : string,
+        KUBERO_WEBHOOK_SECRET : string,
+        KUBERO_WEBHOOK_URL: string,
+        GITEA_BASEURL: string,
+        GITEA_PERSONAL_ACCESS_TOKEN: string,
+        GOGS_BASEURL: string,
+        GOGS_PERSONAL_ACCESS_TOKEN: string,
+        GITLAB_BASEURL: string,
+        GITLAB_PERSONAL_ACCESS_TOKEN: string,
+        BITBUCKET_USERNAME: string,
+        BITBUCKET_APP_PASSWORD: string,
+        GITHUB_PERSONAL_ACCESS_TOKEN: string,
+    }
+}
 
 export default defineComponent({
     name: 'FormSecrets',

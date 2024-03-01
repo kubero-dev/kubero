@@ -34,6 +34,12 @@
         </v-window-item>
       </v-window>
 
+      <v-btn
+        color="primary"
+        @click="saveSettings"
+        style="margin-left: 10px; margin-top: 20px;"
+      >update configuration</v-btn>
+
     </v-container>
 
   </v-form>
@@ -47,27 +53,32 @@ import FormPodsizes from './form-podsizes.vue'
 import FormBuildpacks from './form-buildpacks.vue'
 import FormSecrets from './form-secrets.vue'
 
-type PodSize = {
-  name: string,
-  description: string,
-  resources: {
-    requests: {
-      cpu: string,
-      memory: string,
-    },
-    limits: {
-      cpu: string,
-      memory: string,
-    }
-  }
+// Types 
+import  { Kubero } from './form-general.vue'
+import  { PodSize } from './form-podsizes.vue'
+import  { Buildpack } from './form-buildpacks.vue'
+
+export type Settings = {
+  env: {
+    KUBERO_NAMESPACE : string,
+    KUBERO_WEBHOOK_SECRET : string,
+    KUBERO_WEBHOOK_URL: string,
+    GITEA_BASEURL: string,
+    GITEA_PERSONAL_ACCESS_TOKEN: string,
+    GOGS_BASEURL: string,
+    GOGS_PERSONAL_ACCESS_TOKEN: string,
+    GITLAB_BASEURL: string,
+    GITLAB_PERSONAL_ACCESS_TOKEN: string,
+    BITBUCKET_USERNAME: string,
+    BITBUCKET_APP_PASSWORD: string,
+    GITHUB_PERSONAL_ACCESS_TOKEN: string,
+  },
+  kubero: Kubero,
+  podSizeList: PodSize[],
+  buildpacks: Buildpack[],
+  templateCatalogs: [],
 }
 
-type Buildpack = {
-  name: string,
-  description: string,
-  url: string,
-  enabled: boolean,
-}
 
 export default defineComponent({
     sockets: {
@@ -93,10 +104,22 @@ export default defineComponent({
           BITBUCKET_APP_PASSWORD: "",
           GITHUB_PERSONAL_ACCESS_TOKEN: "",
         },
+        kubero: {
+          readonly: false,
+          console: {
+            enabled: false,
+          },
+          banner: {
+            enabled: false,
+            bgcolor: "",
+            fontcolor: "",
+            message: "",
+          }
+        } as Kubero,
         podSizeList: [] as PodSize[],
         buildpacks: [] as Buildpack[],
         templateCatalogs: [],
-      }
+      } as Settings
     }),
     components: {
       FormGeneral,
@@ -105,6 +128,17 @@ export default defineComponent({
       FormSecrets,
     },
     methods: {
+      saveSettings() {
+        const self = this;
+        axios.post(`/api/settings`, self.settings)
+        .then(response => {
+          console.log('saveSettings', response);
+        })
+        .catch(error => {
+          console.log('saveSettings', error);
+        });
+      },
+
       async loadSettings() {
         const self = this;
         axios.get(`/api/settings`)

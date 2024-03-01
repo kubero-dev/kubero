@@ -1,8 +1,28 @@
 
 <template>
     <div>
-        <div v-for="podSize in settings.podSizeList" :key="podSize.name">
 
+        <v-row>
+            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+                <h2>
+                    Vertical Scaling
+                </h2>
+                <p class="text-justify">
+                    Define the available pod sizes for the applications.
+                </p>
+
+
+                <v-alert 
+                    type="info"
+                    variant="tonal"
+                    style="margin-bottom: 20px; margin-top: 20px;"
+                    text="Configuration changes won't take effect until the next deployment.">
+                </v-alert>
+            </v-col>
+        </v-row>
+
+        <div v-for="podSize in settings.podSizeList" :key="podSize.name">
+            <v-divider class="ma-5"></v-divider>
             <v-row>
                 <v-col
                     cols="12"
@@ -87,7 +107,6 @@
                     ></v-text-field>
                 </v-col>
             </v-row>
-            <v-divider class="ma-5"></v-divider>
         </div>
     </div>
 </template>
@@ -96,11 +115,29 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
+// Types
+import { Settings } from './form.vue'
+
+export type PodSize = {
+    name: string,
+    description: string,
+    resources: {
+        requests: {
+            cpu: string,
+            memory: string,
+        },
+        limits: {
+            cpu: string,
+            memory: string,
+        }
+    }
+}
+
 export default defineComponent({
     name: 'FormPodsizes',
     props: {
         settings: {
-            type: Object,
+            type: Object as () => Settings,
             required: true
         }
     },
