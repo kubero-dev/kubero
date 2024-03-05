@@ -72,6 +72,7 @@
             v-model="ssl"
             label="SSL"
             density="compact"
+            color="primary"
           ></v-switch>
         </v-col>
       </v-row>
@@ -269,6 +270,7 @@
               <v-switch
                 v-model="autodeploy"
                 label="Autodeploy"
+                color="primary"
               ></v-switch>
             </v-col>
           </v-row>
@@ -710,6 +712,7 @@
               <v-switch
                 v-model="autoscale"
                 label="Autoscale"
+                color="primary"
               ></v-switch>
             </v-col>
           </v-row>

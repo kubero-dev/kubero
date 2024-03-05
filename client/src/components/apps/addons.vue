@@ -142,6 +142,7 @@
                     v-if="field.type === 'switch'"
                     :label="field.label"
                     :required="field.required"
+                    color="primary"
                     dense
                 ></v-switch>
               </v-col>
