@@ -25,7 +25,6 @@
                     v-model="buildpack.name"
                     label="Name"
                     required
-                    readonly
                     density="compact"
                     ></v-text-field>
                 </v-col>
@@ -37,7 +36,6 @@
                     v-model="buildpack.language"
                     label="Language"
                     required
-                    readonly
                     density="compact"
                     ></v-text-field>
                 </v-col>
@@ -52,7 +50,7 @@
                     ></v-switch>
                 </v-col>
 
-                    <v-col
+                <v-col
                     cols="12"
                     md="2"
                 >

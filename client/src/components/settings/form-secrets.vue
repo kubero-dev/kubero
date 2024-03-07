@@ -25,7 +25,6 @@
                 v-model="settings.env.GITHUB_PERSONAL_ACCESS_TOKEN"
                 label="github personal access token"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"
@@ -48,7 +47,6 @@
                 v-model="settings.env.GITEA_BASEURL"
                 label="Gitea Base URL"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
             <v-col
@@ -59,7 +57,6 @@
                 v-model="settings.env.GITEA_PERSONAL_ACCESS_TOKEN"
                 label="Gitea Personal Access Token"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"
@@ -82,7 +79,6 @@
                 v-model="settings.env.GOGS_BASEURL"
                 label="Gogs Base URL"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
             <v-col
@@ -93,7 +89,6 @@
                 v-model="settings.env.GOGS_PERSONAL_ACCESS_TOKEN"
                 label="Gogs Personal Access Token"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"
@@ -111,7 +106,6 @@
                 v-model="settings.env.GITLAB_BASEURL"
                 label="Gitlab Base URL"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
             <v-col
@@ -122,7 +116,6 @@
                 v-model="settings.env.GITLAB_PERSONAL_ACCESS_TOKEN"
                 label="Gitlab Personal Access Token"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"
@@ -140,7 +133,6 @@
                 v-model="settings.env.BITBUCKET_USERNAME"
                 label="Bitbucket Username"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
             <v-col
@@ -151,7 +143,6 @@
                 v-model="settings.env.BITBUCKET_APP_PASSWORD"
                 label="Bitbucket App Password"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"

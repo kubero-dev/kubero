@@ -22,7 +22,6 @@
                 v-model="settings.env.KUBERO_NAMESPACE"
                 label="Kubero Namespace"
                 required
-                readonly
             ></v-text-field>
             </v-col>
         </v-row>
@@ -36,7 +35,7 @@
                 v-model="settings.kubero.readonly"
                 label="Readonly Mode"
                 required
-                readonly
+                color="primary"
             ></v-switch>
             </v-col>
         </v-row>
@@ -50,7 +49,7 @@
                 v-model="settings.kubero.console.enabled"
                 label="Console enabled"
                 required
-                readonly
+                color="primary"
             ></v-switch>
             </v-col>
         </v-row>
@@ -98,33 +97,34 @@
                 <v-switch
                 v-model="settings.kubero.banner.enabled"
                 label="Banner Enabled"
+                color="primary"
                 required
                 ></v-switch>
             </v-col>
             <v-col
                 cols="12"
                 md="2"
+                v-if="settings.kubero.banner.enabled"
             >
                 <v-text-field
                 v-model="settings.kubero.banner.bgcolor"
                 label="Background Color"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
             <v-col
                 cols="12"
                 md="2"
+                v-if="settings.kubero.banner.enabled"
             >
                 <v-text-field
                 v-model="settings.kubero.banner.fontcolor"
                 label="Font Color"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row v-if="settings.kubero.banner.enabled">
             <v-col
                 cols="12"
                 md="6"

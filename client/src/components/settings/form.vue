@@ -11,7 +11,7 @@
         <v-tab value="podsizes">Podsizes</v-tab>
         <v-tab value="buildpacks">Buildpacks</v-tab>
         <v-tab value="secrets">Secrets</v-tab>
-        <v-tab value="templates" disabled>Templates</v-tab>
+        <v-tab value="templates">Templates</v-tab>
         <v-tab value="notifications" disabled>Notifications</v-tab>
       </v-tabs>
 
@@ -31,6 +31,10 @@
 
         <v-window-item value="secrets">
           <FormSecrets :settings="settings"></FormSecrets>
+        </v-window-item>
+
+        <v-window-item value="templates">
+          <FormTemplates :settings="settings"></FormTemplates>
         </v-window-item>
       </v-window>
 
@@ -52,6 +56,7 @@ import FormGeneral from './form-general.vue'
 import FormPodsizes from './form-podsizes.vue'
 import FormBuildpacks from './form-buildpacks.vue'
 import FormSecrets from './form-secrets.vue'
+import FormTemplates from './form-templates.vue'
 
 // Types 
 import  { Kubero } from './form-general.vue'
@@ -76,9 +81,21 @@ export type Settings = {
   kubero: Kubero,
   podSizeList: PodSize[],
   buildpacks: Buildpack[],
-  templateCatalogs: [],
+  templates: {
+    enabled: boolean,
+    catalogs: Catalog[]
+  }
 }
 
+export type Catalog = {
+  name: string,
+  description: string,
+  templateBasePath: string,
+  index: {
+    url: string,
+    format: string
+  }
+}
 
 export default defineComponent({
     sockets: {
@@ -118,7 +135,10 @@ export default defineComponent({
         } as Kubero,
         podSizeList: [] as PodSize[],
         buildpacks: [] as Buildpack[],
-        templateCatalogs: [],
+        templates: {
+          enabled: false,
+          catalogs: [] as Catalog[],
+        }
       } as Settings
     }),
     components: {
@@ -126,6 +146,7 @@ export default defineComponent({
       FormPodsizes,
       FormBuildpacks,
       FormSecrets,
+      FormTemplates,
     },
     methods: {
       saveSettings() {

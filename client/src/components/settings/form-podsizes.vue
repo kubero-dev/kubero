@@ -32,7 +32,6 @@
                     v-model="podSize.name"
                     label="Name"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -43,7 +42,6 @@
                     v-model="podSize.description"
                     label="Description"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -62,7 +60,6 @@
                     v-model="podSize.resources.requests.memory"
                     label="Memory"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -73,7 +70,6 @@
                     v-model="podSize.resources.requests.cpu"
                     label="CPU"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
             </v-row>
@@ -92,7 +88,6 @@
                     v-model="podSize.resources.limits.memory"
                     label="Memory"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -103,7 +98,6 @@
                     v-model="podSize.resources.limits.cpu"
                     label="CPU"
                     required
-                    readonly
                     ></v-text-field>
                 </v-col>
             </v-row>

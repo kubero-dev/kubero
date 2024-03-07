@@ -1,0 +1,144 @@
+
+<template>
+    <div>
+
+        <v-switch
+            v-model="settings.templates.enabled"
+            label="Allow Templates"
+            color="primary"
+            required
+        ></v-switch>
+        <v-expansion-panels
+            v-model="panel"
+            multiple
+        >
+
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="catalog in settings.templates.catalogs" :key="catalog.name">
+            <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ catalog.name }}</v-expansion-panel-title>
+            <v-expansion-panel-text>
+            <v-row>
+                <v-col
+                    cols="12"
+                    md="3"
+                >
+                    <v-text-field
+                    v-model="catalog.name"
+                    label="Name"
+                    required
+                    density="compact"
+                    ></v-text-field>
+                </v-col>
+                <v-col
+                    cols="12"
+                    md="7"
+                >
+                    <v-text-field
+                    v-model="catalog.description"
+                    label="Description"
+                    required
+                    density="compact"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col
+                    cols="12"
+                    md="10"
+                >
+                    <v-text-field
+                    v-model="catalog.templateBasePath"
+                    label="Template Base Path"
+                    required
+                    density="compact"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col
+                    cols="12"
+                    md="10"
+                >
+                    <v-text-field
+                    v-model="catalog.index.url"
+                    label="Index URL"
+                    required
+                    density="compact"
+                    ></v-text-field>
+                </v-col>
+            </v-row>
+            <v-row justify="space-between">
+                <v-col
+                    cols="12"
+                    md="6"
+                >
+                    <v-select
+                    v-model="catalog.index.format"
+                    :items="['json']"
+                    label="Index Format"
+                    required
+                    ></v-select>
+                </v-col>
+
+
+                <v-col
+                    cols="12"
+                    md="2"
+                >
+                    <v-btn
+                        elevation="2"
+                        fab
+                        small
+                        class="ma-2"
+                        color="secondary"
+                        @click="deleteBuildpack(catalog)"
+                        >
+                            <v-icon color="primary">
+                                mdi-delete
+                            </v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
+            </v-expansion-panel-text>
+            </v-expansion-panel>
+        </v-expansion-panels>
+    </div>
+</template>
+
+
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+// Types
+import { Catalog, Settings } from './form.vue'
+
+export interface Buildpack {
+    name: string
+    language: string
+    advanced: boolean
+}
+
+export default defineComponent({
+    name: 'FormTemplates',
+    props: {
+        settings: {
+            type: Object as () => Settings,
+            required: true,
+        }
+    },
+    components: {
+    },
+    data() {
+        return {
+            show: false,
+            panel: null
+        }
+    },
+    methods: {
+        deleteBuildpack(catalog: Catalog) {
+            this.panel = null
+            this.settings.templates.catalogs.splice(this.settings.templates.catalogs.indexOf(catalog), 1)
+        }
+    }
+})
+
+</script>

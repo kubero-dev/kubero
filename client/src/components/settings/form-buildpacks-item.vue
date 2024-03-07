@@ -9,7 +9,6 @@
                 v-model="buildpackStage.repository"
                 :label="title + ' Repository'"
                 required
-                readonly
                 density="compact"
                 ></v-text-field>
             </v-col>
@@ -21,7 +20,6 @@
                 v-model="buildpackStage.tag"
                 label="Tag"
                 required
-                readonly
                 density="compact"
                 ></v-text-field>
             </v-col>
