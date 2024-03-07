@@ -1,5 +1,5 @@
 import { Kubectl } from './kubectl';
-import { IKuberoConfig } from '../types';
+import { IKuberoConfig, KuberoConfig} from '../types';
 import YAML from 'yaml'
 
 export interface SettingsOptions {
@@ -19,7 +19,8 @@ export class Settings {
         let config: any = {}
 
         if (settings && settings.data) {
-            const configMap = YAML.parse(settings.data["config.yaml"]) as IKuberoConfig
+            const IkuberoConfig = YAML.parse(settings.data["config.yaml"]) as IKuberoConfig
+            const configMap = new KuberoConfig(IkuberoConfig)
             config["podSizeList"] = configMap.podSizeList
             config["kubero"] = configMap.kubero
             config["buildpacks"] = configMap.buildpacks

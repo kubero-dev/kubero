@@ -139,6 +139,16 @@ export default defineComponent({
         });
       },
 
+      sanitizeBuildpacks() {
+        const self = this;
+        self.settings.buildpacks.forEach((buildpack: Buildpack) => {
+          buildpack.fetch.readOnlyAppStorage = buildpack.fetch.readOnlyAppStorage || false;
+          buildpack.fetch.securityContext.readOnlyRootFilesystem = buildpack.fetch.securityContext.readOnlyRootFilesystem || false;
+          buildpack.fetch.securityContext.allowPrivilegeEscalation = buildpack.fetch.securityContext.allowPrivilegeEscalation || false;
+          buildpack.fetch.securityContext.runAsNonRoot = buildpack.fetch.securityContext.runAsNonRoot || false;
+        });
+      },
+
       async loadSettings() {
         const self = this;
         axios.get(`/api/settings`)

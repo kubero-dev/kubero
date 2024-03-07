@@ -41,85 +41,44 @@
                     density="compact"
                     ></v-text-field>
                 </v-col>
-            </v-row>
-            <v-row>
                 <v-col
                     cols="12"
                     md="4"
                 >
-                    <v-text-field
-                    v-model="buildpack.fetch.repository"
-                    label="Fetch Repository"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
+                    <v-switch
+                        v-model="buildpack.advanced"
+                        label="Advanced"
+                        density="compact"
+                    ></v-switch>
                 </v-col>
-                <v-col
+
+                    <v-col
                     cols="12"
                     md="2"
                 >
-                    <v-text-field
-                    v-model="buildpack.fetch.tag"
-                    label="Tag"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
+                    <v-btn
+                        elevation="2"
+                        fab
+                        small
+                        class="ma-2"
+                        color="secondary"
+                        @click="deleteBuildpack(buildpack)"
+                        >
+                            <v-icon color="primary">
+                                mdi-delete
+                            </v-icon>
+                    </v-btn>
                 </v-col>
             </v-row>
-            <v-row>
-                <v-col
-                    cols="12"
-                    md="4"
-                >
-                    <v-text-field
-                    v-model="buildpack.build.repository"
-                    label="Build Repository"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
-                </v-col>
-                <v-col
-                    cols="12"
-                    md="2"
-                >
-                    <v-text-field
-                    v-model="buildpack.build.tag"
-                    label="Tag"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col
-                    cols="12"
-                    md="4"
-                >
-                    <v-text-field
-                    v-model="buildpack.run.repository"
-                    label="Run Repository"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
-                </v-col>
-                <v-col
-                    cols="12"
-                    md="2"
-                >
-                    <v-text-field
-                    v-model="buildpack.run.tag"
-                    label="Tag"
-                    required
-                    readonly
-                    density="compact"
-                    ></v-text-field>
-                </v-col>
-            </v-row>
+            <v-divider class="ma-5"></v-divider>
+            <FormBuildpacksItem :buildpackStage="buildpack.fetch" title="Fetch" :advanced="buildpack.advanced"></FormBuildpacksItem>
+
+            <v-divider class="ma-5"></v-divider>
+            <FormBuildpacksItem :buildpackStage="buildpack.build" title="Build" :advanced="buildpack.advanced"></FormBuildpacksItem>
+
+            <v-divider class="ma-5"></v-divider>
+            <FormBuildpacksItem :buildpackStage="buildpack.run" title="Run" :advanced="buildpack.advanced"></FormBuildpacksItem>
+            
             </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
@@ -132,23 +91,18 @@ import { defineComponent } from 'vue'
 
 // Types
 import { Settings } from './form.vue'
+import { BuildpackStage } from './form-buildpacks-item.vue'
+import FormBuildpacksItem from './form-buildpacks-item.vue'
+
 
 
 export type Buildpack = {
+    advanced: boolean,
     name: string,
     language: string,
-    fetch: {
-        repository: string,
-        tag: string
-    },
-    build: {
-        repository: string,
-        tag: string
-    },
-    run: {
-        repository: string,
-        tag: string
-    }
+    fetch: BuildpackStage,
+    build: BuildpackStage,
+    run: BuildpackStage
 }
 
 export default defineComponent({
@@ -165,6 +119,7 @@ export default defineComponent({
         }
     },
     components: {
+        FormBuildpacksItem
     },
     data() {
         return {
@@ -173,6 +128,10 @@ export default defineComponent({
         }
     },
     methods: {
+        deleteBuildpack(buildpack: Buildpack) {
+            this.panel = null
+            this.settings.buildpacks.splice(this.settings.buildpacks.indexOf(buildpack), 1)
+        }
     }
 })
 
