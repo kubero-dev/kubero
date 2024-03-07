@@ -128,11 +128,7 @@ export class App implements IApp{
         port: 80,
         type: 'ClusterIP'
     };
-    private serviceAccount: {
-        annotations: {},
-        create: true,
-        name: "",
-    };
+    public sAAnnotations: Object
     private tolerations: [];
 
     constructor(
@@ -152,6 +148,8 @@ export class App implements IApp{
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
 
         this.envVars =  app.envVars
+
+        this.sAAnnotations = app.sAAnnotations
 
         this.extraVolumes =  app.extraVolumes
 
@@ -210,11 +208,6 @@ export class App implements IApp{
             port: 80,
             type: 'ClusterIP'
         },
-        this.serviceAccount= {
-            annotations: {},
-            create: true,
-            name: "",
-        },
         this.tolerations= []
     }
 }
@@ -242,6 +235,7 @@ export class Template implements ITemplate{
     public name: string
     public deploymentstrategy: 'git' | 'docker'
     public envVars: {}[] = []
+    public sAAnnotations: {}
     public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
     public addons: IAddon[] = []
@@ -273,6 +267,8 @@ export class Template implements ITemplate{
         this.deploymentstrategy = app.deploymentstrategy
 
         this.envVars =  app.envVars
+
+        this.sAAnnotations =  app.sAAnnotations
 
         this.extraVolumes =  app.extraVolumes
 

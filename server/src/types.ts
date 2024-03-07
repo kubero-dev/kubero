@@ -14,7 +14,7 @@ export interface IApp {
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
-
+    sAAnnotations: {}
     image : {
         repository: string,
         tag: string,
@@ -127,10 +127,12 @@ export interface IApp {
 }
 
 
+
 export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
     envVars: {}[],
+    sAAnnotations: {},
     image : {
         repository: string,
         tag: string,
@@ -400,14 +402,13 @@ export interface Workload {
         age: Date | undefined,
         startTime: Date | undefined,
         containers: WorkloadContainer[]
-    }
+}
 
-    export interface WorkloadContainer {
-        name: string,
-        image: string,
-        restartCount?: number,
-        ready?: boolean,
-        started?: boolean,
-        age: Date | undefined,
-    }
-
+export interface WorkloadContainer {
+    name: string,
+    image: string,
+    restartCount?: number,
+    ready?: boolean,
+    started?: boolean,
+    age: Date | undefined,
+}

@@ -87,6 +87,22 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
                                     }
                                 }
                             },
+                            saAnnotations: {
+                                type: "array",
+                                items: {
+                                    type: "object",
+                                    properties: {
+                                        name: {
+                                            type: "string",
+                                            example: "your.sa.annotation.enabled"
+                                        },
+                                        value: {
+                                            type: "string",
+                                            example: "true"
+                                        }
+                                    }
+                                }
+                            },                            
                             image: {
                                 type: "object",
                                 properties: {
@@ -212,6 +228,7 @@ function createApp(req: Request) : IApp {
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
         extraVolumes: req.body.extraVolumes,
+        sAAnnotations: req.body.sAAnnotations,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
@@ -272,6 +289,8 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         autoscale: req.body.autoscale,
         extraVolumes: req.body.extraVolumes,
         envVars: req.body.envvars,
+        //sAAnnotations: req.body.sAAnotations,
+        sAAnnotations: req.body.sAAnnotations,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
@@ -296,7 +315,6 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
 
     const user = auth.getUser(req);
     req.app.locals.kubero.updateApp(app, req.body.resourceVersion, user);
-
     res.send("updated");
 });
 

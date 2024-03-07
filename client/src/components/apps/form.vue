@@ -684,6 +684,68 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
+
+      <!-- SERVICEACCOUNT ANNOTATIONS -->
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">ServiceAcccount Annotations</v-expansion-panel-title>
+        <v-expansion-panel-text color="cardBackground">
+          {{ sAAnnotations }}
+          <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <v-text-field
+                v-model="index as string"
+                label="annotation"
+                :counter="120"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="sAAnnotations[index]"
+                label="value"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="1"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+                @click="removeSAAnnotationLine(index)"
+              >
+                  <v-icon dark >
+                      mdi-minus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addSAAnnotationLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
       <!-- RESOURCES -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Resources</v-expansion-panel-title>
@@ -1012,7 +1074,7 @@ import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 import Breadcrumbs from "../breadcrumbs.vue";
-
+import { remove } from "lodash";
 
 type App = {
     name: string,
@@ -1127,6 +1189,10 @@ type EnvVar = {
   value: string,
 }
 
+type SAAnnotations {
+  [key: string]: string;
+}
+
 export default defineComponent({
     props: {
       pipeline: {
@@ -1140,7 +1206,7 @@ export default defineComponent({
       app: {
         type: String,
         default: "new"
-      }
+      },
     },
     data () {
     return {
@@ -1291,6 +1357,7 @@ export default defineComponent({
       envvars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
+      sAAnnotations: {} as SAAnnotations,
       containerPort: 8080,
       podsize: '',
       podsizes: [
@@ -1517,6 +1584,7 @@ export default defineComponent({
           this.docker.tag = response.data.image.tag;
 
           this.envvars = response.data.envVars;
+          this.sAAnnotations = response.data.sAAnnotations;
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
@@ -1532,6 +1600,9 @@ export default defineComponent({
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
+            this.panel.push(1)
+          }
+          if (Object.keys(this.sAAnnotations).length > 0) {
             this.panel.push(1)
           }
           if (this.extraVolumes.length > 0) {
@@ -1679,6 +1750,9 @@ export default defineComponent({
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(1)
             }
+            if (Object.keys(response.data.sAAnnotations).length > 0) {
+              this.panel.push(2)
+            }
             if (response.data.spec.extraVolumes.length > 0) {
               this.panel.push(3)
             }
@@ -1705,6 +1779,7 @@ export default defineComponent({
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
+            this.sAAnnotations = response.data.sAAnnotations;
             this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
@@ -1807,6 +1882,8 @@ export default defineComponent({
           domain: this.domain,
           ssl: this.ssl,
           envvars: this.envvars,
+          // loop through serviceaccount annotations and convert to object
+          sAAnnotations: this.sAAnnotations,
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
@@ -1898,6 +1975,7 @@ export default defineComponent({
           domain: this.domain.toLowerCase(),
           ssl: this.ssl,
           envvars: this.envvars,
+          sAAnnotations: this.sAAnnotations,
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
@@ -1969,6 +2047,15 @@ export default defineComponent({
           if (this.envvars[i].name === index) {
             this.envvars.splice(i, 1);
           }
+        }
+      },
+      addSAAnnotationLine() {
+        this.sAAnnotations = { ...this.sAAnnotations, '': ''};
+      },
+      removeSAAnnotationLine(key: any) {
+        if (key in this.sAAnnotations) {
+
+          delete this.sAAnnotations[key];
         }
       },
       addVolumeLine() {

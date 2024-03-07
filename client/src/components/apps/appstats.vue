@@ -110,6 +110,28 @@
                         </tbody>
                     </v-table>
                 </div>
+                <div class="mb-5 mt-10">
+                    <h3>Service Acccount Annotations</h3>
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
+                        <thead>
+                        <tr>
+                            <th class="text-left">
+                            Name
+                            </th>
+                            <th class="text-left">
+                            Value
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr
+                            v-for="saAnnotation in appData.spec.saAnnotations" :key="saAnnotation.name">
+                            <td>{{ saAnnotation.name }}</td>
+                            <td>{{ saAnnotation.value }}</td>
+                        </tr>
+                        </tbody>
+                    </v-table>
+                </div>
                 <div class="mb-5" v-if="appData.spec?.extraVolumes?.length > 0">
                     <h3>Volumes</h3>
                     <!--{{ appData.spec.extraVolumes }}-->
@@ -300,6 +322,7 @@ interface Spec {
   podsize: PodSize;
   autoscale: boolean;
   envVars: any[];
+  saAnnotations: any[];
   extraVolumes: any[];
   cronjobs: any[];
   addons: any[];
@@ -356,6 +379,7 @@ type appData = {
         podsize: PodSize,
         autoscale: boolean,
         envVars: any[],
+        saAnnotations: any[],
         extraVolumes: any[],
         cronjobs: any[],
         addons: any[],

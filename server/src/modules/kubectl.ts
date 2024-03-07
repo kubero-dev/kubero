@@ -25,6 +25,7 @@ import {
     StorageV1Api,
     BatchV1Api,
     NetworkingV1Api,
+    V1ServiceAccount
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
@@ -271,7 +272,30 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
+        
+        /*
+        let serviceAccount = await this.coreV1Api.readNamespacedServiceAccount(
+            appName+'-kuberoapp',
+            namespace
+        ).catch(error => {
+            debug.log(error);
+        });
 
+         update serviceAccount
+        if (serviceAccount && serviceAccount.body) {
+            serviceAccount.body.metadata = {
+                ...serviceAccount.body.metadata,
+                // update metadata here
+            };
+            await this.coreV1Api.replaceNamespacedServiceAccount(
+                appName+'-kuberoapp',
+                namespace,
+                serviceAccount.body
+            ).catch(error => {
+                debug.log(error);
+            });
+        } */
+        
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -284,6 +308,42 @@ export class Kubectl {
 
         return app;
     }
+
+    public async getServiceAccount(pipelineName: string, phaseName: string, appName: string, context: string) {
+    
+        let namespace = pipelineName+'-'+phaseName;
+        this.kc.setCurrentContext(context);
+        
+        let serviceAccount = await this.coreV1Api.readNamespacedServiceAccount(
+            appName+'-kuberoapp',
+            namespace
+        ).catch(error => {
+            debug.log(error);
+        });
+
+        return serviceAccount;
+    }
+
+    //public async updateServiceAccountAnnotations(pipelineName: string, phaseName: string, appName: string, context: string) {
+    public async updateServiceAccountAnnotations(app: App, resourceVersion: string, context: string) {
+            let pipelineName = app.pipeline;
+            let phaseName = app.phase;
+            let appName = app.name;
+            let serviceAccount = await this.getServiceAccount(app.pipeline, app.phase, app.name, context);
+            let namespace = pipelineName+'-'+phaseName;
+            this.kc.setCurrentContext(context);
+            
+            if (serviceAccount && serviceAccount.body.metadata) {
+                serviceAccount.body.metadata.annotations = app.sAAnnotations as { [key: string]: string };
+                await this.coreV1Api.replaceNamespacedServiceAccount(
+                    appName+'-kuberoapp',
+                    namespace,
+                    serviceAccount.body
+                ).catch(error => {
+                    debug.log(error);
+                });
+            }
+        }
 
     public async getAppsList(namespace: string, context: string): Promise<IKubectlAppList> {
         this.kc.setCurrentContext(context);

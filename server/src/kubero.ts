@@ -386,6 +386,8 @@ export class Kubero {
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
+            // TODO: Update serviceaccountannotations
+            await this.kubectl.updateServiceAccountAnnotations(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
             this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
             this.audit?.log({
@@ -461,14 +463,27 @@ export class Kubero {
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
+        
         if (contextName) {
             let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
             return app;
         }
     }
 
+    // get a app in a pipeline and phase
+    public async getServiceAccount(pipelineName: string, phaseName: string, appName: string) {
+        debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+        const contextName = this.getContext(pipelineName, phaseName);
+        
+        if (contextName) {
+            let app = await this.kubectl.getServiceAccount(pipelineName, phaseName, appName, contextName);
+            return app;
+        }
+    }
+
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
+        
         const a = app?.body as IKubectlApp;
         let t =  new KubectlTemplate(a.spec as IApp);
 
@@ -830,6 +845,7 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
+                    sAAnnotations: {}, //TODO use custom serviceaccount annotations
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
                     image: {
                         containerPort: 8080, //TODO use custom containerport
