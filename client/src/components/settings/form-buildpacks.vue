@@ -82,6 +82,21 @@
             </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
+        <p class="text-justify">
+            <v-btn
+                elevation="2"
+                fab
+                small
+                class="ma-2"
+                color="secondary"
+                @click="addBuildpack"
+                >
+                    <v-icon color="primary">
+                        mdi-plus
+                    </v-icon>
+            </v-btn>
+            Add a new pod size
+        </p>
     </div>
 </template>
 
@@ -131,6 +146,64 @@ export default defineComponent({
         deleteBuildpack(buildpack: Buildpack) {
             this.panel = null
             this.settings.buildpacks.splice(this.settings.buildpacks.indexOf(buildpack), 1)
+        },
+        addBuildpack() {
+            this.settings.buildpacks.push({
+                name: '',
+                language: '',
+                advanced: true,
+                fetch: {
+                    repository: 'ghcr.io/kubero-dev/buildpacks/fetch',
+                    tag: 'latest',
+                    command: '',
+                    readOnlyAppStorage: false,
+                    securityContext: {
+                        runAsUser: 1000,
+                        runAsGroup: 1000,
+                        runAsNonRoot: false,
+                        readOnlyRootFilesystem: false,
+                        allowPrivilegeEscalation: false,
+                        capabilities: {
+                            add: [],
+                            drop: []
+                        }
+                    }
+                },
+                build: {
+                    repository: '',
+                    tag: '',
+                    command: '',
+                    readOnlyAppStorage: false,
+                    securityContext: {
+                        runAsUser: 1000,
+                        runAsGroup: 1000,
+                        runAsNonRoot: false,
+                        readOnlyRootFilesystem: false,
+                        allowPrivilegeEscalation: false,
+                        capabilities: {
+                            add: [],
+                            drop: []
+                        }
+                    }
+                },
+                run: {
+                    repository: '',
+                    tag: '',
+                    command: '',
+                    readOnlyAppStorage: false,
+                    securityContext: {
+                        runAsUser: 1000,
+                        runAsGroup: 1000,
+                        runAsNonRoot: false,
+                        readOnlyRootFilesystem: false,
+                        allowPrivilegeEscalation: false,
+                        capabilities: {
+                            add: [],
+                            drop: []
+                        }
+                    }
+                }
+            })
         }
     }
 })
