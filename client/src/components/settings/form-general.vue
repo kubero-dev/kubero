@@ -7,7 +7,7 @@
                     General Kubero Settings
                 </h2>
                 <p class="text-justify">
-                    The configuration valures are readonly in this version. Please edit the values in the Kubero CRD directly.
+                    Some of the configuration values require a browser refresh to take effect.
                 </p>
             </v-col>
         </v-row>
@@ -59,7 +59,7 @@
         <v-row>
             <v-col
                 cols="12"
-                md="6"
+                md="8"
             >
                 <v-text-field
                 v-model="settings.env.KUBERO_WEBHOOK_URL"
@@ -71,7 +71,7 @@
         <v-row>
             <v-col
                 cols="12"
-                md="6"
+                md="8"
             >
                 <v-text-field
                 v-model="settings.env.KUBERO_WEBHOOK_SECRET"
@@ -94,14 +94,14 @@
             >
                 <v-switch
                 v-model="settings.kubero.banner.show"
-                label="Banner Enabled"
+                label="Enabled"
                 color="primary"
                 required
                 ></v-switch>
             </v-col>
             <v-col
                 cols="12"
-                md="2"
+                md="3"
                 v-if="settings.kubero.banner.show"
             >
                 <v-text-field
@@ -112,7 +112,7 @@
             </v-col>
             <v-col
                 cols="12"
-                md="2"
+                md="3"
                 v-if="settings.kubero.banner.show"
             >
                 <v-text-field
@@ -125,7 +125,7 @@
         <v-row v-if="settings.kubero.banner.show">
             <v-col
                 cols="12"
-                md="6"
+                md="8"
             >
                 <v-text-field
                 v-model="settings.kubero.banner.message"

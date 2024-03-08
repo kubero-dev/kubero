@@ -151,6 +151,15 @@ export default defineComponent({
     methods: {
       saveSettings() {
         const self = this;
+
+        self.settings.podSizeList.forEach((podSize: PodSize) => {
+          delete podSize.editable;
+        });
+
+        self.settings.buildpacks.forEach((buildpack: Buildpack) => {
+          delete buildpack.advanced;
+        });
+
         axios.post(`/api/settings`, self.settings)
         .then(response => {
           console.log('saveSettings', response);
@@ -159,7 +168,7 @@ export default defineComponent({
           console.log('saveSettings', error);
         });
       },
-
+/*
       sanitizeBuildpacks() {
         const self = this;
         self.settings.buildpacks.forEach((buildpack: Buildpack) => {
@@ -169,7 +178,7 @@ export default defineComponent({
           buildpack.fetch.securityContext.runAsNonRoot = buildpack.fetch.securityContext.runAsNonRoot || false;
         });
       },
-
+*/
       async loadSettings() {
         const self = this;
         axios.get(`/api/settings`)

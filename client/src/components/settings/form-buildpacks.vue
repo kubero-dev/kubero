@@ -27,6 +27,7 @@
                     required
                     density="compact"
                     readonly
+                    disabled
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -96,7 +97,7 @@ import FormBuildpacksItem from './form-buildpacks-item.vue'
 
 
 export type Buildpack = {
-    advanced: boolean,
+    advanced?: boolean,
     name: string,
     language: string,
     fetch: BuildpackStage,

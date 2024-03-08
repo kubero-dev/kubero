@@ -1,12 +1,15 @@
 <template>
   <v-breadcrumbs :items="items">
+      <template v-slot:divider>
+        <v-icon icon="mdi-chevron-right" size="x-large"></v-icon>
+      </template>
       <template v-slot:item="{ item}">
       <v-breadcrumbs-item
           :href="item.href"
           :to="item.to"
           :disabled="item.disabled"
       >
-        <v-icon v-if="item.icon">{{ item.icon }}</v-icon> {{ item.text }}
+        <v-icon v-if="item.icon">{{ item.icon }}</v-icon> <div class="breadcrumTitle">{{ item.title }}</div><div class="breadcrumText">{{ item.text }}</div>
       </v-breadcrumbs-item>
       </template>
   </v-breadcrumbs>
@@ -29,5 +32,17 @@ export default defineComponent({
 <style scoped>
   .v-breadcrumbs {
     padding-left: 0;
+  }
+  .breadcrumText {
+    font-size: large;
+    text-transform: lowercase;
+  }
+  .breadcrumTitle {
+    text-transform: uppercase;
+    font-size: x-small;
+    margin-bottom: -10px;
+  }
+  .v-breadcrumbs-item--link {
+    text-decoration: none !important;
   }
 </style>

@@ -21,7 +21,7 @@
             </v-col>
         </v-row>
 
-        <div v-for="podSize in settings.podSizeList" :key="podSize.name">
+        <div v-for="(podSize, index) in settings.podSizeList" :key="index">
             <v-divider class="ma-5"></v-divider>
             <v-row>
                 <v-col
@@ -32,7 +32,8 @@
                     v-model="podSize.name"
                     label="Name"
                     required
-                    readonly
+                    :readonly="!podSize.editable"
+                    :disabled="!podSize.editable"
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -44,6 +45,29 @@
                     label="Description"
                     required
                     ></v-text-field>
+                </v-col>
+                <v-col
+                    cols="12"
+                    md="4"
+                >
+                    <v-checkbox label="default" v-model="podSize.default" @click="makeDefaultUnique(podSize)"></v-checkbox>
+                </v-col>
+                <v-col
+                    cols="12"
+                    md="2"
+                >
+                    <v-btn
+                        elevation="2"
+                        fab
+                        small
+                        class="ma-2"
+                        color="secondary"
+                        @click="deletePodSize(podSize)"
+                        >
+                            <v-icon color="primary">
+                                mdi-delete
+                            </v-icon>
+                    </v-btn>
                 </v-col>
             </v-row>
             <v-row>
@@ -103,6 +127,23 @@
                 </v-col>
             </v-row>
         </div>
+
+        <v-divider class="ma-5"></v-divider>
+    <p class="text-justify">
+        <v-btn
+            elevation="2"
+            fab
+            small
+            class="ma-2"
+            color="secondary"
+            @click="addPodSize"
+            >
+                <v-icon color="primary">
+                    mdi-plus
+                </v-icon>
+        </v-btn>
+        Add a new pod size
+    </p>
     </div>
 </template>
 
@@ -116,6 +157,8 @@ import { Settings } from './form.vue'
 export type PodSize = {
     name: string,
     description: string,
+    editable?: boolean,
+    default?: boolean,
     resources: {
         requests: {
             cpu: string,
@@ -144,6 +187,34 @@ export default defineComponent({
         }
     },
     methods: {
+        makeDefaultUnique(podSize: PodSize) {
+            this.settings.podSizeList.forEach((ps) => {
+                if (ps !== podSize) {
+                    ps.default = false
+                }
+            })
+        },
+        deletePodSize(podSize: PodSize) {
+            const index = this.settings.podSizeList.indexOf(podSize)
+            this.settings.podSizeList.splice(index, 1)
+        },
+        addPodSize() {
+            this.settings.podSizeList.push({
+                name: '',
+                description: '',
+                editable: true,
+                resources: {
+                    requests: {
+                        cpu: '',
+                        memory: '',
+                    },
+                    limits: {
+                        cpu: '',
+                        memory: '',
+                    }
+                }
+            })
+        }
     }
 })
 
