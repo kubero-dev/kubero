@@ -26,6 +26,7 @@
                     label="Name"
                     required
                     density="compact"
+                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col

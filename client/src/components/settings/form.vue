@@ -127,7 +127,7 @@ export default defineComponent({
             enabled: false,
           },
           banner: {
-            enabled: false,
+            show: false,
             bgcolor: "",
             fontcolor: "",
             message: "",

@@ -32,6 +32,7 @@
                     v-model="podSize.name"
                     label="Name"
                     required
+                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col

@@ -65,7 +65,6 @@
                 v-model="settings.env.KUBERO_WEBHOOK_URL"
                 label="URL"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
         </v-row>
@@ -78,7 +77,6 @@
                 v-model="settings.env.KUBERO_WEBHOOK_SECRET"
                 label="Secret"
                 required
-                readonly
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
                 @click:append="show = !show"
@@ -95,7 +93,7 @@
                 md="2"
             >
                 <v-switch
-                v-model="settings.kubero.banner.enabled"
+                v-model="settings.kubero.banner.show"
                 label="Banner Enabled"
                 color="primary"
                 required
@@ -104,7 +102,7 @@
             <v-col
                 cols="12"
                 md="2"
-                v-if="settings.kubero.banner.enabled"
+                v-if="settings.kubero.banner.show"
             >
                 <v-text-field
                 v-model="settings.kubero.banner.bgcolor"
@@ -115,7 +113,7 @@
             <v-col
                 cols="12"
                 md="2"
-                v-if="settings.kubero.banner.enabled"
+                v-if="settings.kubero.banner.show"
             >
                 <v-text-field
                 v-model="settings.kubero.banner.fontcolor"
@@ -124,7 +122,7 @@
                 ></v-text-field>
             </v-col>
         </v-row>
-        <v-row v-if="settings.kubero.banner.enabled">
+        <v-row v-if="settings.kubero.banner.show">
             <v-col
                 cols="12"
                 md="6"
@@ -133,7 +131,6 @@
                 v-model="settings.kubero.banner.message"
                 label="Message"
                 required
-                readonly
                 ></v-text-field>
             </v-col>
         </v-row>
@@ -154,7 +151,7 @@ export type Kubero = {
         enabled: boolean,
     },
     banner: {
-        enabled: boolean,
+        show: boolean,
         bgcolor: string,
         fontcolor: string,
         message: string,
