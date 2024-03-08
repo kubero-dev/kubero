@@ -352,87 +352,8 @@ export interface IKuberoConfig {
             message: string;
             bgcolor: string;
             fontcolor: string;
+            show: boolean;
         }
-    }
-}
-
-
-export class KuberoConfig {
-    public podSizeList: IPodSize[];
-    public buildpacks: IBuildpack[];
-    public clusterissuer: string;
-    public templates: {  // introduced v1.11.0
-        enabled: boolean;
-        catalogs: [
-            {
-                name: string;
-                description: string;
-                templateBasePath: string;
-                index: {
-                    url: string;
-                    format: string;
-                }
-            }
-        ]
-    }
-    public kubero: {
-        namespace?: string; // deprecated v1.9.0
-        console: {
-            enabled: boolean;
-        }
-        readonly: boolean;
-        banner: {
-            message: string;
-            bgcolor: string;
-            fontcolor: string;
-        }
-    }
-
-    constructor(kc: IKuberoConfig) {
-
-        const defaultbuildpack = {
-            readOnlyRootFilesystem: false, 
-            allowPrivilegeEscalation: false, 
-            runAsUser: 1000, 
-            runAsGroup: 1000, 
-            runAsNonRoot: false, 
-            capabilities: {
-                drop: [], 
-                add: []
-            }
-        };
-
-        this.podSizeList = kc.podSizeList;
-        this.buildpacks = kc.buildpacks;
-        this.clusterissuer = kc.clusterissuer;
-        this.templates = kc.templates;
-        this.kubero = kc.kubero;
-
-        for (let i = 0; i < this.buildpacks.length; i++) {
-
-            this.buildpacks[i].fetch.readOnlyAppStorage = kc.buildpacks[i].fetch.readOnlyAppStorage || false;
-            this.buildpacks[i].build.readOnlyAppStorage = kc.buildpacks[i].build.readOnlyAppStorage || false;
-            this.buildpacks[i].run.readOnlyAppStorage = kc.buildpacks[i].run.readOnlyAppStorage || false;
-
-            this.buildpacks[i].fetch.securityContext =  this.getSecurityContext(kc.buildpacks[i].fetch.securityContext);
-            this.buildpacks[i].build.securityContext =  this.getSecurityContext(kc.buildpacks[i].build.securityContext);
-            this.buildpacks[i].run.securityContext =  this.getSecurityContext(kc.buildpacks[i].run.securityContext);
-        }
-    }
-
-    private getSecurityContext (sc: any) {
-        let securityContext = {
-            readOnlyRootFilesystem: sc.readOnlyRootFilesystem || false,
-            allowPrivilegeEscalation: sc.allowPrivilegeEscalation || false,
-            runAsUser: sc.runAsUser || 1000,
-            runAsGroup: sc.runAsGroup || 1000,
-            runAsNonRoot: sc.runAsNonRoot || false,
-            capabilities: {
-                drop: sc.capabilities?.drop || [],
-                add: sc.capabilities?.add || []
-            }
-        }
-        return securityContext
     }
 }
 

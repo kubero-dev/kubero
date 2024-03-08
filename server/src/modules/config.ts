@@ -1,4 +1,4 @@
-import { IBuildpack, ISecurityContext} from '../types';
+import { IBuildpack, IKuberoConfig, IPodSize, ISecurityContext} from '../types';
 
 export class Buildpack implements IBuildpack {
     public name: string;
@@ -6,16 +6,19 @@ export class Buildpack implements IBuildpack {
     public fetch: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     };
     public build: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     };
     public run: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     };
     public tag: string;
@@ -79,4 +82,49 @@ export class Buildpack implements IBuildpack {
     }
 
 
+}
+
+export class KuberoConfig {
+    public podSizeList: IPodSize[];
+    public buildpacks: IBuildpack[];
+    public clusterissuer: string;
+    public templates: {  // introduced v1.11.0
+        enabled: boolean;
+        catalogs: [
+            {
+                name: string;
+                description: string;
+                templateBasePath: string;
+                index: {
+                    url: string;
+                    format: string;
+                }
+            }
+        ]
+    }
+    public kubero: {
+        namespace?: string; // deprecated v1.9.0
+        console: {
+            enabled: boolean;
+        }
+        readonly: boolean;
+        banner: {
+            message: string;
+            bgcolor: string;
+            fontcolor: string;
+            show: boolean;
+        }
+    }
+    constructor(kc: IKuberoConfig) {
+        
+        this.podSizeList = kc.podSizeList;
+        this.buildpacks = kc.buildpacks;
+        this.clusterissuer = kc.clusterissuer;
+        this.templates = kc.templates;
+        this.kubero = kc.kubero;
+
+        for (let i = 0; i < this.buildpacks.length; i++) {
+            this.buildpacks[i] = new Buildpack(kc.buildpacks[i]);
+        }
+    }
 }

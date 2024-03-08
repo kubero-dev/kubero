@@ -945,6 +945,10 @@ export class Kubero {
         }
     }
 
+    public setConfig(config: IKuberoConfig) {
+        this.config = config;
+    }
+
     // Loads the Kubero config from the local config file
     private loadConfig(path:string): IKuberoConfig {
         try {
