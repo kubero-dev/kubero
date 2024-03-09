@@ -13,7 +13,7 @@
             multiple
         >
 
-            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="buildpack in settings.buildpacks" :key="buildpack.name">
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(buildpack, index) in settings.buildpacks" :key="index">
             <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ buildpack.name }}</v-expansion-panel-title>
             <v-expansion-panel-text>
             <v-row>
@@ -26,8 +26,6 @@
                     label="Name"
                     required
                     density="compact"
-                    readonly
-                    disabled
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -139,12 +137,12 @@ export default defineComponent({
     data() {
         return {
             show: false,
-            panel: null
+            panel: -1
         }
     },
     methods: {
         deleteBuildpack(buildpack: Buildpack) {
-            this.panel = null
+            this.panel = -1
             this.settings.buildpacks.splice(this.settings.buildpacks.indexOf(buildpack), 1)
         },
         addBuildpack() {
@@ -204,6 +202,9 @@ export default defineComponent({
                     }
                 }
             })
+
+            // open panel 
+            this.panel = this.settings.buildpacks.length - 1
         }
     }
 })

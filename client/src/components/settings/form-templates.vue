@@ -13,7 +13,7 @@
             multiple
         >
 
-            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="catalog in settings.templates.catalogs" :key="catalog.name">
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(catalog, index) in settings.templates.catalogs" :key="index">
             <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ catalog.name }}</v-expansion-panel-title>
             <v-expansion-panel-text>
             <v-row>
@@ -26,7 +26,6 @@
                     label="Name"
                     required
                     density="compact"
-                    readonly
                     ></v-text-field>
                 </v-col>
                 <v-col
@@ -102,6 +101,21 @@
             </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
+        <p class="text-justify">
+            <v-btn
+                elevation="2"
+                fab
+                small
+                class="ma-2"
+                color="secondary"
+                @click="addTemplateCatalog"
+                >
+                    <v-icon color="primary">
+                        mdi-plus
+                    </v-icon>
+            </v-btn>
+            Add a new pod size
+        </p>
     </div>
 </template>
 
@@ -131,13 +145,27 @@ export default defineComponent({
     data() {
         return {
             show: false,
-            panel: null
+            panel: -1
         }
     },
     methods: {
         deleteBuildpack(catalog: Catalog) {
-            this.panel = null
+            this.panel = -1
             this.settings.templates.catalogs.splice(this.settings.templates.catalogs.indexOf(catalog), 1)
+        },
+        addTemplateCatalog() {
+            this.settings.templates.catalogs.push({
+                name: '',
+                description: '',
+                templateBasePath: '',
+                index: {
+                    url: '',
+                    format: 'json'
+                }
+            })
+
+            // open panel 
+            this.panel = this.settings.templates.catalogs.length - 1
         }
     }
 })
