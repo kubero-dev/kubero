@@ -1189,7 +1189,7 @@ type EnvVar = {
   value: string,
 }
 
-type SAAnnotations {
+type SAAnnotations = {
   [key: string]: string;
 }
 
