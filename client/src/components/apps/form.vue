@@ -1244,7 +1244,6 @@ export default defineComponent({
       imageTag: '',
       deploymentstrategy: "git",
       buildstrategy: "plain",
-      buildPipeline: false,
       pipelineData: {
         domain: '',
         dockerimage: '',
@@ -1447,7 +1446,10 @@ export default defineComponent({
 */
     }},
     computed: {
-      ...mapState(useKuberoStore, ['buildPipeline']),
+      buildPipeline(){
+        const store = useKuberoStore()
+        return store.kubero.buildPipeline
+      }
     },
     mounted() {
       this.loadPipeline();
