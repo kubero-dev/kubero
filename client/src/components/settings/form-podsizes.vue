@@ -21,7 +21,7 @@
             </v-col>
         </v-row>
 
-        <div v-for="(podSize, index) in settings.podSizeList" :key="index">
+        <div v-for="(podSize, index) in settings.kubero.config.podSizeList" :key="index">
             <v-divider class="ma-5"></v-divider>
             <v-row>
                 <v-col
@@ -129,21 +129,21 @@
         </div>
 
         <v-divider class="ma-5"></v-divider>
-    <p class="text-justify">
-        <v-btn
-            elevation="2"
-            fab
-            small
-            class="ma-2"
-            color="secondary"
-            @click="addPodSize"
-            >
-                <v-icon color="primary">
-                    mdi-plus
-                </v-icon>
-        </v-btn>
-        Add a new pod size
-    </p>
+        <p class="text-justify">
+            <v-btn
+                elevation="2"
+                fab
+                small
+                class="ma-2"
+                color="secondary"
+                @click="addPodSize"
+                >
+                    <v-icon color="primary">
+                        mdi-plus
+                    </v-icon>
+            </v-btn>
+            Add a new pod size
+        </p>
     </div>
 </template>
 
@@ -152,30 +152,13 @@
 import { defineComponent } from 'vue'
 
 // Types
-import { Settings } from './form.vue'
-
-export type PodSize = {
-    name: string,
-    description: string,
-    editable?: boolean,
-    default?: boolean,
-    resources: {
-        requests: {
-            cpu: string,
-            memory: string,
-        },
-        limits: {
-            cpu: string,
-            memory: string,
-        }
-    }
-}
+import { PodSize } from './form.vue'
 
 export default defineComponent({
     name: 'FormPodsizes',
     props: {
         settings: {
-            type: Object as () => Settings,
+            type: Object as () => any,
             required: true
         }
     },
@@ -188,18 +171,18 @@ export default defineComponent({
     },
     methods: {
         makeDefaultUnique(podSize: PodSize) {
-            this.settings.podSizeList.forEach((ps) => {
+            this.settings.kubero.config.podSizeList.forEach((ps: PodSize) => {
                 if (ps !== podSize) {
                     ps.default = false
                 }
             })
         },
         deletePodSize(podSize: PodSize) {
-            const index = this.settings.podSizeList.indexOf(podSize)
-            this.settings.podSizeList.splice(index, 1)
+            const index = this.settings.kubero.config.podSizeList.indexOf(podSize)
+            this.settings.kubero.config.podSizeList.splice(index, 1)
         },
         addPodSize() {
-            this.settings.podSizeList.push({
+            this.settings.kubero.config.podSizeList.push({
                 name: '',
                 description: '',
                 editable: true,

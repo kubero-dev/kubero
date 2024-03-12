@@ -13,7 +13,7 @@
             multiple
         >
 
-            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(buildpack, index) in settings.buildpacks" :key="index">
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(buildpack, index) in settings.kubero.config.buildpacks" :key="index">
             <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ buildpack.name }}</v-expansion-panel-title>
             <v-expansion-panel-text>
             <v-row>
@@ -101,31 +101,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
-// Types
-import { Settings } from './form.vue'
-import { BuildpackStage } from './form-buildpacks-item.vue'
 import FormBuildpacksItem from './form-buildpacks-item.vue'
 
-
-
-export type Buildpack = {
-    advanced?: boolean,
-    name: string,
-    language: string,
-    fetch: BuildpackStage,
-    build: BuildpackStage,
-    run: BuildpackStage
-}
+// Types
+import { Buildpack } from './form.vue'
 
 export default defineComponent({
     name: 'FormBuildpacks',
     props: {
         settings: {
-            type: Object as () => Settings,
+            type: Object as () => any,
             required: true,
-            validator: (settings: Settings) => {
-                return settings.buildpacks.every((buildpack: Buildpack) => {
+            validator: (settings: any) => {
+                return settings.kubero.configbuildpacks.every((buildpack: Buildpack) => {
                     return buildpack.name && buildpack.language && buildpack.fetch.repository && buildpack.fetch.tag && buildpack.build.repository && buildpack.build.tag && buildpack.run.repository && buildpack.run.tag
                 })
             }
@@ -143,10 +131,10 @@ export default defineComponent({
     methods: {
         deleteBuildpack(buildpack: Buildpack) {
             this.panel = -1
-            this.settings.buildpacks.splice(this.settings.buildpacks.indexOf(buildpack), 1)
+            this.settings.kubero.configbuildpacks.splice(this.settings.kubero.configbuildpacks.indexOf(buildpack), 1)
         },
         addBuildpack() {
-            this.settings.buildpacks.push({
+            this.settings.kubero.configbuildpacks.push({
                 name: '',
                 language: '',
                 advanced: true,
@@ -204,7 +192,7 @@ export default defineComponent({
             })
 
             // open panel 
-            this.panel = this.settings.buildpacks.length - 1
+            this.panel = this.settings.kubero.configbuildpacks.length - 1
         }
     }
 })

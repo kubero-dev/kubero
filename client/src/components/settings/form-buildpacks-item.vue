@@ -137,25 +137,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-type SecurityContext = {
-    runAsUser: number
-    runAsGroup: number
-    runAsNonRoot: boolean
-    readOnlyRootFilesystem: boolean
-    allowPrivilegeEscalation: boolean
-    capabilities: {
-        add: string[]
-        drop: string[]
-    }
-}
-
-export type BuildpackStage = {
-    repository: string,
-    tag: string,
-    command: string
-    readOnlyAppStorage: boolean
-    securityContext: SecurityContext
-}
 
 export default defineComponent({
     name: 'FormBuildpacksItem',
@@ -165,7 +146,7 @@ export default defineComponent({
             required: true
         },
         buildpackStage: {
-            type: Object as () => BuildpackStage,
+            type: Object as () => any,
             required: true
         },
         advanced: {

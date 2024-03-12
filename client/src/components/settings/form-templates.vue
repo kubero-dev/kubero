@@ -3,7 +3,7 @@
     <div>
 
         <v-switch
-            v-model="settings.templates.enabled"
+            v-model="settings.kubero.config.templates.enabled"
             label="Allow Templates"
             color="primary"
             required
@@ -13,7 +13,7 @@
             multiple
         >
 
-            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(catalog, index) in settings.templates.catalogs" :key="index">
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(catalog, index) in settings.kubero.config.templates.catalogs" :key="index">
             <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ catalog.name }}</v-expansion-panel-title>
             <v-expansion-panel-text>
             <v-row>
@@ -124,7 +124,7 @@
 import { defineComponent } from 'vue'
 
 // Types
-import { Catalog, Settings } from './form.vue'
+import { Catalog } from './form.vue'
 
 export interface Buildpack {
     name: string
@@ -136,7 +136,7 @@ export default defineComponent({
     name: 'FormTemplates',
     props: {
         settings: {
-            type: Object as () => Settings,
+            type: Object as () => any,
             required: true,
         }
     },
@@ -151,10 +151,10 @@ export default defineComponent({
     methods: {
         deleteBuildpack(catalog: Catalog) {
             this.panel = -1
-            this.settings.templates.catalogs.splice(this.settings.templates.catalogs.indexOf(catalog), 1)
+            this.settings.kubero.config.templates.catalogs.splice(this.settings.kubero.config.templates.catalogs.indexOf(catalog), 1)
         },
         addTemplateCatalog() {
-            this.settings.templates.catalogs.push({
+            this.settings.kubero.config.templates.catalogs.push({
                 name: '',
                 description: '',
                 templateBasePath: '',
@@ -165,7 +165,7 @@ export default defineComponent({
             })
 
             // open panel 
-            this.panel = this.settings.templates.catalogs.length - 1
+            this.panel = this.settings.kubero.config.templates.catalogs.length - 1
         }
     }
 })

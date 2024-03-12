@@ -15,6 +15,36 @@
 
         <v-divider class="ma-5"></v-divider>
     -->
+        <h4 class="text-uppercase">Webhook Endpoint</h4>
+        <v-row>
+            <v-col
+                cols="12"
+                md="8"
+            >
+                <v-text-field
+                v-model="settings.webhook.url"
+                label="URL"
+                required
+                ></v-text-field>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col
+                cols="12"
+                md="8"
+            >
+                <v-text-field
+                v-model="settings.webhook.secret"
+                label="Secret"
+                required
+                :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
+                :type="show ? 'text' : 'password'"
+                @click:append="show = !show"
+                ></v-text-field>
+            </v-col>
+        </v-row>
+        <v-divider class="ma-5"></v-divider>
+
         <h4 class="text-uppercase">Github</h4>
         <v-row>
             <v-col
@@ -22,7 +52,7 @@
                 md="6"
             >
                 <v-text-field
-                v-model="settings.env.GITHUB_PERSONAL_ACCESS_TOKEN"
+                v-model="settings.repositoryProviders.github.personalAccessToken"
                 label="github personal access token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -44,7 +74,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GITEA_BASEURL"
+                v-model="settings.repositoryProviders.gitea.baseUrl"
                 label="Gitea Base URL"
                 required
                 ></v-text-field>
@@ -54,7 +84,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GITEA_PERSONAL_ACCESS_TOKEN"
+                v-model="settings.repositoryProviders.gitea.personalAccessToken"
                 label="Gitea Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -76,7 +106,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GOGS_BASEURL"
+                v-model="settings.repositoryProviders.gogs.baseUrl"
                 label="Gogs Base URL"
                 required
                 ></v-text-field>
@@ -86,7 +116,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GOGS_PERSONAL_ACCESS_TOKEN"
+                v-model="settings.repositoryProviders.gogs.personalAccessToken"
                 label="Gogs Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -103,7 +133,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GITLAB_BASEURL"
+                v-model="settings.repositoryProviders.gitlab.baseUrl"
                 label="Gitlab Base URL"
                 required
                 ></v-text-field>
@@ -113,7 +143,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.GITLAB_PERSONAL_ACCESS_TOKEN"
+                v-model="settings.repositoryProviders.gitlab.personalAccessToken"
                 label="Gitlab Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -130,7 +160,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.BITBUCKET_USERNAME"
+                v-model="settings.repositoryProviders.bitbucket.username"
                 label="Bitbucket Username"
                 required
                 ></v-text-field>
@@ -140,7 +170,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.env.BITBUCKET_APP_PASSWORD"
+                v-model="settings.repositoryProviders.bitbucket.personalAccessToken"
                 label="Bitbucket App Password"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -174,7 +204,7 @@ export type Settings = {
 }
 
 export default defineComponent({
-    name: 'FormSecrets',
+    name: 'FormDeployment',
     props: {
         settings: {
             type: Object,
