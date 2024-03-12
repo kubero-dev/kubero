@@ -4,7 +4,6 @@ import { KuberoConfig } from './config';
 import YAML from 'yaml'
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { auth } from '../routes/addons';
 
 export interface SettingsOptions {
     kubectl: Kubectl;
@@ -20,61 +19,22 @@ export class Settings {
 
     public async getSettings(): Promise<any> {
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        let settings = await this.kubectl.getKuberoConfig(namespace)
-
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+/*
         let configMap: KuberoConfig
         if (process.env.NODE_ENV === "production") {
-            configMap = new KuberoConfig(settings.spec.kubero.config)
+            configMap = new KuberoConfig(kuberoes.spec.kubero.config)
         } else {
             configMap = new KuberoConfig(this.readConfig())
         }
+*/
         let config: any = {}
-        config.settings = settings.spec
+        config.settings = kuberoes.spec
 
         config["webhook"] = { 
             url: process.env.KUBERO_WEBHOOK_URL || "",
             secret: process.env.KUBERO_WEBHOOK_SECRET || ""
         }
-
-/*
-        config["podSizeList"] = configMap.podSizeList
-        config["kubero"] = configMap.kubero
-        config["buildpacks"] = configMap.buildpacks
-        config["templates"] = configMap.templates
-        config["auth"] = {
-            github:{
-                enabled: false,
-                id: process.env.GITHUB_CLIENT_ID || "",
-                secret: process.env.GITHUB_CLIENT_SECRET || "",
-                callbackUrl: process.env.GITHUB_CLIENT_CALLBACKURL || "",
-                org: process.env.GITHUB_CLIENT_ORG || "",
-            },
-            oauth2:{
-                enabled: false,
-                name: process.env.OAUTO2_CLIENT_NAME || "",
-                id: process.env.OAUTH2_CLIENT_ID || "",
-                authUrl: process.env.OAUTO2_CLIENT_AUTH_URL || "",
-                tokenUrl: process.env.OAUTO2_CLIENT_TOKEN_URL || "",
-                secret: process.env.OAUTH2_CLIENT_SECRET || "",
-                callbackUrl: process.env.OAUTH2_CLIENT_CALLBACKURL || "",
-                scopes: process.env.OAUTH2_CLIENT_SCOPE || "",
-            }
-        }
-        if (process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET) {
-            config.auth.github.enabled = true
-        }
-        if (process.env.OAUTO2_CLIENT_NAME && process.env.OAUTH2_ID) {
-            config.auth.oauth2.enabled = true
-        }
-
-        config["auditLogs"] = {
-            enabled: false,
-            storageClassName: "",
-            accessModes: ["ReadWriteOnce"],
-            size: "0.1Gi",
-            limit: 1000
-        }
-*/
         config["repositoryProviders"] = { 
             github: {
                 personalAccessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '', 
@@ -102,33 +62,20 @@ export class Settings {
 
     public async updateSettings(config: any): Promise<KuberoConfig> {
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        let settings = await this.kubectl.getKuberoConfig(namespace)
-
-        let configMap: KuberoConfig
-        if (process.env.NODE_ENV === "production") {
-            configMap = new KuberoConfig(settings.spec.kubero.config)
-        } else {
-            configMap = new KuberoConfig(this.readConfig())
-        }
-/*
-        if (configMap) {
-            configMap.podSizeList = config.podSizeList
-            configMap.kubero = config.kubero
-            configMap.buildpacks = config.buildpacks
-            configMap.templates = config.templates
-        } else {
-            configMap = new KuberoConfig(config)
-        }
-*/
-
-        if (process.env.NODE_ENV === "production") {
-            const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-            this.kubectl.updateKuberoConfig(namespace, configMap)
-        } else {
-            this.writeConfig(configMap)
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        kuberoes.spec = config.settings
+  
+        // Write local config file in dev mode
+        if (process.env.NODE_ENV != "production") {
+            console.log("DEV MODE: write local config")
+            this.writeConfig(kuberoes.spec.kubero.config)
         }
 
-        return configMap
+        this.kubectl.updateKuberoConfig(namespace, kuberoes)
+        //TODO: update configmap with secrets
+
+
+        return kuberoes
     }
 
     // read config from local filesystem (dev mode)

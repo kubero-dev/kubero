@@ -113,7 +113,7 @@ export default defineComponent({
             type: Object as () => any,
             required: true,
             validator: (settings: any) => {
-                return settings.kubero.configbuildpacks.every((buildpack: Buildpack) => {
+                return settings.kubero.config.buildpacks.every((buildpack: Buildpack) => {
                     return buildpack.name && buildpack.language && buildpack.fetch.repository && buildpack.fetch.tag && buildpack.build.repository && buildpack.build.tag && buildpack.run.repository && buildpack.run.tag
                 })
             }
@@ -131,10 +131,10 @@ export default defineComponent({
     methods: {
         deleteBuildpack(buildpack: Buildpack) {
             this.panel = -1
-            this.settings.kubero.configbuildpacks.splice(this.settings.kubero.configbuildpacks.indexOf(buildpack), 1)
+            this.settings.kubero.config.buildpacks.splice(this.settings.kubero.config.buildpacks.indexOf(buildpack), 1)
         },
         addBuildpack() {
-            this.settings.kubero.configbuildpacks.push({
+            this.settings.kubero.config.buildpacks.push({
                 name: '',
                 language: '',
                 advanced: true,
@@ -192,7 +192,7 @@ export default defineComponent({
             })
 
             // open panel 
-            this.panel = this.settings.kubero.configbuildpacks.length - 1
+            this.panel = this.settings.kubero.config.buildpacks.length - 1
         }
     }
 })

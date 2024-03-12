@@ -1114,8 +1114,8 @@ export class Kubectl {
         const patch = [
             {
               op: 'replace',
-              path: '/spec/kubero/config',
-              value: config,
+              path: '/spec',
+              value: config.spec,
             },
         ];
 
