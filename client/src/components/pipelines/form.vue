@@ -47,6 +47,7 @@
           <v-switch
             v-model="gitops"
             label="Connect pipeline to a Git repository (GitOps)"
+            color="primary"
           ></v-switch>
         </v-col>
       </v-row>
@@ -158,6 +159,7 @@
                 :label="phase.name"
                 :disabled="phase.name == 'review' && (repository_status.connected === false || gitops === false)"
                 dense
+                color="primary"
               ></v-switch>
             </v-col>
             <v-col

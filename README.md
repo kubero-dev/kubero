@@ -26,7 +26,7 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Configure your apps with cronjobs and addons
 
-Kubero will then start an init container that will clone your repository and another init container to build your app. Kubero is now able to start the container and expose it to the internet. You can now access your app via the configured domain.
+Kubero initiates two containers: one for cloning your repository and another for building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
 
 ## Features
 - Create unlimited CI pipelines with up to 4 separate **staging environments** for all your applications
