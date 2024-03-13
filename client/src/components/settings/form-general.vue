@@ -22,6 +22,7 @@
                 v-model="settings.kubero.namespace"
                 label="Kubero Namespace"
                 required
+                disabled
             ></v-text-field>
             </v-col>
         </v-row>

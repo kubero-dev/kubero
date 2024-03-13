@@ -142,7 +142,6 @@
                         mdi-plus
                     </v-icon>
             </v-btn>
-            Add a new pod size
         </p>
     </div>
 </template>
