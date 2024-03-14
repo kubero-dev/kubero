@@ -137,12 +137,22 @@ export interface Auth1 {
 export interface Github {
   enabled: boolean;
   id: string;
+  org: string;
+  secret: string;
+  callbackUrl: string;
 }
 export interface Console {
   enabled: boolean;
 }
 export interface Oauth2 {
   enabled: boolean;
+  name: string;
+  id: string;
+  authUrl: string;
+  tokenUrl: string;
+  secret: string;
+  callbackUrl: string;
+  scopes: string;
 }
 export interface Config {
   buildpacks?: (Buildpack)[] | null;
@@ -407,19 +417,29 @@ export default defineComponent({
           kubero: {
             namespace: '',
             auditLogs: {
-              accessModes: [],
+              accessModes: ["ReadWriteOnce"],
               enabled: false,
-              limit: '',
-              size: '',
+              limit: '1000',
+              size: '0.1Gi',
               storageClassName: '',
             } as AuditLogs,
             auth: {
               github: {
                 enabled: false,
                 id: '',
+                secret: '',
+                callbackUrl: '',
+                org: '',
               } as Github,
               oauth2: {
                 enabled: false,
+                name: '',
+                id: '',
+                authUrl: '',
+                tokenUrl: '',
+                secret: '',
+                callbackUrl: '',
+                scopes: '',
               } as Oauth2,
             } as Auth1,
             config: {
