@@ -273,29 +273,6 @@ export class Kubectl {
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
         
-        /*
-        let serviceAccount = await this.coreV1Api.readNamespacedServiceAccount(
-            appName+'-kuberoapp',
-            namespace
-        ).catch(error => {
-            debug.log(error);
-        });
-
-         update serviceAccount
-        if (serviceAccount && serviceAccount.body) {
-            serviceAccount.body.metadata = {
-                ...serviceAccount.body.metadata,
-                // update metadata here
-            };
-            await this.coreV1Api.replaceNamespacedServiceAccount(
-                appName+'-kuberoapp',
-                namespace,
-                serviceAccount.body
-            ).catch(error => {
-                debug.log(error);
-            });
-        } */
-        
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
