@@ -1138,4 +1138,32 @@ export class Kubectl {
         }
     }
 
+    public async updateKuberoSecret(namespace: string, secret: any) {
+
+        const patch = [
+            {
+              op: 'replace',
+              path: '/stringData',
+              value: secret,
+            },
+        ];
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        try {
+            await this.coreV1Api.patchNamespacedSecret(
+                'kubero-secrets',
+                namespace,
+                patch,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                options
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
 }

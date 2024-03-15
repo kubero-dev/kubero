@@ -61,7 +61,7 @@ export class Settings {
         }
 
         this.kubectl.updateKuberoConfig(namespace, kuberoes)
-        //TODO: update configmap with secrets
+        this.kubectl.updateKuberoSecret(namespace, config.secrets)
 
 
         return kuberoes
