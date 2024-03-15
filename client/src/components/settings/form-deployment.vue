@@ -22,7 +22,7 @@
                 md="8"
             >
                 <v-text-field
-                v-model="settings.webhook.url"
+                v-model="settings.settings.kubero.webhook_url"
                 label="URL"
                 required
                 ></v-text-field>
@@ -34,7 +34,7 @@
                 md="8"
             >
                 <v-text-field
-                v-model="settings.webhook.secret"
+                v-model="settings.secrets.KUBERO_WEBHOOK_SECRET"
                 label="Secret"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -52,7 +52,7 @@
                 md="6"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.github.personalAccessToken"
+                v-model="settings.secrets.GITHUB_PERSONAL_ACCESS_TOKEN"
                 label="github personal access token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -74,7 +74,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gitea.baseUrl"
+                v-model="settings.secrets.GITEA_BASEURL"
                 label="Gitea Base URL"
                 required
                 ></v-text-field>
@@ -84,7 +84,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gitea.personalAccessToken"
+                v-model="settings.secrets.GITEA_PERSONAL_ACCESS_TOKEN"
                 label="Gitea Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -106,7 +106,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gogs.baseUrl"
+                v-model="settings.secrets.GOGS_BASEURL"
                 label="Gogs Base URL"
                 required
                 ></v-text-field>
@@ -116,7 +116,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gogs.personalAccessToken"
+                v-model="settings.secrets.GOGS_PERSONAL_ACCESS_TOKEN"
                 label="Gogs Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -133,7 +133,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gitlab.baseUrl"
+                v-model="settings.secrets.GITLAB_BASEURL"
                 label="Gitlab Base URL"
                 required
                 ></v-text-field>
@@ -143,7 +143,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.gitlab.personalAccessToken"
+                v-model="settings.secrets.GITLAB_PERSONAL_ACCESS_TOKEN"
                 label="Gitlab Personal Access Token"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -160,7 +160,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.bitbucket.username"
+                v-model="settings.secrets.BITBUCKET_USERNAME"
                 label="Bitbucket Username"
                 required
                 ></v-text-field>
@@ -170,7 +170,7 @@
                 md="3"
             >
                 <v-text-field
-                v-model="settings.repositoryProviders.bitbucket.personalAccessToken"
+                v-model="settings.secrets.BITBUCKET_APP_PASSWORD"
                 label="Bitbucket App Password"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
@@ -185,31 +185,20 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Secrets } from './form.vue'
 
-export type Settings = {
-    env: {
-        KUBERO_NAMESPACE : string,
-        KUBERO_WEBHOOK_SECRET : string,
-        KUBERO_WEBHOOK_URL: string,
-        GITEA_BASEURL: string,
-        GITEA_PERSONAL_ACCESS_TOKEN: string,
-        GOGS_BASEURL: string,
-        GOGS_PERSONAL_ACCESS_TOKEN: string,
-        GITLAB_BASEURL: string,
-        GITLAB_PERSONAL_ACCESS_TOKEN: string,
-        BITBUCKET_USERNAME: string,
-        BITBUCKET_APP_PASSWORD: string,
-        GITHUB_PERSONAL_ACCESS_TOKEN: string,
-    }
+interface Settings {
+    settings: any,
+    secrets: Secrets
 }
 
 export default defineComponent({
     name: 'FormDeployment',
     props: {
         settings: {
-            type: Object,
+            type: Object as () => Settings,
             required: true
-        }
+        },
     },
     components: {
     },

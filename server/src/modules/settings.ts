@@ -31,30 +31,19 @@ export class Settings {
         let config: any = {}
         config.settings = kuberoes.spec
 
-        config["webhook"] = { 
-            url: process.env.KUBERO_WEBHOOK_URL || "",
-            secret: process.env.KUBERO_WEBHOOK_SECRET || ""
-        }
-        config["repositoryProviders"] = { 
-            github: {
-                personalAccessToken: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '', 
-            },
-            gitea: {
-                personalAccessToken: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
-                baseUrl: process.env.GITEA_BASEURL || ''
-            },
-            gitlab: {
-                personalAccessToken: process.env.GITLAB_PERSONAL_ACCESS_TOKEN || '',
-                baseUrl: process.env.GITLAB_BASEURL || ''
-            },
-            bitbucket: {
-                personalAccessToken: process.env.BITBUCKET_PERSONAL_ACCESS_TOKEN || '',
-                username: process.env.BITBUCKET_USERNAME || ''
-            },
-            gogs: {
-                personalAccessToken: process.env.GOGS_PERSONAL_ACCESS_TOKEN || '',
-                baseUrl: process.env.GOGS_BASEURL || ''
-            }
+        config["secrets"] = {
+            GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
+            GITEA_PERSONAL_ACCESS_TOKEN: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
+            GITEA_BASEURL: process.env.GITEA_BASEURL || '',
+            GITLAB_PERSONAL_ACCESS_TOKEN: process.env.GITLAB_PERSONAL_ACCESS_TOKEN || '',
+            GITLAB_BASEURL: process.env.GITLAB_BASEURL || '',
+            BITBUCKET_APP_PASSWORD: process.env.BITBUCKET_APP_PASSWORD || '',
+            BITBUCKET_USERNAME: process.env.BITBUCKET_USERNAME || '',
+            GOGS_PERSONAL_ACCESS_TOKEN: process.env.GOGS_PERSONAL_ACCESS_TOKEN || '',
+            GOGS_BASEURL: process.env.GOGS_BASEURL || '',
+            KUBERO_WEBHOOK_SECRET: process.env.KUBERO_WEBHOOK_SECRET || '',
+            GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
+            OAUTH2_CLIENT_SECRET: process.env.OAUTH2_CLIENT_SECRET || '',
         }
         //config["env"] = process.env
         return config

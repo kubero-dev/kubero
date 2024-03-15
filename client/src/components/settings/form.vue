@@ -59,8 +59,26 @@ import FormDeployment from './form-deployment.vue'
 import FormTemplates from './form-templates.vue'
 
 // types & interfaces
+export interface Secrets {
+  GITHUB_PERSONAL_ACCESS_TOKEN: string;
+  GITEA_PERSONAL_ACCESS_TOKEN: string;
+  GITEA_BASEURL: string;
+  GITLAB_PERSONAL_ACCESS_TOKEN: string;
+  GITLAB_BASEURL: string;
+  BITBUCKET_APP_PASSWORD: string;
+  BITBUCKET_USERNAME: string;
+  GOGS_PERSONAL_ACCESS_TOKEN: string;
+  GOGS_BASEURL: string;
+  KUBERO_WEBHOOK_SECRET: string;
+  GITHUB_CLIENT_SECRET: string;
+  OAUTH2_CLIENT_SECRET: string;
+}
+
+
 export interface Settings {
   settings: Kuberoes;
+  secrets: Secrets;
+  /*
   repositoryProviders: RepositoryProviders;
   webhook: Webhook;
   /*
@@ -330,20 +348,6 @@ export interface Bitbucket {
   personalAccessToken: string;
   username: string;
 }
-export interface Env {
-    KUBERO_NAMESPACE : string,
-    KUBERO_WEBHOOK_SECRET : string,
-    KUBERO_WEBHOOK_URL: string,
-    GITEA_BASEURL: string,
-    GITEA_PERSONAL_ACCESS_TOKEN: string,
-    GOGS_BASEURL: string,
-    GOGS_PERSONAL_ACCESS_TOKEN: string,
-    GITLAB_BASEURL: string,
-    GITLAB_PERSONAL_ACCESS_TOKEN: string,
-    BITBUCKET_USERNAME: string,
-    BITBUCKET_APP_PASSWORD: string,
-    GITHUB_PERSONAL_ACCESS_TOKEN: string,
-}
 
 export type Catalog = {
   name: string,
@@ -365,39 +369,20 @@ export default defineComponent({
       tab: "general",
       show: false,
       settings: {
-        env: {
-          KUBERO_NAMESPACE: '',
-          KUBERO_WEBHOOK_SECRET: '',
-          KUBERO_WEBHOOK_URL: '',
-          GITEA_BASEURL: '',
-          GITEA_PERSONAL_ACCESS_TOKEN: '',
-          GOGS_BASEURL: '',
-          GOGS_PERSONAL_ACCESS_TOKEN: '',
-          GITLAB_BASEURL: '',
-          GITLAB_PERSONAL_ACCESS_TOKEN: '',
-          BITBUCKET_USERNAME: '',
-          BITBUCKET_APP_PASSWORD: '',
+        secrets: {
           GITHUB_PERSONAL_ACCESS_TOKEN: '',
-        } as Env,
-/*        kubero: {
-          readonly: false,
-          console: {
-            enabled: false,
-          },
-          banner: {
-            show: false,
-            bgcolor: '',
-            fontcolor: '',
-            message: '',
-          }
-        } as Kubero,
-        podSizeList: [] as PodSize[],
-        buildpacks: [] as Buildpack[],
-        templates: {
-          enabled: false,
-          catalogs: []
-        } as Templates,
-*/
+          GITEA_PERSONAL_ACCESS_TOKEN: '',
+          GITEA_BASEURL: '',
+          GITLAB_PERSONAL_ACCESS_TOKEN: '',
+          GITLAB_BASEURL: '',
+          GOGS_PERSONAL_ACCESS_TOKEN: '',
+          GOGS_BASEURL: '',
+          BITBUCKET_APP_PASSWORD: '',
+          BITBUCKET_USERNAME: '',
+          KUBERO_WEBHOOK_SECRET: '',
+          GITHUB_CLIENT_SECRET: '',
+          OAUTH2_CLIENT_SECRET: '',
+        } as Secrets,
         settings: {
           affinity: {} as any,
           fullnameOverride: '' as string,
