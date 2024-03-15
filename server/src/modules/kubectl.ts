@@ -324,7 +324,6 @@ export class Kubectl {
         return serviceAccount;
     }
 
-    //public async updateServiceAccountAnnotations(pipelineName: string, phaseName: string, appName: string, context: string) {
     public async updateServiceAccountAnnotations(app: App, resourceVersion: string, context: string) {
             let pipelineName = app.pipeline;
             let phaseName = app.phase;
@@ -334,7 +333,10 @@ export class Kubectl {
             this.kc.setCurrentContext(context);
             
             if (serviceAccount && serviceAccount.body.metadata) {
-                serviceAccount.body.metadata.annotations = app.sAAnnotations as { [key: string]: string };
+                serviceAccount.body.metadata.annotations = app.sAAnnotations.reduce((acc, curr) => {
+                    acc[curr.annotation] = curr.value;
+                    return acc;
+                }, {} as { [key: string]: string });
                 await this.coreV1Api.replaceNamespacedServiceAccount(
                     appName+'-kuberoapp',
                     namespace,

@@ -845,7 +845,7 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
-                    sAAnnotations: {}, //TODO use custom serviceaccount annotations
+                    sAAnnotations: [], //TODO use custom serviceaccount annotations
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
                     image: {
                         containerPort: 8080, //TODO use custom containerport

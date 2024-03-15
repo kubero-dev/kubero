@@ -689,14 +689,13 @@
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">ServiceAcccount Annotations</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-          {{ sAAnnotations }}
           <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
             <v-col
               cols="12"
               md="5"
             >
               <v-text-field
-                v-model="index as string"
+                v-model="annotation.annotation"
                 label="annotation"
                 :counter="120"
               ></v-text-field>
@@ -706,7 +705,7 @@
               md="6"
             >
               <v-text-field
-                v-model="sAAnnotations[index]"
+                v-model="annotation.value"
                 label="value"
               ></v-text-field>
             </v-col>
@@ -718,7 +717,7 @@
               elevation="2"
               icon
               small
-                @click="removeSAAnnotationLine(index)"
+                @click="removeSAAnnotationLine(annotation.annotation)"
               >
                   <v-icon dark >
                       mdi-minus
@@ -726,7 +725,6 @@
               </v-btn>
             </v-col>
           </v-row>
-
           <v-row>
             <v-col
               cols="12"
@@ -1190,7 +1188,8 @@ type EnvVar = {
 }
 
 type SAAnnotations = {
-  [key: string]: string;
+  annotation: string,
+  value: string,
 }
 
 export default defineComponent({
@@ -1357,7 +1356,9 @@ export default defineComponent({
       envvars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
-      sAAnnotations: {} as SAAnnotations,
+      sAAnnotations: [
+        //{ annotation: '', value: '' },
+      ] as SAAnnotations[],
       containerPort: 8080,
       podsize: '',
       podsizes: [
@@ -1750,7 +1751,7 @@ export default defineComponent({
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(1)
             }
-            if (Object.keys(response.data.sAAnnotations).length > 0) {
+            if (response.data.sAAnnotations.length > 0) {
               this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
@@ -2050,12 +2051,16 @@ export default defineComponent({
         }
       },
       addSAAnnotationLine() {
-        this.sAAnnotations = { ...this.sAAnnotations, '': ''};
+        this.sAAnnotations.push({
+          annotation: '', 
+          value: '',
+        });
       },
-      removeSAAnnotationLine(key: any) {
-        if (key in this.sAAnnotations) {
-
-          delete this.sAAnnotations[key];
+      removeSAAnnotationLine(index: string) {
+        for (let i = 0; i < this.sAAnnotations.length; i++) {
+          if (this.sAAnnotations[i].annotation === index) {
+            this.sAAnnotations.splice(i, 1);
+          }
         }
       },
       addVolumeLine() {
