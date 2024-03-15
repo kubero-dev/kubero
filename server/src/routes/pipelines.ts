@@ -284,18 +284,9 @@ Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
             return;
         }
         
-        let serviceAccountAnnotations = Object.entries(serviceAccount.body.metadata.annotations).map(([key, value]) => ({annotation: key, value: value}));
-
-        //let serviceAccountAnnotations = Object.entries(serviceAccount.body.metadata.annotations);
-        
-        //const b = serviceAccount.body.metadata.annotations; // TODO: this is not the right way to get annotations
+        let serviceAccountAnnotations = Object.entries(serviceAccount.body.metadata.annotations).map(([key, value]) => ({annotation: key, value: value}));        
         const b = serviceAccountAnnotations;
         const a = new App(app.body.spec as IApp);
-
-        /*let annotationsObject: { [key: string]: string } = {};
-        for (let [key, value] of serviceAccountAnnotations) {
-            annotationsObject[key] = value;
-        }*/
 
         res.send({
             resourceVersion: app.body.metadata.resourceVersion,
