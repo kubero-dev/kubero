@@ -116,7 +116,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.auth.github.enabled"
-                label="Github (**)"
+                label="Github"
                 color="primary"
                 density="compact"
                 required
@@ -137,11 +137,10 @@
             <v-col
                 cols="12"
                 md="3"
-                v-if="settings.kubero.auth.github.enabled"
             >
                 <v-text-field
-                v-model="settings.kubero.auth.github.secret"
-                label="Secret"
+                v-model="settings.kubero.auth.github.org"
+                label="Organization"
                 density="compact"
                 required
                 ></v-text-field>
@@ -164,10 +163,11 @@
             <v-col
                 cols="12"
                 md="8"
+                v-if="settings.kubero.auth.github.enabled"
             >
                 <v-text-field
-                v-model="settings.kubero.auth.github.org"
-                label="Organization"
+                v-model="secrets.GITHUB_CLIENT_SECRET"
+                label="Secret"
                 density="compact"
                 required
                 ></v-text-field>
@@ -181,7 +181,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.auth.oauth2.enabled"
-                label="Oauth2 (**)"
+                label="Oauth2"
                 color="primary"
                 density="compact"
                 required
@@ -270,7 +270,7 @@
                 md="8"
             >
                 <v-text-field
-                v-model="settings.kubero.auth.oauth2.secret"
+                v-model="secrets.OAUTH2_CLIENT_SECRET"
                 label="Secret"
                 density="compact"
                 required
@@ -335,12 +335,17 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { Secrets } from './form.vue'
 
 export default defineComponent({
     name: 'FormGeneral',
     props: {
         settings: {
             type: Object as () => any,
+            required: true
+        },
+        secrets: {
+            type: Object as () => Secrets,
             required: true
         }
     },

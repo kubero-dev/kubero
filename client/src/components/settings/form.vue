@@ -18,7 +18,7 @@
 
       <v-window v-model="tab">
         <v-window-item value="general">
-          <FormGeneral :settings="settings.settings"></FormGeneral>
+          <FormGeneral :settings="settings.settings" :secrets="settings.secrets"></FormGeneral>
         </v-window-item>
 
         <v-window-item value="podsizes">
