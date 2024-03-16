@@ -159,9 +159,6 @@ export interface Github {
   secret: string;
   callbackUrl: string;
 }
-export interface Console {
-  enabled: boolean;
-}
 export interface Oauth2 {
   enabled: boolean;
   name: string;
@@ -227,7 +224,12 @@ export interface Run {
 }
 export interface Kubero {
   banner: Banner;
-  console: Console;
+  console: {
+    enabled: boolean;
+  }
+  admin: {
+    disabled: boolean;
+  }
   readonly: boolean;
 }
 export interface Banner {
@@ -439,7 +441,10 @@ export default defineComponent({
                 } as Banner,
                 console: {
                   enabled: false,
-                } as Console,
+                },
+                admin: {
+                  disabled: false,
+                },
                 readonly: false,
               } as Kubero,
               podSizeList: [] as PodSize[],

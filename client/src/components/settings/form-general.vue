@@ -39,6 +39,17 @@
                 color="primary"
             ></v-switch>
             </v-col>
+            <v-col
+            cols="12"
+            md="6"
+            >
+            <v-switch
+                v-model="settings.kubero.config.kubero.admin.disabled"
+                label="Admin disabled"
+                required
+                color="primary"
+            ></v-switch>
+            </v-col>
         </v-row>
 
         <v-row>

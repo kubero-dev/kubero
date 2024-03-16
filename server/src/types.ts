@@ -347,6 +347,9 @@ export interface IKuberoConfig {
         console: {
             enabled: boolean;
         }
+        admin: {
+            disabled: boolean;
+        }
         readonly: boolean;
         banner: {
             message: string;

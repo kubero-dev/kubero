@@ -31,6 +31,11 @@ export class Settings {
         let config: any = {}
         config.settings = kuberoes.spec
 
+        // Backward compatibility older than v.2.1.0
+        if ( !config.settings.kubero.config.kubero.admin ) {
+            config.settings.kubero.config.kubero.admin = { disabled: false }
+        }
+
         config["secrets"] = {
             GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
             GITEA_PERSONAL_ACCESS_TOKEN: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
