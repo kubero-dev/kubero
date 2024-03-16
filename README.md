@@ -29,7 +29,7 @@ More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</
 Kubero initiates two containers: one for cloning your repository and another for building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
 
 ## Features
-- Create unlimited CI pipelines with up to 4 separate **staging environments** for all your applications
+- Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
 - Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
@@ -39,7 +39,9 @@ Kubero initiates two containers: one for cloning your repository and another for
 - Easy access of **application logs** in the UI
 - Easy and safe **restart** of the application in the UI
 - Triggered or periodic **vulnerability scans** of your running apps
-- Comes with an API and CLI to integrate with your existing tools
+- Comes with an **API and CLI** to integrate with your existing tools and CI/CD
+- Built-in **container console**
+- **SSO** with Github and Oauth2
 
 ## Supported GIT repositories (hosted and self-hosted)
 - Gitea / Forgejo
