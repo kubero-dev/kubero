@@ -310,10 +310,12 @@ export class Kubectl {
             this.kc.setCurrentContext(context);
             
             if (serviceAccount && serviceAccount.body.metadata) {
-                serviceAccount.body.metadata.annotations = Object.entries(app.sAAnnotations).reduce((acc, [key, value]) => {
-                    acc[key] = value;
-                    return acc;
-                }, {} as { [key: string]: string });
+                serviceAccount.body.metadata.annotations = {};
+
+                for (const [key, value] of Object.entries(app.sAAnnotations)) {
+                    const anno = value as { annotation: string, value: any };
+                    serviceAccount.body.metadata.annotations[anno.annotation] = String(anno.value);
+                }
                 await this.coreV1Api.replaceNamespacedServiceAccount(
                     appName+'-kuberoapp',
                     namespace,

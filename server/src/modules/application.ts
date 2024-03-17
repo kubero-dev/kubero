@@ -128,7 +128,7 @@ export class App implements IApp{
         port: 80,
         type: 'ClusterIP'
     };
-    public sAAnnotations: Object
+    public sAAnnotations: {}[] = []
     private tolerations: [];
 
     constructor(
@@ -235,7 +235,7 @@ export class Template implements ITemplate{
     public name: string
     public deploymentstrategy: 'git' | 'docker'
     public envVars: {}[] = []
-    public sAAnnotations: {}
+    public sAAnnotations: {}[] = []
     public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
     public addons: IAddon[] = []
