@@ -43,6 +43,7 @@ export default defineComponent({
                         this.kubero.version = result.data.version;
                         this.kubero.kubernetesVersion = result.data.kubernetesVersion;
                         this.kubero.isAuthenticated = result.data.isAuthenticated;
+                        this.kubero.adminDisabled = result.data.adminDisabled;
                         this.kubero.buildPipeline = result.data.buildPipeline;
                         this.kubero.auditEnabled = result.data.auditEnabled;
                         this.kubero.consoleEnabled = result.data.consoleEnabled;

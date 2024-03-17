@@ -13,6 +13,7 @@ export const useKuberoStore = defineStore('kubero', {
                 token: "",
             },
             auditEnabled: false,
+            adminDisabled: false,
             templatesEnabled: true,
             buildPipeline: false,
             consoleEnabled: false,

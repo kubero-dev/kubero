@@ -1005,6 +1005,13 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    public getAdminDisabled(){
+        if (this.config.kubero?.admin?.disabled == undefined) {
+            return false;
+        }
+        return this.config.kubero?.admin?.disabled;
+    }
+
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
         console.log(this.config.kubero?.console.enabled)
         if (this.config.kubero?.console.enabled != true) {

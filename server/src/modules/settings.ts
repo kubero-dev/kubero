@@ -7,17 +7,27 @@ import { join } from 'path';
 
 export interface SettingsOptions {
     kubectl: Kubectl;
+    config: IKuberoConfig;
 }
 
 export class Settings {
     private kubectl: Kubectl;
+    private runningConfig: IKuberoConfig
     constructor(
         options: SettingsOptions
     ) {
         this.kubectl = options.kubectl
+        this.runningConfig = options.config
     }
 
     public async getSettings(): Promise<any> {
+
+        if (this.checkAdminDisabled()) {
+            return {
+                admin: false
+            }
+        }
+
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)
 /*
@@ -55,6 +65,11 @@ export class Settings {
     }
 
     public async updateSettings(config: any): Promise<KuberoConfig> {
+
+        if (this.checkAdminDisabled()) {
+            return new KuberoConfig({} as IKuberoConfig)
+        }
+
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)
         kuberoes.spec = config.settings
@@ -99,5 +114,9 @@ export class Settings {
             })
         })
         return domains
+    }
+
+    private checkAdminDisabled() {
+        return this.runningConfig.kubero.admin.disabled
     }
 }

@@ -107,7 +107,8 @@ export const configure = async (app: Express, server: Server) => {
     app.locals.addons = addons;
 
     const settings = new Settings({
-        kubectl: kubero.kubectl
+        kubectl: kubero.kubectl,
+        config: kubero.config
     });
     app.locals.settings = settings;
 }
