@@ -310,8 +310,8 @@ export class Kubectl {
             this.kc.setCurrentContext(context);
             
             if (serviceAccount && serviceAccount.body.metadata) {
-                serviceAccount.body.metadata.annotations = app.sAAnnotations.reduce((acc, curr) => {
-                    acc[curr.annotation] = curr.value;
+                serviceAccount.body.metadata.annotations = Object.entries(app.sAAnnotations).reduce((acc, [key, value]) => {
+                    acc[key] = value;
                     return acc;
                 }, {} as { [key: string]: string });
                 await this.coreV1Api.replaceNamespacedServiceAccount(
