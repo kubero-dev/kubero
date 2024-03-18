@@ -1146,22 +1146,26 @@ export default defineComponent({
     return {
       breadcrumbItems: [
           {
-              text: 'DASHBOARD',
+              title: 'dashboard',
+              text: '-',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
           {
-              text: 'PIPELINE:'+this.pipeline,
+              title: 'Pipeline',
+              text: this.pipeline,
               disabled: false,
               to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
           },
           {
-              text: 'PHASE:'+this.phase,
+              title: 'Phase',
+              text: this.phase,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           },
           {
-              text: 'APP:'+this.app,
+              title: 'App',
+              text: this.app,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           }
