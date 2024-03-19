@@ -3,7 +3,7 @@ kubero:
   console:
     enabled: true
   admin:
-    disabled: true
+    disabled: false
   banner:
     show: false
     message: "Welcome to Kubero!"
