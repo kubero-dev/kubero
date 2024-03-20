@@ -1758,7 +1758,7 @@ export default defineComponent({
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(1)
             }
-            if (Object.entries(response.data.spec.serviceAccount).length > 0) {
+            if (Object.entries(response.data.spec.serviceAccount.annotations).length > 0) {
               this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
