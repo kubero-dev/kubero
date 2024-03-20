@@ -656,6 +656,27 @@ export class Kubectl {
         return ret;
     }
 
+    public async  getIngressClasses(): Promise<Object[]> {
+        // undefind = default
+        let ret = [{
+            name: undefined
+        }] as Object[];
+        try {
+            const ingressClasses = await this.networkingV1Api.listIngressClass();
+            for (let i = 0; i < ingressClasses.body.items.length; i++) {
+                const ic = ingressClasses.body.items[i];
+                const ingressClass = {
+                    name: ic.metadata?.name,
+                }
+                ret.push(ingressClass);
+            }
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching ingressclasses');
+        }
+        return ret;
+    }
+
     private async deleteScanJob(namespace: string, name: string): Promise<any> {
         try {
             await this.batchV1Api.deleteNamespacedJob(name, namespace);
