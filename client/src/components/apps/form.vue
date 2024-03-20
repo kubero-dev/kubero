@@ -350,7 +350,7 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -481,7 +481,7 @@
 
 
       <!-- NETWORKING -->
-      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -534,7 +534,7 @@
 
 
       <!-- CORS -->
-      <v-expansion-panel v-if="advanced" bg-color="rgb(var(--v-theme-cardBackground))">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Cors</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
