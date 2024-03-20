@@ -332,6 +332,7 @@ export default defineComponent({
         (v: any) => !!v || 'Name is required',
         (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
         (v: any) => /^[a-z0-9][a-z0-9-]*$/.test(v) || 'Allowed characters : [a-z0-9-]',
+        (v: any) => v !== 'new' || 'Name cannot be "new"',
       ],
       domainRules: [
         (v: any) => v.length <= 253 || 'Name must be less than 253 characters',
