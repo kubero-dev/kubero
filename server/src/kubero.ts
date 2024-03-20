@@ -468,17 +468,6 @@ export class Kubero {
         }
     }
 
-    // get a app in a pipeline and phase
-    public async getServiceAccount(pipelineName: string, phaseName: string, appName: string) {
-        debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-        const contextName = this.getContext(pipelineName, phaseName);
-        
-        if (contextName) {
-            let app = await this.kubectl.getServiceAccount(pipelineName, phaseName, appName, contextName);
-            return app;
-        }
-    }
-
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
         
