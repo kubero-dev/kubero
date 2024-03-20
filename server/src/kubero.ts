@@ -386,8 +386,6 @@ export class Kubero {
         const contextName = this.getContext(app.pipeline, app.phase);
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
-            // TODO: Update serviceaccountannotations
-            await this.kubectl.updateServiceAccountAnnotations(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
             this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
             this.audit?.log({
@@ -845,8 +843,12 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
-                    sAAnnotations: [], //TODO use custom serviceaccount annotations
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
+                    serviceAccount: {
+                        annotations: {},
+                        create: false,
+                        name: ''
+                    },
                     image: {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack

@@ -14,7 +14,6 @@ export interface IApp {
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
-    sAAnnotations: {}[]
     image : {
         repository: string,
         tag: string,
@@ -117,13 +116,13 @@ export interface IApp {
         port: number,
         type: string
     },
+    */
     serviceAccount: {
         annotations: {},
         create: boolean,
         name: string,
     },
-    tolerations: [],
-*/
+    //tolerations: [],
 }
 
 
@@ -132,7 +131,11 @@ export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
     envVars: {}[],
-    sAAnnotations: {}[],
+    serviceAccount: {
+        annotations: {},
+        create: boolean,
+        name: string,
+    },
     image : {
         repository: string,
         tag: string,

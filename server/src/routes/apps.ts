@@ -228,7 +228,8 @@ function createApp(req: Request) : IApp {
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
         extraVolumes: req.body.extraVolumes,
-        sAAnnotations: req.body.sAAnnotations,
+        serviceAccount: req.body.serviceAccount,
+        //sAAnnotations: req.body.sAAnnotations,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
@@ -272,7 +273,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Update an app in a specific pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'App object', required: true, type: 'object' }
-
+    console.log("serviceAccount: " + JSON.stringify(req.body.serviceAccount));
     const appconfig: IApp = {
         name: req.params.app,
         pipeline: req.params.pipeline,
@@ -289,8 +290,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         autoscale: req.body.autoscale,
         extraVolumes: req.body.extraVolumes,
         envVars: req.body.envvars,
-        //sAAnnotations: req.body.sAAnotations,
-        sAAnnotations: req.body.sAAnnotations,
+        serviceAccount: req.body.serviceAccount,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,

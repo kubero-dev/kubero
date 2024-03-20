@@ -1140,6 +1140,10 @@ type Ingress = {
   }[],
 }
 
+type ServiceAccount = {
+  annotations: any,
+}
+
 type Buildpack = {
   name?: string,
   run: BuildpackStepConfig,
@@ -1427,6 +1431,9 @@ export default defineComponent({
           drop: [],
         }
       },
+      serviceAccount: {
+        annotations: {} as any,
+      } as ServiceAccount,
       ingress: {
         annotations: {
           'nginx.ingress.kubernetes.io/whitelist-source-range': '',
@@ -1585,7 +1592,7 @@ export default defineComponent({
           this.docker.tag = response.data.image.tag;
 
           this.envvars = response.data.envVars;
-          this.sAAnnotations = response.data.sAAnnotations;
+          this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
@@ -1751,7 +1758,7 @@ export default defineComponent({
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(1)
             }
-            if (response.data.sAAnnotations.length > 0) {
+            if (Object.entries(response.data.spec.serviceAccount).length > 0) {
               this.panel.push(2)
             }
             if (response.data.spec.extraVolumes.length > 0) {
@@ -1780,7 +1787,8 @@ export default defineComponent({
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
-            this.sAAnnotations = response.data.sAAnnotations;
+            this.serviceAccount = response.data.spec.serviceAccount;
+            this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
             this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
@@ -1884,7 +1892,12 @@ export default defineComponent({
           ssl: this.ssl,
           envvars: this.envvars,
           // loop through serviceaccount annotations and convert to object
-          sAAnnotations: this.sAAnnotations,
+          serviceAccount: {
+            annotations: this.sAAnnotations.reduce((acc, cur) => {
+              acc[cur.annotation] = cur.value;
+              return acc;
+            }, {} as any),
+          },
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
@@ -1976,6 +1989,7 @@ export default defineComponent({
           domain: this.domain.toLowerCase(),
           ssl: this.ssl,
           envvars: this.envvars,
+          serviceAccount: this.serviceAccount,
           sAAnnotations: this.sAAnnotations,
           podsize: this.podsize,
           autoscale: this.autoscale,
