@@ -350,7 +350,7 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -481,7 +481,7 @@
 
 
       <!-- NETWORKING -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -534,7 +534,7 @@
 
 
       <!-- CORS -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Cors</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -624,6 +624,65 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
+      <!-- SERVICEACCOUNT ANNOTATIONS --> 
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">ServiceAcccount Annotations</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
+          <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <v-text-field
+                v-model="annotation.annotation"
+                label="annotation"
+                :counter="120"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="annotation.value"
+                label="value"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="1"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+                @click="removeSAAnnotationLine(annotation.annotation)"
+              >
+                  <v-icon dark >
+                      mdi-minus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addSAAnnotationLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
@@ -674,66 +733,6 @@
               icon
               small
               @click="addEnvLine()"
-              >
-                  <v-icon dark >
-                      mdi-plus
-                  </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-        </v-expansion-panel-text>
-      </v-expansion-panel>
-
-
-      <!-- SERVICEACCOUNT ANNOTATIONS -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">ServiceAcccount Annotations</v-expansion-panel-title>
-        <v-expansion-panel-text color="cardBackground">
-          <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <v-text-field
-                v-model="annotation.annotation"
-                label="annotation"
-                :counter="120"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-text-field
-                v-model="annotation.value"
-                label="value"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="1"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-                @click="removeSAAnnotationLine(annotation.annotation)"
-              >
-                  <v-icon dark >
-                      mdi-minus
-                  </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col
-              cols="12"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-              @click="addSAAnnotationLine()"
               >
                   <v-icon dark >
                       mdi-plus
@@ -1614,16 +1613,16 @@ export default defineComponent({
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(1)
+            this.panel.push(5)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
-            this.panel.push(2)
-          }
-          if (this.extraVolumes.length > 0) {
             this.panel.push(4)
           }
+          if (this.extraVolumes.length > 0) {
+            this.panel.push(7)
+          }
           if (this.cronjobs.length > 0) {
-            this.panel.push(5)
+            this.panel.push(8)
           }
 
           // Backward compatibility older v1.11.1
@@ -1762,16 +1761,16 @@ export default defineComponent({
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(1)
+              this.panel.push(5)
             }
             if (Object.entries(response.data.spec.serviceAccount.annotations).length > 0) {
-              this.panel.push(2)
+              this.panel.push(4)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(3)
+              this.panel.push(7)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(4)
+              this.panel.push(8)
             }
 
             this.security = response.data.spec.image.run.securityContext || {};
