@@ -4,6 +4,8 @@ import { IKubectlApp, IgitLink } from '../types';
 import { IApp, IPipeline } from '../types';
 import { App } from '../modules/application';
 import { Webhooks } from '@octokit/webhooks';
+import { init } from '../socket';
+import get from 'lodash/get';
 
 const Router = express.Router();
 export const RouterPipelines = Router;
@@ -275,11 +277,20 @@ Router.get('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
             return;
         }
 
+        /*let serviceAccount = await req.app.locals.kubero.getServiceAccount(req.params.pipeline, req.params.phase, req.params.app);
+        if (serviceAccount == undefined) {
+            res.status(404);
+            res.send("not found");
+            return;
+        }
+        
+        let serviceAccountAnnotations = Object.entries(serviceAccount.body.metadata.annotations).map(([key, value]) => ({annotation: key, value: value}));        
+        const b = serviceAccountAnnotations; */
         const a = new App(app.body.spec as IApp);
 
         res.send({
             resourceVersion: app.body.metadata.resourceVersion,
-            spec: a
+            spec: a,
         });
     } catch (error) {
         console.log(error);
