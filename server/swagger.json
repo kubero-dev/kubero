@@ -175,22 +175,6 @@
                       }
                     }
                   },
-                  "saAnnotations": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "example": "your.sa.annotation.enabled"
-                        },
-                        "value": {
-                          "type": "string",
-                          "example": "true"
-                        }
-                      }
-                    }
-                  },
                   "image": {
                     "type": "object",
                     "properties": {
@@ -374,9 +358,6 @@
                 "envvars": {
                   "example": "any"
                 },
-                "sAAnnotations": {
-                  "example": "any"
-                },
                 "image": {
                   "example": "any"
                 },
@@ -452,9 +433,6 @@
                     "example": "any"
                   },
                   "envvars": {
-                    "example": "any"
-                  },
-                  "sAAnnotations": {
                     "example": "any"
                   },
                   "image": {

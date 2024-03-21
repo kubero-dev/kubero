@@ -322,7 +322,6 @@ interface Spec {
   podsize: PodSize;
   autoscale: boolean;
   envVars: any[];
-  saAnnotations: any[];
   extraVolumes: any[];
   cronjobs: any[];
   addons: any[];
@@ -379,7 +378,6 @@ type appData = {
         podsize: PodSize,
         autoscale: boolean,
         envVars: any[],
-        saAnnotations: any[],
         extraVolumes: any[],
         cronjobs: any[],
         addons: any[],

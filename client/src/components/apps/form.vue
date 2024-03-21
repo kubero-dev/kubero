@@ -1613,13 +1613,13 @@ export default defineComponent({
             this.panel.push(1)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
-            this.panel.push(1)
+            this.panel.push(2)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(3)
+            this.panel.push(4)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
 
           // Backward compatibility older v1.11.1
@@ -1991,8 +1991,12 @@ export default defineComponent({
           domain: this.domain.toLowerCase(),
           ssl: this.ssl,
           envvars: this.envvars,
-          serviceAccount: this.serviceAccount,
-          sAAnnotations: this.sAAnnotations,
+          serviceAccount: {
+            annotations: this.sAAnnotations.reduce((acc, cur) => {
+              acc[cur.annotation] = cur.value;
+              return acc;
+            }, {} as any),
+          },
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {

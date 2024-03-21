@@ -133,7 +133,6 @@ export class App implements IApp{
         create: boolean,
         name: string,
     };
-    public sAAnnotations: {}[] = []
     private tolerations: [];
 
     constructor(

@@ -87,22 +87,6 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
                                     }
                                 }
                             },
-                            saAnnotations: {
-                                type: "array",
-                                items: {
-                                    type: "object",
-                                    properties: {
-                                        name: {
-                                            type: "string",
-                                            example: "your.sa.annotation.enabled"
-                                        },
-                                        value: {
-                                            type: "string",
-                                            example: "true"
-                                        }
-                                    }
-                                }
-                            },                            
                             image: {
                                 type: "object",
                                 properties: {
@@ -229,7 +213,6 @@ function createApp(req: Request) : IApp {
         envVars: req.body.envvars,
         extraVolumes: req.body.extraVolumes,
         serviceAccount: req.body.serviceAccount,
-        //sAAnnotations: req.body.sAAnnotations,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
