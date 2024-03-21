@@ -25,6 +25,7 @@ import {
     StorageV1Api,
     BatchV1Api,
     NetworkingV1Api,
+    V1ServiceAccount
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
@@ -271,7 +272,7 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
-
+        
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",

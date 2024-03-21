@@ -461,6 +461,7 @@ export class Kubero {
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
+        
         if (contextName) {
             let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
             return app;
@@ -469,6 +470,7 @@ export class Kubero {
 
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
+        
         const a = app?.body as IKubectlApp;
         let t =  new KubectlTemplate(a.spec as IApp);
 
@@ -831,6 +833,11 @@ export class Kubero {
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
+                    serviceAccount: {
+                        annotations: {},
+                        create: false,
+                        name: ''
+                    },
                     image: {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
