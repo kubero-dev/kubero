@@ -1694,9 +1694,21 @@ export default defineComponent({
         const gitprovider = this.pipelineData.git.provider;
 
         axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+          if (response.data.length === 0) {
+            return;
+          }
+
           for (let i = 0; i < response.data.length; i++) {
             this.branchesList.push(response.data[i]);
           }
+         
+          // set default branch based on te repository's default branch
+          let defaultBranch = this.pipelineData.git.repository.default_branch;
+          if (this.branchesList.includes(defaultBranch)) {
+            this.branch = defaultBranch;
+          } else {
+            this.branch = this.branchesList[0];
+          }          
         });
       },
 
