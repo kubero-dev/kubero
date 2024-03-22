@@ -322,6 +322,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "serviceAccount": {
+                  "example": "any"
+                },
                 "buildpack": {
                   "example": "any"
                 },
@@ -399,6 +402,9 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "serviceAccount": {
+                    "example": "any"
+                  },
                   "buildpack": {
                     "example": "any"
                   },
@@ -2237,6 +2243,18 @@
     },
     "/settings": {
       "get": {
+        "tags": [
+          "UI"
+        ],
+        "summary": "Get the Kubero settings",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
         "tags": [
           "UI"
         ],
