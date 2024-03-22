@@ -738,7 +738,11 @@
                       mdi-plus
                   </v-icon>
               </v-btn>
-            </v-col>
+           </v-col>
+          </v-row>
+
+          <v-row>
+            <v-file-input prepend-icon="mdi-file" label="Drop or select .env file" show-size v-model="envFile" @change="handleFileInput"></v-file-input>
           </v-row>
         </v-expansion-panel-text>
       </v-expansion-panel>
@@ -1242,6 +1246,7 @@ export default defineComponent({
       advanced: false,
       panel: [0],
       valid: false,
+      envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
       buildpack: {
         run: {
@@ -2095,6 +2100,32 @@ export default defineComponent({
         for (let i = 0; i < this.sAAnnotations.length; i++) {
           if (this.sAAnnotations[i].annotation === index) {
             this.sAAnnotations.splice(i, 1);
+          }
+        }
+      },
+      handleFileInput() {
+        for (let i = 0; i < this.envFile.length; i++) {
+          const file = this.envFile[i];
+          const reader = new FileReader();
+          reader.onload = () => {
+            const text = reader.result;
+            this.parseEnvFile(text);
+          };
+          reader.readAsText(file);
+        }
+
+        // clear file input
+        this.envFile = [];
+      },
+      parseEnvFile(text: any) {
+        const lines = text.split('\n');
+        for (const line of lines) {
+          const [name, value] = line.split('=');
+          // check if name isn't commented out
+          if (name && !name.startsWith('#') && value) {
+            if (!this.envvars.some(envvar => envvar.name === name.trim())) {
+              this.envvars.push({ name: name.trim(), value: value.trim() });
+            }
           }
         }
       },
