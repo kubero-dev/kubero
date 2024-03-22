@@ -1218,26 +1218,23 @@ export default defineComponent({
     return {
       breadcrumbItems: [
           {
-              title: 'dashboard',
-              text: '-',
+              title: 'dashboard.-',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
           {
-              title: 'Pipeline',
+              title: 'Pipeline.'+this.pipeline,
               text: this.pipeline,
               disabled: false,
               to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
           },
           {
-              title: 'Phase',
-              text: this.phase,
+              title: 'Phase.'+this.phase,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           },
           {
-              title: 'App',
-              text: this.app,
+              title: 'App.'+this.app,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           }

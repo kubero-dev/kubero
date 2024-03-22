@@ -9,7 +9,7 @@
           :to="item.to"
           :disabled="item.disabled"
       >
-        <v-icon v-if="item.icon">{{ item.icon }}</v-icon> <div class="breadcrumTitle">{{ item.title }}</div><div class="breadcrumText">{{ item.text }}</div>
+        <div class="breadcrumTitle">{{ item.title.split('.')[0] }}</div><div class="breadcrumText">{{ item.title.split('.')[1] }}</div>
       </v-breadcrumbs-item>
       </template>
   </v-breadcrumbs>

@@ -166,8 +166,7 @@ export default defineComponent({
 
         breadcrumbItems: [
             {
-                title: 'Dashboard',
-                text: '-',
+                title: 'Dashboard.-',
                 disabled: true,
                 href: '/',
             }

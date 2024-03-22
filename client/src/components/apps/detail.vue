@@ -98,26 +98,22 @@ export default defineComponent({
             tab: null,
             breadcrumbItems: [
                 {
-                    title: 'dashboard',
-                    text: '-',
+                    title: 'dashboard.-',
                     disabled: false,
                     to: { name: 'Pipelines', params: {}}
                 },
                 {
-                    title: 'Pipeline',
-                    text: this.pipeline,
+                    title: 'Pipeline.'+this.pipeline,
                     disabled: false,
                     to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
                 },
                 {
-                    title: 'Phase',
-                    text: this.phase,
+                    title: 'Phase.'+this.phase,
                     disabled: true,
                     href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 },
                 {
-                    title: 'App',
-                    text: this.app,
+                    title: 'App-'+this.app,
                     disabled: true,
                     href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 }

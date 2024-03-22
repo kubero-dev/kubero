@@ -180,14 +180,12 @@ export default defineComponent({
     data () {return {
         breadcrumbItems: [
             {
-                title: 'Dashboard',
-                text: '-',
+                title: 'Dashboard.-',
                 disabled: false,
                 to: { name: 'Pipelines', params: {}}
             },
             {
-                title: 'Pipeline',
-                text: this.pipeline,
+                title: 'Pipeline.'+this.pipeline,
                 disabled: true,
                 to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
             }
