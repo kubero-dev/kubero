@@ -312,11 +312,11 @@
                 md="4"
                 v-if="settings.kubero.auditLogs.enabled"
             >
-                <v-text-field
-                v-model="settings.kubero.auditLogs.storageClassName"
-                label="storage class name"
-                required
-                ></v-text-field>
+                <v-select
+                  v-model="settings.kubero.auditLogs.storageClassName"
+                  :items="storageclasses"
+                  label="Storage Class"
+                ></v-select>
             </v-col>
             <v-col
                 cols="12"
@@ -345,6 +345,7 @@
 
 
 <script lang="ts">
+import axios from 'axios'
 import { defineComponent } from 'vue'
 import { Secrets } from './form.vue'
 
@@ -361,16 +362,29 @@ export default defineComponent({
         }
     },
     mounted() {
-        console.log(this.settings.kubero.namespace)
+        this.loadStorageClasses();
     },
     components: {
     },
     data() {
         return {
             show: false,
+            storageclasses : [
+                /*
+                'standard',
+                'standard-fast',
+                */
+            ] as string[],
         }
     },
     methods: {
+      loadStorageClasses() {
+        axios.get('/api/config/storageclasses').then(response => {
+          for (let i = 0; i < response.data.length; i++) {
+            this.storageclasses.push(response.data[i].name);
+          }
+        });
+      },
     }
 })
 
