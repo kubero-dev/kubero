@@ -1,20 +1,27 @@
 
 <template>
     <div>
-    <!--
         <v-row>
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <h2>
-                    General Kubero Settings
+                    Connecting repositories
                 </h2>
+                <!--
                 <p class="text-justify">
-                    The configuration valures are readonly in this version. Please edit the values in the Kubero CRD directly.
+                    Define the available pod sizes for the applications.
                 </p>
+                -->
+
+                <v-alert 
+                    type="info"
+                    variant="tonal"
+                    style="margin-bottom: 20px; margin-top: 20px;"
+                    text="Configuration changes won't take effect until the Kubero UI container is restarted manually.">
+                </v-alert>
             </v-col>
         </v-row>
 
         <v-divider class="ma-5"></v-divider>
-    -->
         <h4 class="text-uppercase">Webhook Endpoint</h4>
         <v-row>
             <v-col
