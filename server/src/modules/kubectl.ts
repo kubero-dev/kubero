@@ -25,6 +25,7 @@ import {
     StorageV1Api,
     BatchV1Api,
     NetworkingV1Api,
+    V1ServiceAccount
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
@@ -271,7 +272,7 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
-
+        
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -385,19 +386,6 @@ export class Kubectl {
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;
-    }
-
-    public async getKuberoconfig(): Promise<V1ConfigMap | void> {
-        try {
-            const config = await this.coreV1Api.readNamespacedConfigMap(
-                'kubero-config',
-                'kubero' // TODO: This should be configurable
-            )
-            return config.body;
-        } catch (error) {
-            //debug.log(error);
-            debug.log("getKuberoconfig: error getting config");
-        }
     }
 
     public async createEvent(type: "Normal" | "Warning",reason: string, eventName: string, message: string) {
@@ -1087,6 +1075,96 @@ export class Kubectl {
             true
         );
         return ws
+    }
+
+/*
+    public async getKuberoconfig(): Promise<V1ConfigMap | void> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        try {
+            const config = await this.coreV1Api.readNamespacedConfigMap(
+                'kubero-config',
+                namespace
+            )
+            return config.body;
+        } catch (error) {
+            console.log(error);
+            debug.log("getKuberoconfig: error getting config");
+        }
+    }
+*/
+
+    public async getKuberoConfig(namespace: string): Promise<any> {
+        try {
+            const config = await this.customObjectsApi.getNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberoes',
+                'kubero'
+            )
+            //console.log(config.body);
+            return config.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoConfig: error getting config");
+        }
+    }
+
+
+    public async updateKuberoConfig(namespace: string, config: any) {
+        const patch = [
+            {
+              op: 'replace',
+              path: '/spec',
+              value: config.spec,
+            },
+        ];
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        try {
+            await this.customObjectsApi.patchNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberoes',
+                'kubero',
+                patch,
+                undefined,
+                undefined,
+                undefined,
+                options
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+    public async updateKuberoSecret(namespace: string, secret: any) {
+
+        const patch = [
+            {
+              op: 'replace',
+              path: '/stringData',
+              value: secret,
+            },
+        ];
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        try {
+            await this.coreV1Api.patchNamespacedSecret(
+                'kubero-secrets',
+                namespace,
+                patch,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                options
+            )
+        } catch (error) {
+            debug.log(error);
+        }
     }
 
 }

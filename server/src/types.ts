@@ -14,7 +14,6 @@ export interface IApp {
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
-
     image : {
         repository: string,
         tag: string,
@@ -117,20 +116,26 @@ export interface IApp {
         port: number,
         type: string
     },
+    */
     serviceAccount: {
         annotations: {},
         create: boolean,
         name: string,
     },
-    tolerations: [],
-*/
+    //tolerations: [],
 }
+
 
 
 export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
     envVars: {}[],
+    serviceAccount: {
+        annotations: {},
+        create: boolean,
+        name: string,
+    },
     image : {
         repository: string,
         tag: string,
@@ -307,16 +312,19 @@ export interface IBuildpack {
     fetch: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     build: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     run: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     tag: string;
@@ -344,11 +352,15 @@ export interface IKuberoConfig {
         console: {
             enabled: boolean;
         }
+        admin: {
+            disabled: boolean;
+        }
         readonly: boolean;
         banner: {
             message: string;
             bgcolor: string;
             fontcolor: string;
+            show: boolean;
         }
     }
 }
@@ -400,14 +412,13 @@ export interface Workload {
         age: Date | undefined,
         startTime: Date | undefined,
         containers: WorkloadContainer[]
-    }
+}
 
-    export interface WorkloadContainer {
-        name: string,
-        image: string,
-        restartCount?: number,
-        ready?: boolean,
-        started?: boolean,
-        age: Date | undefined,
-    }
-
+export interface WorkloadContainer {
+    name: string,
+    image: string,
+    restartCount?: number,
+    ready?: boolean,
+    started?: boolean,
+    age: Date | undefined,
+}

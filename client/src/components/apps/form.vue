@@ -350,7 +350,7 @@
       </v-expansion-panel>
 
       <!-- SECURITY -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -481,7 +481,7 @@
 
 
       <!-- NETWORKING -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -534,7 +534,7 @@
 
 
       <!-- CORS -->
-      <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" :style="advanced ? 'display: block;' : 'display: none;'">
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Cors</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
@@ -621,6 +621,65 @@
 
 
 
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
+      <!-- SERVICEACCOUNT ANNOTATIONS --> 
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">ServiceAcccount Annotations</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
+          <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
+            <v-col
+              cols="12"
+              md="5"
+            >
+              <v-text-field
+                v-model="annotation.annotation"
+                label="annotation"
+                :counter="120"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="annotation.value"
+                label="value"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="1"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+                @click="removeSAAnnotationLine(annotation.annotation)"
+              >
+                  <v-icon dark >
+                      mdi-minus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+            >
+              <v-btn
+              elevation="2"
+              icon
+              small
+              @click="addSAAnnotationLine()"
+              >
+                  <v-icon dark >
+                      mdi-plus
+                  </v-icon>
+              </v-btn>
+            </v-col>
+          </v-row>
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -1016,7 +1075,7 @@ import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 import Breadcrumbs from "../breadcrumbs.vue";
-
+import { remove } from "lodash";
 
 type App = {
     name: string,
@@ -1084,6 +1143,10 @@ type Ingress = {
   }[],
 }
 
+type ServiceAccount = {
+  annotations: any,
+}
+
 type Buildpack = {
   name?: string,
   run: BuildpackStepConfig,
@@ -1131,6 +1194,11 @@ type EnvVar = {
   value: string,
 }
 
+type SAAnnotations = {
+  annotation: string,
+  value: string,
+}
+
 export default defineComponent({
     props: {
       pipeline: {
@@ -1144,28 +1212,29 @@ export default defineComponent({
       app: {
         type: String,
         default: "new"
-      }
+      },
     },
     data () {
     return {
       breadcrumbItems: [
           {
-              text: 'DASHBOARD',
+              title: 'dashboard.-',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
           {
-              text: 'PIPELINE:'+this.pipeline,
+              title: 'Pipeline.'+this.pipeline,
+              text: this.pipeline,
               disabled: false,
               to: { name: 'Pipeline Apps', params: { pipeline: this.pipeline }}
           },
           {
-              text: 'PHASE:'+this.phase,
+              title: 'Phase.'+this.phase,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           },
           {
-              text: 'APP:'+this.app,
+              title: 'App.'+this.app,
               disabled: false,
               to: this.getAppBreadcrumbLink(),
           }
@@ -1295,6 +1364,9 @@ export default defineComponent({
       envvars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
+      sAAnnotations: [
+        //{ annotation: '', value: '' },
+      ] as SAAnnotations[],
       containerPort: 8080,
       podsize: '',
       podsizes: [
@@ -1363,6 +1435,9 @@ export default defineComponent({
           drop: [],
         }
       },
+      serviceAccount: {
+        annotations: {} as any,
+      } as ServiceAccount,
       ingress: {
         annotations: {
           'nginx.ingress.kubernetes.io/whitelist-source-range': '',
@@ -1524,6 +1599,7 @@ export default defineComponent({
           this.docker.tag = response.data.image.tag;
 
           this.envvars = response.data.envVars;
+          this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
@@ -1539,13 +1615,16 @@ export default defineComponent({
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(1)
+            this.panel.push(5)
+          }
+          if (Object.keys(this.sAAnnotations).length > 0) {
+            this.panel.push(4)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(3)
+            this.panel.push(7)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(4)
+            this.panel.push(8)
           }
 
           // Backward compatibility older v1.11.1
@@ -1617,9 +1696,21 @@ export default defineComponent({
         const gitprovider = this.pipelineData.git.provider;
 
         axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+          if (response.data.length === 0) {
+            return;
+          }
+
           for (let i = 0; i < response.data.length; i++) {
             this.branchesList.push(response.data[i]);
           }
+         
+          // set default branch based on te repository's default branch
+          let defaultBranch = this.pipelineData.git.repository.default_branch;
+          if (this.branchesList.includes(defaultBranch)) {
+            this.branch = defaultBranch;
+          } else {
+            this.branch = this.branchesList[0];
+          }          
         });
       },
 
@@ -1684,13 +1775,16 @@ export default defineComponent({
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(1)
+              this.panel.push(5)
+            }
+            if (Object.entries(response.data.spec.serviceAccount.annotations).length > 0) {
+              this.panel.push(4)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(3)
+              this.panel.push(7)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(4)
+              this.panel.push(8)
             }
 
             this.security = response.data.spec.image.run.securityContext || {};
@@ -1712,6 +1806,8 @@ export default defineComponent({
             this.autodeploy = response.data.spec.autodeploy;
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
+            this.serviceAccount = response.data.spec.serviceAccount;
+            this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
             this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
@@ -1814,6 +1910,13 @@ export default defineComponent({
           domain: this.domain,
           ssl: this.ssl,
           envvars: this.envvars,
+          // loop through serviceaccount annotations and convert to object
+          serviceAccount: {
+            annotations: this.sAAnnotations.reduce((acc, cur) => {
+              acc[cur.annotation] = cur.value;
+              return acc;
+            }, {} as any),
+          },
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
@@ -1905,6 +2008,12 @@ export default defineComponent({
           domain: this.domain.toLowerCase(),
           ssl: this.ssl,
           envvars: this.envvars,
+          serviceAccount: {
+            annotations: this.sAAnnotations.reduce((acc, cur) => {
+              acc[cur.annotation] = cur.value;
+              return acc;
+            }, {} as any),
+          },
           podsize: this.podsize,
           autoscale: this.autoscale,
           web: {
@@ -1978,6 +2087,19 @@ export default defineComponent({
           }
         }
       },
+      addSAAnnotationLine() {
+        this.sAAnnotations.push({
+          annotation: '', 
+          value: '',
+        });
+      },
+      removeSAAnnotationLine(index: string) {
+        for (let i = 0; i < this.sAAnnotations.length; i++) {
+          if (this.sAAnnotations[i].annotation === index) {
+            this.sAAnnotations.splice(i, 1);
+          }
+        }
+      },
       handleFileInput() {
         for (let i = 0; i < this.envFile.length; i++) {
           const file = this.envFile[i];
@@ -1992,8 +2114,6 @@ export default defineComponent({
         // clear file input
         this.envFile = [];
       },
-
-
       parseEnvFile(text: any) {
         const lines = text.split('\n');
         for (const line of lines) {

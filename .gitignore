@@ -14,5 +14,6 @@ example-*.json
 .dockerdata
 
 secrets.yaml
+config.yaml
 
 db
