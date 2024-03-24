@@ -117,6 +117,6 @@ export class Settings {
     }
 
     private checkAdminDisabled() {
-        return this.runningConfig.kubero.admin.disabled
+        return this.runningConfig.kubero.admin?.disabled || false
     }
 }
