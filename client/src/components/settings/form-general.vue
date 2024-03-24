@@ -148,6 +148,7 @@
             <v-col
                 cols="12"
                 md="3"
+                v-if="settings.kubero.auth.github.enabled"
             >
                 <v-text-field
                 v-model="settings.kubero.auth.github.org"
