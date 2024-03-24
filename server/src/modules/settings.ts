@@ -82,9 +82,30 @@ export class Settings {
 
         this.kubectl.updateKuberoConfig(namespace, kuberoes)
         this.kubectl.updateKuberoSecret(namespace, config.secrets)
+        this.setEnv(config.secrets)
 
 
         return kuberoes
+    }
+
+    private setEnv(secrets: any) {
+        /*
+        for (const key in secrets) {
+            process.env[key] = secrets[key]
+        }
+        */
+        process.env.GITHUB_PERSONAL_ACCESS_TOKEN = secrets.GITHUB_PERSONAL_ACCESS_TOKEN
+        process.env.GITEA_PERSONAL_ACCESS_TOKEN = secrets.GITEA_PERSONAL_ACCESS_TOKEN
+        process.env.GITEA_BASEURL = secrets.GITEA_BASEURL
+        process.env.GITLAB_PERSONAL_ACCESS_TOKEN = secrets.GITLAB_PERSONAL_ACCESS_TOKEN
+        process.env.GITLAB_BASEURL = secrets.GITLAB_BASEURL
+        process.env.BITBUCKET_APP_PASSWORD = secrets.BITBUCKET_APP_PASSWORD
+        process.env.BITBUCKET_USERNAME = secrets.BITBUCKET_USERNAME
+        process.env.GOGS_PERSONAL_ACCESS_TOKEN = secrets.GOGS_PERSONAL_ACCESS_TOKEN
+        process.env.GOGS_BASEURL = secrets.GOGS_BASEURL
+        process.env.KUBERO_WEBHOOK_SECRET = secrets.KUBERO_WEBHOOK_SECRET
+        process.env.GITHUB_CLIENT_SECRET = secrets.GITHUB_CLIENT_SECRET
+        process.env.OAUTH2_CLIENT_SECRET = secrets.OAUTH2_CLIENT_SECRET
     }
 
     // read config from local filesystem (dev mode)
