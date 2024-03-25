@@ -1,23 +1,30 @@
 import { Kubectl } from './kubectl';
-import { IKuberoConfig} from '../types';
+import { IKuberoConfig, IMessage} from '../types';
 import { KuberoConfig } from './config';
 import YAML from 'yaml'
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
+import { Audit } from './audit';
 
 export interface SettingsOptions {
     kubectl: Kubectl;
     config: IKuberoConfig;
+    audit: Audit;
+    io: any;
 }
 
 export class Settings {
     private kubectl: Kubectl;
     private runningConfig: IKuberoConfig
+    private audit: Audit;
+    private _io: any;
     constructor(
         options: SettingsOptions
     ) {
         this.kubectl = options.kubectl
         this.runningConfig = options.config
+        this.audit = options.audit
+        this._io = options.io
     }
 
     public async getSettings(): Promise<any> {
@@ -83,6 +90,24 @@ export class Settings {
         this.kubectl.updateKuberoConfig(namespace, kuberoes)
         this.kubectl.updateKuberoSecret(namespace, config.secrets)
         this.setEnv(config.secrets)
+
+        this.audit?.log({
+            user: 'kubero',
+            severity: 'normal',
+            action: 'update',
+            namespace: '',
+            phase: '',
+            app: '',
+            pipeline: '',
+            resource: 'system',
+            message: 'kubero settings updated',
+        });
+        const message = {
+            'action': 'updated',
+            'text': 'Kubero settings updated',
+            'data': {}
+        } as IMessage;
+        this._io.emit('updatedKuberoSettings', message);
 
 
         return kuberoes
