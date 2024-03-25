@@ -110,7 +110,7 @@
                         </tbody>
                     </v-table>
                 </div>
-                <div class="mb-5 mt-10">
+                <div class="mb-5 mt-10" v-if="appData.spec.saAnnotations?.length > 0">
                     <h3>Service Acccount Annotations</h3>
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
