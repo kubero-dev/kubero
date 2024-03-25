@@ -33,7 +33,8 @@ kuberoStore.kubero.socket = socket;
 
 type Message = {
     action: string,
-    pipelineName: string,
+    text?: string,
+    pipelineName?: string,
     phaseName?: string,
     appName?: string,
     data?: any
@@ -49,6 +50,10 @@ socket.on('updatedPipelines', (message: Message) => {
     //console.log("updatedPipelines", message);
     const text = `Pipeline <b>${message.pipelineName}</b> ${message.action}`;
     triggerToast('success', 'Pipeline '+message.action, text);
+});
+
+socket.on('updatedKuberoSettings', (message: Message) => {
+    triggerToast('success', 'Kubero System', message.text ?? '');
 });
 
 function triggerToast(icon: SweetAlertIcon, title: string, text: string) {

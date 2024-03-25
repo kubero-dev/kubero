@@ -388,9 +388,10 @@ export interface ILoglines {
 
 export interface IMessage {
     action: string,
+    text?: string,
     appName?: string,
-    pipelineName: string,
-    phaseName: string,
+    pipelineName?: string,
+    phaseName?: string,
     data?: any
 }
 
