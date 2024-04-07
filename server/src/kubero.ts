@@ -673,7 +673,7 @@ export class Kubero {
 
     private async handleWebhookPush(webhook: IWebhook) {
         debug.log('handleWebhookPush');
-        let apps = await this.getAppsByBranch(webhook.branch);
+        let apps = await this.getAppsByRepoAndBranch(webhook.repo.ssh_url, webhook.branch);
 
         for (const app of apps) {
             const message = {
@@ -785,11 +785,11 @@ export class Kubero {
         return pulls
     }
 
-    private async getAppsByBranch(branch: string) {
+    private async getAppsByRepoAndBranch(repository: string, branch: string) {
         debug.log('getAppsByBranch: '+branch);
         let apps: IApp[] = [];
         for (const app of this.appStateList) {
-            if (app.branch === branch) {
+            if (app.branch === branch && repository === app.gitrepo?.ssh_url) {
                 apps.push(app);
             }
         }
