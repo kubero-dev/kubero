@@ -330,12 +330,16 @@ export interface IBuildpack {
     tag: string;
 }
 
-interface ISNotificationlack {
+export interface INotificationSlack {
     url: string;
     channel: string;
 }
 
-interface INotificationWebhook {
+export interface INotificationWebhook {
+    url: string;
+}
+
+export interface INotificationDiscord {
     url: string;
 }
 export interface IKuberoConfig {
@@ -347,7 +351,7 @@ export interface IKuberoConfig {
             name: string;
             type: 'slack' | 'webhook' | 'discord',
             enabled: boolean;
-            config: ISNotificationlack | INotificationWebhook;
+            config: INotificationSlack | INotificationWebhook | INotificationDiscord
         }
     ]
     templates: {  // introduced v1.11.0

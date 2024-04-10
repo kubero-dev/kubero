@@ -1,7 +1,7 @@
 import { Audit } from "./audit";
 import { Server } from "socket.io";
 import { Kubectl } from "./kubectl";
-import { IKuberoConfig } from "../types";
+import { IKuberoConfig, INotificationSlack, INotificationWebhook} from "../types";
 
 
 export interface INotification {
@@ -17,6 +17,9 @@ export interface INotification {
     data?: any
 }
 
+export interface INotificationDiscord {
+    url: string;
+}
 
 export class Notifications {
     
@@ -81,7 +84,9 @@ export class Notifications {
     private sendAllGlobalCustomNotification(message: INotification) {
         this.config.notifications.forEach(notification => {
             if (notification.enabled) {
-                this.sendCustomNotification(notification.type, {
+                this.sendCustomNotification(notification.type, 
+                notification.config,
+                {
                     name: notification.name,
                     user: message.user,
                     resource: message.resource,
@@ -97,16 +102,16 @@ export class Notifications {
         });
     }
 
-    private sendCustomNotification(type: string, message: INotification) {
+    private sendCustomNotification(type: string, config: any, message: INotification) {
         switch (type) {
             case 'slack':
-                this.sendSlackNotification(message);
+                this.sendSlackNotification(message, config as INotificationSlack);
                 break;
             case 'webhook':
-                this.sendWebhookNotification(message);
+                this.sendWebhookNotification(message, config as INotificationWebhook);
                 break;
             case 'discord':
-                this.sendDiscordNotification(message);
+                this.sendDiscordNotification(message, config as INotificationDiscord);
                 break;
             default:
                 console.log('unknown notification type', type);
@@ -114,15 +119,47 @@ export class Notifications {
         }
     }
 
-    private sendSlackNotification(message: INotification) {
-        console.log('sendSlackNotification', message);
+    private sendSlackNotification(message: INotification, config: INotificationSlack) {
+        // URL : https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
+        // Docs: https://api.slack.com/messaging/webhooks#posting_with_webhooks
+        fetch(config.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: message.message,
+            })
+        })
+        .then( res => console.log('Slack notification sent to '+config.url+' with status '+res.status))
+        //.then(json => console.log(json));
     }
 
-    private sendWebhookNotification(message: INotification) {
-        console.log('sendWebhookNotification', message);
+    private sendWebhookNotification(message: INotification, config: INotificationWebhook) {
+        fetch(config.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: message.message,
+            })
+        })
+        .then( res => console.log('Slack notification sent to '+config.url+' with status '+res.status))
     }
 
-    private sendDiscordNotification(message: INotification) {
-        console.log('sendDiscordNotification', message);
+    private sendDiscordNotification(message: INotification, config: INotificationDiscord) {
+        //URL : https://discord.com/api/webhooks/YYYYYYYYY/XXXXXX
+        //Docs: https://discord.com/developers/docs/resources/webhook#execute-webhook
+        fetch(config.url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                content: message.message,
+            })
+        })
+        .then( res => console.log('Discord notification sent to '+config.url+' with status '+res.status))
     }
 }
