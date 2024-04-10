@@ -48,7 +48,7 @@ export class Notifications {
         this.sendAllGlobalCustomNotification(message);
     }
     private sendWebsocketMessage(n: INotification, io: Server) {
-        console.log('sendWebsocketMessage', n);
+        //console.log('sendWebsocketMessage', n);
         io.emit(n.name, n);
     }
 
@@ -133,6 +133,7 @@ export class Notifications {
         })
         .then( res => console.log('Slack notification sent to '+config.url+' with status '+res.status))
         //.then(json => console.log(json));
+        .catch( err => console.log('Slack notification failed to '+config.url+' with error '+err))
     }
 
     private sendWebhookNotification(message: INotification, config: INotificationWebhook) {
@@ -145,7 +146,8 @@ export class Notifications {
                 text: message.message,
             })
         })
-        .then( res => console.log('Slack notification sent to '+config.url+' with status '+res.status))
+        .then( res => console.log('Webhook notification sent to '+config.url+' with status '+res.status))
+        .catch( err => console.log('Webhook notification failed to '+config.url+' with error '+err))
     }
 
     private sendDiscordNotification(message: INotification, config: INotificationDiscord) {
@@ -161,5 +163,6 @@ export class Notifications {
             })
         })
         .then( res => console.log('Discord notification sent to '+config.url+' with status '+res.status))
+        .catch( err => console.log('Discord notification failed to '+config.url+' with error '+err))
     }
 }

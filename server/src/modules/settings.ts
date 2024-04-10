@@ -58,6 +58,11 @@ export class Settings {
             config.settings.kubero.config.kubero.admin = { disabled: false }
         }
 
+        // Backward compatibility older than v.2.1.2
+        if ( !config.settings.kubero.config.notifications ) {
+            config.settings.kubero.config.notifications = []
+        }
+
         config["secrets"] = {
             GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
             GITEA_PERSONAL_ACCESS_TOKEN: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
