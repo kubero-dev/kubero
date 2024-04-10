@@ -1,7 +1,7 @@
 import { Audit } from "./audit";
 import { Server } from "socket.io";
 import { Kubectl } from "./kubectl";
-import { IKuberoConfig, INotificationSlack, INotificationWebhook} from "../types";
+import { IKuberoConfig, INotificationSlack, INotificationWebhook, INotificationDiscord, INotificationConfig} from "../types";
 
 
 export interface INotification {
@@ -15,10 +15,6 @@ export interface INotification {
     pipelineName: string,
     appName: string,
     data?: any
-}
-
-export interface INotificationDiscord {
-    url: string;
 }
 
 export class Notifications {
@@ -45,10 +41,19 @@ export class Notifications {
         this.sendWebsocketMessage(message, io);
         this.createKubernetesEvent(message);
         this.writeAuditLog(message)
-        this.sendAllGlobalCustomNotification(message);
+
+        this.sendAllCustomNotification(this.config.notifications, message);
+
+        if (message.data && message.data.app && message.data.app.notifications) {
+            this.sendAllCustomNotification(message.data.app.notifications, message);
+        }
+
+        if (message.data && message.data.pipeline && message.data.pipeline.notifications) {
+            this.sendAllCustomNotification(message.data.pipeline.notifications, message);
+        }
     }
     private sendWebsocketMessage(n: INotification, io: Server) {
-        //console.log('sendWebsocketMessage', n);
+        //console.log('sendWebsocketMessage', n); // debug
         io.emit(n.name, n);
     }
 
@@ -81,8 +86,8 @@ export class Notifications {
         }, 1000);
     }
 
-    private sendAllGlobalCustomNotification(message: INotification) {
-        this.config.notifications.forEach(notification => {
+    private sendAllCustomNotification(notifications: INotificationConfig[], message: INotification) {
+        notifications.forEach(notification => {
             if (notification.enabled) {
                 this.sendCustomNotification(notification.type, 
                 notification.config,
@@ -143,7 +148,8 @@ export class Notifications {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                text: message.message,
+                message: message,
+                secret: config.secret
             })
         })
         .then( res => console.log('Webhook notification sent to '+config.url+' with status '+res.status))

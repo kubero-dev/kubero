@@ -59,6 +59,18 @@
                         ></v-text-field>
                     </v-col>
                 </v-row>
+                <v-row>
+                    <v-col
+                        cols="12"
+                        md="10"
+                    >
+                        <v-text-field
+                        v-model="n.config.secret"
+                        label="Secret"
+                        required
+                        ></v-text-field>
+                    </v-col>
+                </v-row>
             </div>
             <div v-if="n.type == 'slack'">
                 <v-row>

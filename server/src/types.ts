@@ -337,23 +337,37 @@ export interface INotificationSlack {
 
 export interface INotificationWebhook {
     url: string;
+    secret: string;
 }
 
 export interface INotificationDiscord {
     url: string;
 }
+
+export interface INotification {
+    action: string;
+    user: string;
+    severity: string;
+    namespace: string;
+    phase: string;
+    app: string;
+    pipeline: string;
+    resource: string;
+    message: string;
+}
+
+export interface INotificationConfig{
+    enabled: boolean;
+    name: string;
+    type: 'slack' | 'webhook' | 'discord',
+    config: INotificationSlack | INotificationWebhook | INotificationDiscord;
+}
+
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
     clusterissuer: string;
-    notifications: [
-        {
-            name: string;
-            type: 'slack' | 'webhook' | 'discord',
-            enabled: boolean;
-            config: INotificationSlack | INotificationWebhook | INotificationDiscord
-        }
-    ]
+    notifications: INotificationConfig[];
     templates: {  // introduced v1.11.0
         enabled: boolean;
         catalogs: [

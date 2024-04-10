@@ -363,6 +363,7 @@ export type INotificationSlack = {
 
 export type INotificationWebhook = {
     url: string;
+    secret: string;
 }
 
 export type INotificationDiscord = {
