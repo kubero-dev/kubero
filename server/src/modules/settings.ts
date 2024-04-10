@@ -5,10 +5,12 @@ import YAML from 'yaml'
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { Audit } from './audit';
+import { INotification, Notifications } from './notifications';
 
 export interface SettingsOptions {
     kubectl: Kubectl;
     config: IKuberoConfig;
+    notifications: Notifications;
     audit: Audit;
     io: any;
 }
@@ -16,15 +18,18 @@ export interface SettingsOptions {
 export class Settings {
     private kubectl: Kubectl;
     private runningConfig: IKuberoConfig
-    private audit: Audit;
+    //private audit: Audit;
     private _io: any;
+    private notification: Notifications;
+
     constructor(
         options: SettingsOptions
     ) {
         this.kubectl = options.kubectl
         this.runningConfig = options.config
-        this.audit = options.audit
+        //this.audit = options.audit
         this._io = options.io
+        this.notification = options.notifications
     }
 
     public async getSettings(): Promise<any> {
@@ -90,7 +95,7 @@ export class Settings {
         this.kubectl.updateKuberoConfig(namespace, kuberoes)
         this.kubectl.updateKuberoSecret(namespace, config.secrets)
         this.setEnv(config.secrets)
-
+/*
         this.audit?.log({
             user: 'kubero',
             severity: 'normal',
@@ -108,7 +113,21 @@ export class Settings {
             'data': {}
         } as IMessage;
         this._io.emit('updatedKuberoSettings', message);
+*/
 
+        const m = {
+            'name': 'updateSettings',
+            'user': '',
+            'resource': 'system',
+            'action': 'update',
+            'severity': 'normal',
+            'message': 'Kubero settings updated',
+            'pipelineName': '',
+            'phaseName': '',
+            'appName': '',
+            'data': {}
+        } as INotification;
+        this.notification.send(m, this._io);
 
         return kuberoes
     }

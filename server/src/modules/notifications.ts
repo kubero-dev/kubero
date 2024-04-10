@@ -21,8 +21,7 @@ export class Notifications {
     
     public kubectl: Kubectl;
     private audit: Audit;
-    private _io: Server;
-    private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
+    public _io: Server;
 
     constructor(io: Server, audit: Audit, kubectl: Kubectl) {
         this.kubectl = kubectl;
@@ -30,36 +29,33 @@ export class Notifications {
         this.audit = audit;
         this._io = io;
 
-        this._io.on('connection', client => {
-            client.on('terminal', (data: any) => {
-                //console.log('terminal input', data.data);
-                //console.log('ws.OPEN', ws.readyState == ws.OPEN);
-                //console.log(ws.url);
-                //console.log(ws.eventNames());
-                //execStream.write(data.data);
-                if (this.execStreams[data.room]) {
-                    this.execStreams[data.room].stream.write(data.data);
-                }
-                //this.execStreams[data.room].stream.write(data.data);
-            }
-            )}
-        );
     }
 
-    public sendWebhook(message: INotification) {
-        this.sendWebsocketMessage(message);
+    public sendOLD(message: INotification) {
+        this.sendWebsocketMessageOLD(message);
         this.createKubernetesEvent(message);
         this.writeAuditLog(message)
     }
 
-    private sendWebsocketMessage(n: INotification) {
+    private sendWebsocketMessageOLD(n: INotification) {
+        console.log('sendWebsocketMessage', n);
         this._io.emit(n.name, n);
+    }
+
+    public send(message: INotification, io: Server) {
+        this.sendWebsocketMessage(message, io);
+        this.createKubernetesEvent(message);
+        this.writeAuditLog(message)
+    }
+    private sendWebsocketMessage(n: INotification, io: Server) {
+        console.log('sendWebsocketMessage', n);
+        io.emit(n.name, n);
     }
 
     private createKubernetesEvent(n: INotification) {
         this.kubectl.createEvent(
             'Normal', 
-            n.action, 
+            n.action.replace(/^./, str => str.toUpperCase()), 
             n.name, 
             n.message,
         );
@@ -67,7 +63,7 @@ export class Notifications {
 
     private writeAuditLog(n: INotification) {
         this.audit?.log({
-            action: n.name,
+            action: n.action,
             user: n.user,
             severity: n.severity,
             namespace: n.appName+'-'+n.phaseName,
