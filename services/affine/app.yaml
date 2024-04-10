@@ -1,0 +1,97 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: affine
+    labels:
+        manager: kubero
+spec:
+    name: affine
+    deploymentstrategy: docker
+    envVars:
+        - name: NODE_OPTIONS
+          value: --import=./scripts/register.js
+        - name: REDIS_SERVER_HOST
+          value: affine-redis-master
+        - name: DATABASE_URL
+          value: postgres://affine:afffine@affine-postgresql:5432/postgresql
+        - name: NODE_ENV
+          value: production
+        - name: AFFINE_ADMIN_EMAIL
+          value: admin@admin.com
+        - name: AFFINE_ADMIN_PASSWORD
+          value: admin
+        - name: TELEMETRY_ENABLE
+          value: "false"
+        - name: REDIS_SERVER_PASSWORD
+          value: affine
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /root/.affine
+          name: affine-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/postgresql.png
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: affine-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: postgresql
+                                      password: afffine
+                                      postgresPassword: postgres
+                                      username: affine
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.0.159
+        - displayName: Redis
+          env: []
+          icon: /img/addons/Redis.png
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: affine-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: affine
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3010"
+        pullPolicy: Always
+        repository: ghcr.io/toeverything/affine-graphql
+        tag: stable
