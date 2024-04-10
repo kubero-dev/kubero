@@ -329,10 +329,27 @@ export interface IBuildpack {
     },
     tag: string;
 }
+
+interface ISNotificationlack {
+    url: string;
+    channel: string;
+}
+
+interface INotificationWebhook {
+    url: string;
+}
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
     clusterissuer: string;
+    notifications: [
+        {
+            name: string;
+            type: 'slack' | 'webhook' | 'discord',
+            enabled: boolean;
+            config: ISNotificationlack | INotificationWebhook;
+        }
+    ]
     templates: {  // introduced v1.11.0
         enabled: boolean;
         catalogs: [

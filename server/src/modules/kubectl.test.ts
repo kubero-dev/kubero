@@ -5,7 +5,6 @@ import { IKuberoConfig} from '../types';
 
 describe('Kubectl', () => {
     it('should load config', () => {
-        const path = process.env.KUBERO_CONFIG_PATH as string || './config.yaml';
         const kubectl = new Kubectl();
 
         expect(kubectl).toBeTruthy();
