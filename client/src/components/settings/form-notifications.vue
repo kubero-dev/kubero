@@ -33,6 +33,25 @@
                 ></v-switch>
                 </v-col>
             </v-row>
+
+            <v-row>
+                <v-col
+                    cols="12"
+                    md="10"
+                >
+                <v-select
+                v-model="n.events"
+                :items="availableEvents"
+                :menu-props="{ maxHeight: '400' }"
+                label="Events"
+                multiple
+                hint="Select one or more"
+                persistent-hint
+                chips
+                class="capability"
+                ></v-select>
+                </v-col>
+            </v-row>
             <v-row>
                 <v-col
                     cols="12"
@@ -160,7 +179,20 @@ export default defineComponent({
     data() {
         return {
             show: false,
-            panel: -1
+            panel: -1,
+            availableEvents: [
+                'updatePipeline',
+                'deletePipeline',
+                'newPipeline',
+                'newApp',
+                'updateApp',
+                'deleteApp',
+                'restartApp',
+                'rebuildApp',
+                'deployApp',
+                'updateSettings',
+                'handleWebhookPush',
+            ]
         }
     },
     methods: {

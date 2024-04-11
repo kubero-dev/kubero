@@ -374,6 +374,7 @@ export type Notification = {
   name: string,
   enabled: boolean,
   type: 'slack' | 'webhook' | 'discord',
+  events: string[],
   config: INotificationSlack | INotificationWebhook | INotificationDiscord,
 }
 

@@ -88,7 +88,7 @@ export class Notifications {
 
     private sendAllCustomNotification(notifications: INotificationConfig[], message: INotification) {
         notifications.forEach(notification => {
-            if (notification.enabled) {
+            if (notification.enabled && notification.events.includes(message.name)) {
                 this.sendCustomNotification(notification.type, 
                 notification.config,
                 {

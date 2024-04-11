@@ -360,6 +360,7 @@ export interface INotificationConfig{
     enabled: boolean;
     name: string;
     type: 'slack' | 'webhook' | 'discord',
+    events: string[],
     config: INotificationSlack | INotificationWebhook | INotificationDiscord;
 }
 
