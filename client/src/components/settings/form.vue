@@ -12,7 +12,7 @@
         <v-tab value="buildpacks">Buildpacks</v-tab>
         <v-tab value="deployment">Deployment</v-tab>
         <v-tab value="templates">Templates</v-tab>
-        <v-tab value="notifications" disabled>Notifications</v-tab>
+        <v-tab value="notifications">Notifications</v-tab>
       </v-tabs>
 
 
@@ -36,6 +36,10 @@
         <v-window-item value="templates">
           <FormTemplates :settings="settings.settings"></FormTemplates>
         </v-window-item>
+
+        <v-window-item value="notifications">
+          <FormNotifications :settings="settings.settings"></FormNotifications>
+        </v-window-item>
       </v-window>
 
       <v-btn
@@ -57,6 +61,7 @@ import FormPodsizes from './form-podsizes.vue'
 import FormBuildpacks from './form-buildpacks.vue'
 import FormDeployment from './form-deployment.vue'
 import FormTemplates from './form-templates.vue'
+import FormNotifications from './form-notifications.vue'
 
 // types & interfaces
 export interface Secrets {
@@ -133,7 +138,7 @@ export interface PathsEntity {
 }
 export interface Kubero1 {
   auditLogs: AuditLogs;
-  auth: Auth1;
+  auth: Auth;
   config: Config;
   context: string;
   debug: string;
@@ -147,10 +152,6 @@ export interface AuditLogs {
   limit: string;
   size: string;
   storageClassName: string;
-}
-export interface Auth1 {
-  github: Github;
-  oauth2: Oauth2;
 }
 export interface Github {
   enabled: boolean;
@@ -305,15 +306,8 @@ export interface Webhook {
   secret: string;
 }
 export interface Auth {
-  github: Github1;
+  github: Github;
   oauth2: Oauth2;
-}
-export interface Github1 {
-  enabled: boolean;
-  id: string;
-  secret: string;
-  callbackUrl: string;
-  org: string;
 }
 export interface Oauth2 {
   enabled: boolean;
@@ -359,6 +353,29 @@ export type Catalog = {
     url: string,
     format: string
   }
+}
+
+
+export type INotificationSlack = {
+    url: string;
+    channel: string;
+}
+
+export type INotificationWebhook = {
+    url: string;
+    secret: string;
+}
+
+export type INotificationDiscord = {
+    url: string;
+}
+
+export type Notification = {
+  name: string,
+  enabled: boolean,
+  type: 'slack' | 'webhook' | 'discord',
+  events: string[],
+  config: INotificationSlack | INotificationWebhook | INotificationDiscord,
 }
 
 export default defineComponent({
@@ -428,10 +445,11 @@ export default defineComponent({
                 callbackUrl: '',
                 scopes: '',
               } as Oauth2,
-            } as Auth1,
+            } as Auth,
             config: {
               buildpacks: [] as Buildpack[],
               clusterissuer: '' as string,
+              notifications: [] as Notification[],
               kubero: {
                 banner: {
                   bgcolor: '',
@@ -493,6 +511,7 @@ export default defineComponent({
       FormBuildpacks,
       FormDeployment,
       FormTemplates,
+      FormNotifications,
     },
     methods: {
       saveSettings() {

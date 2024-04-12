@@ -5,13 +5,9 @@ import { IKuberoConfig} from '../types';
 
 describe('Kubectl', () => {
     it('should load config', () => {
-
-        const path = process.env.KUBERO_CONFIG_PATH as string || './config.yaml';
-        const config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
-        const kubectl = new Kubectl(config);
+        const kubectl = new Kubectl();
 
         expect(kubectl).toBeTruthy();
-        expect(kubectl.config).toBeTruthy();
         expect(kubectl.log).toBeTruthy();
 
         expect(kubectl.getPipelinesList()).resolves.toBeDefined();

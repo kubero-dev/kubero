@@ -18,6 +18,8 @@ import { Router as RouterSecurity } from "./routes/security";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
+import { Kubectl } from './modules/kubectl';
+import { Notifications } from './modules/notifications';
 import { Settings } from './modules/settings';
 import { Audit, AuditEntry } from './modules/audit';
 import * as crypto from "crypto"
@@ -72,6 +74,8 @@ export const configure = async (app: Express, server: Server) => {
     // create websocket and set it as en variable
     process.env.KUBERO_WS_TOKEN = crypto.randomBytes(20).toString('hex');
 
+    const kubectl = new Kubectl();
+
     const audit = new Audit(
         process.env.KUBERO_AUDIT_DB_PATH || './db', 
         parseInt(process.env.KUBERO_AUDIT_LIMIT || '1000') 
@@ -92,7 +96,10 @@ export const configure = async (app: Express, server: Server) => {
     }
     audit.logDelayed(auditEntry); // wait till db is created
 
-    const kubero = new Kubero(sockets, audit);
+    const notifications = new Notifications(sockets, audit, kubectl);
+
+    const kubero = new Kubero(sockets, audit, kubectl, notifications);
+    notifications.setConfig(kubero.config);
 
     // sleep 1 seconds to wait for kubernetes availability test
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -109,6 +116,7 @@ export const configure = async (app: Express, server: Server) => {
     const settings = new Settings({
         kubectl: kubero.kubectl,
         config: kubero.config,
+        notifications: notifications,
         audit: audit,
         io: sockets,
     });
