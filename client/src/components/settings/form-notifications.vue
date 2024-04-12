@@ -57,6 +57,24 @@
                     cols="12"
                     md="10"
                 >
+                <v-select
+                v-model="n.pipelines"
+                :items="availablePipelines"
+                :menu-props="{ maxHeight: '400' }"
+                label="Pipelines"
+                multiple
+                hint="Select one or more"
+                persistent-hint
+                chips
+                class="capability"
+                ></v-select>
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col
+                    cols="12"
+                    md="10"
+                >
                     <v-select
                     v-model="n.type"
                     :items="['webhook', 'slack', 'discord']"
@@ -161,6 +179,7 @@
 
 
 <script lang="ts">
+import axios from 'axios'
 import { defineComponent } from 'vue'
 
 // Types
@@ -176,10 +195,14 @@ export default defineComponent({
     },
     components: {
     },
+    mounted() {
+        this.loadPipelinesList();
+    },
     data() {
         return {
             show: false,
             panel: -1,
+            availablePipelines: ['all'] as string[],
             availableEvents: [
                 'updatePipeline',
                 'deletePipeline',
@@ -196,6 +219,17 @@ export default defineComponent({
         }
     },
     methods: {
+      async loadPipelinesList() {
+        const self = this;
+        const response = await axios.get(`/api/pipelines`)
+        .catch(error => {
+            console.log(error);
+        });
+        if (!response) return;
+        response.data.items.forEach((item: any) => {
+            this.availablePipelines.push(item.name);
+        });
+      },
         deleteNotification(catalog: Catalog) {
             this.panel = -1
             this.settings.kubero.config.notifications.splice(this.settings.kubero.config.notifications.indexOf(catalog), 1)

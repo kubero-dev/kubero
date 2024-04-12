@@ -44,6 +44,7 @@ export class Notifications {
 
         this.sendAllCustomNotification(this.config.notifications, message);
 
+        /* requires configuration in pipeline and app form 
         if (message.data && message.data.app && message.data.app.notifications) {
             this.sendAllCustomNotification(message.data.app.notifications, message);
         }
@@ -51,6 +52,7 @@ export class Notifications {
         if (message.data && message.data.pipeline && message.data.pipeline.notifications) {
             this.sendAllCustomNotification(message.data.pipeline.notifications, message);
         }
+        */
     }
     private sendWebsocketMessage(n: INotification, io: Server) {
         //console.log('sendWebsocketMessage', n); // debug
@@ -88,7 +90,10 @@ export class Notifications {
 
     private sendAllCustomNotification(notifications: INotificationConfig[], message: INotification) {
         notifications.forEach(notification => {
-            if (notification.enabled && notification.events.includes(message.name)) {
+            if (notification.enabled && 
+                notification.events.includes(message.name) &&
+                (notification.pipelines.length == 0 || notification.pipelines.includes('all') || notification.pipelines.includes(message.pipelineName))
+                ) {
                 this.sendCustomNotification(notification.type, 
                 notification.config,
                 {
