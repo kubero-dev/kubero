@@ -90,8 +90,6 @@ spec:
                           service:
                               port: 8025
                               type: ClusterIP
-          version:
-              latest: 0.0.159
     web:
         replicaCount: 1
     worker:
@@ -101,17 +99,3 @@ spec:
         pullPolicy: Always
         repository: pentacent/keila
         tag: latest
-        run:
-            command: node index.js
-            readOnlyAppStorage: true
-            repository: node
-            securityContext:
-                runAsUser: 0
-                runAsGroup: 0
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: false
-                runAsNonRoot: false
-                capabilities:
-                    add: []
-                    drop: []
-            tag: latest
