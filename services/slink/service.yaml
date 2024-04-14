@@ -9,6 +9,3 @@ website: https://github.com/andrii-kryvoviaz/slink
 icon: https://raw.githubusercontent.com/andrii-kryvoviaz/slink/main/client/static/favicon.png
 screenshots:
 - https://github.com/andrii-kryvoviaz/slink/raw/main/screens/e98ea79e-01bb-4e23-98ba-b18841d09c9b.png
-devnotes: 
-- type: info
-  message: Requires large Nodes with a lot of memory. >= 8GB recommended.
