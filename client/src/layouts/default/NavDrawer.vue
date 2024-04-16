@@ -93,7 +93,7 @@
             -->
             <v-list-item
                 prepend-icon="mdi-star"
-                :title="'v'+ kubero.version">
+                :title="''+ kubero.version">
             </v-list-item>
         </v-list>
     </template>
