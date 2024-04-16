@@ -3,7 +3,7 @@ import * as fs from 'fs';
 
 export interface AuditEntry {
     user: string,
-    severity: 'normal' | 'info' | 'warning' | 'error',
+    severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
     action: string,
     resource: 'system' | 'app' | 'pipeline' | 'phase' | 'namespace' | 'addon' | 'settings' | 'user' | 'events' | 'security' | 'templates' | 'config' | 'addons' | 'kubernetes' | 'unknown',
     //resource: string,

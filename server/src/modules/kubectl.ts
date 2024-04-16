@@ -49,11 +49,11 @@ export class Kubectl {
     public kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
-    public config: IKuberoConfig;
+    //public config: IKuberoConfig;
     private exec: Exec = {} as Exec;
 
-    constructor(config: IKuberoConfig) {
-        this.config = config;
+    constructor() {
+        //this.config = config;
         this.kc = new KubeConfig();
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
