@@ -133,7 +133,6 @@ export class Notifications {
     }
 
     private sendSlackNotification(message: INotification, config: INotificationSlack) {
-        // URL : https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX
         // Docs: https://api.slack.com/messaging/webhooks#posting_with_webhooks
         fetch(config.url, {
             method: 'POST',
@@ -165,7 +164,6 @@ export class Notifications {
     }
 
     private sendDiscordNotification(message: INotification, config: INotificationDiscord) {
-        //URL : https://discord.com/api/webhooks/YYYYYYYYY/XXXXXX
         //Docs: https://discord.com/developers/docs/resources/webhook#execute-webhook
         fetch(config.url, {
             method: 'POST',
