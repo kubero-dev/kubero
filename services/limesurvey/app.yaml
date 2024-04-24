@@ -1,0 +1,65 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: limesurvey
+    labels:
+        manager: kubero
+spec:
+    name: limesurvey
+    deploymentstrategy: docker
+    image:
+        repository: adamzammit/limesurvey
+        tag: latest
+        containerPort: "8082"
+    addons: 
+    - displayName: Kubero Mysql
+        env: []
+        icon: /img/addons/MySQL.png
+        id: kubero-operator
+        kind: KuberoMysql
+        resourceDefinitions:
+        KuberoMysql:
+            apiVersion: application.kubero.dev/v1alpha1
+            kind: KuberoMysql
+            metadata:
+            name: limesurvey-mysql
+            spec:
+            mysql:
+                auth:
+                createDatabase: true
+                database: limesurvey
+                password: root
+                rootPassword: root
+                username: root
+                global:
+                storageClass: standard
+                primary:
+                persistence:
+                    accessModes:
+                    - ReadWriteOnce
+                    size: 1Gi
+    envVars: 
+    - name: LIMESURVEY_DB_PASSWORD
+        value: root
+    - name: LIMESURVEY_ADMIN_USER
+        value: root
+    - name: LIME_ADMIN_PASSWORD
+        value: root
+    - LIMESURVEY_ADMIN_NAME:
+        value: Lime Administrator
+    - LIMESURVEY_ADMIN_EMAIL:
+        value: lime@lime.llime
+    extraVolumes: 
+    - accessModes:
+        - ReadWriteMany
+        emptyDir: false
+        mountPath: /var/www/html
+        name: limesurvey-volume
+        size: 1Gi
+        storageClass: standard
+    cronjobs: []
+    extraVolumes: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
