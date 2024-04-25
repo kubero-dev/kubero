@@ -1,6 +1,8 @@
 name: 'Yamllint services'
 on:
-  - pull_request
+  pull_request:
+    paths:
+      - 'services/**'
 jobs:
   yamllint:
     name: 'Yamllint'
@@ -12,6 +14,7 @@ jobs:
         uses: karancode/yamllint-github-action@master
         with:
           yamllint_file_or_dir: 'services'
+          yamllint_config_datapath: 'services/.yamllint'
           yamllint_strict: false
           yamllint_comment: true
         env:
