@@ -12,7 +12,7 @@ spec:
         tag: latest
         containerPort: "8082"
     addons: 
-    - displayName: Kubero Mysql
+      - displayName: Kubero Mysql
         env: []
         icon: /img/addons/MySQL.png
         id: kubero-operator
@@ -40,11 +40,11 @@ spec:
                     size: 1Gi
     envVars: 
     - name: LIMESURVEY_DB_PASSWORD
-        value: root
+      value: root
     - name: LIMESURVEY_ADMIN_USER
-        value: root
+      value: root
     - name: LIME_ADMIN_PASSWORD
-        value: root
+      value: root
     - LIMESURVEY_ADMIN_NAME:
         value: Lime Administrator
     - LIMESURVEY_ADMIN_EMAIL:
@@ -52,13 +52,12 @@ spec:
     extraVolumes: 
     - accessModes:
         - ReadWriteMany
-        emptyDir: false
-        mountPath: /var/www/html
-        name: limesurvey-volume
-        size: 1Gi
-        storageClass: standard
+      emptyDir: false
+      mountPath: /var/www/html
+      name: limesurvey-volume
+      size: 1Gi
+      storageClass: standard
     cronjobs: []
-    extraVolumes: []
     web:
         replicaCount: 1
     worker:

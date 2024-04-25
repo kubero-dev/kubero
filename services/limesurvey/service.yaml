@@ -1,9 +1,11 @@
 name: LimeSurvey
-description: 'LimeSurvey is the simple, quick and anonymous online survey tool that's bursting with juicy insights.'
+description: LimeSurvey is the simple, quick and anonymous online survey tool that's bursting with juicy insights.
 tags:
 - survel
 source: https://github.com/LimeSurvey/LimeSurvey
 website: https://www.limesurvey.org
-icon: https://camo.githubusercontent.com/9ae03e7911b79017d9ab4ea626c1c290c8bce1c540e4433414d1263af1ef9b5c/68747470733a2f2f7777772e6c696d657375727665792e6f72672f696d616765732f6c696d657375727665792f7376672f6c6f676f5f6c696d657375727665795f686561642e737667
+icon: https://avatars.githubusercontent.com/u/1364105?s=200&v=4
 documentation: https://manual.limesurvey.org/LimeSurvey_Manual
 screenshots:
+- https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png
+- https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png
