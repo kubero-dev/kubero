@@ -9,7 +9,7 @@ spec:
     repository: casbin/casdoor
     tag: latest
     containerPort: "8000"
-  addons: 
+  addons:
   - displayName: Kubero Mysql
     env: []
     icon: /img/addons/MySQL.png
@@ -36,7 +36,7 @@ spec:
                 accessModes:
                 - ReadWriteOnce
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: driverName
     value: mysql
   - name: dataSourceName

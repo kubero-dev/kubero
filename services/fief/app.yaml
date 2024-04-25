@@ -9,19 +9,19 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: SECRET
-          value: 
+          value:
         - name: FIEF_CLIENT_ID
-          value: 
+          value:
         - name: FIEF_CLIENT_SECRET
-          value: 
+          value:
         - name: ENCRYPTION_KEY
-          value: 
+          value:
         - name: FIEF_DOMAIN
-          value: 
+          value:
         - name: FIEF_MAIN_USER_EMAIL
           value: example@example.com
         - name: FIEF_MAIN_USER_PASSWORD
-          value: 
+          value:
         - name: CSRF_COOKIE_SECURE
           value: "False"
         - name: SESSION_DATA_COOKIE_SECURE

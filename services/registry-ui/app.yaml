@@ -13,7 +13,7 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
   addons: []
-  envVars: 
+  envVars:
   - name: PROC_TYPE
     value: web
   - name: PORT

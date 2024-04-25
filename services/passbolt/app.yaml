@@ -9,7 +9,7 @@ spec:
     repository: passbolt/passbolt
     tag: latest-ce
     containerPort: "80"
-  addons: 
+  addons:
   - displayName: Kubero Mysql
     env: []
     icon: /img/addons/MySQL.png
@@ -36,7 +36,7 @@ spec:
                 accessModes:
                 - ReadWriteOnce
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: APP_FULL_BASE_URL
     value: http://passbolt.mydomain.com
   - name: DATASOURCES_DEFAULT_HOST
@@ -48,7 +48,7 @@ spec:
   - name: DATASOURCES_DEFAULT_DATABASE
     value: passbolt
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - mountPath: /etc/passbolt/gpg
     name: passbolt-gpg-volume
     size: 1Gi

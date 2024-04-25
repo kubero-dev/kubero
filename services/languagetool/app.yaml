@@ -10,7 +10,7 @@ spec:
     tag: latest
     containerPort: "8010"
   addons: []
-  envVars: 
+  envVars:
   - name: langtool_languageModel
     value: /ngrams
   - name: Java_Xms
@@ -18,7 +18,7 @@ spec:
   - name: Java_Xmx
     value: 1g
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteOnce
     mountPath: /ngrams

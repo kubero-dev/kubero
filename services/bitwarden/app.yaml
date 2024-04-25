@@ -68,4 +68,3 @@ spec:
         pullPolicy: Always
         repository: bitwarden/self-host
         tag: beta
-

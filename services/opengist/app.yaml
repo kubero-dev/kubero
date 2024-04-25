@@ -12,7 +12,7 @@ spec:
   addons: []
   envVars: []
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteOnce
     mountPath: /root/.opengist

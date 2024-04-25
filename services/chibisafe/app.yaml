@@ -15,7 +15,7 @@ spec:
   addons: []
   envVars: []
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteOnce
     mountPath: /home/node/chibisafe/database
