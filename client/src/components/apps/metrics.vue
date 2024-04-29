@@ -3,7 +3,7 @@
         <v-row>
             <v-col cols="12" sm="12" md="12">
                 Memory
-                <VueApexCharts type="area" height="220" :options="AreaOptions" :series="memoryData"></VueApexCharts>
+                <VueApexCharts type="area" height="220" :options="memoryOptions" :series="memoryData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
@@ -52,17 +52,18 @@ export default defineComponent({
       },
     },
     data: () => ({
-      AreaOptions: {
+      memoryOptions: {
         fill: {
           opacity: 0.2,
           type: 'solid',
         },
         legend: {
+            show: false,
             position: 'right',
         },
         colors: colors,
         chart: {
-          id: 'vuechart-example',
+          id: 'memory',
           group: 'social',
           animations: {
             enabled: false,
@@ -76,14 +77,34 @@ export default defineComponent({
           enabled: false
         },
         xaxis: {
-          position: 'top',
+          type: 'datetime',
+          position: 'bottom',
           tickAmount: 10,
           labels: {
-            rotate: false,
+            rotate: -45,
             show: true,
             trim: true,
-            offsetY: 17,
+            //offsetY: 17,
+            
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: "MMM 'yy",
+              day: 'dd MMM HH:mm',
+              hour: 'HH:mm',
+            },
+            
           }
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM HH:mm:ss'
+          }
+        },
+        yaxis: {
+          decimalsInFloat: 1,
+          title: {
+            text: 'Memory (MiB)',
+          },
         }
       },
       ResponsetimeOptions: {
@@ -114,7 +135,6 @@ export default defineComponent({
           position: 'top',
           tickAmount: 10,
           labels: {
-            rotate: false,
             show: true,
             trim: true,
             offsetY: 17,
@@ -123,7 +143,7 @@ export default defineComponent({
       },
       httpStusCodeOptions: {
         fill: {
-          opacity: 0.2,
+          opacity: 0.5,
           type: 'solid',
         },
         legend: {
@@ -149,7 +169,6 @@ export default defineComponent({
           position: 'top',
           tickAmount: 10,
           labels: {
-            rotate: false,
             show: true,
             trim: true,
             offsetY: 17,
@@ -183,7 +202,6 @@ export default defineComponent({
           position: 'top',
           tickAmount: 10,
           labels: {
-            rotate: false,
             show: true,
             trim: true,
             offsetY: 17,
@@ -204,16 +222,12 @@ export default defineComponent({
             data: [] as number[],
         }
       ],
-      memoryData: [
-        {
-            name: 'user',
-            data: [] as number[],
-        },
-        {
-            name: 'system',
-            data: [] as number[],
-        },
-      ],
+      memoryData: [] as {
+            name: string,
+            data: {
+                x: string, 
+                y: number}[],
+      }[],
       responsetimeData: [
         {
             name: 'max',
@@ -270,16 +284,16 @@ export default defineComponent({
             return metrics;
         },
         getMemoryMetrics(limit: number) {
-            /*
-            axios.get(`/api/metrics/memory/${this.pipeline}/${this.phase}/${this.app}`)
+            
+            axios.get(`/api/longtermmetrics/memory/${this.pipeline}/${this.phase}/${this.app}`)
             .then((response) => {
-                console.log(response.data);
+                this.memoryData = response.data;
             })
             .catch((error) => {
                 console.log(error);
             });
-            */
-           this.memoryData[0].data = this.generateMetrics(limit);
+            
+            //this.memoryData[0].data = this.generateMetrics(limit);
         },
         getLoadMetrics(limit: number) {
             /*

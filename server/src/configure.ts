@@ -14,10 +14,12 @@ import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
 import { Router as RouterTemplates } from "./routes/templates";
+import { Router as RouterMetrics } from "./routes/metrics";
 import { Router as RouterSecurity } from "./routes/security";
 import { init } from './socket'
 import { Kubero } from './kubero';
 import { Addons } from './modules/addons';
+import { Metrics } from './modules/metrics';
 import { Kubectl } from './modules/kubectl';
 import { Notifications } from './modules/notifications';
 import { Settings } from './modules/settings';
@@ -64,6 +66,7 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api', RouterRepo);
     app.use('/api', RouterSettings);
     app.use('/api', RouterTemplates);
+    app.use('/api', RouterMetrics);
     app.use('/api', RouterSecurity);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
@@ -73,6 +76,11 @@ export const configure = async (app: Express, server: Server) => {
 
     // create websocket and set it as en variable
     process.env.KUBERO_WS_TOKEN = crypto.randomBytes(20).toString('hex');
+
+    const metrics = new Metrics({
+        endpoint: process.env.KUBERO_PROMETHEUS_ENDPOINT || 'http://prometheus.localhost',
+    });
+    app.locals.metrics = metrics;
 
     const kubectl = new Kubectl();
 

@@ -41,6 +41,7 @@
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
     "passport-oauth2": "^1.6.1",
+    "prometheus-query": "^3.4.0",
     "socket.io": "^4.5.1",
     "sqlite3": "^5.1.7",
     "sshpk": "^1.17.0",
