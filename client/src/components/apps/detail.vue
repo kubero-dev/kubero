@@ -2,10 +2,11 @@
     <v-container>
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
 
-        <v-container class="d-flex justify-space-between align-center mb-2">
-            <v-tabs v-model="tab"  class="background">
+        <v-container class="d-flex justify-space-between align-center mb-2" style="transition: none">
+            <v-tabs v-model="tab"  class="background"  style="transition: none">
                 <v-tab class="background">Overview</v-tab>
-                <v-tab class="background">Logs</v-tab>
+                <v-tab class="background"  style="transition: none">Metrics</v-tab>
+                <v-tab class="background" style="transition: none">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
                 <v-tab class="background">Vulnerabilities</v-tab>
                 <v-spacer  class="background"></v-spacer>
@@ -61,9 +62,12 @@
             </v-menu>
         </v-container>
         
-        <v-window v-model="tab">
+        <v-window v-model="tab" style="transition: none; height: 1900px">
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <Overview :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
+            </v-window-item>
+            <v-window-item transition="false" reverse-transition="true" class="background" style="transition: none; height: 1900px;">
+                <Metrics :pipeline="pipeline" :phase="phase" :app="app" style="transition: none"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
@@ -85,6 +89,7 @@ import Breadcrumbs from "../breadcrumbs.vue";
 import Overview from "./overview.vue";
 import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
+import Metrics from "./metrics.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
 import { useKuberoStore } from '../../stores/kubero'
@@ -228,6 +233,7 @@ export default defineComponent({
         LogsTab,
         Vulnerabilities,
         Overview,
+        Metrics
     },
     props: {
       pipeline: {
@@ -254,4 +260,13 @@ export default defineComponent({
 .v-list-item {
     min-height: 32px;
 }
+</style>
+
+<style>
+.v-window__container {
+    transition: none !important;
+}
+canvas {
+        transition: none !important;
+    }
 </style>
