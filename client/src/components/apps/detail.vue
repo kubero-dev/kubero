@@ -2,11 +2,11 @@
     <v-container>
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
 
-        <v-container class="d-flex justify-space-between align-center mb-2" style="transition: none">
-            <v-tabs v-model="tab"  class="background"  style="transition: none">
+        <v-container class="d-flex justify-space-between align-center mb-2">
+            <v-tabs v-model="tab"  class="background">
                 <v-tab class="background">Overview</v-tab>
-                <v-tab class="background"  style="transition: none">Metrics</v-tab>
-                <v-tab class="background" style="transition: none">Logs</v-tab>
+                <v-tab class="background">Metrics</v-tab>
+                <v-tab class="background">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
                 <v-tab class="background">Vulnerabilities</v-tab>
                 <v-spacer  class="background"></v-spacer>
@@ -62,12 +62,12 @@
             </v-menu>
         </v-container>
         
-        <v-window v-model="tab" style="transition: none; height: 1900px">
+        <v-window v-model="tab">
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <Overview :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
             </v-window-item>
-            <v-window-item transition="false" reverse-transition="true" class="background" style="transition: none; height: 1900px;">
-                <Metrics :pipeline="pipeline" :phase="phase" :app="app" style="transition: none"/>
+            <v-window-item transition="false" reverse-transition="true" class="background">
+                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.domain"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>

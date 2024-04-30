@@ -44,13 +44,50 @@ Router.get('/longtermmetrics', authMiddleware, async function (req: Request, res
 
 Router.get('/longtermmetrics/memory/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
+    try {
+        const metrics = await req.app.locals.metrics.getMemoryMetrics({
+            scale: '24h',
+            pipeline: req.params.pipeline,
+            phase: req.params.phase,
+            app: req.params.app
+        }); // IMetric[]
+        res.send(metrics);
+    } catch (error) {
+        //console.log(error)
+        res.send(error)
+    }
+});
 
-    const metrics = await req.app.locals.metrics.getMemoryMetrics({
-        query: 'container_memory_rss',
-        scale: '24h',
-        pipeline: req.params.pipeline,
-        phase: req.params.phase,
-        app: req.params.app
-    });
-    res.send(metrics);
+
+Router.get('/longtermmetrics/load/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    try {
+        const metrics = await req.app.locals.metrics.getLoadMetrics({
+            scale: '24h',
+            pipeline: req.params.pipeline,
+            phase: req.params.phase,
+            app: req.params.app
+        }); // IMetric[]
+        res.send(metrics);
+    } catch (error) {
+        //console.log(error)
+        res.send(error)
+    }
+});
+
+Router.get('/longtermmetrics/httpstatuscodes/:pipeline/:phase/:host/:calc', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    try {
+        const metrics = await req.app.locals.metrics.getHttpStatusCodesMetrics({
+            scale: '24h',
+            pipeline: req.params.pipeline,
+            phase: req.params.phase,
+            host: req.params.host,
+            calc: req.params.calc
+        }); // IMetric[]
+        res.send(metrics);
+    } catch (error) {
+        //console.log(error)
+        res.send(error)
+    }
 });

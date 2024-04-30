@@ -9,7 +9,7 @@
         <v-row>
             <v-col cols="12" sm="12" md="12">
                 Load
-                <VueApexCharts type="line" height="220" :options="LineOptions" :series="loadData"></VueApexCharts>
+                <VueApexCharts type="line" height="220" :options="LoadOptions" :series="loadData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
@@ -22,6 +22,12 @@
             <v-col cols="12" sm="12" md="12">
                 Throuput (req/sec)
                 <VueApexCharts type="line" height="220" :options="httpStusCodeOptions" :series="httpStusCodeData"></VueApexCharts>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col cols="12" sm="12" md="12">
+                Throuput (req)
+                <VueApexCharts type="line" height="220" :options="httpStusCodeOptions" :series="httpStusCodeDataIncrease"></VueApexCharts>
             </v-col>
         </v-row>
     </v-container>
@@ -50,6 +56,10 @@ export default defineComponent({
         type: String,
         default: "new"
       },
+      host: {
+        type: String,
+        default: "a.a.localhost"
+      },
     },
     data: () => ({
       memoryOptions: {
@@ -66,6 +76,12 @@ export default defineComponent({
           id: 'memory',
           group: 'social',
           animations: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
             enabled: false,
           }
         },
@@ -92,7 +108,6 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
-            
           }
         },
         tooltip: {
@@ -104,6 +119,65 @@ export default defineComponent({
           decimalsInFloat: 1,
           title: {
             text: 'Memory (MiB)',
+          },
+        }
+      },
+      LoadOptions: {
+        fill: {
+          opacity: 0.5,
+          type: 'solid',
+        },
+        legend: {
+            position: 'top',
+        },
+        colors: colors,
+        chart: {
+          id: 'load',
+          group: 'social',
+          animations: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false,
+          }
+        },
+        stroke: {
+          curve: 'stepline',
+          width: 1
+        },
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          type: 'datetime',
+          position: 'bottom',
+          tickAmount: 10,
+          labels: {
+            rotate: -45,
+            show: true,
+            trim: true,
+            //offsetY: 17,
+            
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: "MMM 'yy",
+              day: 'dd MMM HH:mm',
+              hour: 'HH:mm',
+            },
+          }
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM HH:mm:ss'
+          }
+        },
+        yaxis: {
+          decimalsInFloat: 1,
+          title: {
+            text: 'Load',
           },
         }
       },
@@ -147,7 +221,7 @@ export default defineComponent({
           type: 'solid',
         },
         legend: {
-            position: 'right',
+            position: 'top',
         },
         colors: colors,
         chart: {
@@ -156,38 +230,11 @@ export default defineComponent({
           stacked: true,
           animations: {
             enabled: false,
-          }
-        },
-        stroke: {
-          curve: 'stepline',
-          width: 1
-        },
-        dataLabels: {
-          enabled: false
-        },
-        xaxis: {
-          position: 'top',
-          tickAmount: 10,
-          labels: {
-            show: true,
-            trim: true,
-            offsetY: 17,
-          }
-        }
-      },
-      LineOptions: {
-        fill: {
-          opacity: 0.5,
-          type: 'solid',
-        },
-        legend: {
-            position: 'right',
-        },
-        colors: colors,
-        chart: {
-          id: 'vuechart-example',
-          group: 'social',
-          animations: {
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
             enabled: false,
           }
         },
@@ -199,13 +246,33 @@ export default defineComponent({
           enabled: false
         },
         xaxis: {
-          position: 'top',
+          type: 'datetime',
+          position: 'bottom',
           tickAmount: 10,
           labels: {
+            rotate: -45,
             show: true,
             trim: true,
-            offsetY: 17,
+            //offsetY: 17,
+            
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: "MMM 'yy",
+              day: 'dd MMM HH:mm',
+              hour: 'HH:mm',
+            },
           }
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM HH:mm:ss'
+          }
+        },
+        yaxis: {
+          decimalsInFloat: 1,
+          title: {
+            text: 'Load',
+          },
         }
       },
       loadData: [
@@ -246,33 +313,24 @@ export default defineComponent({
             data: [] as number[],
         },
       ],
-      httpStusCodeData: [
-        {
-            name: '2xx',
-            data: [] as number[],
-        },
-        {
-            name: '3xx',
-            data: [] as number[],
-        },
-        {
-            name: '4xx',
-            data: [] as number[],
-        },
-        {
-            name: '5xx',
-            data: [] as number[],
-        }
-      ]
+      httpStusCodeData: [] as {
+            name: string,
+            data: number[][],
+      }[],
+      httpStusCodeDataIncrease: [] as {
+            name: string,
+            data: number[][],
+      }[],
     }),
     components: {
         VueApexCharts,
     },
     mounted() {
-        this.getMemoryMetrics(150);
-        this.getLoadMetrics(150);
-        this.getHttpStatusCodeMetrics(150);
+        this.getMemoryMetrics();
+        this.getLoadMetrics();
+        this.getHttpStatusCodeMetrics();
         this.getResponseTimeMetrics(150);
+        this.getHttpStatusCodeIncreaseMetrics();
     },
     methods: {
         generateMetrics(limit: number) {
@@ -283,7 +341,7 @@ export default defineComponent({
             }
             return metrics;
         },
-        getMemoryMetrics(limit: number) {
+        getMemoryMetrics() {
             
             axios.get(`/api/longtermmetrics/memory/${this.pipeline}/${this.phase}/${this.app}`)
             .then((response) => {
@@ -295,34 +353,43 @@ export default defineComponent({
             
             //this.memoryData[0].data = this.generateMetrics(limit);
         },
-        getLoadMetrics(limit: number) {
-            /*
-            axios.get(`/api/metrics/load/${this.pipeline}/${this.phase}/${this.app}`)
+        getLoadMetrics() {
+            axios.get(`/api/longtermmetrics/load/${this.pipeline}/${this.phase}/${this.app}`)
             .then((response) => {
-                console.log(response.data);
+              this.loadData = response.data;
             })
             .catch((error) => {
                 console.log(error);
             });
+            /*
+            this.loadData[0].data = this.generateMetrics(limit);
+            this.loadData[1].data = this.generateMetrics(limit);
+            this.loadData[2].data = this.generateMetrics(limit);
             */
-           this.loadData[0].data = this.generateMetrics(limit);
-           this.loadData[1].data = this.generateMetrics(limit);
-           this.loadData[2].data = this.generateMetrics(limit);
         },
-        getHttpStatusCodeMetrics(limit: number) {
-            /*
-            axios.get(`/api/metrics/httpstatus/${this.pipeline}/${this.phase}/${this.app}`)
+        getHttpStatusCodeMetrics() {
+            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/rate`)
             .then((response) => {
-                console.log(response.data);
+              this.httpStusCodeData = response.data;
             })
             .catch((error) => {
                 console.log(error);
             });
+            /*
+            this.httpStusCodeData[0].data = this.generateMetrics(limit);
+            this.httpStusCodeData[1].data = this.generateMetrics(limit);
+            this.httpStusCodeData[2].data = this.generateMetrics(limit);
+            this.httpStusCodeData[3].data = this.generateMetrics(limit);
             */
-           this.httpStusCodeData[0].data = this.generateMetrics(limit);
-           this.httpStusCodeData[1].data = this.generateMetrics(limit);
-           this.httpStusCodeData[2].data = this.generateMetrics(limit);
-           this.httpStusCodeData[3].data = this.generateMetrics(limit);
+        },
+        getHttpStatusCodeIncreaseMetrics() {
+            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/increase`)
+            .then((response) => {
+              this.httpStusCodeDataIncrease = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
         },
         getResponseTimeMetrics(limit: number) {
             /*
