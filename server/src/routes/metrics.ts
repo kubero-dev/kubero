@@ -91,3 +91,20 @@ Router.get('/longtermmetrics/httpstatuscodes/:pipeline/:phase/:host/:calc', auth
         res.send(error)
     }
 });
+
+Router.get('/longtermmetrics/responsetime/:pipeline/:phase/:host/:calc', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    try {
+        const metrics = await req.app.locals.metrics.getHttpResponseTimeMetrics({
+            scale: '24h',
+            pipeline: req.params.pipeline,
+            phase: req.params.phase,
+            host: req.params.host,
+            calc: req.params.calc
+        }); // IMetric[]
+        res.send(metrics);
+    } catch (error) {
+        //console.log(error)
+        res.send(error)
+    }
+});
