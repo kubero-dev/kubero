@@ -105,6 +105,23 @@ Router.get('/longtermmetrics/responsetime/:pipeline/:phase/:host/:calc', authMid
         res.send(metrics);
     } catch (error) {
         console.log(error)
-        res.send('error')
+        res.send('error') 
+    }
+});
+
+Router.get('/longtermmetrics/traffic/:pipeline/:phase/:host/:calc', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    try {
+        const metrics = await req.app.locals.metrics.getHttpResponseTrafficMetrics({
+            scale: req.query.scale as string || '24h',
+            pipeline: req.params.pipeline,
+            phase: req.params.phase,
+            host: req.params.host,
+            calc: req.params.calc
+        }); // IMetric[]
+        res.send(metrics);
+    } catch (error) {
+        console.log(error)
+        res.send('error') 
     }
 });

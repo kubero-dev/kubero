@@ -234,19 +234,19 @@ export class Metrics {
         return resp;
     }
     
-    public async getResponseTimeMetrics(q: PrometheusQuery): Promise<IMetric[]> {
+    public async getHttpResponseTrafficMetrics(q: PrometheusQuery): Promise<IMetric[]> {
         let resp = [] as IMetric[];
         let metrics: QueryResult
 
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // sum(rate(nginx_ingress_controller_response_size_sum{namespace="asdf-production", host="a.a.localhost"}[10m]))
-        const query = `sum(${q.calc}(nginx_ingress_controller_response_size_sum{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector})`;
+        const query = `sum(${q.calc}(nginx_ingress_controller_response_size_sum{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector}]))`;
         console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
                 const data = metrics.result[i].values.map((v: any) => {
-                    return [Date.parse(v.time), v.value]
+                    return [Date.parse(v.time), v.value/1000]
                 });
                 resp.push({
                     name: metrics.result[i].metric.labels.status,

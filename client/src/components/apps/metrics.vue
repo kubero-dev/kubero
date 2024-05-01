@@ -52,6 +52,11 @@
                 <VueApexCharts type="area" height="180" :options="httpStusCodeIncreaseOptions" :series="httpStusCodeDataIncrease"></VueApexCharts>
             </v-col>
         </v-row>
+        <v-row>
+            <v-col cols="12" sm="12" md="12">
+                <VueApexCharts type="area" height="180" :options="httpResponseTrafficOptions" :series="httpResponseTrafficData"></VueApexCharts>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
@@ -331,7 +336,7 @@ export default defineComponent({
         yaxis: {
           decimalsInFloat: 1,
           title: {
-            text: 'req/sec',
+            text: 'Req/sec',
           },
         }
       },
@@ -394,7 +399,70 @@ export default defineComponent({
         yaxis: {
           decimalsInFloat: 1,
           title: {
-            text: 'req',
+            text: 'Req',
+          },
+        }
+      },
+      httpResponseTrafficOptions: {
+        fill: {
+          opacity: 0.5,
+          type: 'solid',
+        },
+        legend: {
+            position: 'top',
+        },
+        colors: colors,
+        chart: {
+          id: 'httpTraffic',
+          group: 'metrics',
+          stacked: true,
+          animations: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false,
+          }
+        },
+        stroke: {
+          curve: 'stepline',
+          width: 1
+        },
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          type: 'datetime',
+          position: 'bottom',
+          tickAmount: 10,
+          labels: {
+            rotate: -45,
+            show: true,
+            trim: true,
+            //offsetY: 17,
+            
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: "MMM 'yy",
+              day: 'dd MMM HH:mm',
+              hour: 'HH:mm',
+            },
+          },
+          tooltip: {
+            enabled: false,
+          }
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM HH:mm:ss'
+          }
+        },
+        yaxis: {
+          decimalsInFloat: 1,
+          title: {
+            text: 'KB',
           },
         }
       },
@@ -415,6 +483,10 @@ export default defineComponent({
             data: number[][],
       }[],
       httpStusCodeDataIncrease: [] as {
+            name: string,
+            data: number[][],
+      }[],
+      httpResponseTrafficData: [] as {
             name: string,
             data: number[][],
       }[],
@@ -448,6 +520,7 @@ export default defineComponent({
             this.getHttpStatusCodeMetrics();
             this.getResponseTimeMetrics();
             this.getHttpStatusCodeIncreaseMetrics();
+            this.getResponseTrafficMetrics();
         },
         getMemoryMetrics() {
             
@@ -522,7 +595,7 @@ export default defineComponent({
                 }
             })
             .then((response) => {
-              this.responsetimeData = response.data;
+              this.httpResponseTrafficData = response.data;
             })
             .catch((error) => {
                 console.log(error);
