@@ -53,8 +53,8 @@ Router.get('/longtermmetrics/memory/:pipeline/:phase/:app', authMiddleware, asyn
         }); // IMetric[]
         res.send(metrics);
     } catch (error) {
-        //console.log(error)
-        res.send(error)
+        console.log(error)
+        res.send('error')
     }
 });
 
@@ -70,8 +70,8 @@ Router.get('/longtermmetrics/load/:pipeline/:phase/:app', authMiddleware, async 
         }); // IMetric[]
         res.send(metrics);
     } catch (error) {
-        //console.log(error)
-        res.send(error)
+        console.log(error)
+        res.send('error')
     }
 });
 
@@ -87,8 +87,8 @@ Router.get('/longtermmetrics/httpstatuscodes/:pipeline/:phase/:host/:calc', auth
         }); // IMetric[]
         res.send(metrics);
     } catch (error) {
-        //console.log(error)
-        res.send(error)
+        console.log(error)
+        res.send('error')
     }
 });
 
@@ -104,7 +104,7 @@ Router.get('/longtermmetrics/responsetime/:pipeline/:phase/:host/:calc', authMid
         }); // IMetric[]
         res.send(metrics);
     } catch (error) {
-        //console.log(error)
-        res.send(error)
+        console.log(error)
+        res.send('error')
     }
 });

@@ -25,31 +25,31 @@
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                Memory
-                <VueApexCharts type="area" height="220" :options="memoryOptions" :series="memoryData"></VueApexCharts>
+                Memory Usage
+                <VueApexCharts type="area" height="180" :options="memoryOptions" :series="memoryData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                Load
-                <VueApexCharts type="line" height="220" :options="LoadOptions" :series="loadData"></VueApexCharts>
+                Pod Load
+                <VueApexCharts type="line" height="180" :options="LoadOptions" :series="loadData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                Responsetime
-                <VueApexCharts type="area" height="220" :options="ResponsetimeOptions" :series="responsetimeData"></VueApexCharts>
+                Responset Time
+                <VueApexCharts type="area" height="180" :options="ResponsetimeOptions" :series="responsetimeData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                Throuput
-                <VueApexCharts type="line" height="220" :options="httpStusCodeOptions" :series="httpStusCodeData"></VueApexCharts>
+                Throughput
+                <VueApexCharts type="line" height="180" :options="httpStusCodeOptions" :series="httpStusCodeData"></VueApexCharts>
             </v-col>
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                <VueApexCharts type="area" height="220" :options="httpStusCodeIncreaseOptions" :series="httpStusCodeDataIncrease"></VueApexCharts>
+                <VueApexCharts type="area" height="180" :options="httpStusCodeIncreaseOptions" :series="httpStusCodeDataIncrease"></VueApexCharts>
             </v-col>
         </v-row>
     </v-container>
@@ -130,6 +130,9 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
+          },
+          tooltip: {
+            enabled: false,
           }
         },
         tooltip: {
@@ -189,6 +192,9 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
+          },
+          tooltip: {
+            enabled: false,
           }
         },
         tooltip: {
@@ -249,6 +255,9 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
+          },
+          tooltip: {
+            enabled: false,
           }
         },
         tooltip: {
@@ -309,6 +318,9 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
+          },
+          tooltip: {
+            enabled: false,
           }
         },
         tooltip: {
@@ -369,6 +381,9 @@ export default defineComponent({
               day: 'dd MMM HH:mm',
               hour: 'HH:mm',
             },
+          },
+          tooltip: {
+            enabled: false,
           }
         },
         tooltip: {
@@ -499,7 +514,20 @@ export default defineComponent({
             .catch((error) => {
                 console.log(error);
             });
-        }
+        },
+        getResponseTrafficMetrics() {
+            axios.get(`/api/longtermmetrics/traffic/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+                params: {
+                    scale: this.scale
+                }
+            })
+            .then((response) => {
+              this.responsetimeData = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
     },
 });
 </script>
