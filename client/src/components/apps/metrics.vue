@@ -31,10 +31,18 @@
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
+                CPU usage
+                <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuData"></VueApexCharts>
+            </v-col>
+        </v-row>
+        <!--
+        <v-row>
+            <v-col cols="12" sm="12" md="12">
                 Pod Load
                 <VueApexCharts type="line" height="180" :options="LoadOptions" :series="loadData"></VueApexCharts>
             </v-col>
         </v-row>
+        -->
         <v-row>
             <v-col cols="12" sm="12" md="12">
                 Responset Time
@@ -96,7 +104,7 @@ export default defineComponent({
         },
         legend: {
             show: false,
-            position: 'right',
+            position: 'top',
         },
         colors: colors,
         chart: {
@@ -211,6 +219,69 @@ export default defineComponent({
           decimalsInFloat: 1,
           title: {
             text: 'load',
+          },
+        }
+      },
+      cpuOptions: {
+        fill: {
+          opacity: 0.5,
+          type: 'solid',
+        },
+        legend: {
+            show: false,
+            position: 'top',
+        },
+        colors: colors,
+        chart: {
+          id: 'cpu',
+          group: 'metrics',
+          animations: {
+            enabled: false,
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false,
+          }
+        },
+        stroke: {
+          curve: 'stepline',
+          width: 1
+        },
+        dataLabels: {
+          enabled: false
+        },
+        xaxis: {
+          type: 'datetime',
+          position: 'bottom',
+          tickAmount: 10,
+          labels: {
+            rotate: -45,
+            show: true,
+            trim: true,
+            //offsetY: 17,
+            
+            datetimeFormatter: {
+              year: 'yyyy',
+              month: "MMM 'yy",
+              day: 'dd MMM HH:mm',
+              hour: 'HH:mm',
+            },
+          },
+          tooltip: {
+            enabled: false,
+          }
+        },
+        tooltip: {
+          x: {
+            format: 'dd MMM HH:mm:ss'
+          }
+        },
+        yaxis: {
+          decimalsInFloat: 1,
+          title: {
+            text: 'millicores',
           },
         }
       },
@@ -466,6 +537,10 @@ export default defineComponent({
           },
         }
       },
+      cpuData: [] as {
+            name: string,
+            data: number[][],
+      }[],
       loadData: [] as {
             name: string,
             data: number[][],
@@ -516,7 +591,8 @@ export default defineComponent({
         */
         refreshMetrics() {
             this.getMemoryMetrics();
-            this.getLoadMetrics();
+            //this.getLoadMetrics();
+            this.getCpuMetrics();
             this.getHttpStatusCodeMetrics();
             this.getResponseTimeMetrics();
             this.getHttpStatusCodeIncreaseMetrics();
@@ -596,6 +672,19 @@ export default defineComponent({
             })
             .then((response) => {
               this.httpResponseTrafficData = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
+        getCpuMetrics() {
+            axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/increase`, {
+                params: {
+                    scale: this.scale
+                }
+            })
+            .then((response) => {
+              this.cpuData = response.data;
             })
             .catch((error) => {
                 console.log(error);
