@@ -1,5 +1,28 @@
 <template>
     <v-container>
+        <v-row class="justify-space-between mb-2">
+            <v-col cols="8" sm="8" md="8" lg="8" xl="8">
+                <!--<h1>Vulnerabilities in {{ app }}</h1>-->
+            </v-col>
+            <v-col>
+              <v-select
+                label="Select"
+                v-model="scale"
+                :items="[ '2h', '24h', '7d' ]"
+                density="compact"
+              ></v-select>
+            </v-col>
+            <v-col>
+                <v-btn
+                    block
+                    @click="refreshMetrics()"
+                    color="secondary"
+                    >
+                    <v-icon>mdi-refresh</v-icon>
+                    <span>Refresh</span>  
+                </v-btn>
+            </v-col>
+        </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
                 Memory
@@ -195,6 +218,12 @@ export default defineComponent({
           stacked: false,
           animations: {
             enabled: false,
+          },
+          toolbar: {
+            show: false
+          },
+          zoom: {
+            enabled: false,
           }
         },
         stroke: {
@@ -374,16 +403,18 @@ export default defineComponent({
             name: string,
             data: number[][],
       }[],
+      scale: '24h' as '2h'| '24h' | '7d',
     }),
     components: {
         VueApexCharts,
     },
     mounted() {
-        this.getMemoryMetrics();
-        this.getLoadMetrics();
-        this.getHttpStatusCodeMetrics();
-        this.getResponseTimeMetrics();
-        this.getHttpStatusCodeIncreaseMetrics();
+        this.refreshMetrics();
+    },
+    watch: {
+        scale: function (val) {
+          this.refreshMetrics();
+        }
     },
     methods: {
         /*
@@ -396,9 +427,20 @@ export default defineComponent({
             return metrics;
         },
         */
+        refreshMetrics() {
+            this.getMemoryMetrics();
+            this.getLoadMetrics();
+            this.getHttpStatusCodeMetrics();
+            this.getResponseTimeMetrics();
+            this.getHttpStatusCodeIncreaseMetrics();
+        },
         getMemoryMetrics() {
             
-            axios.get(`/api/longtermmetrics/memory/${this.pipeline}/${this.phase}/${this.app}`)
+            axios.get(`/api/longtermmetrics/memory/${this.pipeline}/${this.phase}/${this.app}`, {
+                params: {
+                    scale: this.scale
+                }
+            })
             .then((response) => {
                 this.memoryData = response.data;
             })
@@ -407,7 +449,11 @@ export default defineComponent({
             });
         },
         getLoadMetrics() {
-            axios.get(`/api/longtermmetrics/load/${this.pipeline}/${this.phase}/${this.app}`)
+            axios.get(`/api/longtermmetrics/load/${this.pipeline}/${this.phase}/${this.app}`, {
+                params: {
+                    scale: this.scale
+                }
+            })
             .then((response) => {
               this.loadData = response.data;
             })
@@ -416,7 +462,11 @@ export default defineComponent({
             });
         },
         getHttpStatusCodeMetrics() {
-            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/rate`)
+            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/rate`, {
+                params: {
+                    scale: this.scale
+                }
+            })
             .then((response) => {
               this.httpStusCodeData = response.data;
             })
@@ -425,7 +475,11 @@ export default defineComponent({
             });
         },
         getHttpStatusCodeIncreaseMetrics() {
-            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/increase`)
+            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+                params: {
+                    scale: this.scale
+                }
+            })
             .then((response) => {
               this.httpStusCodeDataIncrease = response.data;
             })
@@ -434,7 +488,11 @@ export default defineComponent({
             });
         },
         getResponseTimeMetrics() {
-            axios.get(`/api/longtermmetrics/responsetime/${this.pipeline}/${this.phase}/${this.host}/increase`)
+            axios.get(`/api/longtermmetrics/responsetime/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+                params: {
+                    scale: this.scale
+                }
+            })
             .then((response) => {
               this.responsetimeData = response.data;
             })

@@ -6,7 +6,7 @@ export interface MetricsOptions {
 }
 
 interface PrometheusQuery {
-    scale: string,
+    scale: '2h' | '24h' | '7d',
     pipeline: string,
     phase: string,
     app?: string,

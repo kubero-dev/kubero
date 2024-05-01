@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express, { Request, Response, query } from 'express';
 import { Auth } from '../modules/auth';
 
 export const Router = express.Router();
@@ -46,7 +46,7 @@ Router.get('/longtermmetrics/memory/:pipeline/:phase/:app', authMiddleware, asyn
     // #swagger.tags = ['UI']
     try {
         const metrics = await req.app.locals.metrics.getMemoryMetrics({
-            scale: '24h',
+            scale: req.query.scale as string || '24h',
             pipeline: req.params.pipeline,
             phase: req.params.phase,
             app: req.params.app
@@ -63,7 +63,7 @@ Router.get('/longtermmetrics/load/:pipeline/:phase/:app', authMiddleware, async 
     // #swagger.tags = ['UI']
     try {
         const metrics = await req.app.locals.metrics.getLoadMetrics({
-            scale: '24h',
+            scale: req.query.scale as string || '24h',
             pipeline: req.params.pipeline,
             phase: req.params.phase,
             app: req.params.app
@@ -79,7 +79,7 @@ Router.get('/longtermmetrics/httpstatuscodes/:pipeline/:phase/:host/:calc', auth
     // #swagger.tags = ['UI']
     try {
         const metrics = await req.app.locals.metrics.getHttpStatusCodesMetrics({
-            scale: '24h',
+            scale: req.query.scale as string || '24h',
             pipeline: req.params.pipeline,
             phase: req.params.phase,
             host: req.params.host,
@@ -96,7 +96,7 @@ Router.get('/longtermmetrics/responsetime/:pipeline/:phase/:host/:calc', authMid
     // #swagger.tags = ['UI']
     try {
         const metrics = await req.app.locals.metrics.getHttpResponseTimeMetrics({
-            scale: '24h',
+            scale: req.query.scale as string || '24h',
             pipeline: req.params.pipeline,
             phase: req.params.phase,
             host: req.params.host,
