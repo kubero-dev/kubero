@@ -8,6 +8,7 @@ auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 
 import debug from 'debug';
+import { pipeline } from 'stream';
 //import rateLimit from 'express-rate-limit';
 debug('app:routes')
 
@@ -91,6 +92,30 @@ Router.get('/uptimes/:pipeline/:phase/', authMiddleware, async function (req: Re
         req.params.phase
     );
     res.send(uptimes);
+});
+
+Router.get('/metrics/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get metrics for a specific app'
+    // #swagger.description = 'Get metrics for a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
+
+    const metrics = await req.app.locals.kubero.getPodMetrics(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app
+    );
+    res.send(metrics);
+});
+
+Router.get('/metrics', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get node metrics and metrics for all apps'
+
+    const metrics = await req.app.locals.kubero.getNodeMetrics();
+    res.send(metrics);
 });
 
 Router.get('/console/:pipeline/:phase/:app/exec', authMiddleware, async function (req: Request, res: Response) {

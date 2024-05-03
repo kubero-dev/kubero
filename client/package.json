@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
-    "apexcharts": "^3.49.0",
     "axios": "^1.6.2",
     "chart.js": "^4.4.1",
     "core-js": "^3.29.0",
@@ -22,10 +21,9 @@
     "socket.io-client": "^4.7.3",
     "sweetalert2": "^11.10.2",
     "vue": "^3.4.0",
-    "vue-chartjs": "^5.3.1",
+    "vue-chartjs": "^5.3.0",
     "vue-router": "^4.2.0",
     "vue-socket.io-extended": "^4.2.0",
-    "vue3-apexcharts": "^1.5.2",
     "vue3-cookies": "^1.0.6",
     "vuetify": "^3.4.0",
     "xterm": "^5.3.0"

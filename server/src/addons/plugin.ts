@@ -73,7 +73,7 @@ export abstract class Plugin {
             console.log("✅ "+this.id, this.constructor.name)
             //console.log(this.resourceDefinitions) // debug CRD
         } else {
-            console.log("☑️  "+this.id, this.constructor.name)
+            console.log("❌ "+this.id, this.constructor.name)
         }
 
 
