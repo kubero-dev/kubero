@@ -5,6 +5,7 @@
         <v-container class="d-flex justify-space-between align-center mb-2">
             <v-tabs v-model="tab"  class="background">
                 <v-tab class="background">Overview</v-tab>
+                <v-tab class="background">Metrics</v-tab>
                 <v-tab class="background">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
                 <v-tab class="background">Vulnerabilities</v-tab>
@@ -65,6 +66,9 @@
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <Overview :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
             </v-window-item>
+            <v-window-item transition="false" reverse-transition="true" class="background">
+                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.domain"/>
+            </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
             </v-window-item>
@@ -85,6 +89,7 @@ import Breadcrumbs from "../breadcrumbs.vue";
 import Overview from "./overview.vue";
 import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
+import Metrics from "./metrics.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
 import { useKuberoStore } from '../../stores/kubero'
@@ -228,6 +233,7 @@ export default defineComponent({
         LogsTab,
         Vulnerabilities,
         Overview,
+        Metrics
     },
     props: {
       pipeline: {
@@ -254,4 +260,13 @@ export default defineComponent({
 .v-list-item {
     min-height: 32px;
 }
+</style>
+
+<style>
+.v-window__container {
+    transition: none !important;
+}
+canvas {
+        transition: none !important;
+    }
 </style>
