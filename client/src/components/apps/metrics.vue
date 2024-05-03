@@ -1,5 +1,28 @@
 <template>
     <v-container>
+
+      <div v-if="!kubero.metricsEnabled">
+        <v-row>
+            <v-col
+            cols="12"
+            md="6"
+            style="margin-top: 20px;"
+            >
+                <v-alert
+                    outlined
+                    type="info"
+                    variant="tonal"
+                    border="start"
+                >
+                    <h3>No metrics available</h3>
+                    <p>
+                        Metrics are not available for this application. Metrics can be enabled in the Kubero CRD.
+                    </p>
+                </v-alert>
+            </v-col>
+        </v-row>
+      </div>
+      <div v-if="kubero.metricsEnabled">
         <v-row class="justify-space-between mb-2">
             <v-col cols="8" sm="8" md="8" lg="8" xl="8">
                 <!--<h1>Vulnerabilities in {{ app }}</h1>-->
@@ -65,12 +88,15 @@
                 <VueApexCharts type="area" height="180" :options="httpResponseTrafficOptions" :series="httpResponseTrafficData"></VueApexCharts>
             </v-col>
         </v-row>
+      </div>
     </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import VueApexCharts from "vue3-apexcharts";
+import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
 
 import axios from "axios";
 
@@ -578,6 +604,9 @@ export default defineComponent({
           this.refreshMetrics();
         }
     },
+    computed: {
+      ...mapState(useKuberoStore, ['kubero']),
+    },
     methods: {
         /*
         generateMetrics(limit: number) {
@@ -590,6 +619,7 @@ export default defineComponent({
         },
         */
         refreshMetrics() {
+          if (this.kubero.metricsEnabled) {
             this.getMemoryMetrics();
             //this.getLoadMetrics();
             this.getCpuMetrics();
@@ -597,6 +627,7 @@ export default defineComponent({
             this.getResponseTimeMetrics();
             this.getHttpStatusCodeIncreaseMetrics();
             this.getResponseTrafficMetrics();
+          }
         },
         getMemoryMetrics() {
             

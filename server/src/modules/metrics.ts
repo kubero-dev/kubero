@@ -2,6 +2,7 @@ import axios from 'axios';
 import { PrometheusDriver, PrometheusQueryDate, QueryResult } from 'prometheus-query';
 
 export interface MetricsOptions {
+    enabled: boolean,
     endpoint: string,
 }
 
@@ -34,6 +35,11 @@ export class Metrics {
             preferPost: false,
             withCredentials: false,
         });
+        
+        if (!options.enabled) {
+            console.log('❌ Prometheus Metrics disabled');
+            return
+        }
 
         this.prom.status().then((status) => {
             console.log('✅ Prometheus Metrics initialized:', options.endpoint);

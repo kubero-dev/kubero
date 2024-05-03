@@ -958,6 +958,10 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    public getMetricsEnabled(): boolean{
+        return process.env.KUBERO_PROMETHEUS_ENDPOINT ? process.env.KUBERO_PROMETHEUS_ENDPOINT != undefined : false
+    }
+    
     public getAdminDisabled(){
         if (this.config.kubero?.admin?.disabled == undefined) {
             return false;
