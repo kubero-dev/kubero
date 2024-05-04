@@ -99,6 +99,7 @@ import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 
 import axios from "axios";
+import { start } from 'repl';
 
 const colors = ['#8560a9', '#a887c9', '#b99bd6', '#d2bde6']
 
@@ -592,12 +593,17 @@ export default defineComponent({
             data: number[][],
       }[],
       scale: '24h' as '2h'| '24h' | '7d',
+      timer: null as any,
     }),
     components: {
         VueApexCharts,
     },
     mounted() {
         this.refreshMetrics();
+        this.startTimer();
+    },
+    unmounted() {
+        clearInterval(this.timer);
     },
     watch: {
         scale: function (val) {
@@ -618,6 +624,12 @@ export default defineComponent({
             return metrics;
         },
         */
+        startTimer() {
+            this.timer = setInterval(() => {
+                console.log("refreshing metrics");
+                this.refreshMetrics();
+            }, 4000);
+        },
         refreshMetrics() {
           if (this.kubero.metricsEnabled) {
             this.getMemoryMetrics();

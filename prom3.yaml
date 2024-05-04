@@ -1,0 +1,16 @@
+alertmanager:
+  enabled: false
+kube-state-metrics:
+  enabled: true
+server:
+  enabled: true
+  ingress:
+    ## If true, Prometheus server Ingress will be created
+    ##
+    enabled: true
+    hosts: 
+      - prometheus.localhost
+prometheus-node-exporter:
+  enabled: false
+prometheus-pushgateway:
+  enabled: false
