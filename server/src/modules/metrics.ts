@@ -76,7 +76,7 @@ export class Metrics {
 
     public async queryMetrics(metric:string, q: PrometheusQuery): Promise<QueryResult | undefined> {
         const query = `${metric}{namespace="${q.pipeline}-${q.phase}", container=~"kuberoapp-web|kuberoapp-worker"}`;
-        console.log(query);
+        //console.log(query);
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         let result: QueryResult | undefined;
         try {
@@ -186,7 +186,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_requests{namespace="asdf-production", host="a.a.localhost"}[10m])
         const query = `${q.calc}(container_cpu_system_seconds_total{namespace="${q.pipeline}-${q.phase}", container=~"kuberoapp-web|kuberoapp-worker"}[${vector}])`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -216,7 +216,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_requests{namespace="asdf-production", host="a.a.localhost"}[10m])
         const query = `${q.calc}(nginx_ingress_controller_requests{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector}])`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -247,7 +247,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_response_duration_seconds_count{namespace="asdf-production", host="a.a.localhost",status="200"}[10m]) //in ms
         const query = `${q.calc}(nginx_ingress_controller_response_duration_seconds_count{namespace="${q.pipeline}-${q.phase}", host="${q.host}", status="200"}[${vector}])`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -277,7 +277,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // sum(rate(nginx_ingress_controller_response_size_sum{namespace="asdf-production", host="a.a.localhost"}[10m]))
         const query = `sum(${q.calc}(nginx_ingress_controller_response_size_sum{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector}]))`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {

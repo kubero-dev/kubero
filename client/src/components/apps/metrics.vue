@@ -592,7 +592,7 @@ export default defineComponent({
             name: string,
             data: number[][],
       }[],
-      scale: '24h' as '2h'| '24h' | '7d',
+      scale: '2h' as '2h'| '24h' | '7d',
       timer: null as any,
     }),
     components: {
