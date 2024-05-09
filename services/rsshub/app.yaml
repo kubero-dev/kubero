@@ -1,0 +1,39 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: rsshub
+    labels:
+        manager: kubero
+spec:
+    name: rsshub
+    deploymentstrategy: docker
+    envVars: []
+    serviceAccount:
+        annotations: {}
+        create: true
+        name: ""
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "1200"
+        pullPolicy: Always
+        repository: diygod/rsshub
+        tag: chromium-bundled
+        run:
+            command: node index.js
+            repository: node
+            securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
+                capabilities:
+                    add: []
+                    drop: []
+            tag: latest

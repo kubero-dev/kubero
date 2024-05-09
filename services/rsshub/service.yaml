@@ -1,0 +1,8 @@
+name: RSSHub
+description: 'RSSHub is an open source, easy to use, and extensible RSS feed generator. It's capable of generating RSS feeds from pretty much everything.'
+tags:
+- tools
+source: https://github.com/DIYgod/RSSHub
+website: https://docs.rsshub.app/
+icon: https://raw.githubusercontent.com/DIYgod/RSSHub/master/lib/assets/logo.png
+screenshots:
