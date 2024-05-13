@@ -25,7 +25,7 @@
       <div v-if="kubero.metricsEnabled">
         <v-row class="justify-space-between mb-2">
             <v-col cols="8" sm="8" md="8" lg="8" xl="8">
-                <!--<h1>Vulnerabilities in {{ app }}</h1>-->
+              <Alerts :app="app" :phase="phase" :pipeline="pipeline"/>
             </v-col>
             <v-col>
               <v-select
@@ -53,9 +53,13 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" sm="12" md="12">
+            <v-col cols="6" sm="6" md="6">
                 CPU usage
                 <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuData"></VueApexCharts>
+            </v-col>
+            <v-col cols="6" sm="6" md="6">
+                CPU usage
+                <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuDataRate"></VueApexCharts>
             </v-col>
         </v-row>
         <!--
@@ -99,7 +103,7 @@ import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 
 import axios from "axios";
-import { start } from 'repl';
+import Alerts from './alerts.vue';
 
 const colors = ['#8560a9', '#a887c9', '#b99bd6', '#d2bde6']
 
@@ -568,6 +572,10 @@ export default defineComponent({
             name: string,
             data: number[][],
       }[],
+      cpuDataRate: [] as {
+            name: string,
+            data: number[][],
+      }[],
       loadData: [] as {
             name: string,
             data: number[][],
@@ -597,6 +605,7 @@ export default defineComponent({
     }),
     components: {
         VueApexCharts,
+        Alerts,
     },
     mounted() {
         this.refreshMetrics();
@@ -635,6 +644,7 @@ export default defineComponent({
             this.getMemoryMetrics();
             //this.getLoadMetrics();
             this.getCpuMetrics();
+            this.getCpuMetricsRate();
             this.getHttpStatusCodeMetrics();
             this.getResponseTimeMetrics();
             this.getHttpStatusCodeIncreaseMetrics();
@@ -721,6 +731,7 @@ export default defineComponent({
             });
         },
         getCpuMetrics() {
+            // use 'rate' instead of 'increase' when comparing to limit and request
             axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/increase`, {
                 params: {
                     scale: this.scale
@@ -728,6 +739,20 @@ export default defineComponent({
             })
             .then((response) => {
               this.cpuData = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
+        getCpuMetricsRate() {
+            // use 'rate' instead of 'increase' when comparing to limit and request
+            axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/rate`, {
+                params: {
+                    scale: this.scale
+                }
+            })
+            .then((response) => {
+              this.cpuDataRate = response.data;
             })
             .catch((error) => {
                 console.log(error);
