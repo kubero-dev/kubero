@@ -1,0 +1,63 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: leantime
+    labels:
+        manager: kubero
+spec:
+    name: leantime
+    deploymentstrategy: docker
+    envVars:
+        - name: LEAN_DB_HOST
+          value: leantime-mysql
+        - name: LEAN_DB_USER
+          value: root
+        - name: LEAN_DB_PASSWORD
+          value: leantime
+        - name: LEAN_DB_DATABASE
+          value: leantime
+        - name: LEAN_EMAIL_RETURN
+          value: changeme@local.local
+        - name: LEAN_APP_URL
+          value: https://leantime.demo.kubero.dev
+    serviceAccount:
+        annotations: {}
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: MySQL
+          env: []
+          icon: /img/addons/MySQL.png
+          id: kubero-operator
+          kind: KuberoMysql
+          resourceDefinitions:
+              KuberoMysql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoMysql
+                  metadata:
+                      name: leantime-mysql
+                  spec:
+                      mysql:
+                          auth:
+                              createDatabase: true
+                              database: leantime
+                              password: 321.qwerty
+                              rootPassword: leantime
+                              username: leantime
+                          global:
+                              storageClass: linode-block-storage
+                          primary:
+                              persistence:
+                                  accessModes:
+                                      - ReadWriteOnce
+                                  size: 1Gi
+          version:
+              latest: 0.0.165
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        repository: leantime/leantime
+        tag: latest
