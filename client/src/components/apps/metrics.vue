@@ -53,11 +53,13 @@
             </v-col>
         </v-row>
         <v-row>
+          <!--
             <v-col cols="6" sm="6" md="6">
                 CPU usage
                 <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuData"></VueApexCharts>
             </v-col>
-            <v-col cols="6" sm="6" md="6">
+          -->
+            <v-col cols="12" sm="12" md="12">
                 CPU usage
                 <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuDataRate"></VueApexCharts>
             </v-col>
@@ -643,7 +645,7 @@ export default defineComponent({
           if (this.kubero.metricsEnabled) {
             this.getMemoryMetrics();
             //this.getLoadMetrics();
-            this.getCpuMetrics();
+            //this.getCpuMetrics();
             this.getCpuMetricsRate();
             this.getHttpStatusCodeMetrics();
             this.getResponseTimeMetrics();
