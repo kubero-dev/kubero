@@ -24,10 +24,10 @@
       </div>
       <div v-if="kubero.metricsEnabled">
         <v-row class="justify-space-between mb-2">
-            <v-col cols="8" sm="8" md="8" lg="8" xl="8">
+            <v-col cols="12" sm="12" md="8">
               <Alerts :app="app" :phase="phase" :pipeline="pipeline"/>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="12" md="2">
               <v-select
                 label="Select"
                 v-model="scale"
@@ -35,7 +35,7 @@
                 density="compact"
               ></v-select>
             </v-col>
-            <v-col>
+            <v-col cols="12" sm="12" md="2">
                 <v-btn
                     block
                     @click="refreshMetrics()"

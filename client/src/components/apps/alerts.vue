@@ -1,6 +1,5 @@
 <template>
     <div>
-
         <v-alert 
             v-for="rule in rules" :key="rule.name"
             :text="rule.alert?.annotations.description"
@@ -8,7 +7,7 @@
             :type="rule.alerting ? 'error' : 'success'"
             variant="tonal"
             density="compact"
-            style="transform: scale(0.7); transform-origin: left; margin-bottom: -8px;"
+            style="transform: scale(0.7); transform-origin: left; margin-bottom: -8px; min-width: 400px;"
         ></v-alert>
     </div>
 </template>
