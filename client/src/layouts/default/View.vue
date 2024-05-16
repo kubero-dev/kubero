@@ -47,6 +47,7 @@ export default defineComponent({
                         this.kubero.buildPipeline = result.data.buildPipeline;
                         this.kubero.auditEnabled = result.data.auditEnabled;
                         this.kubero.consoleEnabled = result.data.consoleEnabled;
+                        this.kubero.metricsEnabled = result.data.metricsEnabled;
 
                     })
                     .catch((err) => {

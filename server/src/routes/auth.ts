@@ -38,6 +38,7 @@ Router.all("/session", (req: Request, res: Response) => {
         "auditEnabled": req.app.locals.audit.getAuditEnabled(),
         "adminDisabled": req.app.locals.kubero.getAdminDisabled(),
         "consoleEnabled": req.app.locals.kubero.getConsoleEnabled(),
+        "metricsEnabled": req.app.locals.kubero.getMetricsEnabled(),
     }
     res.status(status).send(message)
 })

@@ -142,3 +142,14 @@ Router.get('/longtermmetrics/cpu/:pipeline/:phase/:app/:calc', authMiddleware, a
         res.send('error') 
     }
 });
+
+Router.get('/rules/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get alerts'
+    const alerts = await req.app.locals.metrics.getRules({
+        pipeline: req.params.pipeline,
+        phase: req.params.phase,
+        app: req.params.app
+    });
+    res.send(alerts);
+});

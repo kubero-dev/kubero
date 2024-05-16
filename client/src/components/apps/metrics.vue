@@ -1,8 +1,31 @@
 <template>
     <v-container>
+
+      <div v-if="!kubero.metricsEnabled">
+        <v-row>
+            <v-col
+            cols="12"
+            md="6"
+            style="margin-top: 20px;"
+            >
+                <v-alert
+                    outlined
+                    type="info"
+                    variant="tonal"
+                    border="start"
+                >
+                    <h3>No metrics available</h3>
+                    <p>
+                        Metrics are not available for this application. Metrics can be enabled in the Kubero CRD.
+                    </p>
+                </v-alert>
+            </v-col>
+        </v-row>
+      </div>
+      <div v-if="kubero.metricsEnabled">
         <v-row class="justify-space-between mb-2">
             <v-col cols="8" sm="8" md="8" lg="8" xl="8">
-                <!--<h1>Vulnerabilities in {{ app }}</h1>-->
+              <Alerts :app="app" :phase="phase" :pipeline="pipeline"/>
             </v-col>
             <v-col>
               <v-select
@@ -30,9 +53,15 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" sm="12" md="12">
+          <!--
+            <v-col cols="6" sm="6" md="6">
                 CPU usage
                 <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuData"></VueApexCharts>
+            </v-col>
+          -->
+            <v-col cols="12" sm="12" md="12">
+                CPU usage
+                <VueApexCharts type="line" height="180" :options="cpuOptions" :series="cpuDataRate"></VueApexCharts>
             </v-col>
         </v-row>
         <!--
@@ -65,14 +94,18 @@
                 <VueApexCharts type="area" height="180" :options="httpResponseTrafficOptions" :series="httpResponseTrafficData"></VueApexCharts>
             </v-col>
         </v-row>
+      </div>
     </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import VueApexCharts from "vue3-apexcharts";
+import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
 
 import axios from "axios";
+import Alerts from './alerts.vue';
 
 const colors = ['#8560a9', '#a887c9', '#b99bd6', '#d2bde6']
 
@@ -541,6 +574,10 @@ export default defineComponent({
             name: string,
             data: number[][],
       }[],
+      cpuDataRate: [] as {
+            name: string,
+            data: number[][],
+      }[],
       loadData: [] as {
             name: string,
             data: number[][],
@@ -565,18 +602,27 @@ export default defineComponent({
             name: string,
             data: number[][],
       }[],
-      scale: '24h' as '2h'| '24h' | '7d',
+      scale: '2h' as '2h'| '24h' | '7d',
+      timer: null as any,
     }),
     components: {
         VueApexCharts,
+        Alerts,
     },
     mounted() {
         this.refreshMetrics();
+        this.startTimer();
+    },
+    unmounted() {
+        clearInterval(this.timer);
     },
     watch: {
         scale: function (val) {
           this.refreshMetrics();
         }
+    },
+    computed: {
+      ...mapState(useKuberoStore, ['kubero']),
     },
     methods: {
         /*
@@ -589,14 +635,23 @@ export default defineComponent({
             return metrics;
         },
         */
+        startTimer() {
+            this.timer = setInterval(() => {
+                console.log("refreshing metrics");
+                this.refreshMetrics();
+            }, 4000);
+        },
         refreshMetrics() {
+          if (this.kubero.metricsEnabled) {
             this.getMemoryMetrics();
             //this.getLoadMetrics();
-            this.getCpuMetrics();
+            //this.getCpuMetrics();
+            this.getCpuMetricsRate();
             this.getHttpStatusCodeMetrics();
             this.getResponseTimeMetrics();
             this.getHttpStatusCodeIncreaseMetrics();
             this.getResponseTrafficMetrics();
+          }
         },
         getMemoryMetrics() {
             
@@ -678,6 +733,7 @@ export default defineComponent({
             });
         },
         getCpuMetrics() {
+            // use 'rate' instead of 'increase' when comparing to limit and request
             axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/increase`, {
                 params: {
                     scale: this.scale
@@ -685,6 +741,20 @@ export default defineComponent({
             })
             .then((response) => {
               this.cpuData = response.data;
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
+        getCpuMetricsRate() {
+            // use 'rate' instead of 'increase' when comparing to limit and request
+            axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/rate`, {
+                params: {
+                    scale: this.scale
+                }
+            })
+            .then((response) => {
+              this.cpuDataRate = response.data;
             })
             .catch((error) => {
                 console.log(error);
