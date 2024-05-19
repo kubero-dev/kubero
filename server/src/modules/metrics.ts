@@ -2,6 +2,7 @@ import axios from 'axios';
 import { PrometheusDriver, PrometheusQueryDate, QueryResult } from 'prometheus-query';
 
 export interface MetricsOptions {
+    enabled: boolean,
     endpoint: string,
 }
 
@@ -22,6 +23,16 @@ interface IMetric {
     }[]
 }
 
+type Rule = {
+    alert: any,
+    duration: number,
+    health: string,
+    labels: any,
+    name: string,
+    query: string,
+    alerting: boolean,
+}
+
 export class Metrics {
     private prom: PrometheusDriver
 
@@ -34,6 +45,11 @@ export class Metrics {
             preferPost: false,
             withCredentials: false,
         });
+        
+        if (!options.enabled) {
+            console.log('❌ Prometheus Metrics disabled');
+            return
+        }
 
         this.prom.status().then((status) => {
             console.log('✅ Prometheus Metrics initialized:', options.endpoint);
@@ -70,7 +86,7 @@ export class Metrics {
 
     public async queryMetrics(metric:string, q: PrometheusQuery): Promise<QueryResult | undefined> {
         const query = `${metric}{namespace="${q.pipeline}-${q.phase}", container=~"kuberoapp-web|kuberoapp-worker"}`;
-        console.log(query);
+        //console.log(query);
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         let result: QueryResult | undefined;
         try {
@@ -179,8 +195,8 @@ export class Metrics {
 
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_requests{namespace="asdf-production", host="a.a.localhost"}[10m])
-        const query = `${q.calc}(container_cpu_system_seconds_total{namespace="${q.pipeline}-${q.phase}", container=~"kuberoapp-web|kuberoapp-worker"}[${vector}])`;
-        console.log(query);
+        const query = `${q.calc}(container_cpu_usage_seconds_total{namespace="${q.pipeline}-${q.phase}", container=~"kuberoapp-web|kuberoapp-worker"}[${vector}])`;
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -210,7 +226,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_requests{namespace="asdf-production", host="a.a.localhost"}[10m])
         const query = `${q.calc}(nginx_ingress_controller_requests{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector}])`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -241,7 +257,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // rate(nginx_ingress_controller_response_duration_seconds_count{namespace="asdf-production", host="a.a.localhost",status="200"}[10m]) //in ms
         const query = `${q.calc}(nginx_ingress_controller_response_duration_seconds_count{namespace="${q.pipeline}-${q.phase}", host="${q.host}", status="200"}[${vector}])`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -271,7 +287,7 @@ export class Metrics {
         const { end, start, step, vector } = this.getStepsAndStart(q.scale);
         // sum(rate(nginx_ingress_controller_response_size_sum{namespace="asdf-production", host="a.a.localhost"}[10m]))
         const query = `sum(${q.calc}(nginx_ingress_controller_response_size_sum{namespace="${q.pipeline}-${q.phase}", host="${q.host}"}[${vector}]))`;
-        console.log(query);
+        //console.log(query);
         try {
             metrics = await this.prom.rangeQuery(query, start, end, step);
             for (let i = 0; i < metrics.result.length; i++) {
@@ -294,4 +310,46 @@ export class Metrics {
         return resp;
     }
 
+    public async getRules(q: {app: string, phase: string, pipeline: string}): Promise<any> {
+        let rules = await this.prom.rules();
+
+        let ruleslist: Rule[] = [];
+        
+        // filter for dedicated app
+        for (let i = 0; i < rules.length; i++) {
+            for (let j = 0; j < rules[i].rules.length; j++) {
+                // remove not matching alerts
+                rules[i].rules[j].alerts = rules[i].rules[j].alerts.filter((a: any) => {
+                    console.log("a.labels.namespace: "+a.labels.namespace+" == q.pipeline: "+q.pipeline+"-"+q.phase)
+                    console.log("a.labels.service: "+a.labels.service+" q.app: "+q.app+"-kuberoapp");
+                    return a.labels.namespace === q.pipeline+"-"+q.phase && (
+                        a.labels.service === q.app+"-kuberoapp" || 
+                        a.labels.deployment?.startsWith(q.app+"-kuberoapp") ||
+                        a.labels.replicaset?.startsWith(q.app+"-kuberoapp") ||
+                        a.labels.statefulset === q.app+"-kuberoapp" ||
+                        a.labels.daemonset === q.app+"-kuberoapp" ||
+                        a.labels.pod === q.app+"-kuberoapp" ||
+                        a.labels.container === q.app+"-kuberoapp" ||
+                        a.labels.job === q.app+"-kuberoapp"
+                    )
+                });
+
+                let r: Rule = {
+                    alert: rules[i].rules[j].alerts[0],
+                    duration: rules[i].rules[j].duration || 0,
+                    health: rules[i].rules[j].health || '',
+                    labels: rules[i].rules[j].labels || {},
+                    name: rules[i].rules[j].name || '',
+                    query: rules[i].rules[j].query || '',
+                    alerting: rules[i].rules[j].alerts.length > 0 ? true : false,
+                };
+
+                if (rules[i].rules[j].type === 'alerting') {
+                    ruleslist.push(r);
+                }
+            }
+        }
+
+        return ruleslist;
+    }
 }

@@ -78,7 +78,8 @@ export const configure = async (app: Express, server: Server) => {
     process.env.KUBERO_WS_TOKEN = crypto.randomBytes(20).toString('hex');
 
     const metrics = new Metrics({
-        endpoint: process.env.KUBERO_PROMETHEUS_ENDPOINT || 'http://prometheus.localhost',
+        enabled: process.env.KUBERO_PROMETHEUS_ENDPOINT ? true : false,
+        endpoint: process.env.KUBERO_PROMETHEUS_ENDPOINT || 'http://kubero-prometheus-server',
     });
     app.locals.metrics = metrics;
 

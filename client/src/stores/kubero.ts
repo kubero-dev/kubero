@@ -17,6 +17,7 @@ export const useKuberoStore = defineStore('kubero', {
             templatesEnabled: true,
             buildPipeline: false,
             consoleEnabled: false,
+            metricsEnabled: false,
         },
         buildPipeline: false,
     }),

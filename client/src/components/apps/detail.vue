@@ -118,7 +118,7 @@ export default defineComponent({
                     href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 },
                 {
-                    title: 'App-'+this.app,
+                    title: 'App.'+this.app,
                     disabled: true,
                     href: `/pipeline/${this.pipeline}/${this.phase}/${this.app}/detail`,
                 }
