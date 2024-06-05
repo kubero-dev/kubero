@@ -26,3 +26,5 @@ containerdConfigPatches:
     endpoint = ["http://kubero-registry.kubero.svc:5000"]
   [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.local.kubero.net"]
     endpoint = ["http://registry.local.kubero.net"]
+  [plugins."io.containerd.grpc.v1.cri".registry.mirrors."registry.localhost"]
+    endpoint = ["http://registry.localhost"]
