@@ -347,6 +347,10 @@ export default defineComponent({
     }),
     computed: {
       showConnectButton() {
+        if(this.gitrepoItemsTab !== this.gitrepo) {
+          setTimeout(()=>this.loadRepository(),0);
+          // trigger the load, but not returning so it will be recomputed when `this.gitrepoItems` assigned.
+        }
         return this.gitrepoItems.includes(this.gitrepo) && this.repository_status.connected === false;
       }
     },
@@ -440,9 +444,16 @@ export default defineComponent({
       },
 
       loadRepository() {
+        if(this.gitrepoItemsTab !== this.repotab) {
+          // this variable do not need to be reactive
+          this.gitrepoItemsTab = this.repotab;
+        }
+        let loadingItem = this.gitrepoItemsTab;
         axios.get(`/api/repo/${this.repotab}/list`)
         .then(response => {
-          this.gitrepoItems = response.data;
+          if(loadingItem === this.gitrepoItemsTab) {
+            this.gitrepoItems = response.data;
+          }
         }).catch(error => {
           console.log(error);
         });
