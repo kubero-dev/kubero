@@ -36,7 +36,7 @@
     "kubernetes-client": "^9.0.0",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "passport": "0.5",
+    "passport": "0.6",
     "passport-github2": "^0.1.12",
     "passport-http-bearer": "^1.0.1",
     "passport-local": "^1.0.0",
