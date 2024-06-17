@@ -22,7 +22,7 @@ Router.all("/session", (req: Request, res: Response) => {
     }
 
     let buildPipeline = false
-    if ( process.env.KUBERO_BUILD_REGISTRY != undefined ) {
+    if ( process.env.KUBERO_PUSH_REGISTRY != undefined || process.env.KUBERO_PUSH_REGISTRY != undefined) {
         buildPipeline = true
     } 
 

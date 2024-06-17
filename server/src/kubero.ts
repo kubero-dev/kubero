@@ -1417,23 +1417,25 @@ export class Kubero {
             dockerfilePath = '.nixpacks/Dockerfile';
         }
 
-        // TODO: Make image configurable
-        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
-        const image = `${registry}/${pipeline}/${appName}`;
-
-        console.log('Build image: ', image);
 
         const timestamp = new Date().getTime();
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
-            this.kubectl.createBuildImageJob(
-                namespace,                      // namespace
-                appName,                        // app
-                repo,                           // gitrepo
-                app.spec.branch,                // branch
-                image,                          // image
-                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
-                dockerfilePath                  // dockerfile
+            
+            this.kubectl.createBuild(
+                appName, 
+                pipeline,
+                namespace,
+                app.spec.buildstrategy, 
+                repo,
+                app.spec.branch,
+                dockerfilePath,
+                {
+                    push: process.env.KUBERO_PUSH_REGISTRY || 'kubero-registry.kubero.svc:5000',
+                    pull: process.env.KUBERO_PULL_REGISTRY || 'registry.local.kubero.net',
+                    image: `/${pipeline}/${appName}`,
+                    tag: app.spec.branch+"-"+timestamp
+                }
             );
         }
 

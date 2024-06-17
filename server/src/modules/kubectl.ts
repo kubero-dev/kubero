@@ -834,6 +834,83 @@ export class Kubectl {
         }
     }
 
+    public async createBuild(
+        appName: string, 
+        pipelineName: string,
+        namespace: string,
+        buildstrategy: string, 
+        gitrepo: string, 
+        revision: string, 
+        dockerfilePath: string,
+        repository: {
+            push: string,
+            pull: string,
+            image: string,
+            tag: string
+        }
+        ): Promise<any> {
+            console.log('Build image: ', `${pipelineName}/${appName}:${revision}`);
+
+            const name = appName + "-" + pipelineName + "-" + revision;
+            console.log("create build: " + name);
+            const build = {
+                apiVersion: "application.kubero.dev/v1alpha1",
+                kind: "KuberoBuild",
+                metadata: {
+                    name: name.substring(0, 63),
+                },
+                spec: {
+                    buildstrategy: buildstrategy, // "kpack" or "docker" or "nixpack"
+                    app: appName,
+                    pipeline: pipelineName,
+                    repository: {
+                        push: repository.push, // "kubero-registry.kubero.svc:5000",
+                        pull: repository.pull, // "registry.local.kubero.net",
+                        image: repository.image,  // name/namespace
+                        tag: repository.tag || "latest"
+                    },
+                    git: {
+                        url: gitrepo,
+                        revision: revision
+                    },
+                    podSecurityContext: {
+                        fsGroup: 1000
+                    },
+                    kpack: {
+                        serviceAccount: "kpack-sa",
+                        builder: "gcr.io/paketo-buildpacks/builder:base"
+                    },
+                    dockerfile: {
+                        path: dockerfilePath || "Dockerfile",
+                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
+                        pusher: "quay.io/containers/buildah:v1.29"
+                    },
+                    nixpack: {
+                        path: dockerfilePath || ".nixpacks/Dockerfile",
+                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
+                        builder: "ghcr.io/kubero-dev/build:latest",
+                        pusher: "quay.io/containers/buildah:v1.29"
+                    }
+                }
+            };
+
+            try {
+                this.customObjectsApi.createNamespacedCustomObject(
+                    "application.kubero.dev",
+                    "v1alpha1",
+                    namespace,
+                    "kuberobuilds",
+                    build
+                ).catch(error => {
+                    debug.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+                console.log('ERROR creating build job');
+            }
+        }
+
+    // DEPRECATED v2.4.0
     public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
 
         const job = {
