@@ -34,13 +34,15 @@ Kubero initiates two containers: one for cloning your repository and another for
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
 - Deploy well known apps with **templates** [(Wordpress, Grafana, ...)](https://www.kubero.dev/templates)
-- Easy deployment of your docker containers on Kubernetes **without helm charts**
+- Easy deployment of your docker containers on Kubernetes **without writing helm charts**
 - Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
-- Easy access of **application logs** in the UI
-- Easy and safe **restart** of the application in the UI
+- Easy access of **application logs** in the web-UI
+- Easy and safe **restart** of the application in the web-UI
 - Triggered or periodic **vulnerability scans** of your running apps
 - Comes with an **API and CLI** to integrate with your existing tools and CI/CD
-- Built-in **container console**
+- Built-in **container web console**
+- Build and deployment **Notifications** to Discord/Slack/Webhooks
+- Integrated **metrics and monitoring**
 - **SSO** with Github and Oauth2
 
 ## Supported GIT repositories (hosted and self-hosted)
