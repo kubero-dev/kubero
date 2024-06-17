@@ -152,7 +152,7 @@
               <v-radio-group v-model="buildstrategy">
                 <v-radio
                   key="0"
-                  label="Plain images"
+                  label="Runpacks"
                   value="plain"
                 ></v-radio>
                 <v-radio
@@ -181,9 +181,9 @@
             
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
                 <h3>
-                  Plain
+                  Runpacks
                 </h3>
-                <div>This is the default for kubero. Your code is running on official images. The code will be built for every pod. This is the fastes way, to run your code, but becomes more inefficient with every replica.</div>
+                <div>Your code is build and running on official images. The code will be built for every pod in a init container. This is the fastes way, to run your code, but becomes more inefficient with every replica.</div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'nixpacks'">
@@ -284,7 +284,7 @@
               <v-select
                 v-model="buildpack"
                 :items="buildpacks"
-                label="Buildpack"
+                label="Runpack"
                 @change="updateBuildpack(buildpack)"
               ></v-select>
             </v-col>
