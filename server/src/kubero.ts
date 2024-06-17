@@ -319,7 +319,7 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
             this.appStateList.push(app);
@@ -353,7 +353,7 @@ export class Kubero {
             return;
         }
 
-        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
             this.triggerImageBuild(app.pipeline, app.phase, app.name);
         }
 

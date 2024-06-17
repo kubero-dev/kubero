@@ -860,7 +860,7 @@ export class Kubectl {
                     name: name.substring(0, 63),
                 },
                 spec: {
-                    buildstrategy: buildstrategy, // "kpack" or "docker" or "nixpack"
+                    buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"
                     app: appName,
                     pipeline: pipelineName,
                     repository: {
@@ -876,7 +876,7 @@ export class Kubectl {
                     podSecurityContext: {
                         fsGroup: 1000
                     },
-                    kpack: {
+                    buildpack: {
                         serviceAccount: "kpack-sa",
                         builder: "gcr.io/paketo-buildpacks/builder:base"
                     },
