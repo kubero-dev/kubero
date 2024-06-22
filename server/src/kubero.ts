@@ -1428,12 +1428,10 @@ export class Kubero {
                 namespace,
                 app.spec.buildstrategy, 
                 repo,
-                app.spec.branch,
+                app.spec.branch, //revision
                 dockerfilePath,
                 {
-                    push: process.env.KUBERO_PUSH_REGISTRY || 'kubero-registry.kubero.svc:5000',
-                    pull: process.env.KUBERO_PULL_REGISTRY || 'registry.local.kubero.net',
-                    image: `/${pipeline}/${appName}`,
+                    image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
                     tag: app.spec.branch+"-"+timestamp
                 }
             );

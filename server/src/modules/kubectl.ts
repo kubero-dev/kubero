@@ -843,13 +843,12 @@ export class Kubectl {
         revision: string, 
         dockerfilePath: string,
         repository: {
-            push: string,
-            pull: string,
             image: string,
             tag: string
         }
         ): Promise<any> {
             console.log('Build image: ', `${pipelineName}/${appName}:${revision}`);
+            console.log('Docker repo: ', repository.image+':' + repository.tag);
 
             const name = appName + "-" + pipelineName + "-" + revision;
             console.log("create build: " + name);
@@ -864,9 +863,7 @@ export class Kubectl {
                     app: appName,
                     pipeline: pipelineName,
                     repository: {
-                        push: repository.push, // "kubero-registry.kubero.svc:5000",
-                        pull: repository.pull, // "registry.local.kubero.net",
-                        image: repository.image,  // name/namespace
+                        image: repository.image,  // registry.yourdomain.com/name/namespace
                         tag: repository.tag || "latest"
                     },
                     git: {
