@@ -13,6 +13,7 @@ import { RouterLogs } from "./routes/logs";
 import { RouterPipelines } from "./routes/pipelines";
 import { RouterRepo } from "./routes/repo";
 import { Router as RouterSettings } from "./routes/settings";
+import { Router as RouterDeployments } from "./routes/deployments";
 import { Router as RouterTemplates } from "./routes/templates";
 import { Router as RouterMetrics } from "./routes/metrics";
 import { Router as RouterSecurity } from "./routes/security";
@@ -23,6 +24,7 @@ import { Metrics } from './modules/metrics';
 import { Kubectl } from './modules/kubectl';
 import { Notifications } from './modules/notifications';
 import { Settings } from './modules/settings';
+import { Deployments } from './modules/deployments';
 import { Audit, AuditEntry } from './modules/audit';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
@@ -68,6 +70,7 @@ export const configure = async (app: Express, server: Server) => {
     app.use('/api', RouterTemplates);
     app.use('/api', RouterMetrics);
     app.use('/api', RouterSecurity);
+    app.use('/api', RouterDeployments);
     const swagger = SwaggerUi.setup(require('../swagger.json'));
     app.use('/api/docs', SwaggerUi.serve, swagger);
 
@@ -130,4 +133,9 @@ export const configure = async (app: Express, server: Server) => {
         io: sockets,
     });
     app.locals.settings = settings;
+
+    const deployments = new Deployments({
+        kubectl: kubero.kubectl,
+    });
+    app.locals.deployments = deployments;
 }

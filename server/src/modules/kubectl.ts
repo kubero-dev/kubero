@@ -1241,4 +1241,19 @@ export class Kubectl {
         }
     }
 
+    public async getKuberoBuilds(namespace: string): Promise<any> {
+        try {
+            const builds = await this.customObjectsApi.listNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds'
+            )
+            return builds.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoBuilds: error getting builds");
+        }
+    }
+
 }
