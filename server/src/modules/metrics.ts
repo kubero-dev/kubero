@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PrometheusDriver, PrometheusQueryDate, QueryResult } from 'prometheus-query';
+import { PrometheusDriver, PrometheusQueryDate, QueryResult, RuleGroup } from 'prometheus-query';
 
 export interface MetricsOptions {
     enabled: boolean,
@@ -311,7 +311,12 @@ export class Metrics {
     }
 
     public async getRules(q: {app: string, phase: string, pipeline: string}): Promise<any> {
-        let rules = await this.prom.rules();
+        let rules: RuleGroup[] = [];
+        try {
+            rules = await this.prom.rules();
+        } catch (error) {
+            console.log("error fetching rules")
+        }
 
         let ruleslist: Rule[] = [];
         
