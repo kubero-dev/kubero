@@ -1423,13 +1423,15 @@ export class Kubero {
             this.kubectl.setCurrentContext(contextName);
             
             this.kubectl.createBuild(
+                namespace,
                 appName, 
                 pipeline,
-                namespace,
                 app.spec.buildstrategy, 
-                repo,
-                app.spec.branch, //revision
                 dockerfilePath,
+                {
+                    url: repo,
+                    ref: app.spec.branch, //git commit reference
+                },
                 {
                     image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
                     tag: app.spec.branch+"-"+timestamp

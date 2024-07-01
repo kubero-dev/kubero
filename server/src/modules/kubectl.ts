@@ -35,6 +35,7 @@ import { version } from 'os';
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
+import { KuberoBuild } from './deployments';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -833,24 +834,26 @@ export class Kubectl {
             console.log('ERROR fetching pod by label');
         }
     }
-
+    
     public async createBuild(
+        namespace: string,
         appName: string, 
         pipelineName: string,
-        namespace: string,
-        buildstrategy: string, 
-        gitrepo: string, 
-        revision: string, 
-        dockerfilePath: string,
+        buildstrategy: 'buildpacks' | 'dockerfile' | 'nixpacks' | 'plain',
+        dockerfilePath: string | undefined,
+        git: {
+            url: string,
+            ref: string
+        },
         repository: {
             image: string,
             tag: string
         }
         ): Promise<any> {
-            console.log('Build image: ', `${pipelineName}/${appName}:${revision}`);
+            console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
             console.log('Docker repo: ', repository.image+':' + repository.tag);
 
-            const name = appName + "-" + pipelineName + "-" + revision;
+            const name = appName + "-" + pipelineName + "-" + git.ref + "-" + Date.now();
             console.log("create build: " + name);
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
@@ -867,27 +870,9 @@ export class Kubectl {
                         tag: repository.tag || "latest"
                     },
                     git: {
-                        url: gitrepo,
-                        revision: revision
+                        url: git.url,
+                        ref: git.ref
                     },
-                    podSecurityContext: {
-                        fsGroup: 1000
-                    },
-                    buildpack: {
-                        serviceAccount: "kpack-sa",
-                        builder: "gcr.io/paketo-buildpacks/builder:base"
-                    },
-                    dockerfile: {
-                        path: dockerfilePath || "Dockerfile",
-                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
-                        pusher: "quay.io/containers/buildah:v1.29"
-                    },
-                    nixpack: {
-                        path: dockerfilePath || ".nixpacks/Dockerfile",
-                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
-                        builder: "ghcr.io/kubero-dev/build:latest",
-                        pusher: "quay.io/containers/buildah:v1.29"
-                    }
                 }
             };
 
@@ -1255,5 +1240,4 @@ export class Kubectl {
             debug.log("getKuberoBuilds: error getting builds");
         }
     }
-
 }

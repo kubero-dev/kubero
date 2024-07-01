@@ -5,7 +5,7 @@
                 <!--<h1>Vulnerabilities in {{ app }}</h1>-->
             </v-col>
             <v-col>
-                <Buildsform></Buildsform>
+                <Buildsform :pipeline="pipeline" :phase="phase" :app="app" :appData="appData"></Buildsform>
             </v-col>
         </v-row>
 
@@ -249,6 +249,9 @@ export default defineComponent({
       app: {
         type: String,
         default: "new"
+      },
+      appData: {
+        type: Object,
       }
     },
     data() {

@@ -15,7 +15,7 @@
         </template>
   
         <v-card
-          prepend-icon="mdi-account"
+          prepend-icon="mdi-wrench"
           title="New Build"
         >
           <v-card-text>
@@ -31,7 +31,7 @@
                   description="The strategy to build the source code"
                   auto-select-first
                   required
-                  v-model="form.strategy"
+                  v-model="form.buildstrategy"
                 ></v-select>
               </v-col>
               <v-col
@@ -42,6 +42,17 @@
                   label="Reference"
                   description="The reference to the source code"
                   v-model="form.reference"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+              >
+                <v-text-field
+                  v-if="form.buildstrategy === 'dockerfile' || form.buildstrategy === 'nixpacks'"
+                  label="Dockerfile Path"
+                  description="Path to the Dockerfile in the source code"
+                  v-model="form.dockerfilePath"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -75,25 +86,55 @@
 
 
 <script lang="ts">
-//import axios from "axios";
+import axios from "axios";
+import { pipeline } from "stream";
 import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'BuildsForm',
-  params: {
-    dialog: Boolean,
+  
+  props: {
+        pipeline: {
+            type: String,
+            default: "MISSING"
+        },
+        phase: {
+            type: String,
+            default: "MISSING"
+        },
+        app: {
+            type: String,
+            default: "MISSING"
+        },
+        appData: {
+            type: Object,
+        }
   },
   data: () => ({
     dialog: false,
     form: {
-      strategy: 'dockerfile',
-      reference: '',
+        buildstrategy: 'dockerfile',
+        reference: '',
+        dockerfilePath: 'Dockerfile'
     }
   }),
   methods: {
     saveBuild() {
-      console.log('Build submitted', this.form)
-      this.dialog = false
+        console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
+        const body = {
+            buildstrategy: this.form.buildstrategy,
+            repository: this.appData?.spec.gitrepo.ssh_url,
+            reference: this.form.reference,
+            dockerfilePath: this.form.dockerfilePath
+        }
+        axios.post(`/api/deployments/build/${this.pipeline}/${this.phase}/${this.app}`, body)
+        .then(response => {
+            console.log('Build submitted', response.data)
+            this.dialog = false
+        })
+        .catch(error => {
+            console.log('Error submitting build', error)
+        })
     }
   }
 })
