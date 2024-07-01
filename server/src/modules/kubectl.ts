@@ -35,6 +35,7 @@ import { version } from 'os';
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
+import { KuberoBuild } from './deployments';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -833,7 +834,65 @@ export class Kubectl {
             console.log('ERROR fetching pod by label');
         }
     }
+    
+    public async createBuild(
+        namespace: string,
+        appName: string, 
+        pipelineName: string,
+        buildstrategy: 'buildpacks' | 'dockerfile' | 'nixpacks' | 'plain',
+        dockerfilePath: string | undefined,
+        git: {
+            url: string,
+            ref: string
+        },
+        repository: {
+            image: string,
+            tag: string
+        }
+        ): Promise<any> {
+            console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
+            console.log('Docker repo: ', repository.image+':' + repository.tag);
 
+            const name = appName + "-" + pipelineName + "-" + git.ref + "-" + Date.now();
+            console.log("create build: " + name);
+            const build = {
+                apiVersion: "application.kubero.dev/v1alpha1",
+                kind: "KuberoBuild",
+                metadata: {
+                    name: name.substring(0, 63),
+                },
+                spec: {
+                    buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"
+                    app: appName,
+                    pipeline: pipelineName,
+                    repository: {
+                        image: repository.image,  // registry.yourdomain.com/name/namespace
+                        tag: repository.tag || "latest"
+                    },
+                    git: {
+                        url: git.url,
+                        ref: git.ref
+                    },
+                }
+            };
+
+            try {
+                this.customObjectsApi.createNamespacedCustomObject(
+                    "application.kubero.dev",
+                    "v1alpha1",
+                    namespace,
+                    "kuberobuilds",
+                    build
+                ).catch(error => {
+                    debug.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+                console.log('ERROR creating build job');
+            }
+        }
+
+    // DEPRECATED v2.4.0
     public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
 
         const job = {
@@ -1167,4 +1226,18 @@ export class Kubectl {
         }
     }
 
+    public async getKuberoBuilds(namespace: string): Promise<any> {
+        try {
+            const builds = await this.customObjectsApi.listNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds'
+            )
+            return builds.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoBuilds: error getting builds");
+        }
+    }
 }

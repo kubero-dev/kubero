@@ -19,7 +19,7 @@
                             <td>{{ appData.spec.deploymentstrategy }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git' && appData.spec.deploymentstrategy == 'plain'">
-                            <th>Buildpack</th>
+                            <th>Runpack</th>
                             <td>{{ appData.spec.buildpack }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">

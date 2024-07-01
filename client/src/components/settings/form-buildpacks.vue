@@ -6,7 +6,7 @@
             type="info"
             variant="tonal"
             style="margin-bottom: 20px; margin-top: 20px;"
-            text="These buildpacks are used only for apps using the 'plain' build strategy">
+            text="These Runpacks are used only for apps using the 'Runpacks' build strategy">
         </v-alert>
         <v-expansion-panels
             v-model="panel"

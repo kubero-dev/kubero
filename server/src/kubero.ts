@@ -319,7 +319,7 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
             this.appStateList.push(app);
@@ -353,7 +353,7 @@ export class Kubero {
             return;
         }
 
-        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
             this.triggerImageBuild(app.pipeline, app.phase, app.name);
         }
 
@@ -1417,23 +1417,25 @@ export class Kubero {
             dockerfilePath = '.nixpacks/Dockerfile';
         }
 
-        // TODO: Make image configurable
-        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
-        const image = `${registry}/${pipeline}/${appName}`;
-
-        console.log('Build image: ', image);
 
         const timestamp = new Date().getTime();
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
-            this.kubectl.createBuildImageJob(
-                namespace,                      // namespace
-                appName,                        // app
-                repo,                           // gitrepo
-                app.spec.branch,                // branch
-                image,                          // image
-                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
-                dockerfilePath                  // dockerfile
+            
+            this.kubectl.createBuild(
+                namespace,
+                appName, 
+                pipeline,
+                app.spec.buildstrategy, 
+                dockerfilePath,
+                {
+                    url: repo,
+                    ref: app.spec.branch, //git commit reference
+                },
+                {
+                    image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
+                    tag: app.spec.branch+"-"+timestamp
+                }
             );
         }
 
