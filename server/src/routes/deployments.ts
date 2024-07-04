@@ -18,7 +18,6 @@ Router.get('/deployments/:pipeline/:phase/:app', authMiddleware, async function 
     // #swagger.parameters['phase'] = { description: 'Phase name' }
     // #swagger.parameters['app'] = { description: 'App name' }
 
-    console.log('deployments');
 
     const deployments = await req.app.locals.deployments.getDeployments(
         req.params.pipeline,

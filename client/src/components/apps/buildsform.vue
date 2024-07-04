@@ -120,7 +120,7 @@ export default defineComponent({
   }),
   methods: {
     saveBuild() {
-        console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
+        //console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
         const body = {
             buildstrategy: this.form.buildstrategy,
             repository: this.appData?.spec.gitrepo.ssh_url,
@@ -129,7 +129,7 @@ export default defineComponent({
         }
         axios.post(`/api/deployments/build/${this.pipeline}/${this.phase}/${this.app}`, body)
         .then(response => {
-            console.log('Build submitted', response.data)
+            //console.log('Build submitted', response.data)
             this.dialog = false
         })
         .catch(error => {

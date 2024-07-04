@@ -274,12 +274,11 @@ export default defineComponent({
             }
         },
         triggerRebuild(deploymentName: string) {
-            console.log("Trigger rebuild for deployment", deploymentName);
+            console.log("TODO : Trigger rebuild for deployment", deploymentName);
         },
         async getDeployments() {
             try {
                 const response = await axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`);
-                console.log(response.data);
                 for (const build of response.data.items) {
                     this.deployments.push(build);
                 }

@@ -850,11 +850,11 @@ export class Kubectl {
             tag: string
         }
         ): Promise<any> {
-            console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
-            console.log('Docker repo: ', repository.image+':' + repository.tag);
+            //console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
+            //console.log('Docker repo: ', repository.image+':' + repository.tag);
 
             const name = appName + "-" + pipelineName + "-" + git.ref + "-" + Date.now();
-            console.log("create build: " + name);
+
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
                 kind: "KuberoBuild",
