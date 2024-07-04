@@ -29,6 +29,7 @@ Router.get('/deployments/:pipeline/:phase/:app', authMiddleware, async function 
     //res.send('ok');
 });
 
+/* Not implemented yet
 Router.get('/deployments/:pipeline/:phase/:app/:container/log', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get deployments logs for a specific app'
@@ -45,6 +46,7 @@ Router.get('/deployments/:pipeline/:phase/:app/:container/log', authMiddleware, 
     );
     res.send(deployments);
 });
+*/
 
 Router.post('/deployments/build/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
@@ -64,6 +66,23 @@ Router.post('/deployments/build/:pipeline/:phase/:app', authMiddleware, async fu
         req.body.reference as string,
         req.body.dockerfilePath as string,
         user
+    );
+    res.send(deployments);
+});
+
+Router.delete('/deployments/:pipeline/:phase/:app/:buildName', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Delete a specific app'
+    // #swagger.description = 'Delete a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
+
+    const deployments = await req.app.locals.deployments.deleteDeployment(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app,
+        req.params.buildName
     );
     res.send(deployments);
 });

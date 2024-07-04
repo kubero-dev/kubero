@@ -166,5 +166,11 @@ export class Deployments {
         }
     }
 
-    
+    public async deleteDeployment(pipeline: string, phase: string, app: string, buildName: string): Promise<any> {
+        const namespace = pipeline + "-" + phase
+        await this.kubectl.deleteKuberoBuild(namespace, buildName)
+        return {
+            message: 'Deployment deleted'
+        }
+    }
 }

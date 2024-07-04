@@ -1240,4 +1240,35 @@ export class Kubectl {
             debug.log("getKuberoBuilds: error getting builds");
         }
     }
+
+    public async deleteKuberoBuild(namespace: string, buildName: string) {
+        try {
+            await this.customObjectsApi.deleteNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds',
+                buildName
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+/*
+    public async getKuberoBuild(namespace: string, buildName: string): Promise<any> {
+        try {
+            const build = await this.customObjectsApi.getNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds',
+                buildName
+            )
+            return build.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoBuild: error getting build");
+        }
+    }
+*/
 }

@@ -50,7 +50,7 @@
                                     class="ma-1"
                                     >
                                     <v-icon start icon="mdi-git"></v-icon>
-                                    {{ b.spec.git.url }}:{{ b.spec.git.revision }}
+                                    {{ b.spec.git.url }}:{{ b.spec.git.ref }}
                                   </v-chip>
                             </v-col>
                             <v-col cols="2">
@@ -67,6 +67,7 @@
                                           mdi-delete
                                       </v-icon>
                                   </v-btn>
+                                  <!--
                                   <v-btn
                                   elevation="2"
                                   fab
@@ -79,6 +80,7 @@
                                           mdi-reload
                                       </v-icon>
                                   </v-btn>
+                                  -->
                                 </v-row>
                             </v-col>
                         </v-row>
@@ -124,7 +126,7 @@
                                     class="ma-1"
                                     >
                                     <v-icon start icon="mdi-git"></v-icon>
-                                    {{ b.spec.git.url }}:{{ b.spec.git.revision }}
+                                    {{ b.spec.git.url }}:{{ b.spec.git.ref }}
                                   </v-chip>
                             </v-col>
                             <v-col cols="2">
@@ -208,7 +210,7 @@ type Deployment = {
       pusher: string
     }
     git: {
-      revision: string
+      ref: string
       url: string
     }
     nixpack: {
@@ -264,7 +266,12 @@ export default defineComponent({
     },
     methods: {
         deleteBuild(deploymentName: string) {
-            console.log("Delete deployment", deploymentName);
+            try {
+                axios.delete(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}/${deploymentName}`);
+                this.deployments = this.deployments.filter((d) => d.metadata.name !== deploymentName);
+            } catch (error) {
+                console.error(error);
+            }
         },
         triggerRebuild(deploymentName: string) {
             console.log("Trigger rebuild for deployment", deploymentName);
