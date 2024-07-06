@@ -853,7 +853,12 @@ export class Kubectl {
             //console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
             //console.log('Docker repo: ', repository.image+':' + repository.tag);
 
-            const name = appName + "-" + pipelineName + "-" + git.ref + "-" + Date.now();
+
+            // Format to date YYYYMMDD-HHMM
+            const date = new Date();
+            const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
+
+            const name = pipelineName + "-" + appName + "-" + git.ref + "-" + id;
 
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
@@ -865,9 +870,10 @@ export class Kubectl {
                     buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"
                     app: appName,
                     pipeline: pipelineName,
+                    id: id,
                     repository: {
                         image: repository.image,  // registry.yourdomain.com/name/namespace
-                        tag: repository.tag || "latest"
+                        tag: repository.tag + "-" + id
                     },
                     git: {
                         url: git.url,

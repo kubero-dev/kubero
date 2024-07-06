@@ -89,7 +89,7 @@
             </v-card>
             </v-col>
         </v-row>
-
+<!--
         <v-row>
             <v-col cols="12">
               <v-expansion-panels variant="accordion">
@@ -175,7 +175,7 @@
                 </v-card>
             </v-col>
         </v-row>
-
+-->
     </v-container>
 </template>
 
