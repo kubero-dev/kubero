@@ -136,6 +136,8 @@ export const configure = async (app: Express, server: Server) => {
 
     const deployments = new Deployments({
         kubectl: kubero.kubectl,
+        notifications: notifications,
+        io: sockets,
     });
     app.locals.deployments = deployments;
 }

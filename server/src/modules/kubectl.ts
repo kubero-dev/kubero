@@ -858,13 +858,13 @@ export class Kubectl {
             const date = new Date();
             const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
 
-            const name = pipelineName + "-" + appName + "-" + git.ref + "-" + id;
+            const name = pipelineName + "-" + appName + "-" + id;
 
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
                 kind: "KuberoBuild",
                 metadata: {
-                    name: name.substring(0, 63),
+                    name: name.substring(0, 53), // max 53 characters allowed within kubernetes
                 },
                 spec: {
                     buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"

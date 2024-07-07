@@ -184,6 +184,9 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import Buildsform from './buildsform.vue'
+import { useKuberoStore } from '../../stores/kubero'
+
+const socket = useKuberoStore().kubero.socket as any;
 
 type Deployment = {
   apiVersion: string
@@ -239,6 +242,11 @@ type Deployment = {
 }
 
 export default defineComponent({
+    setup() {
+        return {
+            socket,
+        }
+    },
     props: {
       pipeline: {
         type: String,
@@ -262,7 +270,14 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.getDeployments();
+        this.loadDeployments();
+
+        socket.on('newBuild', (instances: any) => {
+            // sleep for 2 second to allow the backend to update the deployment
+            setTimeout(() => {
+                this.loadDeployments();
+            }, 2000);
+        });
     },
     methods: {
         deleteBuild(deploymentName: string) {
@@ -276,16 +291,15 @@ export default defineComponent({
         triggerRebuild(deploymentName: string) {
             console.log("TODO : Trigger rebuild for deployment", deploymentName);
         },
-        async getDeployments() {
-            try {
-                const response = await axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`);
-                for (const build of response.data.items) {
-                    this.deployments.push(build);
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
+        loadDeployments() {
+            const response = axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
+            .then(response => {
+                this.deployments = response.data.items;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
     },
     components: {
         Buildsform

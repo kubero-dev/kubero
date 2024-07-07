@@ -77,11 +77,13 @@ Router.delete('/deployments/:pipeline/:phase/:app/:buildName', authMiddleware, a
     // #swagger.parameters['phase'] = { description: 'Phase name' }
     // #swagger.parameters['app'] = { description: 'App name' }
 
+    const user = auth.getUser(req);
     const deployments = await req.app.locals.deployments.deleteDeployment(
         req.params.pipeline,
         req.params.phase,
         req.params.app,
-        req.params.buildName
+        req.params.buildName,
+        user
     );
     res.send(deployments);
 });

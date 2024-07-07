@@ -7,7 +7,7 @@ import { IKuberoConfig, INotificationSlack, INotificationWebhook, INotificationD
 export interface INotification {
     name: string,
     user: string,
-    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
+    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "build" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
     action: string,
     severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
     message: string,

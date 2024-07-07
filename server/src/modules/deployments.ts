@@ -76,15 +76,21 @@ export type KuberoBuild = {
 
 export interface DeploymentOptions {
     kubectl: Kubectl;
+    notifications: Notifications;
+    io: any;
 }
 
 export class Deployments {
     private kubectl: Kubectl;
+    private _io: any;
+    private notification: Notifications;
 
     constructor(
         options: DeploymentOptions
     ) {
         this.kubectl = options.kubectl
+        this._io = options.io
+        this.notification = options.notifications
     }
 
     public async getDeployments(pipeline: string, phase: string, app: string): Promise<any> {
@@ -159,16 +165,33 @@ export class Deployments {
                 'pipeline': pipeline
             }
         } as INotification;
-        //this.notification.send(m, this._io); //TODO : send notification
+        this.notification.send(m, this._io);
 
         return {
             message: 'Build started'
         }
     }
 
-    public async deleteDeployment(pipeline: string, phase: string, app: string, buildName: string): Promise<any> {
+    public async deleteDeployment(pipeline: string, phase: string, app: string, buildName: string, user: User): Promise<any> {
         const namespace = pipeline + "-" + phase
         await this.kubectl.deleteKuberoBuild(namespace, buildName)
+        
+        const m = {
+          'name': 'newBuild',
+          'user': user.username,
+          'resource': 'build',
+          'action': 'created',
+          'severity': 'normal',
+          'message': 'Created new Build: '+app + ' in pipeline: '+pipeline,
+          'pipelineName':pipeline,
+          'phaseName': '',
+          'appName': '',
+          'data': {
+              'pipeline': pipeline
+          }
+      } as INotification;
+      this.notification.send(m, this._io);
+
         return {
             message: 'Deployment deleted'
         }
