@@ -25,6 +25,7 @@ import { Kubectl } from './modules/kubectl';
 import { Notifications } from './modules/notifications';
 import { Settings } from './modules/settings';
 import { Deployments } from './modules/deployments';
+import { Repositories } from './modules/repositories';
 import { Audit, AuditEntry } from './modules/audit';
 import * as crypto from "crypto"
 import SwaggerUi from 'swagger-ui-express';
@@ -140,4 +141,7 @@ export const configure = async (app: Express, server: Server) => {
         io: sockets,
     });
     app.locals.deployments = deployments;
+
+    const repositories = new Repositories();
+    app.locals.repositories = repositories;
 }

@@ -38,11 +38,12 @@
                 cols="12"
                 sm="6"
               >
-                <v-text-field
-                  label="Reference"
+                <v-combobox
+                  label="Branch/Tag/Commit*"
                   description="The reference to the source code"
+                  :items="references"
                   v-model="form.reference"
-                ></v-text-field>
+                ></v-combobox>
               </v-col>
               <v-col
                 cols="12"
@@ -87,7 +88,6 @@
 
 <script lang="ts">
 import axios from "axios";
-import { pipeline } from "stream";
 import { defineComponent } from 'vue'
 
 export default defineComponent({
@@ -116,9 +116,26 @@ export default defineComponent({
         buildstrategy: 'dockerfile',
         reference: '',
         dockerfilePath: 'Dockerfile'
-    }
+    },
+    references: [] as string[],
   }),
+  mounted() {
+    this.loadReferences()
+    console.log('BuildsForm', this.pipeline, this.phase, this.app, this.appData)
+  },
   methods: {
+    loadReferences() {
+        const repoB64 = btoa(this.appData?.spec.gitrepo.ssh_url)
+        //const provider = this.appData?.spec.gitrepo.provider
+        const provider = "github" // TODO: FIX: get provider from appData
+        axios.get(`/api/repo/${provider}/${repoB64}/references/list`)
+        .then(response => {
+            this.references = response.data
+        })
+        .catch(error => {
+            console.log('Error loading references', error)
+        })
+    },
     saveBuild() {
         //console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
         const body = {

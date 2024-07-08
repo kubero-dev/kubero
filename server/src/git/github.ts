@@ -312,6 +312,52 @@ export class GithubApi extends Repo {
 
     }
 
+    public async getReferences(gitrepo: string): Promise<string[]>{
+
+        let ret: string[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const branches = await this.octokit.request('GET /repos/{owner}/{repo}/branches', {
+                owner: owner,
+                repo: repo,
+            })
+            for (let branch of branches.data) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const tags = await this.octokit.request('GET /repos/{owner}/{repo}/tags', {
+                owner: owner,
+                repo: repo,
+            })
+            for (let tag of tags.data) {
+                ret.push(tag.name)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const commits = await this.octokit.request('GET /repos/{owner}/{repo}/commits', {
+                owner: owner,
+                repo: repo,
+            })
+            for (let commit of commits.data) {
+                ret.push(commit.sha)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        return ret;
+
+    }
+
     public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
 
         let ret: IPullrequest[] = [];

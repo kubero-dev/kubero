@@ -544,45 +544,6 @@ export class Kubero {
     }
 */
 
-    public async listRepos(repoProvider: string) {
-        debug.log('listRepos: '+repoProvider);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.listRepos();
-            case 'gitea':
-                return this.giteaApi.listRepos();
-            case 'gogs':
-                return this.gogsApi.listRepos();
-            case 'gitlab':
-                return this.gitlabApi.listRepos();
-            case 'bitbucket':
-                return this.bitbucketApi.listRepos();
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
-
-    public async connectRepo(repoProvider: string, repoAddress: string) {
-        debug.log('connectRepo: '+repoProvider+' '+repoAddress);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.connectRepo(repoAddress);
-            case 'gitea':
-                return this.giteaApi.connectRepo(repoAddress);
-            case 'gogs':
-                return this.gogsApi.connectRepo(repoAddress);
-            case 'gitlab':
-                return this.gitlabApi.connectRepo(repoAddress);
-            case 'bitbucket':
-                return this.bitbucketApi.connectRepo(repoAddress);
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
 
     public async handleWebhook(repoProvider: string, event: string, delivery: string, signature: string, body: any) {
         debug.log('handleWebhook');
@@ -664,71 +625,6 @@ export class Kubero {
                 console.log('webhook pull request action not handled: '+webhook.action);
                 break;
         }
-    }
-
-    public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let branches: Promise<string[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                branches = this.githubApi.getBranches(repo);
-                break;
-            case 'gitea':
-                branches = this.giteaApi.getBranches(repo);
-                break;
-            case 'gogs':
-                branches = this.gogsApi.getBranches(repo);
-                break;
-            case 'gitlab':
-                branches = this.gitlabApi.getBranches(repo);
-                break;
-            case 'bitbucket':
-                branches = this.bitbucketApi.getBranches(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return branches
-    }
-
-
-    public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                pulls = this.githubApi.getPullrequests(repo);
-                break;
-            case 'gitea':
-                pulls = this.giteaApi.getPullrequests(repo);
-                break;
-            case 'gogs':
-                pulls = this.gogsApi.getPullrequests(repo);
-                break;
-            case 'gitlab':
-                pulls = this.gitlabApi.getPullrequests(repo);
-                break;
-            case 'bitbucket':
-                pulls = this.bitbucketApi.getPullrequests(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return pulls
     }
 
     private async getAppsByRepoAndBranch(repository: string, branch: string) {
