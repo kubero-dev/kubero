@@ -27,7 +27,7 @@ export class App implements IApp{
     public phase: string
     public buildpack: string
     public deploymentstrategy: 'git' | 'docker';
-    public buildstrategy: 'plain' | 'dockerfile' | 'nixpacks';
+    public buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks';
     public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean

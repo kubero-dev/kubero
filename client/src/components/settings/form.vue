@@ -9,7 +9,7 @@
       >
         <v-tab value="general">General</v-tab>
         <v-tab value="podsizes">Podsizes</v-tab>
-        <v-tab value="buildpacks">Buildpacks</v-tab>
+        <v-tab value="runpacks">Runpacks</v-tab>
         <v-tab value="deployment">Deployment</v-tab>
         <v-tab value="templates">Templates</v-tab>
         <v-tab value="notifications">Notifications</v-tab>
@@ -25,7 +25,7 @@
           <FormPodsizes :settings="settings.settings"></FormPodsizes>
         </v-window-item>
 
-        <v-window-item value="buildpacks">
+        <v-window-item value="runpacks">
           <FormBuildpacks :settings="settings.settings"></FormBuildpacks>
         </v-window-item>
 
