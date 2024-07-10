@@ -94,7 +94,8 @@ export class Notifications {
         }
         notifications.forEach(notification => {
             if (notification.enabled && 
-                notification.events.includes(message.name) &&
+                notification.events &&
+                notification.events?.includes(message.name) &&
                 (notification.pipelines?.length == 0 || notification.pipelines?.includes('all') || notification.pipelines?.includes(message.pipelineName))
                 ) {
                 this.sendCustomNotification(notification.type, 
