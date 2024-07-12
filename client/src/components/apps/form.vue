@@ -1613,7 +1613,9 @@ export default defineComponent({
           this.docker.tag = response.data.image.tag;
 
           this.envvars = response.data.envVars;
-          this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
+          if (response.data.serviceAccount && response.data.serviceAccount.annotations) {
+            this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
+          }
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
@@ -1791,7 +1793,7 @@ export default defineComponent({
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(5)
             }
-            if (Object.entries(response.data.spec.serviceAccount.annotations).length > 0) {
+            if (response.data.spec.serviceAccount && Object.entries(response.data.spec.serviceAccount?.annotations).length > 0) {
               this.panel.push(4)
             }
             if (response.data.spec.extraVolumes.length > 0) {
@@ -1821,7 +1823,9 @@ export default defineComponent({
             this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
             this.serviceAccount = response.data.spec.serviceAccount;
-            this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
+            if (response.data.spec.serviceAccount && response.data.spec.serviceAccount.annotations) {
+              this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
+            }
             this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
             this.podsize = response.data.spec.podsize;
