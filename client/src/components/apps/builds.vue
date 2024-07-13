@@ -16,14 +16,32 @@
                 elevation="2" 
                 outlined 
                 color="cardBackground"
+                :loading="b.jobstatus?.status == 'Active'"
                 >
+
+                <template v-slot:loader="{ isActive }">
+                    <v-progress-linear
+                        :active="isActive"
+                        color="primary"
+                        height="2"
+                        indeterminate
+                    ></v-progress-linear>
+                </template>
                 <div>
                     <v-card-title>
                         <v-row>
                             <v-col cols="1">
-                                <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
-                                <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
-                                <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                <v-badge v-if="b.jobstatus?.status != 'Active'" :color="getStatusColor(b.jobstatus?.status)" :icon="getStatusIcon(b.jobstatus?.status)" location="top end">
+                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                </v-badge>
+                                <span v-else>
+                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                </span>
+
                             </v-col>
                             <v-col cols="11">
                                 <h4>{{ b.metadata.name }}</h4>
@@ -31,7 +49,7 @@
                         </v-row>
                     </v-card-title>
                     <v-card-subtitle>
-                      created: {{ b.metadata.creationTimestamp }} | duration : {{ b.metadata.creationTimestamp }}
+                      created: {{ b.metadata.creationTimestamp }} | duration : {{ calcDuration(b.jobstatus?.duration) }}
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
@@ -239,6 +257,12 @@ type Deployment = {
       reason?: string
     }>
   }
+  jobstatus?: {
+    duration: string
+    startTime: string
+    completionTime: string
+    status: "Unknown" | "Active" | "Succeeded" | "Failed"
+  }
 }
 
 export default defineComponent({
@@ -299,7 +323,38 @@ export default defineComponent({
             .catch(error => {
                 console.log(error);
             });
-    }
+        },
+        calcDuration(durationMS: string | undefined) { 
+            if (durationMS == undefined) {
+                return "-";
+            }
+            const duration = parseInt(durationMS);
+            const seconds = Math.floor((duration / 1000) % 60);
+            const minutes = Math.floor((duration / (1000 * 60)) % 60);
+            return `${minutes}m ${seconds}s`;
+        },
+        getStatusColor(status: string | undefined) {
+            if (status == "Active") {
+                return "warning";
+            } else if (status == "Succeeded") {
+                return "success";
+            } else if (status == "Failed") {
+                return "error";
+            } else {
+                return "grey";
+            }
+        },
+        getStatusIcon(status: string | undefined) {
+            if (status == "Active") {
+                return "mdi-clock-outline";
+            } else if (status == "Succeeded") {
+                return "mdi-check-bold";
+            } else if (status == "Failed") {
+                return "mdi-exclamation-thick";
+            } else {
+                return "mdi-help";
+            }
+        }
     },
     components: {
         Buildsform

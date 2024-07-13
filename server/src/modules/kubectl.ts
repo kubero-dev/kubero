@@ -1260,6 +1260,16 @@ export class Kubectl {
             debug.log(error);
         }
     }
+
+    public async getJob(namespace: string, jobName: string): Promise<any> {
+        try {
+            const job = await this.batchV1Api.readNamespacedJob(jobName, namespace)
+            return job.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getJob: error getting job");
+        }
+    }
 /*
     public async getKuberoBuild(namespace: string, buildName: string): Promise<any> {
         try {
