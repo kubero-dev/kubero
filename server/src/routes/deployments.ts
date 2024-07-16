@@ -87,3 +87,20 @@ Router.delete('/deployments/:pipeline/:phase/:app/:buildName', authMiddleware, a
     );
     res.send(deployments);
 });
+
+Router.get('/deployments/:pipeline/:phase/:app/:buildName/log', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get logs for a specific app'
+    // #swagger.description = 'Get logs for a specific app'
+    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
+    // #swagger.parameters['phase'] = { description: 'Phase name' }
+    // #swagger.parameters['app'] = { description: 'App name' }
+
+    const logs = await req.app.locals.deployments.getBuildLogs(
+        req.params.pipeline,
+        req.params.phase,
+        req.params.app,
+        req.params.buildName
+    );
+    res.send(logs);
+});

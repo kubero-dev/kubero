@@ -2,7 +2,7 @@ import { Kubectl } from './kubectl';
 import { User } from './auth';
 import { Notifications, INotification } from './notifications';
 import { Kubero } from '../kubero';
-import { IKubectlApp } from '../types';
+import { IKubectlApp, ILoglines } from '../types';
 
 
 export type KuberoBuild = {
@@ -320,4 +320,32 @@ export class Deployments {
             message: 'Deployment deleted'
         }
     }
+
+    public async getBuildLogs(pipelineName: string, phaseName: string, appName: string, buildName: string): Promise<any> {
+      const contextName = this.kubero.getContext(pipelineName, phaseName);
+      const namespace = pipelineName+'-'+phaseName;
+
+      let logs = {
+        //buildstrategy: '' as string,
+        deploy: [] as ILoglines[],
+        push: [] as ILoglines[],
+        build: [] as ILoglines[],
+        fetch: [] as ILoglines[]
+      } as any;
+
+      if (contextName) {
+          const pods = await this.kubectl.getPods(namespace, contextName);
+          for (const pod of pods) {
+              if (pod.metadata?.labels?.kuberoapp == appName && pod.metadata.name) {
+                  //console.log('Fetching logs for pod: ', pod.metadata.name)
+                  logs.deploy = await this.kubero.fetchLogs(namespace, pod.metadata.name, "deployer", pipelineName, phaseName, appName)
+                  for (const container of pod.spec?.initContainers || []) {
+                      //console.log('Fetching logs for initcontainer: ', container.name)
+                      logs[container.name] = await this.kubero.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
+                  }
+              }
+          }
+      }
+      return logs;
+  }
 }

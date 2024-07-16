@@ -1029,7 +1029,7 @@ export class Kubero {
         return loglines;
     }
 
-    private async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
+    public async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
         let loglines: ILoglines[] = [];
 
         const logStream = new Stream.PassThrough();

@@ -1,11 +1,11 @@
 <template>
-    <div style="height: 95%;">
+    <div style="height: 600px">
         <v-tabs class="console-bar">
             <v-tab @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('fetcher')">fetch</v-tab>
         </v-tabs>
-        <div class="console" id="console">
+        <div class="console" id="console" height="545px">
             <div v-for="line in loglines" :key="line.id">
             {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
             {{ line.log }}
@@ -136,7 +136,7 @@ a:link { text-decoration: none;}
 }
 
 .console {
-    height: 100%;
+    height: 545px;
     overflow-x: scroll;
     background-color: #333;
     color: #c0c0c0;
