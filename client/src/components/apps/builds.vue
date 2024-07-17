@@ -85,6 +85,18 @@
                                           mdi-delete
                                       </v-icon>
                                   </v-btn>
+                                  <v-btn
+                                  elevation="2"
+                                  fab
+                                  small
+                                  class="ma-2"
+                                  color="secondary"
+                                  @click="showLogs(b.metadata.name)"
+                                  >
+                                      <v-icon color="primary">
+                                          mdi-note-alert
+                                      </v-icon>
+                                  </v-btn>
                                   <!--
                                   <v-btn
                                   elevation="2"
@@ -102,6 +114,11 @@
                                 </v-row>
                             </v-col>
                         </v-row>
+                        <v-expand-transition>
+                            <v-row v-if="b.metadata.name == activeLogs">
+                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy logType="buildlogs" :buildID="b.metadata.name"/>
+                            </v-row>
+                        </v-expand-transition>
                     </v-card-text>
                 </div>
             </v-card>
@@ -202,6 +219,7 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import Buildsform from './buildsform.vue'
+import Logs from './logs.vue'
 import { useKuberoStore } from '../../stores/kubero'
 
 const socket = useKuberoStore().kubero.socket as any;
@@ -291,6 +309,7 @@ export default defineComponent({
     data() {
         return {
             deployments: [] as Deployment[],
+            activeLogs: "",
         }
     },
     mounted() {
@@ -354,10 +373,15 @@ export default defineComponent({
             } else {
                 return "mdi-help";
             }
+        },
+        showLogs(deploymentName: string) {
+            //window.open(`/popup/logs/${this.pipeline}/${this.phase}/${this.app}/${deploymentName}`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
+            this.activeLogs = deploymentName;
         }
     },
     components: {
-        Buildsform
+        Buildsform,
+        Logs,
     }
 
 })

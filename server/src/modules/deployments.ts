@@ -321,31 +321,23 @@ export class Deployments {
         }
     }
 
-    public async getBuildLogs(pipelineName: string, phaseName: string, appName: string, buildName: string): Promise<any> {
+    public async getBuildLogs(pipelineName: string, phaseName: string, appName: string, buildName: string, containerName: string): Promise<any> {
       const contextName = this.kubero.getContext(pipelineName, phaseName);
-      const namespace = pipelineName+'-'+phaseName;
+        const namespace = pipelineName+'-'+phaseName;
 
-      let logs = {
-        //buildstrategy: '' as string,
-        deploy: [] as ILoglines[],
-        push: [] as ILoglines[],
-        build: [] as ILoglines[],
-        fetch: [] as ILoglines[]
-      } as any;
+        let loglines = [] as ILoglines[];
 
-      if (contextName) {
+        if (contextName) {
           const pods = await this.kubectl.getPods(namespace, contextName);
           for (const pod of pods) {
-              if (pod.metadata?.labels?.kuberoapp == appName && pod.metadata.name) {
-                  //console.log('Fetching logs for pod: ', pod.metadata.name)
-                  logs.deploy = await this.kubero.fetchLogs(namespace, pod.metadata.name, "deployer", pipelineName, phaseName, appName)
-                  for (const container of pod.spec?.initContainers || []) {
-                      //console.log('Fetching logs for initcontainer: ', container.name)
-                      logs[container.name] = await this.kubero.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
-                  }
-              }
+            console.log('Fetching logs for pod: ', pod.metadata?.labels?.["job-name"], buildName)
+            if (pod.metadata?.labels?.kuberoapp == appName && pod.metadata.name && pod.metadata?.labels?.["job-name"] == buildName) {
+              //console.log('Fetching logs for pod: ', pod.metadata.name)
+              const ll = await this.kubero.fetchLogs(namespace, pod.metadata.name, containerName, pipelineName, phaseName, appName)
+              loglines = loglines.concat(ll);
+            }
           }
-      }
-      return logs;
+        }
+      return loglines;
   }
 }

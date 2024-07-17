@@ -858,7 +858,7 @@ export class Kubectl {
             const date = new Date();
             const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
 
-            const name = pipelineName + "-" + appName + "-" + id;
+            const name = appName + "-" + pipelineName + "-" + id;
 
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
