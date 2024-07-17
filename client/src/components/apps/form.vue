@@ -529,6 +529,17 @@
             </v-col>
           </v-row>
 
+          <!-- allow setting of ingressClass -->
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="ingress.className"
+                  :items="ingressClasses"
+                  label="Ingress Class"
+                ></v-select>
+              </v-col>
+            </v-row>
+
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -1074,6 +1085,7 @@ type FormField = {
 
 type Ingress = {
   annotations: any,
+  className: string,
   tls?: { 
     hosts: string[], 
     secretName: string
@@ -1316,6 +1328,11 @@ export default defineComponent({
         },
         */
       ] as Cronjob[],
+      ingressClasses: [
+        /*
+        'nginx',
+        */
+      ] as string[],
       storageclasses : [
 /*
         'standard',
@@ -1453,6 +1470,7 @@ export default defineComponent({
     },
     mounted() {
       this.loadPipeline();
+      this.loadIngressClasses();
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
@@ -1593,6 +1611,13 @@ export default defineComponent({
 
         });
       },
+      loadIngressClasses() {
+      axios.get("/api/config/ingressclasses").then((response) => {
+        for (let i = 0; i < response.data.length; i++) {
+          this.ingressClasses.push(response.data[i].name);
+        }
+      });
+    },
       loadStorageClasses() {
         axios.get('/api/config/storageclasses').then(response => {
           for (let i = 0; i < response.data.length; i++) {
@@ -1705,7 +1730,6 @@ export default defineComponent({
             this.docker.image = response.data.spec.image.repository || '';
             this.docker.tag = response.data.spec.image.tag || 'latest';
             this.autodeploy = response.data.spec.autodeploy;
-            this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
             this.extraVolumes = response.data.spec.extraVolumes;
             this.containerPort = response.data.spec.image.containerPort;
