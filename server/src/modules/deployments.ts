@@ -330,9 +330,8 @@ export class Deployments {
         if (contextName) {
           const pods = await this.kubectl.getPods(namespace, contextName);
           for (const pod of pods) {
-            console.log('Fetching logs for pod: ', pod.metadata?.labels?.["job-name"], buildName)
+            //console.log('Fetching logs for pod: ', pod.metadata?.labels?.["job-name"], buildName)
             if (pod.metadata?.labels?.kuberoapp == appName && pod.metadata.name && pod.metadata?.labels?.["job-name"] == buildName) {
-              //console.log('Fetching logs for pod: ', pod.metadata.name)
               const ll = await this.kubero.fetchLogs(namespace, pod.metadata.name, containerName, pipelineName, phaseName, appName)
               loglines = loglines.concat(ll);
             }

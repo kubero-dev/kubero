@@ -5,9 +5,9 @@
             <v-tab v-if="deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('fetcher')">fetch</v-tab>
             <v-tab v-if="deploymentstrategy == 'git' && buildstrategy!='plain'" @click="getBuildLogHistory('deployer')">deployer</v-tab>
-            <v-tab v-if="deploymentstrategy == 'git' && buildstrategy!='plain'" @click="getBuildLogHistory('fetch')">fetch</v-tab>
-            <v-tab v-if="deploymentstrategy == 'git' && buildstrategy=='nixpacks'" @click="getBuildLogHistory('build')">build</v-tab>
             <v-tab v-if="deploymentstrategy == 'git' && buildstrategy!='plain'" @click="getBuildLogHistory('push')">push</v-tab>
+            <v-tab v-if="deploymentstrategy == 'git' && buildstrategy=='nixpacks'" @click="getBuildLogHistory('build')">build</v-tab>
+            <v-tab v-if="deploymentstrategy == 'git' && buildstrategy!='plain'" @click="getBuildLogHistory('fetch')">fetch</v-tab>
         </v-tabs>
         <div class="console" id="console" style="height:100%; margin-top: -45px; z-index: 2000;">
             <div v-for="line in loglines" :key="line.id">
@@ -56,8 +56,8 @@ export default defineComponent({
     mounted() {
         if (this.logType == 'buildlogs')  {
             this.getBuildLogHistory('deployer')
-            this.socketJoin()
-            this.startLogs()
+            //this.socketJoin()
+            //this.startLogs()
         } else {
             this.getLogHistory('web')
             this.socketJoin()

@@ -1013,8 +1013,11 @@ export class Kubero {
                 if (pod.metadata?.name?.startsWith(appName)) {
                     if (container == 'web') {
                         for (const container of pod.spec?.containers || []) {
-                            const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
-                            loglines = loglines.concat(ll);
+                            // only fetch logs for the web container, exclude trivy and build jobs
+                            if (!pod.metadata?.labels?.["job-name"]) {
+                                const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
+                                loglines = loglines.concat(ll);
+                            }
                         }
                     } else if (container == 'builder' || container == 'fetcher') {
                         const ll = await this.fetchLogs(namespace, pod.metadata.name, "kuberoapp-"+container, pipelineName, phaseName, appName)

@@ -94,7 +94,7 @@
                                   @click="showLogs(b.metadata.name)"
                                   >
                                       <v-icon color="primary">
-                                          mdi-note-alert
+                                          mdi-format-align-justify
                                       </v-icon>
                                   </v-btn>
                                   <!--
