@@ -49,7 +49,7 @@
                         </v-row>
                     </v-card-title>
                     <v-card-subtitle>
-                      created: {{ b.metadata.creationTimestamp }} | duration : {{ calcDuration(b.jobstatus?.duration) }}
+                      created: {{ b.metadata.creationTimestamp }} | duration : {{ calcDuration(b.jobstatus?.duration, b.jobstatus?.status) }}
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
@@ -222,6 +222,7 @@ import { defineComponent } from 'vue'
 import Buildsform from './buildsform.vue'
 import Logs from './logs.vue'
 import { useKuberoStore } from '../../stores/kubero'
+import { update } from "lodash";
 
 const socket = useKuberoStore().kubero.socket as any;
 
@@ -280,7 +281,7 @@ type Deployment = {
     duration: string
     startTime: string
     completionTime: string
-    status: "Unknown" | "Active" | "Succeeded" | "Failed"
+    status: "Unknown" | "Active" | "Succeeded" | "Failed" | undefined
   }
 }
 
@@ -311,6 +312,8 @@ export default defineComponent({
         return {
             deployments: [] as Deployment[],
             activeLogs: "",
+            reloadTimer: null as any,
+            clockTimer: null as any,
         }
     },
     mounted() {
@@ -322,6 +325,21 @@ export default defineComponent({
                 this.loadDeployments();
             }, 2000);
         });
+        
+        
+        this.reloadTimer = setInterval(() => {
+            this.updateStatus();
+        }, 10000);
+        
+
+        this.clockTimer = setInterval(() => {
+            this.deployments.forEach((d) => {
+                if (d.jobstatus?.status == "Active") {
+                    d.jobstatus.duration = (new Date().getTime() - new Date(d.jobstatus.startTime).getTime()).toString();
+                }
+            });
+        }, 1000);
+
     },
     methods: {
         deleteBuild(deploymentName: string) {
@@ -344,14 +362,32 @@ export default defineComponent({
                 console.log(error);
             });
         },
-        calcDuration(durationMS: string | undefined) { 
-            if (durationMS == undefined) {
-                return "-";
-            }
-            const duration = parseInt(durationMS);
+        updateStatus() {
+            axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
+            .then(response => {
+                const deployments = response.data.items as Deployment[];
+                deployments.forEach((d: Deployment) => {
+                    const deployment = this.deployments.find((dep) => dep.metadata.name == d.metadata.name);
+                    if (deployment && deployment.jobstatus) {
+                        deployment.jobstatus.status = d.jobstatus?.status;
+                    }
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+
+        msToTime(duration: number) {
             const seconds = Math.floor((duration / 1000) % 60);
             const minutes = Math.floor((duration / (1000 * 60)) % 60);
             return `${minutes}m ${seconds}s`;
+        },
+        calcDuration(durationMS: string | undefined, status: string | undefined) { 
+            if (durationMS == undefined) {
+                return "-";
+            }
+            return this.msToTime(parseInt(durationMS));
         },
         getStatusColor(status: string | undefined) {
             if (status == "Active") {
