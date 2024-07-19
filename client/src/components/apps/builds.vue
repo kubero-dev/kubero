@@ -91,6 +91,7 @@
                                   small
                                   class="ma-2"
                                   color="secondary"
+                                  v-if="b.jobstatus?.status != 'Active'"
                                   @click="showLogs(b.metadata.name)"
                                   >
                                       <v-icon color="primary">
