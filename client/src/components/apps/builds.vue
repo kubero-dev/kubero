@@ -341,6 +341,10 @@ export default defineComponent({
         }, 1000);
 
     },
+    unmounted() {
+        clearInterval(this.reloadTimer);
+        clearInterval(this.clockTimer);
+    },
     methods: {
         deleteBuild(deploymentName: string) {
             try {
