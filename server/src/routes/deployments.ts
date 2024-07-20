@@ -28,25 +28,6 @@ Router.get('/deployments/:pipeline/:phase/:app', authMiddleware, async function 
     //res.send('ok');
 });
 
-/* Not implemented yet
-Router.get('/deployments/:pipeline/:phase/:app/:container/log', authMiddleware, async function (req: Request, res: Response) {
-    // #swagger.tags = ['UI']
-    // #swagger.summary = 'Get deployments logs for a specific app'
-    // #swagger.description = 'Get deployments logs for a specific app'
-    // #swagger.parameters['pipeline'] = { description: 'Pipeline name' }
-    // #swagger.parameters['phase'] = { description: 'Phase name' }
-    // #swagger.parameters['app'] = { description: 'App name' }
-
-    const deployments = await req.app.locals.deployments.getBuildLogs(
-        req.params.pipeline,
-        req.params.phase,
-        req.params.app,
-        req.params.container
-    );
-    res.send(deployments);
-});
-*/
-
 Router.post('/deployments/build/:pipeline/:phase/:app', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Build a specific app'

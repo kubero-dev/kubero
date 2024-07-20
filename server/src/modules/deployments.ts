@@ -233,6 +233,9 @@ export class Deployments {
             }
         }
 
+        // revert order of deployments
+        deployments.items = deployments.items.reverse()
+
         return deployments
     }
 

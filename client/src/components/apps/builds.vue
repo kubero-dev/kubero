@@ -222,7 +222,6 @@ import { defineComponent } from 'vue'
 import Buildsform from './buildsform.vue'
 import Logs from './logs.vue'
 import { useKuberoStore } from '../../stores/kubero'
-import { update } from "lodash";
 
 const socket = useKuberoStore().kubero.socket as any;
 
