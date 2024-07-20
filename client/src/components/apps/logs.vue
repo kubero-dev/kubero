@@ -1,5 +1,5 @@
 <template>
-    <div style="height: 600px; width: 100%;">
+    <div :style="'height: ' + height + '; width: 100%;'">
         <v-tabs class="console-bar" style="position: relative; z-index: 3000;">
             <v-tab v-if="logType == 'runlogs'" @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
@@ -96,6 +96,10 @@ export default defineComponent({
       buildID: {
         type: String,
         default: "MISSING"
+      },
+      height: {
+        type: String,
+        default: "100%"
       },
     },
     data: () => ({
