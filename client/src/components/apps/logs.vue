@@ -1,11 +1,15 @@
 <template>
-    <div style="height: 95%;">
-        <v-tabs class="console-bar">
-            <v-tab @click="getLogHistory('web')">run</v-tab>
-            <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('builder')">build</v-tab>
-            <v-tab v-if="deploymentstrategy == 'git'" @click="getLogHistory('fetcher')">fetch</v-tab>
+    <div style="height: 600px; width: 100%;">
+        <v-tabs class="console-bar" style="position: relative; z-index: 3000;">
+            <v-tab v-if="logType == 'runlogs'" @click="getLogHistory('web')">run</v-tab>
+            <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
+            <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('fetcher')">fetch</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && buildstrategy!='plain'" @click="getBuildLogHistory('deployer')">deployer</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && buildstrategy!='plain'" @click="getBuildLogHistory('push')">push</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && buildstrategy=='nixpacks'" @click="getBuildLogHistory('build')">build</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && buildstrategy!='plain'" @click="getBuildLogHistory('fetch')">fetch</v-tab>
         </v-tabs>
-        <div class="console" id="console">
+        <div class="console" id="console" style="height:100%; margin-top: -45px; z-index: 2000;">
             <div v-for="line in loglines" :key="line.id">
             {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
             {{ line.log }}
@@ -50,9 +54,15 @@ export default defineComponent({
         }
     },
     mounted() {
-        this.getLogHistory('web')
-        this.socketJoin()
-        this.startLogs()
+        if (this.logType == 'buildlogs')  {
+            this.getBuildLogHistory('deployer')
+            //this.socketJoin()
+            //this.startLogs()
+        } else {
+            this.getLogHistory('web')
+            this.socketJoin()
+            this.startLogs()
+        }
     },
     unmounted() {
         this.socketLeave()
@@ -74,6 +84,18 @@ export default defineComponent({
       deploymentstrategy: {
         type: String,
         default: "docker"
+      },
+      buildstrategy: {
+        type: String,
+        default: "dockerfile"
+      },
+      logType: {
+        type: String,
+        default: "runlogs"
+      },
+      buildID: {
+        type: String,
+        default: "MISSING"
       },
     },
     data: () => ({
@@ -116,6 +138,12 @@ export default defineComponent({
                 this.loglines = response.data;
             });
         },
+        getBuildLogHistory(container: string) {
+            //http://localhost:2000/api/deployments/devcon/production/aaa/20240717-0651/log
+            axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}/${this.buildID}/${container}/history`).then((response) => {
+                this.loglines = response.data;
+            });
+        },
     },
 });
 </script>
@@ -136,7 +164,6 @@ a:link { text-decoration: none;}
 }
 
 .console {
-    height: 100%;
     overflow-x: scroll;
     background-color: #333;
     color: #c0c0c0;

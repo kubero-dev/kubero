@@ -858,7 +858,7 @@ export class Kubectl {
             const date = new Date();
             const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
 
-            const name = pipelineName + "-" + appName + "-" + id;
+            const name = appName + "-" + pipelineName + "-" + id;
 
             const build = {
                 apiVersion: "application.kubero.dev/v1alpha1",
@@ -1258,6 +1258,16 @@ export class Kubectl {
             )
         } catch (error) {
             debug.log(error);
+        }
+    }
+
+    public async getJob(namespace: string, jobName: string): Promise<any> {
+        try {
+            const job = await this.batchV1Api.readNamespacedJob(jobName, namespace)
+            return job.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getJob: error getting job");
         }
     }
 /*

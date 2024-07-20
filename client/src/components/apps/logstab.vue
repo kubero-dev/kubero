@@ -19,9 +19,9 @@
                 <p></p>
             </v-col>
         </v-row>
-        <v-row style="height: 1100px">
+        <v-row>
             <v-col cols="12" sm="12" md="12">
-                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy />
+                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy logType="runlogs"/>
             </v-col>
         </v-row>
 

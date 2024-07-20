@@ -16,14 +16,32 @@
                 elevation="2" 
                 outlined 
                 color="cardBackground"
+                :loading="b.jobstatus?.status == 'Active'"
                 >
+
+                <template v-slot:loader="{ isActive }">
+                    <v-progress-linear
+                        :active="isActive"
+                        color="primary"
+                        height="2"
+                        indeterminate
+                    ></v-progress-linear>
+                </template>
                 <div>
                     <v-card-title>
                         <v-row>
                             <v-col cols="1">
-                                <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
-                                <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
-                                <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                <v-badge v-if="b.jobstatus?.status != 'Active'" :color="getStatusColor(b.jobstatus?.status)" :icon="getStatusIcon(b.jobstatus?.status)" location="top end">
+                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                </v-badge>
+                                <span v-else>
+                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                </span>
+
                             </v-col>
                             <v-col cols="11">
                                 <h4>{{ b.metadata.name }}</h4>
@@ -31,7 +49,7 @@
                         </v-row>
                     </v-card-title>
                     <v-card-subtitle>
-                      created: {{ b.metadata.creationTimestamp }} | duration : {{ b.metadata.creationTimestamp }}
+                      created: {{ b.metadata.creationTimestamp }} | duration : {{ calcDuration(b.jobstatus?.duration, b.jobstatus?.status) }}
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
@@ -67,6 +85,19 @@
                                           mdi-delete
                                       </v-icon>
                                   </v-btn>
+                                  <v-btn
+                                  elevation="2"
+                                  fab
+                                  small
+                                  class="ma-2"
+                                  color="secondary"
+                                  v-if="b.jobstatus?.status != 'Active'"
+                                  @click="showLogs(b.metadata.name)"
+                                  >
+                                      <v-icon color="primary">
+                                          mdi-format-align-justify
+                                      </v-icon>
+                                  </v-btn>
                                   <!--
                                   <v-btn
                                   elevation="2"
@@ -84,6 +115,11 @@
                                 </v-row>
                             </v-col>
                         </v-row>
+                        <v-expand-transition>
+                            <v-row v-if="b.metadata.name == activeLogs">
+                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy logType="buildlogs" :buildID="b.metadata.name"/>
+                            </v-row>
+                        </v-expand-transition>
                     </v-card-text>
                 </div>
             </v-card>
@@ -184,7 +220,9 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import Buildsform from './buildsform.vue'
+import Logs from './logs.vue'
 import { useKuberoStore } from '../../stores/kubero'
+import { update } from "lodash";
 
 const socket = useKuberoStore().kubero.socket as any;
 
@@ -239,6 +277,12 @@ type Deployment = {
       reason?: string
     }>
   }
+  jobstatus?: {
+    duration: string
+    startTime: string
+    completionTime: string
+    status: "Unknown" | "Active" | "Succeeded" | "Failed" | undefined
+  }
 }
 
 export default defineComponent({
@@ -267,6 +311,9 @@ export default defineComponent({
     data() {
         return {
             deployments: [] as Deployment[],
+            activeLogs: "",
+            reloadTimer: null as any,
+            clockTimer: null as any,
         }
     },
     mounted() {
@@ -278,6 +325,25 @@ export default defineComponent({
                 this.loadDeployments();
             }, 2000);
         });
+        
+        
+        this.reloadTimer = setInterval(() => {
+            this.updateStatus();
+        }, 10000);
+        
+
+        this.clockTimer = setInterval(() => {
+            this.deployments.forEach((d) => {
+                if (d.jobstatus?.status == "Active") {
+                    d.jobstatus.duration = (new Date().getTime() - new Date(d.jobstatus.startTime).getTime()).toString();
+                }
+            });
+        }, 1000);
+
+    },
+    unmounted() {
+        clearInterval(this.reloadTimer);
+        clearInterval(this.clockTimer);
     },
     methods: {
         deleteBuild(deploymentName: string) {
@@ -299,10 +365,64 @@ export default defineComponent({
             .catch(error => {
                 console.log(error);
             });
-    }
+        },
+        updateStatus() {
+            axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
+            .then(response => {
+                const deployments = response.data.items as Deployment[];
+                deployments.forEach((d: Deployment) => {
+                    const deployment = this.deployments.find((dep) => dep.metadata.name == d.metadata.name);
+                    if (deployment && deployment.jobstatus) {
+                        deployment.jobstatus.status = d.jobstatus?.status;
+                    }
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
+
+        msToTime(duration: number) {
+            const seconds = Math.floor((duration / 1000) % 60);
+            const minutes = Math.floor((duration / (1000 * 60)) % 60);
+            return `${minutes}m ${seconds}s`;
+        },
+        calcDuration(durationMS: string | undefined, status: string | undefined) { 
+            if (durationMS == undefined) {
+                return "-";
+            }
+            return this.msToTime(parseInt(durationMS));
+        },
+        getStatusColor(status: string | undefined) {
+            if (status == "Active") {
+                return "warning";
+            } else if (status == "Succeeded") {
+                return "success";
+            } else if (status == "Failed") {
+                return "error";
+            } else {
+                return "grey";
+            }
+        },
+        getStatusIcon(status: string | undefined) {
+            if (status == "Active") {
+                return "mdi-clock-outline";
+            } else if (status == "Succeeded") {
+                return "mdi-check-bold";
+            } else if (status == "Failed") {
+                return "mdi-exclamation-thick";
+            } else {
+                return "mdi-help";
+            }
+        },
+        showLogs(deploymentName: string) {
+            //window.open(`/popup/logs/${this.pipeline}/${this.phase}/${this.app}/${deploymentName}`, '_blank', 'popup=yes,location=no,height=1000,width=1000,scrollbars=yes,status=no');
+            this.activeLogs = deploymentName;
+        }
     },
     components: {
-        Buildsform
+        Buildsform,
+        Logs,
     }
 
 })
