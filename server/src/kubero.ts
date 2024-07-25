@@ -670,7 +670,6 @@ export class Kubero {
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
-                    domain: websaveTitle+"."+pipeline.domain,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,

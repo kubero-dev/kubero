@@ -31,7 +31,6 @@ export class App implements IApp{
     public gitrepo?: IGithubRepository
     public branch: string
     public autodeploy: boolean
-    public domain?: string
     public podsize: IPodSize
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
@@ -148,7 +147,6 @@ export class App implements IApp{
         this.branch = app.branch
         this.autodeploy = app.autodeploy
         this.podsize = app.podsize
-        this.domain = app.domain
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
 
         this.envVars =  app.envVars
@@ -193,14 +191,6 @@ export class App implements IApp{
         this.ingress = app.ingress
         this.ingress.className = process.env.KUBERNETES_INGRESS_CLASSNAME || "nginx"
         this.ingress.enabled = true
-        this.ingress.hosts = [
-            {
-                host: app.domain || "",
-                paths: [
-                    {path: "/" , pathType: 'ImplementationSpecific'}
-                ]
-            }
-        ]
 
         this.nameOverride= "",
         this.nodeSelector= {},
