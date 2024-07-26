@@ -1,6 +1,6 @@
 <template>
     <div :style="'height: ' + height + '; width: 100%;'">
-        <v-tabs class="console-bar" style="position: relative; z-index: 3000;">
+        <v-tabs class="console-bar" style="position: relative;">
             <v-tab v-if="logType == 'runlogs'" @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('fetcher')">fetch</v-tab>
@@ -14,6 +14,7 @@
             {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
             {{ line.log }}
             </div>
+            <span style="margin: 25px;"></span>
         </div>
     </div>
 </template>
