@@ -20,7 +20,7 @@
        v-if="app==='new' && $route.query.template != undefined">
         <v-col
           cols="12"
-          md="6"
+          md="8"
         >
           <v-alert
             outlined
@@ -36,7 +36,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="7"
+          md="8"
         >
           <v-text-field
             v-model="appname"
@@ -50,13 +50,13 @@
         </v-col>
       </v-row>
 
-      <v-row>
+      <v-row v-for="(host, index) in ingress.hosts" :key="index" :style="index > 0 ? 'margin-top: -20px;' : ''">
         <v-col
           cols="9"
           md="5"
         >
           <v-text-field
-            v-model="domain"
+            v-model="host.host"
             :rules="domainRules"
             :counter="60"
             label="Domain"
@@ -69,18 +69,52 @@
           pullright
         >
           <v-switch
-            v-model="ssl"
+            v-model="sslIndex[index]"
+            @change="sslSwitch(host.host, index)"
             label="SSL"
             density="compact"
             color="primary"
           ></v-switch>
+        </v-col>
+        <v-col
+          cols="12"
+          md="1"
+        >
+          <v-btn
+          v-if="index > 0"
+          elevation="2"
+          icon
+          size="small"
+          @click="removeDomainLine(index)"
+          >
+              <v-icon dark >
+                  mdi-minus
+              </v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          style="margin-top: -20px; padding-top: -0px; padding-bottom: 40px;"
+        >
+          <v-btn
+          elevation="2"
+          icon
+          size="small"
+          @click="addDomainLine()"
+          >
+              <v-icon dark >
+                  mdi-plus
+              </v-icon>
+          </v-btn>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col
           cols="12"
-          md="7"
+          md="8"
         >
             <v-text-field
               v-model="containerPort"
@@ -529,7 +563,7 @@
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/force-ssl-redirect']"
                 label="Force SSL Redirect"
                 color="primary"
-                :disabled="!ssl"
+                :disabled="ingress.tls && ingress.tls.length > 0"
               ></v-switch>
             </v-col>
             <v-col
@@ -1151,6 +1185,13 @@ type FormField = {
 
 type Ingress = {
   annotations: any,
+  hosts: {
+    host: string,
+    paths: {
+      path: '/',
+      pathType: 'ImplementationSpecific' | 'Prefix' | 'Exact',
+    }[],
+  }[],
   tls?: { 
     hosts: string[], 
     secretName: string
@@ -1373,8 +1414,7 @@ export default defineComponent({
         tag: 'latest',
       },
       autodeploy: true,
-      domain: '',
-      ssl: false,
+      sslIndex: [] as boolean[],
       envvars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
@@ -1466,6 +1506,15 @@ export default defineComponent({
           'nginx.ingress.kubernetes.io/cors-max-age': '1728000',
           'nginx.ingress.kubernetes.io/cors-allow-methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS',
         },
+        hosts: [
+          {
+            host: '',
+            paths: [
+              { path: '/', pathType: 'ImplementationSpecific' },
+            ],
+          },
+        ],
+        tls: [] as { hosts: string[], secretName: string }[],
       } as Ingress,
       capabilities: [
         'AUDIT_CONTROL',
@@ -1570,9 +1619,25 @@ export default defineComponent({
         Breadcrumbs,
     },
     methods: {
+      addDomainLine() {
+        this.ingress.hosts.push({ host: '', paths: [{ path: '/', pathType: 'ImplementationSpecific' }] });
+      },
+      removeDomainLine(index: number) {
+        this.ingress.hosts.splice(index, 1);
+      },
+      sslSwitch(host: string, index: number) {
+        console.log("sslSwitch", host, index, this.sslIndex);
+        if (this.sslIndex && this.sslIndex[index]) {
+          // add specific host to tls array
+          this.ingress.tls = [{ hosts: [host], secretName: this.appname+'-tls' }];
+        } else {
+          // remove specific host from tls array
+          this.ingress.tls = this.ingress.tls?.filter((tls) => tls.hosts[0] !== host);
+        }
+      },
       whiteListDomains(domainsList: string[]) {
         for (let i = 0; i < domainsList.length; i++) {
-            if (domainsList[i] == this.domain) {
+            if (domainsList[i] == this.ingress.hosts[0].host) { // TODO: iterate over all hosts
               domainsList.splice(i, 1);
             }
           }
@@ -1650,7 +1715,7 @@ export default defineComponent({
         });
       },
       changeName(name: string) {
-        this.domain = name+"."+this.pipelineData.domain;
+        this.ingress.hosts[0].host = name+"."+this.pipelineData.domain;
       },
       loadPipeline() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
@@ -1664,7 +1729,7 @@ export default defineComponent({
           this.buildpack = this.pipelineData.buildpack;
 
           if (this.app == 'new') {
-            this.domain = this.pipelineData.domain;
+            this.ingress.hosts[0].host = this.pipelineData.domain;
 
             if (this.pipelineData.git.repository.admin == true) {
               this.gitrepo = this.pipelineData.git.repository;
@@ -1783,12 +1848,6 @@ export default defineComponent({
           axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
             this.resourceVersion = response.data.resourceVersion;
 
-            if (response.data.spec.ingress.tls.length > 0) {
-              this.ssl = true;
-            } else {
-              this.ssl = false;
-            }
-
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
               this.panel.push(5)
@@ -1814,13 +1873,11 @@ export default defineComponent({
               fetch: response.data.spec.image.fetch,
             }
             this.gitrepo = response.data.spec.gitrepo;
-            this.domain = response.data.spec.domain;
             this.branch = response.data.spec.branch;
             this.imageTag = response.data.spec.imageTag;
             this.docker.image = response.data.spec.image.repository || '';
             this.docker.tag = response.data.spec.image.tag || 'latest';
             this.autodeploy = response.data.spec.autodeploy;
-            this.domain = response.data.spec.domain;
             this.envvars = response.data.spec.envVars;
             this.serviceAccount = response.data.spec.serviceAccount;
             if (response.data.spec.serviceAccount && response.data.spec.serviceAccount.annotations) {
@@ -1851,19 +1908,12 @@ export default defineComponent({
       },
       cleanupIngressAnnotations(){
 
-        if (this.ssl === false) {
+        if (this.ingress.tls?.length == 0) {
           delete this.ingress.annotations['cert-manager.io/cluster-issuer'];
           delete this.ingress.annotations['kubernetes.io/tls-acme'];
-          this.ingress.tls = [];
         } else {
           this.ingress.annotations['cert-manager.io/cluster-issuer'] = this.letsecryptClusterIssuer;
           this.ingress.annotations['kubernetes.io/tls-acme'] = 'true';
-          this.ingress.tls = [
-            {
-              hosts: [this.domain],
-              secretName: this.appname+'-tls',
-            },
-          ];
         }
 
         if (this.ingress.annotations['nginx.ingress.kubernetes.io/whitelist-source-range'] == '') {
@@ -1925,8 +1975,6 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          domain: this.domain,
-          ssl: this.ssl,
           envvars: this.envvars,
           // loop through serviceaccount annotations and convert to object
           serviceAccount: {
@@ -2023,8 +2071,6 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          domain: this.domain.toLowerCase(),
-          ssl: this.ssl,
           envvars: this.envvars,
           serviceAccount: {
             annotations: this.sAAnnotations.reduce((acc, cur) => {

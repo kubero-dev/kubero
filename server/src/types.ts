@@ -9,8 +9,6 @@ export interface IApp {
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
-    domain?: string,
-    ssl?: boolean,
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
