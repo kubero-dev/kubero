@@ -21,7 +21,7 @@
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="12">
-                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy logType="runlogs" height="600px"/>
+                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy :buildstrategy=buildstrategy logType="runlogs" height="600px"/>
             </v-col>
         </v-row>
 
@@ -49,6 +49,10 @@ export default defineComponent({
       deploymentstrategy: {
         type: String,
         default: "docker"
+      },
+      buildstrategy: {
+        type: String,
+        default: "dockerfile"
       },
     },
     data: () => ({
