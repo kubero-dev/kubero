@@ -48,6 +48,26 @@
             required
           ></v-text-field>
         </v-col>
+<<<<<<< Updated upstream
+=======
+
+        <v-col
+          cols="12"
+          md="2"
+        >
+        <v-switch
+            v-model="sleep"
+            hint="Sleep after 1 Minutes of inactivity"
+            color="primary"
+            false-value="0s"
+            true-value="60s"
+            true-icon="mdi-sleep"
+            false-icon="mdi-sleep-off"
+            label="Sleep"
+            inset
+          ></v-switch>
+        </v-col>
+>>>>>>> Stashed changes
       </v-row>
 
       <v-row v-for="(host, index) in ingress.hosts" :key="index" :style="index > 0 ? 'margin-top: -20px;' : ''">
