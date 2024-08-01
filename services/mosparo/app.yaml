@@ -36,7 +36,7 @@ spec:
                 accessModes:
                 - ReadWriteOnce
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: APP_SECRET
     value: mySecret
   - name: MOSPARO_ENABLE_WEBSERVER
@@ -44,7 +44,7 @@ spec:
   - name: MOSPARO_ENABLE_CRON
     value: "1"
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

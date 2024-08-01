@@ -9,7 +9,7 @@ spec:
     repository: registry.rocket.chat/rocketchat/rocket.chat
     tag: latest
     containerPort: "3000"
-  addons: 
+  addons:
   - displayName: Kubero MongoDB
     env: []
     icon: /img/addons/MongoDB.png
@@ -40,7 +40,7 @@ spec:
             persistence:
               size: 1Gi
             replicaCount: 1
-  envVars: 
+  envVars:
   - name: MONGO_URL
     value: mongodb://rocket:rocket@rocketchat-mongodb:27017/kubero
   - name: ROOT_URL

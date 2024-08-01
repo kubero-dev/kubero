@@ -1,0 +1,12 @@
+name: Planing Poker
+description: 'A hassle-free Planning Poker application to deploy on your NAS.'
+tags:
+- poker
+- game
+source: https://github.com/axeleroy/self-host-planning-poker
+website: https://github.com/axeleroy/self-host-planning-poker
+documentation:
+- https://github.com/axeleroy/self-host-planning-poker
+icon: https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/icon.svg
+screenshots:
+- https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/screenshot.png

@@ -5,7 +5,7 @@ tags:
 - community
 source: https://github.com/coralproject/talk
 website: https://coralproject.net
-documentation: 
+documentation:
 - https://docs.coralproject.net/
 - https://github.com/coralproject/talk/blob/main/docs/docs/environment-variables.md
 icon: https://avatars.githubusercontent.com/u/9255912?s=200&v=4

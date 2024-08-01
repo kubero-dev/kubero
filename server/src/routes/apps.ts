@@ -200,18 +200,18 @@ function createApp(req: Request) : IApp {
         name: req.body.appname,
         pipeline: req.body.pipeline,
         phase: req.body.phase,
+        sleep: req.body.sleep,
         buildpack: selectedBuildpack,
         deploymentstrategy: req.body.deploymentstrategy,
         buildstrategy: req.body.buildstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
-        domain: req.body.domain,
-        ssl: req.body.ssl,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         envVars: req.body.envvars,
         extraVolumes: req.body.extraVolumes,
+        serviceAccount: req.body.serviceAccount,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
@@ -255,23 +255,23 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Update an app in a specific pipeline'
     // #swagger.parameters['body'] = { in: 'body', description: 'App object', required: true, type: 'object' }
-
+    console.log("serviceAccount: " + JSON.stringify(req.body.serviceAccount));
     const appconfig: IApp = {
         name: req.params.app,
         pipeline: req.params.pipeline,
         phase: req.params.phase,
+        sleep: req.body.sleep,
         buildpack: req.body.buildpack.name,
         deploymentstrategy: req.body.deploymentstrategy,
         buildstrategy: req.body.buildstrategy,
         gitrepo: req.body.gitrepo,
         branch: req.body.branch,
         autodeploy: req.body.autodeploy,
-        domain: req.body.domain,
-        ssl: req.body.ssl,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         extraVolumes: req.body.extraVolumes,
         envVars: req.body.envvars,
+        serviceAccount: req.body.serviceAccount,
         image: {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
@@ -296,7 +296,6 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
 
     const user = auth.getUser(req);
     req.app.locals.kubero.updateApp(app, req.body.resourceVersion, user);
-
     res.send("updated");
 });
 

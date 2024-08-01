@@ -1,0 +1,48 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: fief
+    labels:
+        manager: kubero
+spec:
+    name: fief
+    deploymentstrategy: docker
+    envVars:
+        - name: SECRET
+          value:
+        - name: FIEF_CLIENT_ID
+          value:
+        - name: FIEF_CLIENT_SECRET
+          value:
+        - name: ENCRYPTION_KEY
+          value:
+        - name: FIEF_DOMAIN
+          value:
+        - name: FIEF_MAIN_USER_EMAIL
+          value: example@example.com
+        - name: FIEF_MAIN_USER_PASSWORD
+          value:
+        - name: CSRF_COOKIE_SECURE
+          value: "False"
+        - name: SESSION_DATA_COOKIE_SECURE
+          value: "False"
+        - name: USER_LOCALE_COOKIE_SECURE
+          value: "False"
+        - name: LOGIN_SESSION_COOKIE_SECURE
+          value: "False"
+        - name: SESSION_COOKIE_SECURE
+          value: "False"
+        - name: FIEF_ADMIN_SESSION_COOKIE_SECURE
+          value: "False"
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8000"
+        pullPolicy: Always
+        repository: ghcr.io/fief-dev/fief
+        tag: latest

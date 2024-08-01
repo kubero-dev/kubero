@@ -10,7 +10,7 @@ spec:
     tag: latest
     containerPort: "3000"
   addons: []
-  envVars: 
+  envVars:
   - name: PDS_HOSTNAME
     value: bsky.changeme.com
   - name: PDS_JWT_SECRET
@@ -34,7 +34,7 @@ spec:
   - name: PDS_CRAWLERS
     value: https://bgs.bsky-sandbox.dev
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - emptyDir: false
     mountPath: /pds
     name: bsk-data

@@ -6,7 +6,7 @@ spec:
   name: grafana
   deploymentstrategy: docker
   image:
-    repository: grafana/grafana-enterprise
+    repository: grafana/grafana-oss
     tag: latest
     containerPort: "3000"
   addons: []

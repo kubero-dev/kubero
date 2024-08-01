@@ -9,7 +9,7 @@ spec:
     repository: docker.n8n.io/n8nio/n8n
     tag: latest
     containerPort: "5678"
-  addons: 
+  addons:
   - displayName: Kubero Postgresql
     env: []
     icon: /img/addons/postgresql.png
@@ -34,7 +34,7 @@ spec:
             primary:
               persistence:
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: DB_TYPE
     value: postgresdb
   - name: DB_POSTGRESDB_HOST

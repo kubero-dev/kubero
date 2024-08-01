@@ -57,7 +57,7 @@
           cols="12"
           md="8"
         >
-        <v-tabs v-model="repotab" stacked centered @change="loadRepository">
+        <v-tabs v-model="repotab" stacked centered @click="loadRepository">
             <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
             <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
             <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>

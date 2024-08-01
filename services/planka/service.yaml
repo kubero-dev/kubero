@@ -1,0 +1,9 @@
+name: Planka
+description: 'Free open source kanban board for workgroups.'
+tags:
+- project management
+source: https://github.com/plankanban/planka
+website: https://planka.app/
+icon: https://avatars.githubusercontent.com/u/64215741?s=200&v=4
+screenshots:
+- https://raw.githubusercontent.com/plankanban/planka/master/demo.gif

@@ -9,7 +9,7 @@ spec:
     repository: unleashorg/unleash-server
     tag: latest
     containerPort: "4242"
-  addons: 
+  addons:
   - displayName: Kubero Postgresql
     env: []
     icon: /img/addons/postgresql.png

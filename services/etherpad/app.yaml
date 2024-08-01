@@ -12,7 +12,7 @@ spec:
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  addons: 
+  addons:
   - displayName: Kubero Postgresql
     env: []
     icon: /img/addons/postgresql.png
@@ -37,7 +37,7 @@ spec:
             primary:
               persistence:
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: DB_TYPE
     value: postgres
   - name: DB_PASS

@@ -9,7 +9,7 @@ spec:
     repository: lukevella/rallly
     tag: latest
     containerPort: "3000"
-  addons: 
+  addons:
   - displayName: Kubero Postgresql
     env: []
     icon: /img/addons/postgresql.png
@@ -34,7 +34,7 @@ spec:
             primary:
               persistence:
                 size: 1Gi
-  envVars: 
+  envVars:
   - name: DATABASE_URL
     value: postgres://rallly:rallly@rallly-postgresql:5432/postgresql
   - name: SECRET_PASSWORD

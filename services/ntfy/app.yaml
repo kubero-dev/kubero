@@ -16,13 +16,13 @@ spec:
   envVars: []
   cronjobs: []
   extraVolumes:
-  - accessModes:
-    - ReadWriteOnce
-    emptyDir: false
-    mountPath: /var/cache/ntfy
-    name: ntfy-cache-volume
-    size: 500Mi
-    storageClass: standard
+    - accessModes:
+        - ReadWriteOnce
+      emptyDir: false
+      mountPath: /var/cache/ntfy
+      name: ntfy-cache-volume
+      size: 500Mi
+      storageClass: standard
   web:
     replicaCount: 1
   worker:
