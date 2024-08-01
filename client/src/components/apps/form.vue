@@ -603,18 +603,6 @@
                 ></v-select>
               </v-col>
             </v-row>
-
-          <!-- allow setting of ingressClass -->
-            <v-row>
-              <v-col cols="12" md="6">
-                <v-select
-                  v-model="ingress.className"
-                  :items="ingressClasses"
-                  label="Ingress Class"
-                ></v-select>
-              </v-col>
-            </v-row>
-
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -1640,7 +1628,6 @@ export default defineComponent({
     },
     mounted() {
       this.loadPipeline();
-      this.loadIngressClasses();
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
@@ -1803,13 +1790,6 @@ export default defineComponent({
 
         });
       },
-      loadIngressClasses() {
-      axios.get("/api/config/ingressclasses").then((response) => {
-        for (let i = 0; i < response.data.length; i++) {
-          this.ingressClasses.push(response.data[i].name);
-        }
-      });
-    },
       loadStorageClasses() {
         axios.get('/api/config/storageclasses').then(response => {
           for (let i = 0; i < response.data.length; i++) {
