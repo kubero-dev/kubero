@@ -663,6 +663,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
+                    sleep: '600s', //TODO use config value
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,

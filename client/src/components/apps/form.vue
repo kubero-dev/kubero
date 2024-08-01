@@ -36,7 +36,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="8"
+          md="6"
         >
           <v-text-field
             v-model="appname"
@@ -48,9 +48,6 @@
             required
           ></v-text-field>
         </v-col>
-<<<<<<< Updated upstream
-=======
-
         <v-col
           cols="12"
           md="2"
@@ -67,7 +64,6 @@
             inset
           ></v-switch>
         </v-col>
->>>>>>> Stashed changes
       </v-row>
 
       <v-row v-for="(host, index) in ingress.hosts" :key="index" :style="index > 0 ? 'margin-top: -20px;' : ''">
@@ -843,6 +839,7 @@
               <v-switch
                 v-model="autoscale"
                 label="Autoscale"
+                hint="Scale pod replicas based on CPU and Memory usage"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -1139,11 +1136,9 @@
 import axios from "axios";
 import Addons from "./addons.vue";
 import { defineComponent } from 'vue'
-//import { useKuberoStore } from '@/stores/kubero'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 import Breadcrumbs from "../breadcrumbs.vue";
-import { remove } from "lodash";
 
 type App = {
     name: string,
@@ -1318,6 +1313,7 @@ export default defineComponent({
       advanced: false,
       panel: [0],
       valid: false,
+      sleep: '0s',
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
       buildpack: {
@@ -1887,6 +1883,7 @@ export default defineComponent({
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
             this.appname = response.data.spec.name;
+            this.sleep = response.data.spec.sleep;
             this.buildpack = {
               run: response.data.spec.image.run,
               build: response.data.spec.image.build,
@@ -1982,6 +1979,7 @@ export default defineComponent({
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           appname: this.appname,
+          sleep: this.sleep,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
@@ -2078,6 +2076,7 @@ export default defineComponent({
           buildpack: this.buildpack,
           phase: this.phase,
           appname: this.appname.toLowerCase(),
+          sleep: this.sleep,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
