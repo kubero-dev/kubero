@@ -31,6 +31,15 @@ Router.get('/settings', allwaysAuthMiddleware, async function (req: Request, res
 });
 
 
+// get the settings
+Router.post('/settings', allwaysAuthMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the Kubero settings'
+    const result = await req.app.locals.settings.updateSettings(req.body);
+    req.app.locals.kubero.setConfig(result.spec.kubero.config);
+    res.send({config: result})
+});
+
 // get the dashboard banner
 Router.get('/banner', async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']

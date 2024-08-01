@@ -10,13 +10,13 @@ spec:
     tag: canary
     containerPort: "8080"
   addons: []
-  envVars: 
+  envVars:
   - name: STORAGE
     value: local
   - name: STORAGE_LOCAL_ROOTDIR
     value: /charts
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteMany
     emptyDir: false

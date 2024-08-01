@@ -11,15 +11,19 @@
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))" v-if="appData.spec.gitrepo != undefined">
                         <tbody>
                         <tr>
-                            <th>Domain</th>
-                            <td>{{ appData.spec.domain }}</td>
+                            <th>Domains</th>
+                            <td>
+                                <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
+                                    <a :href="'https://' + host.host" target="_blank">{{ host.host }}</a>
+                                </li>
+                            </td>
                         </tr>
                         <tr>
                             <th>Deployment Strategy</th>
                             <td>{{ appData.spec.deploymentstrategy }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git' && appData.spec.deploymentstrategy == 'plain'">
-                            <th>Buildpack</th>
+                            <th>Runpack</th>
                             <td>{{ appData.spec.buildpack }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">
@@ -106,6 +110,28 @@
                             v-for="envVar in appData.spec.envVars" :key="envVar.name">
                             <td>{{ envVar.name }}</td>
                             <td>{{ envVar.value }}</td>
+                        </tr>
+                        </tbody>
+                    </v-table>
+                </div>
+                <div class="mb-5 mt-10" v-if="appData.spec.saAnnotations?.length > 0">
+                    <h3>Service Acccount Annotations</h3>
+                    <v-table density="compact" style="background:rgb(var(--v-theme-background))">
+                        <thead>
+                        <tr>
+                            <th class="text-left">
+                            Name
+                            </th>
+                            <th class="text-left">
+                            Value
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr
+                            v-for="saAnnotation in appData.spec.saAnnotations" :key="saAnnotation.name">
+                            <td>{{ saAnnotation.name }}</td>
+                            <td>{{ saAnnotation.value }}</td>
                         </tr>
                         </tbody>
                     </v-table>
@@ -296,7 +322,6 @@ interface Spec {
   gitrepo: GitRepo;
   branch: string;
   autodeploy: boolean;
-  domain: string;
   podsize: PodSize;
   autoscale: boolean;
   envVars: any[];
@@ -352,7 +377,6 @@ type appData = {
         gitrepo: GitRepo,
         branch: string,
         autodeploy: boolean,
-        domain: string,
         podsize: PodSize,
         autoscale: boolean,
         envVars: any[],

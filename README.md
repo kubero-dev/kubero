@@ -34,13 +34,15 @@ Kubero initiates two containers: one for cloning your repository and another for
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
 - Deploy well known apps with **templates** [(Wordpress, Grafana, ...)](https://www.kubero.dev/templates)
-- Easy deployment of your docker containers on Kubernetes **without helm charts**
+- Easy deployment of your docker containers on Kubernetes **without writing helm charts**
 - Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
-- Easy access of **application logs** in the UI
-- Easy and safe **restart** of the application in the UI
+- Easy access of **application logs** in the web-UI
+- Easy and safe **restart** of the application in the web-UI
 - Triggered or periodic **vulnerability scans** of your running apps
 - Comes with an **API and CLI** to integrate with your existing tools and CI/CD
-- Built-in **container console**
+- Built-in **container web console**
+- Build and deployment **Notifications** to Discord/Slack/Webhooks
+- Integrated **metrics and monitoring**
 - **SSO** with Github and Oauth2
 
 ## Supported GIT repositories (hosted and self-hosted)
@@ -69,16 +71,16 @@ https://github.com/kubero-dev/buildpacks
 
 |   | Addon | Maintainer | Built in* |
 |---|-------|------------|-----------|
-| <img src="client/public/img/addons/MySQL.png" width="30px" style="vertical-align: middle; margin: 10px"> | MySQL | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
-| <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | PostgreSQL | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
-| <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> | Redis | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
-| <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | MongoDB | [Bitnami](https://charts.bitnami.com/bitnami) | ✅ |
-| <img src="client/public/img/addons/Elasticsearch.png" width="30px" style="vertical-align: middle; margin: 10px"> | Elasticsearch | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
-| <img src="client/public/img/addons/Kafka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Kafka | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/MySQL.png" width="30px" style="vertical-align: middle; margin: 10px"> | MySQL | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/mysql) | ✅ |
+| <img src="client/public/img/addons/postgresql.png" width="30px" style="vertical-align: middle; margin: 10px"> | PostgreSQL | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/postgresql) | ✅ |
+| <img src="client/public/img/addons/Redis.png" width="30px" style="vertical-align: middle; margin: 10px"> | Redis | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/redis) | ✅ |
+| <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | MongoDB | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/mongodb) | ✅ |
+| <img src="client/public/img/addons/Elasticsearch.png" width="30px" style="vertical-align: middle; margin: 10px"> | Elasticsearch | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch)  | ✅ |
+| <img src="client/public/img/addons/Kafka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Kafka | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/kafka)  | ✅ |
 | <img src="client/public/img/addons/CouchDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | CouchDB | [Apache](https://apache.github.io/couchdb-helm) | ✅ |
 | <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px"> | Haraka Mail Server | [Kubero](https://github.com/kubero-dev/haraka-docker) | ✅ |
-| <img src="client/public/img/addons/Memcached.png" width="30px" style="vertical-align: middle; margin: 10px"> | Memcache | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
-| <img src="client/public/img/addons/RabbitMQ.png" width="30px" style="vertical-align: middle; margin: 10px"> | RabbitMQ | [Bitnami](https://charts.bitnami.com/bitnami)  | ✅ |
+| <img src="client/public/img/addons/Memcached.png" width="30px" style="vertical-align: middle; margin: 10px"> | Memcache | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)  | ✅ |
+| <img src="client/public/img/addons/RabbitMQ.png" width="30px" style="vertical-align: middle; margin: 10px"> | RabbitMQ | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq)  | ✅ |
 | <img src="client/public/img/addons/cloudflare.svg" width="30px" style="vertical-align: middle; margin: 10px"> | Cludflare Tunnels | [Adianth](https://github.com/adyanth/cloudflare-operator) |  |
 | <img src="client/public/img/addons/Minio.png" width="30px" style="vertical-align: middle; margin: 10px"> | Minio | [Minio](https://artifacthub.io/packages/olm/community-operators/minio-operator) |  |
 | <img src="client/public/img/addons/MongoDB.png" width="30px" style="vertical-align: middle; margin: 10px"> | Percona MongoDB Cluster | [Percona](https://artifacthub.io/packages/olm/community-operators/mongodb-operator) |  |

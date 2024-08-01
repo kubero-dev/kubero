@@ -1,0 +1,12 @@
+name: AFFiNE
+description: 'AFFiNE is a next-gen knowledge base that brings planning, sorting and creating all together'
+tags:
+- drawing
+- planning
+- collaboration
+source: https://github.com/toeverything/AFFiNE
+website: https://affine.pro/
+documentation:
+- https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD
+icon: https://raw.githubusercontent.com/toeverything/AFFiNE.pro/60f42504c0e1572a2ede0a8d95a398a229b0bb9a/public/overview/stay-focused-logo.png
+screenshots:

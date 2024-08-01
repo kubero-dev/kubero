@@ -10,11 +10,11 @@ spec:
     tag: latest
     containerPort: "8080"
   addons: []
-  envVars: 
+  envVars:
   - name: TITLE
     value: Demo
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteMany
     mountPath: /api/files/

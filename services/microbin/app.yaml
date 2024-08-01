@@ -10,7 +10,7 @@ spec:
     tag: latest
     containerPort: "8080"
   addons: []
-  envVars: 
+  envVars:
   - name: MICROBIN_ADMIN_USERNAME
     value: admin
   - name: MICROBIN_ADMIN_PASSWORD
@@ -70,7 +70,7 @@ spec:
   - name: MICROBIN_LIST_SERVER
     value: "false"
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - emptyDir: false
     mountPath: /app/microbin_data
     name: microbin-volume

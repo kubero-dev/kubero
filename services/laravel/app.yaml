@@ -21,7 +21,7 @@ spec:
       tag: latest
     containerPort: "8080"
   addons: []
-  envVars: 
+  envVars:
   - name: APP_NAME
     value: Demo
   - name: APP_KEY
@@ -31,7 +31,7 @@ spec:
   - name: APP_DEBUG
     value: "false"
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false

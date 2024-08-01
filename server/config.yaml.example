@@ -1,7 +1,9 @@
 kubero:
   readonly: false
   console:
-    enabled: false
+    enabled: true
+  admin:
+    disabled: false
   banner:
     show: false
     message: "Welcome to Kubero!"
@@ -27,6 +29,25 @@ templates:
     index: 
       url: "https://raw.githubusercontent.com/kubero-dev/templates/main/index-frameworks.json"
       format: "json" # json or yaml # TODO has no effect yet. json is always used
+notifications:
+  - name: "Slack"
+    enabled: false
+    type: "slack"
+    config:
+      url: "https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
+      channel: "#kubero"
+  - name: "Webhook"
+    enabled: false
+    type: "webhook"
+    config:
+      url: "https://example.com/webhook"
+      secret: "XXXXX"
+  - name: "Discord"
+    enabled: false
+    type: "discord"
+    config:
+      url: "https://discord.com/api/webhooks/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
+      channel: "#kubero"
 buildpacks:
   - name: NodeJS
     language: JavaScript

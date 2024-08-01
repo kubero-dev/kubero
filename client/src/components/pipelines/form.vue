@@ -57,7 +57,7 @@
           cols="12"
           md="8"
         >
-        <v-tabs v-model="repotab" stacked centered @change="loadRepository">
+        <v-tabs v-model="repotab" stacked centered @click="loadRepository">
             <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
             <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
             <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
@@ -332,6 +332,7 @@ export default defineComponent({
         (v: any) => !!v || 'Name is required',
         (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
         (v: any) => /^[a-z0-9][a-z0-9-]*$/.test(v) || 'Allowed characters : [a-z0-9-]',
+        (v: any) => v !== 'new' || 'Name cannot be "new"',
       ],
       domainRules: [
         (v: any) => v.length <= 253 || 'Name must be less than 253 characters',

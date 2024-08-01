@@ -25,6 +25,7 @@ import {
     StorageV1Api,
     BatchV1Api,
     NetworkingV1Api,
+    V1ServiceAccount
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
@@ -34,6 +35,7 @@ import { version } from 'os';
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
+import { KuberoBuild } from './deployments';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -48,11 +50,11 @@ export class Kubectl {
     public kubeVersion: VersionInfo | void;
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
-    public config: IKuberoConfig;
+    //public config: IKuberoConfig;
     private exec: Exec = {} as Exec;
 
-    constructor(config: IKuberoConfig) {
-        this.config = config;
+    constructor() {
+        //this.config = config;
         this.kc = new KubeConfig();
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
@@ -271,7 +273,7 @@ export class Kubectl {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
-
+        
         let app = await this.customObjectsApi.getNamespacedCustomObject(
             "application.kubero.dev",
             "v1alpha1",
@@ -385,19 +387,6 @@ export class Kubectl {
     public async getPods(namespace: string, context: string): Promise<V1Pod[]>{
         const pods = await this.coreV1Api.listNamespacedPod(namespace);
         return pods.body.items;
-    }
-
-    public async getKuberoconfig(): Promise<V1ConfigMap | void> {
-        try {
-            const config = await this.coreV1Api.readNamespacedConfigMap(
-                'kubero-config',
-                'kubero' // TODO: This should be configurable
-            )
-            return config.body;
-        } catch (error) {
-            //debug.log(error);
-            debug.log("getKuberoconfig: error getting config");
-        }
     }
 
     public async createEvent(type: "Normal" | "Warning",reason: string, eventName: string, message: string) {
@@ -866,7 +855,71 @@ export class Kubectl {
             console.log('ERROR fetching pod by label');
         }
     }
+    
+    public async createBuild(
+        namespace: string,
+        appName: string, 
+        pipelineName: string,
+        buildstrategy: 'buildpacks' | 'dockerfile' | 'nixpacks' | 'plain',
+        dockerfilePath: string | undefined,
+        git: {
+            url: string,
+            ref: string
+        },
+        repository: {
+            image: string,
+            tag: string
+        }
+        ): Promise<any> {
+            //console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
+            //console.log('Docker repo: ', repository.image+':' + repository.tag);
 
+
+            // Format to date YYYYMMDD-HHMM
+            const date = new Date();
+            const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
+
+            const name = appName + "-" + pipelineName + "-" + id;
+
+            const build = {
+                apiVersion: "application.kubero.dev/v1alpha1",
+                kind: "KuberoBuild",
+                metadata: {
+                    name: name.substring(0, 53), // max 53 characters allowed within kubernetes
+                },
+                spec: {
+                    buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"
+                    app: appName,
+                    pipeline: pipelineName,
+                    id: id,
+                    repository: {
+                        image: repository.image,  // registry.yourdomain.com/name/namespace
+                        tag: repository.tag + "-" + id
+                    },
+                    git: {
+                        url: git.url,
+                        ref: git.ref
+                    },
+                }
+            };
+
+            try {
+                this.customObjectsApi.createNamespacedCustomObject(
+                    "application.kubero.dev",
+                    "v1alpha1",
+                    namespace,
+                    "kuberobuilds",
+                    build
+                ).catch(error => {
+                    debug.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+                console.log('ERROR creating build job');
+            }
+        }
+
+    // DEPRECATED v2.4.0
     public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
 
         const job = {
@@ -1110,4 +1163,149 @@ export class Kubectl {
         return ws
     }
 
+/*
+    public async getKuberoconfig(): Promise<V1ConfigMap | void> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        try {
+            const config = await this.coreV1Api.readNamespacedConfigMap(
+                'kubero-config',
+                namespace
+            )
+            return config.body;
+        } catch (error) {
+            console.log(error);
+            debug.log("getKuberoconfig: error getting config");
+        }
+    }
+*/
+
+    public async getKuberoConfig(namespace: string): Promise<any> {
+        try {
+            const config = await this.customObjectsApi.getNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberoes',
+                'kubero'
+            )
+            //console.log(config.body);
+            return config.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoConfig: error getting config");
+        }
+    }
+
+
+    public async updateKuberoConfig(namespace: string, config: any) {
+        const patch = [
+            {
+              op: 'replace',
+              path: '/spec',
+              value: config.spec,
+            },
+        ];
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        try {
+            await this.customObjectsApi.patchNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberoes',
+                'kubero',
+                patch,
+                undefined,
+                undefined,
+                undefined,
+                options
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+    public async updateKuberoSecret(namespace: string, secret: any) {
+
+        const patch = [
+            {
+              op: 'replace',
+              path: '/stringData',
+              value: secret,
+            },
+        ];
+
+        const options = { "headers": { "Content-type": 'application/json-patch+json' } };
+        try {
+            await this.coreV1Api.patchNamespacedSecret(
+                'kubero-secrets',
+                namespace,
+                patch,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                undefined,
+                options
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+    public async getKuberoBuilds(namespace: string): Promise<any> {
+        try {
+            const builds = await this.customObjectsApi.listNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds'
+            )
+            return builds.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoBuilds: error getting builds");
+        }
+    }
+
+    public async deleteKuberoBuild(namespace: string, buildName: string) {
+        try {
+            await this.customObjectsApi.deleteNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds',
+                buildName
+            )
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+    public async getJob(namespace: string, jobName: string): Promise<any> {
+        try {
+            const job = await this.batchV1Api.readNamespacedJob(jobName, namespace)
+            return job.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getJob: error getting job");
+        }
+    }
+/*
+    public async getKuberoBuild(namespace: string, buildName: string): Promise<any> {
+        try {
+            const build = await this.customObjectsApi.getNamespacedCustomObject(
+                'application.kubero.dev',
+                'v1alpha1',
+                namespace,
+                'kuberobuilds',
+                buildName
+            )
+            return build.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getKuberoBuild: error getting build");
+        }
+    }
+*/
 }

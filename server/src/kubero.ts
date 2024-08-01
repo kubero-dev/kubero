@@ -17,16 +17,16 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Stream } from 'stream';
-//const stream = require('stream');
 
 debug('app:kubero')
 
 import { Kubectl } from './modules/kubectl';
-import { use } from 'passport';
+import { Notifications, INotification } from './modules/notifications';
 
 export class Kubero {
     public kubectl: Kubectl;
-    private _io: Server;
+    private notification: Notifications;
+    private _io: Server; // TODO: required by logging, move logging to modules
     private githubApi: GithubApi;
     private giteaApi: GiteaApi;
     private gogsApi: GogsApi;
@@ -39,20 +39,14 @@ export class Kubero {
     private audit: Audit;
     private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
 
-    constructor(io: Server, audit: Audit) {
+    constructor(io: Server, audit: Audit, kubectl: Kubectl, notifications: Notifications) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
-        this.kubectl = new Kubectl(this.config);
-        this._io = io;
-
-        this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
-        this.gogsApi = new GogsApi(process.env.GOGS_BASEURL as string, process.env.GOGS_PERSONAL_ACCESS_TOKEN as string);
-        this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
-        this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
-        this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
         debug.debug('Kubero Config: '+JSON.stringify(this.config));
-
+        
+        this._io = io;
         this.audit = audit;
-
+        this.kubectl = kubectl;
+        this.notification = notifications
 
         this._io.on('connection', client => {
             client.on('terminal', (data: any) => {
@@ -68,6 +62,12 @@ export class Kubero {
             }
             )}
         );
+
+        this.giteaApi = new GiteaApi(process.env.GITEA_BASEURL as string, process.env.GITEA_PERSONAL_ACCESS_TOKEN as string);
+        this.gogsApi = new GogsApi(process.env.GOGS_BASEURL as string, process.env.GOGS_PERSONAL_ACCESS_TOKEN as string);
+        this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
+        this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
+        this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
     }
 
     public getKubernetesVersion() {
@@ -171,29 +171,22 @@ export class Kubero {
         // Create the Pipeline CRD
         await this.kubectl.createPipeline(pipeline);
         this.updateState();
-
-        this.kubectl.createEvent('Normal', 'Created', 'pipeline.created', 'created new pipeline: '+pipeline.name);
-        this.audit?.log({
-            user: user.username,
-            severity: 'normal',
-            action: 'create',
-            namespace: '',
-            phase: '',
-            app: '',
-            pipeline: pipeline.name,
-            resource: 'pipeline',
-            message: 'created new pipeline: '+pipeline.name
-        });
-
-        // update agents
-        const message = {
+        
+        const m = {
+            'name': 'newPipeline',
+            'user': user.username,
+            'resource': 'pipeline',
             'action': 'created',
+            'severity': 'normal',
+            'message': 'Created new pipeline: '+pipeline.name,
             'pipelineName':pipeline.name,
+            'phaseName': '',
+            'appName': '',
             'data': {
                 'pipeline': pipeline
             }
-        } as IMessage;
-        this._io.emit('updatedPipelines', message);
+        } as INotification;
+        this.notification.send(m, this._io);
     }
 
     // updates a new pipeline in the same namespace as the kubero app
@@ -217,28 +210,21 @@ export class Kubero {
         await this.kubectl.updatePipeline(pipeline, resourceVersion);
         this.updateState();
 
-        this.kubectl.createEvent('Normal', 'Updated', 'pipeline.updated', 'updated pipeline: '+pipeline.name);
-        this.audit?.log({
-            user: user.username,
-            severity: 'normal',
-            action: 'update',
-            namespace: '',
-            phase: '',
-            app: '',
-            pipeline: pipeline.name,
-            resource: 'pipeline',
-            message: 'updated pipeline: '+pipeline.name
-        });
-
-        // update agents
-        const message = {
-            'action': 'updated',
+        const m = {
+            'name': 'updatePipeline',
+            'user': user.username,
+            'resource': 'pipeline',
+            'action': 'update',
+            'severity': 'normal',
+            'message': 'Updated pipeline: '+pipeline.name,
             'pipelineName':pipeline.name,
+            'phaseName': '',
+            'appName': '',
             'data': {
                 'pipeline': pipeline
             }
-        } as IMessage;
-        this._io.emit('updatedPipelines', message);
+        } as INotification;
+        this.notification.send(m, this._io);
     }
 
 
@@ -296,26 +282,22 @@ export class Kubero {
 
                 await new Promise(resolve => setTimeout(resolve, 5000)); // needs some extra time to delete the namespace
                 this.updateState();
-                const message = {
-                    'action': 'deleted',
+                
+                const m = {
+                    'name': 'deletePipeline',
+                    'user': user.username,
+                    'resource': 'pipeline',
+                    'action': 'delete',
+                    'severity': 'normal',
+                    'message': 'Deleted pipeline: '+pipelineName,
                     'pipelineName':pipelineName,
+                    'phaseName': '',
+                    'appName': '',
                     'data': {
                         'pipeline': pipeline
                     }
-                } as IMessage;
-                this._io.emit('updatedPipelines', message);
-                this.kubectl.createEvent('Normal', 'Deleted', 'pipeline.deleted', 'deleted pipeline: '+pipelineName);
-                this.audit?.log({
-                    user: user.username,
-                    severity: 'normal',
-                    action: 'delete',
-                    namespace: '',
-                    phase: '',
-                    app: '',
-                    pipeline: pipelineName,
-                    resource: 'pipeline',
-                    message: 'deleted pipeline: '+pipelineName
-                });
+                } as INotification;
+                this.notification.send(m, this._io);
             }
         })
         .catch(error => {
@@ -337,34 +319,26 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
             this.appStateList.push(app);
-            const message = {
-                'action': 'created',
+            
+            const m = {
+                'name': 'newApp',
+                'user': user.username,
+                'resource': 'app',
+                'action': 'create',
+                'severity': 'normal',
+                'message': 'Created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase,
                 'pipelineName':app.pipeline,
-                'phaseName':app.phase,
+                'phaseName': app.phase,
                 'appName': app.name,
                 'data': {
                     'app': app
                 }
-            } as IMessage;
-
-            this._io.emit('updatedApps', message);
-            this.kubectl.createEvent('Normal', 'Created', 'app.created', 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-            this.audit?.log({
-                user: user.username,
-                severity: 'normal',
-                action: 'create',
-                namespace: app.name+'-'+app.phase,
-                phase: app.phase,
-                app: app.name,
-                pipeline: app.pipeline,
-                resource: 'app',
-                message: 'created new app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
-            });
-
+            } as INotification;
+            this.notification.send(m, this._io);
         }
 
     }
@@ -379,7 +353,7 @@ export class Kubero {
             return;
         }
 
-        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
             this.triggerImageBuild(app.pipeline, app.phase, app.name);
         }
 
@@ -387,26 +361,22 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.updateApp(app, resourceVersion, contextName);
             // IMPORTANT TODO : Update this.appStateList !!
-            this.kubectl.createEvent('Normal', 'Updated', 'app.updated', 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-            this.audit?.log({
-                user: user.username,
-                severity: 'normal',
-                action: 'update',
-                namespace: app.name+'-'+app.phase,
-                phase: app.phase,
-                app: app.name,
-                pipeline: app.pipeline,
-                resource: 'app',
-                message: 'updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
-            });
-            const message = {
-                'action': 'updated',
+            
+            const m = {
+                'name': 'updateApp',
+                'user': user.username,
+                'resource': 'app',
+                'action': 'update',
+                'severity': 'normal',
+                'message': 'Updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase,
                 'pipelineName':app.pipeline,
-                'phaseName':app.phase,
+                'phaseName': app.phase,
                 'appName': app.name,
-                'data': app
-            } as IMessage;
-            this._io.emit('updatedApps', message);
+                'data': {
+                    'app': app
+                }
+            } as INotification;
+            this.notification.send(m, this._io);
         }
     }
 
@@ -423,25 +393,20 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.deleteApp(pipelineName, phaseName, appName, contextName);
             this.removeAppFromState(pipelineName, phaseName, appName);
-            this.kubectl.createEvent('Normal', 'Deleted', 'app.deleted', 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-            this.audit?.log({
-                user: user.username,
-                severity: 'normal',
-                action: 'delete',
-                namespace: appName+'-'+phaseName,
-                phase: phaseName,
-                app: appName,
-                pipeline: pipelineName,
-                resource: 'app',
-                message: 'deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName
-            });
-            const message = {
-                'action': 'deleted',
+
+            const m = {
+                'name': 'deleteApp',
+                'user': user.username,
+                'resource': 'app',
+                'action': 'delete',
+                'severity': 'normal',
+                'message': 'Deleted app: '+appName+' in '+ pipelineName+' phase: '+phaseName,
                 'pipelineName':pipelineName,
-                'phaseName':pipelineName,
-                'appName': appName
-            } as IMessage;
-            this._io.emit('updatedApps', message);
+                'phaseName': phaseName,
+                'appName': appName,
+                'data': {}
+            } as INotification;
+            this.notification.send(m, this._io);
         }
     }
 
@@ -461,6 +426,7 @@ export class Kubero {
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
+        
         if (contextName) {
             let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
             return app;
@@ -469,6 +435,7 @@ export class Kubero {
 
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
+        
         const a = app?.body as IKubectlApp;
         let t =  new KubectlTemplate(a.spec as IApp);
 
@@ -523,25 +490,19 @@ export class Kubero {
             this.kubectl.restartApp(pipelineName, phaseName, appName, 'web', contextName);
             this.kubectl.restartApp(pipelineName, phaseName, appName, 'worker', contextName);
 
-            let message = {
-                'action': 'restarted',
-                'pipelineName':pipelineName,
-                'phaseName':phaseName,
-                'appName': appName
-            } as IMessage;
-            this._io.emit('updatedApps', message);
-            this.kubectl.createEvent('Normal', 'Restarted', 'app.restarted', 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName);
-            this.audit?.log({
-                user: user.username,
-                severity: 'normal',
-                action: 'restart',
-                namespace: appName+'-'+phaseName,
-                phase: phaseName,
-                app: appName,
-                pipeline: pipelineName,
-                resource: 'app',
-                message: 'restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName
-            });
+            const m = {
+                'name': 'restartApp',
+                'user': user.username,
+                'resource': 'app',
+                'action': 'restart',
+                'severity': 'normal',
+                'message': 'Restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName,
+                'pipelineName': pipelineName,
+                'phaseName': phaseName,
+                'appName': appName,
+                'data': {}
+            } as INotification;
+            this.notification.send(m, this._io);
         }
     }
 
@@ -558,28 +519,21 @@ export class Kubero {
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
 
-            let message = {
+            const m = {
+                'name': 'rebuildApp',
+                'user': '',
+                'resource': 'app',
                 'action': 'rebuild',
+                'severity': 'normal',
+                'message': 'Rebuild app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase,
                 'pipelineName':app.pipeline,
-                'phaseName':app.phase,
+                'phaseName': app.phase,
                 'appName': app.name,
                 'data': {
                     'app': app
                 }
-            } as IMessage;
-            this._io.emit('updatedApps', message);
-            this.kubectl.createEvent('Normal', 'Rebuild', 'app.restarted', 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
-            this.audit?.log({
-                user: '',
-                severity: 'normal',
-                action: 'restart',
-                namespace: app.name+'-'+app.phase,
-                phase: app.phase,
-                app: app.name,
-                pipeline: app.pipeline,
-                resource: 'app',
-                message: 'restarted app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase
-            });
+            } as INotification;
+            this.notification.send(m, this._io);
         }
     }
 /*
@@ -590,45 +544,6 @@ export class Kubero {
     }
 */
 
-    public async listRepos(repoProvider: string) {
-        debug.log('listRepos: '+repoProvider);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.listRepos();
-            case 'gitea':
-                return this.giteaApi.listRepos();
-            case 'gogs':
-                return this.gogsApi.listRepos();
-            case 'gitlab':
-                return this.gitlabApi.listRepos();
-            case 'bitbucket':
-                return this.bitbucketApi.listRepos();
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
-
-    public async connectRepo(repoProvider: string, repoAddress: string) {
-        debug.log('connectRepo: '+repoProvider+' '+repoAddress);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.connectRepo(repoAddress);
-            case 'gitea':
-                return this.giteaApi.connectRepo(repoAddress);
-            case 'gogs':
-                return this.gogsApi.connectRepo(repoAddress);
-            case 'gitlab':
-                return this.gitlabApi.connectRepo(repoAddress);
-            case 'bitbucket':
-                return this.bitbucketApi.connectRepo(repoAddress);
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
 
     public async handleWebhook(repoProvider: string, event: string, delivery: string, signature: string, body: any) {
         debug.log('handleWebhook');
@@ -671,32 +586,26 @@ export class Kubero {
 
     private async handleWebhookPush(webhook: IWebhook) {
         debug.log('handleWebhookPush');
-        let apps = await this.getAppsByBranch(webhook.branch);
+        let apps = await this.getAppsByRepoAndBranch(webhook.repo.ssh_url, webhook.branch);
 
         for (const app of apps) {
-            const message = {
-                'action': 'pushed',
+
+            const m = {
+                'name': 'handleWebhookPush',
+                'user': '',
+                'resource': 'app',
+                'action': 'push',
+                'severity': 'normal',
+                'message': 'Pushed code to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase,
                 'pipelineName':app.pipeline,
-                'phaseName':app.phase,
+                'phaseName': app.phase,
                 'appName': app.name,
                 'data': {
-                    'app': app,
-                    'webhook': webhook
+                    'app': app
                 }
-            } as IMessage;
-            this._io.emit('updatedApps', message);
-            this.kubectl.createEvent('Normal', 'Pushed', 'pushed', 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase);
-            this.audit?.log({
-                user: '',
-                severity: 'normal',
-                action: 'push',
-                namespace: app.name+'-'+app.phase,
-                phase: app.phase,
-                app: app.name,
-                pipeline: app.pipeline,
-                resource: 'app',
-                message: 'pushed to branch: '+webhook.branch+' in '+ webhook.repo.ssh_url + ' for app: '+app.name + ' in pipeline: '+app.pipeline + ' phase: '+app.phase
-            });
+            } as INotification;
+            this.notification.send(m, this._io);
+
             this.rebuildApp(app);
         }
     }
@@ -718,76 +627,11 @@ export class Kubero {
         }
     }
 
-    public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let branches: Promise<string[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                branches = this.githubApi.getBranches(repo);
-                break;
-            case 'gitea':
-                branches = this.giteaApi.getBranches(repo);
-                break;
-            case 'gogs':
-                branches = this.gogsApi.getBranches(repo);
-                break;
-            case 'gitlab':
-                branches = this.gitlabApi.getBranches(repo);
-                break;
-            case 'bitbucket':
-                branches = this.bitbucketApi.getBranches(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return branches
-    }
-
-
-    public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                pulls = this.githubApi.getPullrequests(repo);
-                break;
-            case 'gitea':
-                pulls = this.giteaApi.getPullrequests(repo);
-                break;
-            case 'gogs':
-                pulls = this.gogsApi.getPullrequests(repo);
-                break;
-            case 'gitlab':
-                pulls = this.gitlabApi.getPullrequests(repo);
-                break;
-            case 'bitbucket':
-                pulls = this.bitbucketApi.getPullrequests(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return pulls
-    }
-
-    private async getAppsByBranch(branch: string) {
+    private async getAppsByRepoAndBranch(repository: string, branch: string) {
         debug.log('getAppsByBranch: '+branch);
         let apps: IApp[] = [];
         for (const app of this.appStateList) {
-            if (app.branch === branch) {
+            if (app.branch === branch && repository === app.gitrepo?.ssh_url) {
                 apps.push(app);
             }
         }
@@ -819,6 +663,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
+                    sleep: '600s', //TODO use config value
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
@@ -826,11 +671,15 @@ export class Kubero {
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
-                    domain: websaveTitle+"."+pipeline.domain,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
+                    serviceAccount: {
+                        annotations: {},
+                        create: false,
+                        name: ''
+                    },
                     image: {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
@@ -945,6 +794,10 @@ export class Kubero {
         }
     }
 
+    public setConfig(config: IKuberoConfig) {
+        this.config = config;
+    }
+
     // Loads the Kubero config from the local config file
     private loadConfig(path:string): IKuberoConfig {
         try {
@@ -999,6 +852,17 @@ export class Kubero {
             return false;
         }
         return this.config.kubero?.console?.enabled;
+    }
+
+    public getMetricsEnabled(): boolean{
+        return process.env.KUBERO_PROMETHEUS_ENDPOINT ? process.env.KUBERO_PROMETHEUS_ENDPOINT != undefined : false
+    }
+    
+    public getAdminDisabled(){
+        if (this.config.kubero?.admin?.disabled == undefined) {
+            return false;
+        }
+        return this.config.kubero?.admin?.disabled;
     }
 
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
@@ -1149,8 +1013,11 @@ export class Kubero {
                 if (pod.metadata?.name?.startsWith(appName)) {
                     if (container == 'web') {
                         for (const container of pod.spec?.containers || []) {
-                            const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
-                            loglines = loglines.concat(ll);
+                            // only fetch logs for the web container, exclude trivy and build jobs
+                            if (!pod.metadata?.labels?.["job-name"]) {
+                                const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
+                                loglines = loglines.concat(ll);
+                            }
                         }
                     } else if (container == 'builder' || container == 'fetcher') {
                         const ll = await this.fetchLogs(namespace, pod.metadata.name, "kuberoapp-"+container, pipelineName, phaseName, appName)
@@ -1165,7 +1032,7 @@ export class Kubero {
         return loglines;
     }
 
-    private async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
+    public async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
         let loglines: ILoglines[] = [];
 
         const logStream = new Stream.PassThrough();
@@ -1453,23 +1320,25 @@ export class Kubero {
             dockerfilePath = '.nixpacks/Dockerfile';
         }
 
-        // TODO: Make image configurable
-        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
-        const image = `${registry}/${pipeline}/${appName}`;
-
-        console.log('Build image: ', image);
 
         const timestamp = new Date().getTime();
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
-            this.kubectl.createBuildImageJob(
-                namespace,                      // namespace
-                appName,                        // app
-                repo,                           // gitrepo
-                app.spec.branch,                // branch
-                image,                          // image
-                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
-                dockerfilePath                  // dockerfile
+            
+            this.kubectl.createBuild(
+                namespace,
+                appName, 
+                pipeline,
+                app.spec.buildstrategy, 
+                dockerfilePath,
+                {
+                    url: repo,
+                    ref: app.spec.branch, //git commit reference
+                },
+                {
+                    image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
+                    tag: app.spec.branch+"-"+timestamp
+                }
             );
         }
 
@@ -1508,13 +1377,20 @@ export class Kubero {
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
             this.kubectl.deployApp(namespace, appName, tag);
-            this._io.emit('updatedApps', {
-                'action': 'deployed', 
-                'data': {
-                    'name': appName, 
-                    'pipeline': pipelineName, 
-                    'phase': phaseName
-                }});
+
+            const m = {
+                'name': 'deployApp',
+                'user': '',
+                'resource': 'app',
+                'action': 'deploy',
+                'severity': 'normal',
+                'message': 'Deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName,
+                'pipelineName':pipelineName,
+                'phaseName': phaseName,
+                'appName': appName,
+                'data': {}
+            } as INotification;
+            this.notification.send(m, this._io);
         }
     }
 

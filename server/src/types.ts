@@ -3,18 +3,16 @@ export interface IApp {
     name: string,
     pipeline: string,
     phase: string,
+    sleep: string,
     buildpack: string,
     deploymentstrategy: 'git' | 'docker',
-    buildstrategy: 'plain' | 'dockerfile' | 'nixpacks',
+    buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks',
     gitrepo?: IGithubRepository,
     branch: string,
     autodeploy: boolean,
-    domain?: string,
-    ssl?: boolean,
     podsize: IPodSize,
     autoscale: boolean,
     envVars: {}[],
-
     image : {
         repository: string,
         tag: string,
@@ -117,20 +115,26 @@ export interface IApp {
         port: number,
         type: string
     },
+    */
     serviceAccount: {
         annotations: {},
         create: boolean,
         name: string,
     },
-    tolerations: [],
-*/
+    //tolerations: [],
 }
+
 
 
 export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
     envVars: {}[],
+    serviceAccount: {
+        annotations: {},
+        create: boolean,
+        name: string,
+    },
     image : {
         repository: string,
         tag: string,
@@ -307,24 +311,64 @@ export interface IBuildpack {
     fetch: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     build: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     run: {
         repository: string;
         tag: string;
+        readOnlyAppStorage: boolean;
         securityContext: ISecurityContext
     },
     tag: string;
 }
+
+export interface INotificationSlack {
+    url: string;
+    channel: string;
+}
+
+export interface INotificationWebhook {
+    url: string;
+    secret: string;
+}
+
+export interface INotificationDiscord {
+    url: string;
+}
+
+export interface INotification {
+    action: string;
+    user: string;
+    severity: string;
+    namespace: string;
+    phase: string;
+    app: string;
+    pipeline: string;
+    resource: string;
+    message: string;
+}
+
+export interface INotificationConfig{
+    enabled: boolean;
+    name: string;
+    type: 'slack' | 'webhook' | 'discord',
+    pipelines: string[],
+    events: string[],
+    config: INotificationSlack | INotificationWebhook | INotificationDiscord;
+}
+
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
     clusterissuer: string;
+    notifications: INotificationConfig[];
     templates: {  // introduced v1.11.0
         enabled: boolean;
         catalogs: [
@@ -344,11 +388,15 @@ export interface IKuberoConfig {
         console: {
             enabled: boolean;
         }
+        admin: {
+            disabled: boolean;
+        }
         readonly: boolean;
         banner: {
             message: string;
             bgcolor: string;
             fontcolor: string;
+            show: boolean;
         }
     }
 }
@@ -376,9 +424,10 @@ export interface ILoglines {
 
 export interface IMessage {
     action: string,
+    text?: string,
     appName?: string,
-    pipelineName: string,
-    phaseName: string,
+    pipelineName?: string,
+    phaseName?: string,
     data?: any
 }
 
@@ -400,14 +449,13 @@ export interface Workload {
         age: Date | undefined,
         startTime: Date | undefined,
         containers: WorkloadContainer[]
-    }
+}
 
-    export interface WorkloadContainer {
-        name: string,
-        image: string,
-        restartCount?: number,
-        ready?: boolean,
-        started?: boolean,
-        age: Date | undefined,
-    }
-
+export interface WorkloadContainer {
+    name: string,
+    image: string,
+    restartCount?: number,
+    ready?: boolean,
+    started?: boolean,
+    age: Date | undefined,
+}

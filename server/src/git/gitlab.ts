@@ -313,6 +313,56 @@ export class GitlabApi extends Repo {
         return ret;
     }
 
+    public async getReferences(gitrepo: string): Promise<string[]>{
+        let ret: string[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const branches:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/branches`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let branch of branches) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            const tags:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/tags`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let tag of tags) {
+                ret.push(tag.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            const commits:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/commits`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let commit of commits) {
+                ret.push(commit.id)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        return ret;
+    }
+
     public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
 
         let ret: IPullrequest[] = [];

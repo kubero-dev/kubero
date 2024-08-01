@@ -9,7 +9,7 @@ spec:
     repository: coralproject/talk
     tag: "7"
     containerPort: "8080"
-  addons: 
+  addons:
   - displayName: Kubero Redis
     env: []
     icon: /img/addons/Redis.png
@@ -65,7 +65,7 @@ spec:
             persistence:
               size: 1Gi
             replicaCount: 1
-  envVars: 
+  envVars:
   - name: SIGNING_SECRET
     value: change-me-to-make-me-secure
   - name: REDIS_URI

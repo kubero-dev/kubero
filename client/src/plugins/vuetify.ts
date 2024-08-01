@@ -25,6 +25,7 @@ export default createVuetify({
           "on-cardBackground": '#CCC',
           navBG: '#262626',
           kubero: '#684888',
+          "on-surface-variant": "#1B1B1B",
           
           accent: '#8c9eff',
           error: '#b71c1c',

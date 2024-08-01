@@ -32,23 +32,55 @@ const kuberoStore = useKuberoStore();
 kuberoStore.kubero.socket = socket;
 
 type Message = {
+    name: string,
+    user: string,
+    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
     action: string,
+    severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
+    message: string,
+    phaseName: string,
     pipelineName: string,
-    phaseName?: string,
-    appName?: string,
+    appName: string,
     data?: any
 }
 
-socket.on('updatedApps', (message: Message) => {
-    console.log("updatedApps", message);
-    const text = `App <b>${message.appName}</b> ${message.action} in ${message.pipelineName} ${message.phaseName}`;
-    triggerToast('success', 'App '+message.action, text);
+socket.on('newApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('updateApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('deleteApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('restartApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('rebuildApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('handleWebhookPush', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('deployApp', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
+socket.on('newBuild', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
 });
 
-socket.on('updatedPipelines', (message: Message) => {
-    //console.log("updatedPipelines", message);
-    const text = `Pipeline <b>${message.pipelineName}</b> ${message.action}`;
-    triggerToast('success', 'Pipeline '+message.action, text);
+socket.on('newPipeline', (message: Message) => {
+    triggerToast('success', 'Pipeline '+message.action, message.message);
+});
+socket.on('updatePipeline', (message: Message) => {
+    triggerToast('success', 'Pipeline '+message.action, message.message);
+});
+socket.on('deletePipeline', (message: Message) => {
+    triggerToast('success', 'Pipeline '+message.action, message.message);
+});
+
+socket.on('updateSettings', (message: Message) => {
+    triggerToast('success', 'Kubero System', message.message ?? '');
 });
 
 function triggerToast(icon: SweetAlertIcon, title: string, text: string) {

@@ -3,10 +3,9 @@ import * as fs from 'fs';
 
 export interface AuditEntry {
     user: string,
-    severity: 'normal' | 'info' | 'warning' | 'error',
+    severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
     action: string,
-    resource: 'system' | 'app' | 'pipeline' | 'phase' | 'namespace' | 'addon' | 'settings' | 'user' | 'events' | 'security' | 'templates' | 'config' | 'addons' | 'kubernetes' | 'unknown',
-    //resource: string,
+    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "build" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
     namespace: string,
     phase: string,
     app: string,
@@ -46,7 +45,7 @@ export class Audit {
             if (err) {
                 console.error(err.message);
             }
-            console.log('Enabled audit logging');
+            console.log('✅ Enabled audit logging');
             this.createTables();
         });
     }

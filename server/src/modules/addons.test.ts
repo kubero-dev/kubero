@@ -9,8 +9,7 @@ describe('Addons', () => {
         const numberOfAddons = 5;
 
         const path = process.env.KUBERO_CONFIG_PATH as string || './config.yaml';
-        const config = YAML.parse(fs.readFileSync(path, 'utf8')) as IKuberoConfig;
-        const kubectl = new Kubectl(config);
+        const kubectl = new Kubectl();
 
         const addons = new Addons({kubectl: kubectl});
         await addons.loadOperators();

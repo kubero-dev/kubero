@@ -19,7 +19,7 @@ spec:
       tag: latest
     containerPort: "8080"
   addons: []
-  envVars: 
+  envVars:
   - name: APP_SECRET
     value: 20bd009a24d5db6d813bccb1a539da7a
   - name: APP_DEBUG
@@ -29,7 +29,7 @@ spec:
   - name: PHP_EXTENSION_INTL
     value: "1"
   cronjobs: []
-  extraVolumes: 
+  extraVolumes:
   - accessModes:
     - ReadWriteMany
     mountPath: /app/var

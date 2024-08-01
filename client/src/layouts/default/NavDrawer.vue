@@ -30,7 +30,7 @@
         </v-list-item>
         <v-list-item 
             link to="/settings" 
-            v-if="kubero.isAuthenticated"
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
             prepend-icon="mdi-cog-outline"
             title="Settings">
         </v-list-item>
@@ -93,7 +93,7 @@
             -->
             <v-list-item
                 prepend-icon="mdi-star"
-                :title="'v'+ kubero.version">
+                :title="''+ kubero.version">
             </v-list-item>
         </v-list>
     </template>
