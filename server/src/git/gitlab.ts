@@ -18,13 +18,17 @@ export class GitlabApi extends Repo {
 
     constructor(baseURL: string, token: string) {
         super("gitlab");
-
-        console.log("Gitlab API: "+baseURL)
-        //console.log("Gitlab token: "+token)
+        const host = baseURL || 'https://gitlab.com';
+        
+        if (token == undefined) {
+            console.log('☑️  Feature: Gitlab not configured (no token)');
+        } else {
+            console.log('✅ Feature: Gitlab configured: '+host);
+        }
 
         this.gitlab = new GitlabClient({
             token: token,
-            host: baseURL || 'https://gitlab.com',
+            host: host,
         });
     }
 

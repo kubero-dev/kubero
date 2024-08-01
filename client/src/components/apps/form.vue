@@ -61,6 +61,7 @@
             true-icon="mdi-sleep"
             false-icon="mdi-sleep-off"
             label="Sleep"
+            :disabled="!kuberoConfig.sleepEnabled"
             inset
           ></v-switch>
         </v-col>
@@ -214,19 +215,19 @@
                   key="1"
                   label="Nixpacks"
                   value="nixpacks"
-                  :disabled="!buildPipeline"
+                  :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="1"
                   label="Buildpacks"
                   value="buildpacks"
-                  :disabled="!buildPipeline"
+                  :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="2"
                   label="Dockerfile"
                   value="dockerfile"
-                  :disabled="!buildPipeline"
+                  :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
               </v-radio-group>
             </v-col>
@@ -274,7 +275,7 @@
                 <div>You are building your image on a external CI/CD and deploy it by changing the image tag thrue the API</div>
               </v-alert>
 
-              <v-alert variant="tonal" type="info" border="start" v-if="!buildPipeline" style="margin-top: 20px;">
+              <v-alert variant="tonal" type="info" border="start" v-if="!kuberoConfig.buildPipeline" style="margin-top: 20px;">
                 <h3>
                   Buildpipeline not configured
                 </h3>
@@ -1314,6 +1315,7 @@ export default defineComponent({
       panel: [0],
       valid: false,
       sleep: '0s',
+      sleepEnabled: false,
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
       buildpack: {
@@ -1605,10 +1607,10 @@ export default defineComponent({
 */
     }},
     computed: {
-      buildPipeline(){
+      kuberoConfig() {
         const store = useKuberoStore()
-        return store.kubero.buildPipeline
-      }
+        return store.kubero
+      },
     },
     mounted() {
       this.loadPipeline();

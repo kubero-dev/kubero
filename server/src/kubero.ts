@@ -38,6 +38,21 @@ export class Kubero {
     public config: IKuberoConfig;
     private audit: Audit;
     private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
+    private features: {[key: string]: boolean} = {
+        sleep: false,
+        metrics: false,
+        /* suggested features
+        console: false,
+        logs: false,
+        audit: false,
+        notifications: false,
+        templates: false,
+        addons: false,
+        deployments: false,
+        security: false,
+        settings: false,
+        */
+    }
 
     constructor(io: Server, audit: Audit, kubectl: Kubectl, notifications: Notifications) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
@@ -68,6 +83,13 @@ export class Kubero {
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
         this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
         this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
+
+        this.runFeatureCheck();
+    }
+
+    private async runFeatureCheck() {
+        //this.features.sleep = this.config.sleep.enabled;
+        this.features.sleep = await this.checkForZeropod()
     }
 
     public getKubernetesVersion() {
@@ -854,8 +876,63 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    public setMetricsStatus(status: boolean) {
+        this.features.metrics = status
+    }
+
     public getMetricsEnabled(): boolean{
-        return process.env.KUBERO_PROMETHEUS_ENDPOINT ? process.env.KUBERO_PROMETHEUS_ENDPOINT != undefined : false
+        return this.features.metrics
+    }
+/*
+    private checkForPrometheus(): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            if (process.env.KUBERO_PROMETHEUS_ENDPOINT) {
+                fetch(process.env.KUBERO_PROMETHEUS_ENDPOINT)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('☑️ Feature: Prometheus Metrics disabled');
+                        resolve(true);
+                    } else {
+                        console.log('❌ Feature: Prometheus not accesible');
+                        resolve(false);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Feature: Prometheus not accesible');
+                    resolve(false);
+                });
+            } else {
+                console.log('☑️ Feature: Prometheus Metrics not enabled');
+                resolve(false);
+            }
+        });
+    }
+*/
+    public getBuildpipelineEnabled(){
+        return process.env.KUBERO_BUILD_REGISTRY ? process.env.KUBERO_BUILD_REGISTRY != undefined : false
+    }
+
+    private async checkForZeropod(): Promise<boolean> {
+        // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present. 
+        // But it does not check if the Zeropod controller is complete and running.
+        let enabled = false
+        try {
+            const nsList = await this.kubectl.getNamespaces()
+            for (const ns of nsList) {
+                if (ns.metadata?.name == 'zeropod-system') {
+                    enabled = true
+                }
+            }
+        } catch (error) {
+            console.log('Error: getSleepEnabled: ', error)
+            return false
+        }
+        
+        return enabled
+    }
+
+    public getSleepEnabled(): boolean {
+        return this.features.sleep
     }
     
     public getAdminDisabled(){

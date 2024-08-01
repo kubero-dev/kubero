@@ -48,6 +48,7 @@ export default defineComponent({
                         this.kubero.auditEnabled = result.data.auditEnabled;
                         this.kubero.consoleEnabled = result.data.consoleEnabled;
                         this.kubero.metricsEnabled = result.data.metricsEnabled;
+                        this.kubero.sleepEnabled = result.data.sleepEnabled;
 
                     })
                     .catch((err) => {

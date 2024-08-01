@@ -43,9 +43,9 @@ export class Audit {
         }
         this.db = new Database(this.dbpath + '/kubero.db', (err) => {
             if (err) {
-                console.error(err.message);
+                console.log('❌ Feature: Audit logging failed to create local sqlite database', err.message);
             }
-            console.log('✅ Enabled audit logging');
+            console.log('✅ Feature: Audit logging enabled');
             this.createTables();
         });
     }
