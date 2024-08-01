@@ -25,7 +25,7 @@ export class BitbucketApi extends Repo {
             this.bitbucket = new Bitbucket(clientOptions)
         } else {
             this.bitbucket = new Bitbucket()
-            console.log("No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
+            console.log("☑️  Feature: BitBucket disabled: No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
         }
     }
 

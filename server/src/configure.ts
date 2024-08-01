@@ -112,6 +112,7 @@ export const configure = async (app: Express, server: Server) => {
     const notifications = new Notifications(sockets, audit, kubectl);
 
     const kubero = new Kubero(sockets, audit, kubectl, notifications);
+    kubero.setMetricsStatus(metrics.getStatus());
     notifications.setConfig(kubero.config);
 
     // sleep 1 seconds to wait for kubernetes availability test

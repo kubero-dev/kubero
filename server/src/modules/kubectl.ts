@@ -121,6 +121,11 @@ export class Kubectl {
         this.kc.setCurrentContext(context)
     }
 
+    public async getNamespaces(): Promise<V1Namespace[]> {
+        const namespaces = await this.coreV1Api.listNamespace();
+        return namespaces.body.items;
+    }
+
     public async getPipelinesList() {
         this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
         try {

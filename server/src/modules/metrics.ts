@@ -35,6 +35,7 @@ type Rule = {
 
 export class Metrics {
     private prom: PrometheusDriver
+    private status: boolean = false;
 
     constructor(
         options: MetricsOptions
@@ -47,15 +48,23 @@ export class Metrics {
         });
         
         if (!options.enabled) {
-            console.log('❌ Prometheus Metrics disabled');
+            console.log('☑️ Feature: Prometheus Metrics not enabled ...');
+            this.status = false;
             return
         }
 
         this.prom.status().then((status) => {
-            console.log('✅ Prometheus Metrics initialized:', options.endpoint);
+            console.log('✅ Feature: Prometheus Metrics initialized:::', options.endpoint);
+            this.status = true;
         }).catch((error) => {
-            console.log('❌ Prometheus status:', error);
+            console.log('❌ Feature: Prometheus not accesible ...');
+            this.status = false;
         })
+
+    }
+
+    public getStatus(): boolean {
+        return this.status
     }
 
     public async getLongTermMetrics(query: string): Promise<QueryResult | undefined> {
