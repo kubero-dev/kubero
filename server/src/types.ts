@@ -3,6 +3,7 @@ export interface IApp {
     name: string,
     pipeline: string,
     phase: string,
+    sleep: string,
     buildpack: string,
     deploymentstrategy: 'git' | 'docker',
     buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks',

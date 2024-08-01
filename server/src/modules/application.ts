@@ -25,6 +25,7 @@ export class App implements IApp{
     public name: string
     public pipeline: string
     public phase: string
+    public sleep: string
     public buildpack: string
     public deploymentstrategy: 'git' | 'docker';
     public buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks';
@@ -140,6 +141,7 @@ export class App implements IApp{
         this.name = app.name
         this.pipeline = app.pipeline
         this.phase = app.phase
+        this.sleep = app.sleep
         this.buildpack = app.buildpack
         this.deploymentstrategy = app.deploymentstrategy
         this.buildstrategy = app.buildstrategy
