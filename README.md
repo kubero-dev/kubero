@@ -91,25 +91,7 @@ https://github.com/kubero-dev/buildpacks
 
 \* Ships with the Kubero Operator
 
-#### Planned Add-ons 
-- [Aerospike](https://aerospike.com/)
-- [TiDB](https://pingcap.com/)
-- [ArangoDB](https://www.arangodb.com/)
-- [Cassandra](https://cassandra.apache.org/)
-- [InfluxDB](https://www.influxdata.com/)
-- [MariaDB](https://mariadb.org/)
-- [Prometheus](https://prometheus.io/)
-- [ImmuDB](https://github.com/unagex/immudb-operator) 
-
-#### Longterm future Add-ons
-- [Crossplane](https://crossplane.io/)
-- [Neo4j](https://neo4j.com/)
-- [Presto](https://prestodb.io/)
-- [TimescaleDB](https://www.timescale.com/)
-- [Zookeeper](https://zookeeper.apache.org/)
-- [RethinkDB](https://rethinkdb.com/)
-
-## 60+ Application templates (similar to Heroku Buttons)
+## 80+ Application templates (similar to Heroku Buttons)
 - Wordpress
 - Grafana
 - Bluesky PDS (Personal Data Server)
