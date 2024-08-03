@@ -1223,6 +1223,10 @@ export class Kubero {
         return this.kubectl.getNodeMetrics();
     }
 
+    public getIngressClasses() {
+        return this.kubectl.getIngressClasses();
+    }
+
     public getStorageglasses() {
         return this.kubectl.getStorageglasses();
     }

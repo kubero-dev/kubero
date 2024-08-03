@@ -594,6 +594,16 @@
             </v-col>
           </v-row>
 
+          <!-- allow setting of ingressClass -->
+            <v-row>
+              <v-col cols="12" md="6">
+                <v-select
+                  v-model="ingress.className"
+                  :items="ingressClasses"
+                  label="Ingress Class"
+                ></v-select>
+              </v-col>
+            </v-row>
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -1201,6 +1211,7 @@ type FormField = {
 
 type Ingress = {
   annotations: any,
+  className: string,
   hosts: {
     host: string,
     paths: {
@@ -1465,6 +1476,11 @@ export default defineComponent({
         },
         */
       ] as Cronjob[],
+      ingressClasses: [
+        /*
+        'nginx',
+        */
+      ] as string[],
       storageclasses : [
 /*
         'standard',
