@@ -32,6 +32,7 @@
                   auto-select-first
                   required
                   v-model="form.buildstrategy"
+                  @update:modelValue="changedBuildStrategy"
                 ></v-select>
               </v-col>
               <v-col
@@ -124,6 +125,14 @@ export default defineComponent({
     console.log('BuildsForm', this.pipeline, this.phase, this.app, this.appData)
   },
   methods: {
+    changedBuildStrategy() {
+        console.log('changedBuildStrategy', this.form.buildstrategy)
+        if (this.form.buildstrategy === 'nixpacks') {
+            this.form.dockerfilePath = '.nixpacks/Dockerfile'
+        } else {
+            this.form.dockerfilePath = 'Dockerfile'
+        }
+    },
     loadReferences() {
         const repoB64 = btoa(this.appData?.spec.gitrepo.ssh_url)
         //const provider = this.appData?.spec.gitrepo.provider
@@ -138,9 +147,15 @@ export default defineComponent({
     },
     saveBuild() {
         //console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
+        let repository = this.appData?.spec.gitrepo.ssh_url
+        if (this.appData?.spec.gitrepo.private) {
+            //repository = this.appData?.spec.gitrepo.ssh_url.replace('git@', 'https://')
+            repository = this.appData?.spec.gitrepo.clone_url
+        }
+
         const body = {
             buildstrategy: this.form.buildstrategy,
-            repository: this.appData?.spec.gitrepo.ssh_url,
+            repository: repository,
             reference: this.form.reference,
             dockerfilePath: this.form.dockerfilePath
         }

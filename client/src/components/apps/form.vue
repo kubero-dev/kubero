@@ -87,7 +87,7 @@
         >
           <v-switch
             v-model="sslIndex[index]"
-            @change="sslSwitch(host.host, index)"
+            @update:modelValue="sslSwitch(host.host, index)"
             label="SSL"
             density="compact"
             color="primary"
@@ -350,7 +350,7 @@
                 v-model="buildpack"
                 :items="buildpacks"
                 label="Runpack"
-                @change="updateBuildpack(buildpack)"
+                @update:modelValue="updateBuildpack(buildpack)"
               ></v-select>
             </v-col>
           </v-row>
@@ -837,7 +837,7 @@
                 label="Podsize"
                 item-title="text"
                 item-value="value"
-                @change="updatePodsize"
+                @update:modelValue="updatePodsize"
               ></v-select>
             </v-col>
           </v-row>

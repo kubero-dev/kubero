@@ -897,6 +897,9 @@ export class Kubectl {
                     app: appName,
                     pipeline: pipelineName,
                     id: id,
+                    dockerfile: {
+                        path: dockerfilePath,
+                    },
                     repository: {
                         image: repository.image,  // registry.yourdomain.com/name/namespace
                         tag: repository.tag + "-" + id
