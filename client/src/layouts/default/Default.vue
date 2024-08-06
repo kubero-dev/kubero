@@ -65,6 +65,9 @@ socket.on('handleWebhookPush', (message: Message) => {
 socket.on('deployApp', (message: Message) => {
     triggerToast('success', 'App '+message.action, message.message);
 });
+socket.on('newBuild', (message: Message) => {
+    triggerToast('success', 'App '+message.action, message.message);
+});
 
 socket.on('newPipeline', (message: Message) => {
     triggerToast('success', 'Pipeline '+message.action, message.message);

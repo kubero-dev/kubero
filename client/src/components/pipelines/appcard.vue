@@ -124,10 +124,10 @@
         </v-btn>
         <v-btn
             title="Open App"
-            v-if="app.domain"
+            v-if="app.ingress.hosts.length > 0"
             color="deep-purple lighten-2"
             variant="text"
-            :href="'//'+app.domain" target="_blank"
+            :href="'//'+app.ingress?.hosts[0].host" target="_blank"
         >
             <v-icon>mdi-open-in-new</v-icon>
         </v-btn>

@@ -5,6 +5,7 @@
         <v-container class="d-flex justify-space-between align-center mb-2">
             <v-tabs v-model="tab"  class="background">
                 <v-tab class="background">Overview</v-tab>
+                <v-tab class="background" :disabled="!hasBuilds">Builds</v-tab>
                 <v-tab class="background">Metrics</v-tab>
                 <v-tab class="background">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
@@ -66,11 +67,14 @@
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <Overview :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
             </v-window-item>
-            <v-window-item transition="false" reverse-transition="true" class="background">
-                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.domain"/>
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <Builds :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
-                <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy"/>
+                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.ingress.hosts[0].host"/>
+            </v-window-item>
+            <v-window-item transition="false" reverse-transition="false" class="background">
+                <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy" :buildstrategy="appData.spec.buildstrategy"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <Events :pipeline="pipeline" :phase="phase" :app="app"/>
@@ -90,6 +94,7 @@ import Overview from "./overview.vue";
 import Events from "./events.vue";
 import LogsTab from "./logstab.vue";
 import Metrics from "./metrics.vue";
+import Builds from "./builds.vue";
 import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
 import { useKuberoStore } from '../../stores/kubero'
@@ -126,14 +131,23 @@ export default defineComponent({
             pipelineData: {},
             appData: {
                 spec: {
-                    domain: "",
-                    deploymentstrategy: "git"
+                    deploymentstrategy: "git",
+                    buildstrategy: "plain",
+                    ingress: {
+                        hosts: [{
+                            host: '',
+                        }]
+                    },
                 }
             }
         }
     },
     computed: {
       ...mapState(useKuberoStore, ['kubero']),
+      hasBuilds() {
+        // disable the builds tab if the buildstrategy is plain or external
+        return this.appData.spec.deploymentstrategy == 'git' && this.appData.spec.buildstrategy != 'plain' && this.appData.spec.buildstrategy != 'external';
+      }
     },
     mounted() {
         this.loadPipeline();
@@ -152,7 +166,7 @@ export default defineComponent({
             });
         },
         ActionOpenApp() {
-            window.open(`https://${this.appData.spec.domain}`, '_blank');
+            window.open(`https://${this.appData.spec.ingress.hosts[0].host}`, '_blank');
         },
         ActionEditApp() {
             this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/apps/${this.app}`);
@@ -213,16 +227,6 @@ export default defineComponent({
             this.loadingState = false;
         },
         openConsole() {
-            /*
-            Swal.fire({
-                title: "Open Console",
-                text: "This feature is not yet implemented. It will be available in a future release.",
-                icon: "info",
-                background: "rgb(var(--v-theme-cardBackground))",
-                /*background: "rgb(var(--v-theme-on-surface-variant))",
-                color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity));",
-            })
-            */
             window.open(`/popup/console/${this.pipeline}/${this.phase}/${this.app}`, '_blank', 'popup=yes,location=no,height=720,width=900,scrollbars=yes,status=no');
         },
     },
@@ -233,7 +237,8 @@ export default defineComponent({
         LogsTab,
         Vulnerabilities,
         Overview,
-        Metrics
+        Metrics,
+        Builds
     },
     props: {
       pipeline: {

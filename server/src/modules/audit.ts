@@ -5,8 +5,7 @@ export interface AuditEntry {
     user: string,
     severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
     action: string,
-    resource: 'system' | 'app' | 'pipeline' | 'phase' | 'namespace' | 'addon' | 'settings' | 'user' | 'events' | 'security' | 'templates' | 'config' | 'addons' | 'kubernetes' | 'unknown',
-    //resource: string,
+    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "build" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
     namespace: string,
     phase: string,
     app: string,
@@ -44,9 +43,9 @@ export class Audit {
         }
         this.db = new Database(this.dbpath + '/kubero.db', (err) => {
             if (err) {
-                console.error(err.message);
+                console.log('❌ Feature: Audit logging failed to create local sqlite database', err.message);
             }
-            console.log('✅ Enabled audit logging');
+            console.log('✅ Feature: Audit logging enabled');
             this.createTables();
         });
     }

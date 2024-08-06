@@ -100,7 +100,7 @@ const routes = [
     component: () => import('@/layouts/default/Popup.vue'),
     children: [
       {
-        path: '/popup/logs/:pipeline/:phase/:app/:deploymentstrategy',
+        path: '/popup/logs/:pipeline/:phase/:app/:deploymentstrategy/:buildstrategy',
         name: 'Pupup Logs',
         props: true,
         component: () => import('@/components/apps/logs.vue'),

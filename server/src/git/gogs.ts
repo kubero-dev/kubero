@@ -284,6 +284,43 @@ export class GogsApi extends Repo {
         return ret;
     }
 
+    public async getReferences(gitrepo: string): Promise<string[]>{
+
+        let ret: string[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const branches = await this.gitea.repos.repoListBranches(owner, repo)
+            for (let branch of branches.data) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const tags = await this.gitea.repos.repoListTags(owner, repo)
+            for (let tag of tags.data) {
+                ret.push(tag.name)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const commits = await this.gitea.repos.repoListCommits(owner, repo)
+            for (let commit of commits.data) {
+                ret.push(commit.sha)
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        return ret;
+
+    }
+
     public async getPullrequests(gitrepo: string): Promise<IPullrequest[]>{
 
         let ret: IPullrequest[] = [];

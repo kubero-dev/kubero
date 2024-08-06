@@ -141,7 +141,7 @@
             label="Buildpack *"
             item-title="text"
             item-text="value"
-            @change="updateBuildpack"
+            @update:modelValue="updateBuildpack"
           ></v-select>
         </v-col>
       </v-row>

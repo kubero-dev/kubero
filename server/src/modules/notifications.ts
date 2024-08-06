@@ -7,7 +7,7 @@ import { IKuberoConfig, INotificationSlack, INotificationWebhook, INotificationD
 export interface INotification {
     name: string,
     user: string,
-    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
+    resource: "system" | "app" | "pipeline" | "phase" | "namespace" | "build" | "addon" | "settings" | "user" | "events" | "security" | "templates" | "config" | "addons" | "kubernetes" | "unknown",
     action: string,
     severity: "normal" | "info" | "warning" | "critical" | "error" | "unknown",
     message: string,
@@ -96,7 +96,7 @@ export class Notifications {
             if (notification.enabled && 
                 notification.events &&
                 notification.events?.includes(message.name) &&
-                (notification.pipelines.length == 0 || notification.pipelines.includes('all') || notification.pipelines.includes(message.pipelineName))
+                (notification.pipelines?.length == 0 || notification.pipelines?.includes('all') || notification.pipelines?.includes(message.pipelineName))
                 ) {
                 this.sendCustomNotification(notification.type, 
                 notification.config,
