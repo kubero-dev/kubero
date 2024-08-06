@@ -148,7 +148,7 @@ export default defineComponent({
     saveBuild() {
         //console.log('Build', this.pipeline, this.phase, this.app, this.form, this.appData)
         let repository = this.appData?.spec.gitrepo.ssh_url
-        if (this.appData?.spec.gitrepo.private) {
+        if (!this.appData?.spec.gitrepo.private) {
             //repository = this.appData?.spec.gitrepo.ssh_url.replace('git@', 'https://')
             repository = this.appData?.spec.gitrepo.clone_url
         }
