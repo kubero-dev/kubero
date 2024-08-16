@@ -56,7 +56,7 @@
             v-model="sleep"
             hint="Sleep after 1 Minutes of inactivity"
             color="primary"
-            false-value="0s"
+            false-value="disabled"
             true-value="60s"
             true-icon="mdi-sleep"
             false-icon="mdi-sleep-off"
@@ -1325,7 +1325,7 @@ export default defineComponent({
       advanced: false,
       panel: [0],
       valid: false,
-      sleep: '0s',
+      sleep: 'disabled',
       sleepEnabled: false,
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
