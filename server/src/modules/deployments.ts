@@ -108,7 +108,7 @@ export class Deployments {
 
     public async getDeployments(pipelineName: string, phaseName: string, appName: string): Promise<any> {
         const namespace = pipelineName + "-" + phaseName
-        const deployments =  await this.kubectl.getKuberoBuilds(namespace) as KuberoBuildList
+        let deployments =  await this.kubectl.getKuberoBuilds(namespace) as KuberoBuildList
         const appresult = await this.kubero.getApp(pipelineName, phaseName, appName)
 
         const app = appresult?.body as IKubectlApp;
@@ -119,12 +119,20 @@ export class Deployments {
                 items: []
             }
         }
+        // revert order of deployments
+        deployments.items = deployments.items.reverse()
 
-        for (const deployment of deployments.items) {
+        let retBuilds = [] as KuberoBuild[]
+        for (let deployment of deployments.items) {
+
+            // skip non matching apps
+            if (deployment.spec.app != appName) {
+                continue
+            }
+
             //remove useless fields
             delete deployment.metadata.managedFields
             delete deployment.status?.deployedRelease
-
 
             if (deployment.spec.repository.image === app.spec.image.repository && deployment.spec.repository.tag === app.spec.image.tag) {
               deployment.spec.repository.active = true
@@ -132,39 +140,32 @@ export class Deployments {
               deployment.spec.repository.active = false
             }
 
-            // remove depployment if name does not match app
-            if (deployment.spec.app !== appName) {
-                const index = deployments.items.indexOf(deployment)
-                deployments.items.splice(index, 1)
-            } else {
-              // load jobn details
-              const job = await this.kubectl.getJob(namespace, `${deployment.spec.app}-${deployment.spec.pipeline}-${deployment.spec.id}`) //TODO: Naming might change, since it is the wrong order
-              if (job) {
-                const duration = new Date(job.status.completionTime).getTime() - new Date(job.status.startTime).getTime()
+            // load job details
+            const job = await this.kubectl.getJob(namespace, `${deployment.spec.app}-${deployment.spec.pipeline}-${deployment.spec.id}`)
+            if (job) {
+              const duration = new Date(job.status.completionTime).getTime() - new Date(job.status.startTime).getTime()
 
-                let status: "Unknown" | "Active" | "Succeeded" | "Failed" = 'Unknown'
-                if (job.status.active) {
-                  status = 'Active'
-                } else if (job.status.succeeded) {
-                  status = 'Succeeded'
-                } else if (job.status.failed > 1) { //2 attempts allowed
-                  status = 'Failed'
-                }
+              let status: "Unknown" | "Active" | "Succeeded" | "Failed" = 'Unknown'
+              if (job.status.active) {
+                status = 'Active'
+              } else if (job.status.succeeded) {
+                status = 'Succeeded'
+              } else if (job.status.failed > 1) { //2 attempts allowed
+                status = 'Failed'
+              }
 
-                deployment.jobstatus = {
-                  duration: duration,
-                  startTime: job.status.startTime,
-                  completionTime: job.status.completionTime,
-                  status: status
-                }
+              deployment.jobstatus = {
+                duration: duration,
+                startTime: job.status.startTime,
+                completionTime: job.status.completionTime,
+                status: status
               }
             }
+
+            retBuilds.push(deployment)
         }
 
-        // revert order of deployments
-        deployments.items = deployments.items.reverse()
-
-        return deployments
+        return retBuilds
     }
 
     public async buildImage(

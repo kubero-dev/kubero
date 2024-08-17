@@ -359,7 +359,7 @@ export default defineComponent({
         loadDeployments() {
             const response = axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
             .then(response => {
-                this.deployments = response.data.items;
+                this.deployments = response.data as Deployment[];
             })
             .catch(error => {
                 console.log(error);
