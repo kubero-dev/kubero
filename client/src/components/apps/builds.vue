@@ -117,7 +117,7 @@
                         </v-row>
                         <v-expand-transition>
                             <v-row v-if="b.metadata.name == activeLogs">
-                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy logType="buildlogs" :buildID="b.metadata.name" height="400px"/>
+                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy :buildstrategy=b?.spec.buildstrategy logType="buildlogs" :buildID="b.metadata.name" height="400px"/>
                             </v-row>
                         </v-expand-transition>
                     </v-card-text>

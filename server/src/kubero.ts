@@ -1119,7 +1119,6 @@ export class Kubero {
             logs += chunk.toString();
         });
 
-        console.log('getting logs for '+podName+' '+containerName);
         try {
             await this.kubectl.log.log(namespace, podName, containerName, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
         } catch (error) {
