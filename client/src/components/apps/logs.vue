@@ -4,10 +4,10 @@
             <v-tab v-if="logType == 'runlogs'" @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('fetcher')">fetch</v-tab>
-            <v-tab v-if="logType == 'buildlogs'" @click="getBuildLogHistory('deploy')">deploy</v-tab>
-            <v-tab v-if="logType == 'buildlogs' && (buildstrategy=='nixpacks' || buildstrategy=='dockerfile')" @click="getBuildLogHistory('push')">push</v-tab>
-            <v-tab v-if="logType == 'buildlogs' && (buildstrategy=='nixpacks' || buildstrategy=='buildpacks')" @click="getBuildLogHistory('build')">build</v-tab>
             <v-tab v-if="logType == 'buildlogs'" @click="getBuildLogHistory('fetch')">fetch</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && (buildstrategy=='nixpacks' || buildstrategy=='buildpacks')" @click="getBuildLogHistory('build')">build</v-tab>
+            <v-tab v-if="logType == 'buildlogs' && (buildstrategy=='nixpacks' || buildstrategy=='dockerfile')" @click="getBuildLogHistory('push')">push</v-tab>
+            <v-tab v-if="logType == 'buildlogs'" @click="getBuildLogHistory('deploy')">deploy</v-tab>
         </v-tabs>
         <div class="console" id="console" style="height:100%; margin-top: -45px; z-index: 2000;">
             <div v-for="line in loglines" :key="line.id">
@@ -56,7 +56,7 @@ export default defineComponent({
     },
     mounted() {
         if (this.logType == 'buildlogs')  {
-            this.getBuildLogHistory('deploy')
+            this.getBuildLogHistory('fetch')
             //this.socketJoin()
             //this.startLogs()
         } else {
@@ -146,7 +146,22 @@ export default defineComponent({
         getBuildLogHistory(container: string) {
             //http://localhost:2000/api/deployments/devcon/production/aaa/20240717-0651/log
             axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}/${this.buildID}/${container}/history`).then((response) => {
-                this.loglines = response.data;
+                if (response.data.length > 0) {
+                    this.loglines = response.data;
+                } else {
+                    this.loglines = [{
+                        app: "container",
+                        container: "debug",
+                        id: "00000000-0000-0000-0000-000000000000",
+                        log: "No logs available",
+                        phase: "",
+                        pipeline: "",
+                        pod: "",
+                        podID: "error",
+                        color: "#FF0000",
+                        time: Date.now(),
+                    }];
+                }
             });
         },
     },
