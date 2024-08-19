@@ -63,8 +63,13 @@ export class Metrics {
 
     }
 
-    public getStatus(): boolean {
-        return this.status
+    public async getStatus(): Promise<boolean> {
+        const status = await this.prom.status();
+        if (status === undefined || status === null || status === false) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public async getLongTermMetrics(query: string): Promise<QueryResult | undefined> {
