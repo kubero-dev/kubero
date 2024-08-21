@@ -87,7 +87,6 @@
         >
           <v-switch
             v-model="sslIndex[index]"
-            @update:modelValue="sslSwitch(host.host, index)"
             label="SSL"
             density="compact"
             color="primary"
@@ -1219,7 +1218,7 @@ type Ingress = {
       pathType: 'ImplementationSpecific' | 'Prefix' | 'Exact',
     }[],
   }[],
-  tls?: { 
+  tls: {
     hosts: string[], 
     secretName: string
   }[],
@@ -1443,7 +1442,7 @@ export default defineComponent({
         tag: 'latest',
       },
       autodeploy: true,
-      sslIndex: [] as boolean[],
+      sslIndex: [] as (boolean|undefined)[],
       envvars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
@@ -1655,26 +1654,20 @@ export default defineComponent({
     methods: {
       addDomainLine() {
         this.ingress.hosts.push({ host: '', paths: [{ path: '/', pathType: 'ImplementationSpecific' }] });
+        this.sslIndex.push(false);
       },
       removeDomainLine(index: number) {
         this.ingress.hosts.splice(index, 1);
-      },
-      sslSwitch(host: string, index: number) {
-        console.log("sslSwitch", host, index, this.sslIndex);
-        if (this.sslIndex && this.sslIndex[index]) {
-          // add specific host to tls array
-          this.ingress.tls = [{ hosts: [host], secretName: this.appname+'-tls' }];
-        } else {
-          // remove specific host from tls array
-          this.ingress.tls = this.ingress.tls?.filter((tls) => tls.hosts[0] !== host);
-        }
+        this.sslIndex.splice(index, 1);
       },
       whiteListDomains(domainsList: string[]) {
         for (let i = 0; i < domainsList.length; i++) {
-            if (domainsList[i] == this.ingress.hosts[0].host) { // TODO: iterate over all hosts
+          this.ingress.hosts.forEach((host) => {
+            if (host.host == domainsList[i]) {
               domainsList.splice(i, 1);
             }
-          }
+          });
+        }
         return domainsList;
       },
       getDomains() {
@@ -1931,6 +1924,11 @@ export default defineComponent({
             this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
             this.ingress = response.data.spec.ingress || {};
 
+            // iterate over ingress hosts and fill sslIndex
+            for (let i = 0; i < this.ingress.hosts.length; i++) {
+              this.sslIndex.push(this.ingress.tls[0].hosts.includes(this.ingress.hosts[i].host));
+            }
+
             // Backward compatibility older v1.11.1
             if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
               this.buildpack.run.readOnlyAppStorage = true;
@@ -1940,6 +1938,14 @@ export default defineComponent({
             this.takenDomains = this.whiteListDomains(this.takenDomains);
           });
         }
+      },
+      setSSL() {
+        this.ingress.tls[0].hosts = [];
+        this.ingress.hosts.forEach((host, index) => {
+          if (this.sslIndex[index]) {
+            this.ingress.tls[0].hosts.push(host.host);
+          }
+        });
       },
       cleanupIngressAnnotations(){
 
@@ -1992,6 +1998,7 @@ export default defineComponent({
         }
 
         this.cleanupIngressAnnotations();
+        this.setSSL();
 
         let postdata = {
           resourceVersion: this.resourceVersion,
@@ -2088,6 +2095,7 @@ export default defineComponent({
         }
 
         this.cleanupIngressAnnotations();
+        this.setSSL();
 
         let postdata = {
           pipeline: this.pipeline,
