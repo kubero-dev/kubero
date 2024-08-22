@@ -1940,7 +1940,11 @@ export default defineComponent({
         }
       },
       setSSL() {
+        if (this.ingress.tls?.length == 0) {
+          this.ingress.tls = [{ hosts: [], secretName: this.appname+'-tls' }];
+        }
         this.ingress.tls[0].hosts = [];
+        this.ingress.tls[0].secretName = this.appname+'-tls';
         this.ingress.hosts.forEach((host, index) => {
           if (this.sslIndex[index]) {
             this.ingress.tls[0].hosts.push(host.host);
