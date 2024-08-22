@@ -22,25 +22,26 @@ export type KuberoBuild = {
       app: string,
       id: string,
       buildpack?: {
+        cnbPlatformApi: string
+        fetcher: string
         builder: string
-        serviceAccount: string
       }
       buildstrategy: string
       dockerfile?: {
-        fetcher: string
         path: string
+        fetcher: string
+        pusher: string
+      }
+      nixpack?: {
+        path: string
+        fetcher: string
+        builder: string
         pusher: string
       }
       git: {
         revision?: string //TODO: Remove
         ref?: string
         url: string
-      }
-      nixpack?: {
-        builder: string
-        fetcher: string
-        path: string
-        pusher: string
       }
       pipeline: string
       podSecurityContext?: {

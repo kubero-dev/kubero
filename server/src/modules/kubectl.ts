@@ -36,6 +36,7 @@ import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
 import { KuberoBuild } from './deployments';
+import path from 'path';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -897,9 +898,6 @@ export class Kubectl {
                     app: appName,
                     pipeline: pipelineName,
                     id: id,
-                    dockerfile: {
-                        path: dockerfilePath,
-                    },
                     repository: {
                         image: repository.image,  // registry.yourdomain.com/name/namespace
                         tag: repository.tag + "-" + id
@@ -907,6 +905,22 @@ export class Kubectl {
                     git: {
                         url: git.url,
                         ref: git.ref
+                    },
+                    buildpack: {
+                        cnbPlatformApi: "0.13",
+                        fetcher: "ghcr.io/kubero-dev/buildpacks/fetch:main",
+                        builder: "paketobuildpacks/builder-jammy-full:latest",
+                    },
+                    dockerfile: {
+                        path: dockerfilePath,
+                        fetcher: "ghcr.io/kubero-dev/buildpacks/fetch:main",
+                        pusher: "quay.io/containers/buildah:v1.35",
+                    },
+                    nixpack: {
+                        path: dockerfilePath || ".nixpacks/Dockerfile",
+                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
+                        builder: "ghcr.io/kubero-dev/build:latest",
+                        pusher: "quay.io/containers/buildah:v1.35"
                     },
                 }
             };
