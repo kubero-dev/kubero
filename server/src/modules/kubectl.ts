@@ -907,20 +907,14 @@ export class Kubectl {
                         ref: git.ref
                     },
                     buildpack: {
+                        path: dockerfilePath,
                         cnbPlatformApi: "0.13",
-                        fetcher: "ghcr.io/kubero-dev/buildpacks/fetch:main",
-                        builder: "paketobuildpacks/builder-jammy-full:latest",
                     },
                     dockerfile: {
                         path: dockerfilePath,
-                        fetcher: "ghcr.io/kubero-dev/buildpacks/fetch:main",
-                        pusher: "quay.io/containers/buildah:v1.35",
                     },
                     nixpack: {
                         path: dockerfilePath || ".nixpacks/Dockerfile",
-                        fetcher: "ghcr.io/kubero-dev/fetch:latest",
-                        builder: "ghcr.io/kubero-dev/build:latest",
-                        pusher: "quay.io/containers/buildah:v1.35"
                     },
                 }
             };
