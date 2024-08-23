@@ -324,20 +324,25 @@ export class Kubectl {
         const patch = [
             {
               op: 'add',
-              path: '/spec/template/metadata/annotations',
+              path: '/spec/restartedAt',
               value: {
-                  'kubectl.kubero.dev/restartedAt': date.toISOString()
+                  'restartedAt': date.toISOString()
               }
             },
           ];
 
+        const apiVersion = "v1alpha1"
+        const group = "application.kubero.dev"
+        const plural = "kuberoapps"
+
         const options = { "headers": { "Content-type": 'application/json-patch+json' } };
-        this.appsV1Api.patchNamespacedDeployment(
-            deploymentName,
+        this.customObjectsApi.patchNamespacedCustomObject(
+            group,
+            apiVersion,
             namespace,
+            plural,
+            appName,
             patch,
-            undefined,
-            undefined,
             undefined,
             undefined,
             undefined,
