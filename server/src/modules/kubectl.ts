@@ -1117,11 +1117,6 @@ export class Kubectl {
         }
     }
 
-    public async deployAppDisabled(namespace: string, app: string, tag: string): Promise<any> {
-
-        console.log("deploy app: " + app, ",namespace: " + namespace, ",tag: " + tag);
-    }
-
     public async deployApp(namespace: string, appName: string, tag: string) {
 
         let deploymentName = appName+'-kuberoapp-web';
