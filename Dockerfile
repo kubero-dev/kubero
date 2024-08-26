@@ -5,13 +5,11 @@ WORKDIR /build
 
 COPY server ./server
 RUN cd server && \
-    yarn install && \
-    npm run build && \
+    yarn build && \
     yarn swaggergen && \
     cd ..
 COPY client ./client
 RUN cd client && \
-    yarn install && \
     yarn build && \
     cd ..
 

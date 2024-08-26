@@ -11,7 +11,8 @@ metadata:
     job-name: example-test-20240631-2237
   name: example-test-20240631-2237
 spec:
-  backoffLimit: 1
+  ttlSecondsAfterFinished: 31536000
+  backoffLimit: 0 # 0 means do not retry
   completionMode: NonIndexed
   completions: 1
   manualSelector: false
@@ -20,7 +21,6 @@ spec:
   suspend: false
   template:
     metadata:
-      creationTimestamp: null
       labels:
         batch.kubernetes.io/job-name: example-test-20240631-2237
         buildstrategy: buildpacks
@@ -78,7 +78,7 @@ spec:
         - name: build
           args:
           - '-app=.'
-          - registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app:123456
+          - registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app:mytag-id
           command: ['/cnb/lifecycle/creator']
           # https://github.com/buildpacks/pack/issues/564#issuecomment-943345649
           # https://github.com/buildpacks/spec/blob/platform/v0.13/platform.md#creator
@@ -110,7 +110,7 @@ spec:
       volumes:
       - name: deployment-keys
         secret:
-          defaultMode: 0666
+#          defaultMode: 420
           secretName: deployment-keys
       - emptyDir: {}
         name: app-storage
@@ -120,8 +120,7 @@ spec:
           items:
             - key: .dockerconfigjson
               path: config.json
-      - name: pull-secret
-        secret:
-          defaultMode: 384
-          secretName: kubero-pull-secret
-  ttlSecondsAfterFinished: 31536000
+#      - name: pull-secret
+#        secret:
+#          defaultMode: 0384
+#          secretName: kubero-pull-secret
