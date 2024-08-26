@@ -1144,8 +1144,6 @@ export class Kubectl {
         }
 
         console.log("create build job: " + job);
-        console.log(job);
-
 
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
