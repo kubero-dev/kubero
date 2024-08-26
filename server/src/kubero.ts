@@ -1401,7 +1401,7 @@ export class Kubero {
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
             
-            this.kubectl.createBuild(
+            this.kubectl.createBuildJob(
                 namespace,
                 appName, 
                 pipeline,

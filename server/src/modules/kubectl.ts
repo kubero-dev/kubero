@@ -864,7 +864,7 @@ export class Kubectl {
             console.log('ERROR fetching pod by label');
         }
     }
-    
+/*
     public async createBuild(
         namespace: string,
         appName: string, 
@@ -937,7 +937,7 @@ export class Kubectl {
                 console.log('ERROR creating build job');
             }
         }
-
+*/
     public async deployApp(namespace: string, appName: string, tag: string) {
 
         let deploymentName = appName+'-kuberoapp-web';
