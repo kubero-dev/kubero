@@ -9,14 +9,14 @@
             </v-col>
         </v-row>
 
-        <v-row v-for="b in deployments"
-                :key="b.metadata.name" :id="b.metadata.name">
+        <v-row v-for="b in builds"
+                :key="b.name" :id="b.name">
             <v-col cols="12">
             <v-card 
                 elevation="2" 
                 outlined 
                 color="cardBackground"
-                :loading="b.jobstatus?.status == 'Active'"
+                :loading="b.state == 'Active'"
                 >
 
                 <template v-slot:loader="{ isActive }">
@@ -31,25 +31,25 @@
                     <v-card-title>
                         <v-row>
                             <v-col cols="1">
-                                <v-badge v-if="b.jobstatus?.status != 'Active'" :color="getStatusColor(b.jobstatus?.status)" :icon="getStatusIcon(b.jobstatus?.status)" location="top end">
-                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
-                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
-                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                <v-badge v-if="b.state != 'Active'" :color="getStatusColor(b.state)" :icon="getStatusIcon(b.state)" location="top end">
+                                    <v-icon class="mb-2 buildpacks" v-if="b.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.buildstrategy == 'dockerfile'"></v-icon>
                                 </v-badge>
                                 <span v-else>
-                                    <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
-                                    <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
-                                    <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
+                                    <v-icon class="mb-2 buildpacks" v-if="b.buildstrategy == 'buildpacks'"></v-icon>
+                                    <v-icon class="mb-2 nixpacks" v-if="b.buildstrategy == 'nixpacks'"></v-icon>
+                                    <v-icon class="mb-2 dockerfile" v-if="b.buildstrategy == 'dockerfile'"></v-icon>
                                 </span>
 
                             </v-col>
                             <v-col cols="11">
-                                <h4>{{ b.metadata.name }}</h4>
+                                <h4>{{ b.name }}</h4>
                             </v-col>
                         </v-row>
                     </v-card-title>
                     <v-card-subtitle>
-                      created: {{ b.metadata.creationTimestamp }} | duration : {{ calcDuration(b.jobstatus?.duration, b.jobstatus?.status) }}
+                      created: {{ b.creationTimestamp }} | duration : {{ msToTime(parseInt(b.duration)) }}
                     </v-card-subtitle>
                     <v-card-text>
                         <v-row>
@@ -60,7 +60,7 @@
                                     class="ma-1"
                                     >
                                     <v-icon start icon="mdi-docker"></v-icon>
-                                    {{ b.spec.repository.image }}:{{ b.spec.repository.tag }}
+                                    {{ b.image }}:{{ b.tag }}
                                   </v-chip>
                                 <v-chip
                                     small
@@ -68,7 +68,7 @@
                                     class="ma-1"
                                     >
                                     <v-icon start icon="mdi-git"></v-icon>
-                                    {{ b.spec.git.url }}:{{ b.spec.git.ref }}
+                                    {{ b.gitrepo }}:{{ b.gitref }}
                                   </v-chip>
                             </v-col>
                             <v-col cols="2">
@@ -79,7 +79,7 @@
                                   small
                                   class="ma-2"
                                   color="secondary"
-                                  @click="deleteBuild(b.metadata.name)"
+                                  @click="deleteBuild(b.name)"
                                   >
                                       <v-icon color="primary">
                                           mdi-delete
@@ -91,8 +91,8 @@
                                   small
                                   class="ma-2"
                                   color="secondary"
-                                  v-if="b.jobstatus?.status != 'Active'"
-                                  @click="showLogs(b.metadata.name)"
+                                  v-if="b.state != 'Active'"
+                                  @click="showLogs(b.name)"
                                   >
                                       <v-icon color="primary">
                                           mdi-format-align-justify
@@ -116,8 +116,8 @@
                             </v-col>
                         </v-row>
                         <v-expand-transition>
-                            <v-row v-if="b.metadata.name == activeLogs">
-                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy :buildstrategy=b?.spec.buildstrategy logType="buildlogs" :buildID="b.metadata.name" height="400px"/>
+                            <v-row v-if="b.name == activeLogs">
+                                <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=appData?.spec.deploymentstrategy :buildstrategy=b?.buildstrategy logType="buildlogs" :buildID="b.name" height="400px"/>
                             </v-row>
                         </v-expand-transition>
                     </v-card-text>
@@ -125,93 +125,6 @@
             </v-card>
             </v-col>
         </v-row>
-<!--
-        <v-row>
-            <v-col cols="12">
-              <v-expansion-panels variant="accordion">
-                  <v-expansion-panel
-                    v-for="b in deployments"
-                    :key="b.metadata.name" :id="b.metadata.name"
-                  >
-                      <v-expansion-panel-title>
-                          <v-row>
-                              <v-col cols="1">
-                                  <v-icon class="mb-2 buildpacks" v-if="b.spec.buildstrategy == 'buildpacks'"></v-icon>
-                                  <v-icon class="mb-2 nixpacks" v-if="b.spec.buildstrategy == 'nixpacks'"></v-icon>
-                                  <v-icon class="mb-2 dockerfile" v-if="b.spec.buildstrategy == 'dockerfile'"></v-icon>
-                              </v-col>
-                              <v-col cols="11">
-                                  <h4>{{ b.metadata.name }}</h4>
-                              </v-col>
-                          </v-row>
-                      </v-expansion-panel-title>
-                      <v-expansion-panel-text>
-                        <v-row>
-                            <v-col cols="10">
-                                <v-chip
-                                    small
-                                    label
-                                    class="ma-1"
-                                    >
-                                    <v-icon start icon="mdi-docker"></v-icon>
-                                    {{ b.spec.repository.image }}:{{ b.spec.repository.tag }}
-                                  </v-chip>
-                                <v-chip
-                                    small
-                                    label
-                                    class="ma-1"
-                                    >
-                                    <v-icon start icon="mdi-git"></v-icon>
-                                    {{ b.spec.git.url }}:{{ b.spec.git.ref }}
-                                  </v-chip>
-                            </v-col>
-                            <v-col cols="2">
-                                <v-row class="justify-end">
-                                  <v-btn
-                                  elevation="2"
-                                  fab
-                                  small
-                                  class="ma-2"
-                                  color="secondary"
-                                  @click="deleteBuild(b.metadata.name)"
-                                  >
-                                      <v-icon color="primary">
-                                          mdi-delete
-                                      </v-icon>
-                                  </v-btn>
-                                  <v-btn
-                                  elevation="2"
-                                  fab
-                                  small
-                                  class="ma-2"
-                                  color="secondary"
-                                  @click="triggerRebuild(b.metadata.name)"
-                                  >
-                                      <v-icon color="primary">
-                                          mdi-reload
-                                      </v-icon>
-                                  </v-btn>
-                                </v-row>
-                            </v-col>
-                        </v-row>
-                      </v-expansion-panel-text>
-                  </v-expansion-panel>
-              </v-expansion-panels>
-            </v-col>
-        </v-row>
-        <v-row v-if="deployments.length == 0">
-            <v-col cols="12">
-                <v-card elevation="2" outlined color="cardBackground">
-                    <v-card-title>
-                        <h4>No Builds</h4>
-                    </v-card-title>
-                    <v-card-text>
-                        <p>No builds have been created for this pipeline.</p>
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
--->
     </v-container>
 </template>
 
@@ -225,62 +138,34 @@ import { useKuberoStore } from '../../stores/kubero'
 
 const socket = useKuberoStore().kubero.socket as any;
 
-type Deployment = {
-  apiVersion: string
-  kind: string
-  metadata: {
-    creationTimestamp: string
-    finalizers: Array<string>
-    generation: number
-    name: string
-    namespace: string
-    resourceVersion: string
-    uid: string
-  }
-  spec: {
-    app: string
-    buildpack: {
-      builder: string
-      serviceAccount: string
-    }
-    buildstrategy: string
-    dockerfile: {
-      fetcher: string
-      path: string
-      pusher: string
-    }
-    git: {
-      ref: string
-      url: string
-    }
-    nixpack: {
-      builder: string
-      fetcher: string
-      path: string
-      pusher: string
-    }
-    pipeline: string
-    podSecurityContext: {
-      fsGroup: number
-    }
-    repository: {
-      image: string
-      tag: string
-    }
-  }
+type Build = {
+  creationTimestamp: string
+  name: string
+  app: string
+  pipeline: string
+  phase: string
+  buildstrategy: string
+  backoffLimit: number
+  state: string
+  duration: string
+  gitrepo: string
+  gitref: string
+  image: string
+  tag: string
   status: {
     conditions: Array<{
+      lastProbeTime: string
       lastTransitionTime: string
+      message: string
+      reason: string
       status: string
       type: string
-      reason?: string
     }>
-  }
-  jobstatus?: {
-    duration: string
+    failed: number
+    ready: number
     startTime: string
-    completionTime: string
-    status: "Unknown" | "Active" | "Succeeded" | "Failed" | undefined
+    terminating: number
+    uncountedTerminatedPods: {}
   }
 }
 
@@ -309,7 +194,7 @@ export default defineComponent({
     },
     data() {
         return {
-            deployments: [] as Deployment[],
+            builds: [] as Build[],
             activeLogs: "",
             reloadTimer: null as any,
             clockTimer: null as any,
@@ -332,9 +217,9 @@ export default defineComponent({
         
 
         this.clockTimer = setInterval(() => {
-            this.deployments.forEach((d) => {
-                if (d.jobstatus?.status == "Active") {
-                    d.jobstatus.duration = (new Date().getTime() - new Date(d.jobstatus.startTime).getTime()).toString();
+            this.builds.forEach((b) => {
+                if (b.state == "Active") {
+                    b.duration = (new Date().getTime() - new Date(b.creationTimestamp).getTime()).toString();
                 }
             });
         }, 1000);
@@ -348,7 +233,7 @@ export default defineComponent({
         deleteBuild(deploymentName: string) {
             try {
                 axios.delete(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}/${deploymentName}`);
-                this.deployments = this.deployments.filter((d) => d.metadata.name !== deploymentName);
+                this.builds = this.builds.filter((d) => d.name !== deploymentName);
             } catch (error) {
                 console.error(error);
             }
@@ -359,7 +244,7 @@ export default defineComponent({
         loadDeployments() {
             const response = axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
             .then(response => {
-                this.deployments = response.data as Deployment[];
+                this.builds = response.data as Build[];
             })
             .catch(error => {
                 console.log(error);
@@ -368,11 +253,11 @@ export default defineComponent({
         updateStatus() {
             axios.get(`/api/deployments/${this.pipeline}/${this.phase}/${this.app}`)
             .then(response => {
-                const deployments = response.data.items as Deployment[];
-                deployments.forEach((d: Deployment) => {
-                    const deployment = this.deployments.find((dep) => dep.metadata.name == d.metadata.name);
-                    if (deployment && deployment.jobstatus) {
-                        deployment.jobstatus.status = d.jobstatus?.status;
+                const builds = response.data as Build[];
+                builds.forEach((d: Build) => {
+                    const job = this.builds.find((dep) => dep.name == d.name);
+                    if (job && job.state) {
+                        job.state = d.state;
                     }
                 });
             })
@@ -385,12 +270,6 @@ export default defineComponent({
             const seconds = Math.floor((duration / 1000) % 60);
             const minutes = Math.floor((duration / (1000 * 60)) % 60);
             return `${minutes}m ${seconds}s`;
-        },
-        calcDuration(durationMS: string | undefined, status: string | undefined) { 
-            if (durationMS == undefined) {
-                return "-";
-            }
-            return this.msToTime(parseInt(durationMS));
         },
         getStatusColor(status: string | undefined) {
             if (status == "Active") {
