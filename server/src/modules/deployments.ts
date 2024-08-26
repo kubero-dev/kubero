@@ -3,7 +3,51 @@ import { User } from './auth';
 import { Notifications, INotification } from './notifications';
 import { Kubero } from '../kubero';
 import { IKubectlApp, ILoglines } from '../types';
+import YAML from 'yaml'
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { V1Job, V1JobList } from '@kubernetes/client-node';
 
+export function loadJob(jobname: string): V1Job {
+  const path = join(__dirname, `./templates/${jobname}.yaml`)
+  const job = readFileSync( path, 'utf8')
+  return YAML.parse(job) as V1Job
+}
+
+type kuberoBuildjob = {
+  creationTimestamp: string,
+  name: string,
+  app: string,
+  pipeline: string,
+  phase: string, //Missing
+  image: string,
+  tag: string,
+  gitrepo: string,
+  gitref: string,
+  buildstrategy: string,
+
+  backoffLimit: number,
+  state: string,
+  duration: number,
+  status:  {
+    completionTime?: string,
+    conditions: Array<{
+      lastProbeTime: string
+      lastTransitionTime: string
+      message: string
+      reason: string
+      status: string
+      type: string
+    }>
+    failed?: number
+    succeeded?: number
+    active?: number
+    ready: number
+    startTime: string
+    terminating: number
+    uncountedTerminatedPods: any
+  }
+}
 
 export type KuberoBuild = {
     apiVersion: string
@@ -101,69 +145,62 @@ export class Deployments {
         this.kubero = options.kubero
     }
 
-    public async getDeployments(pipelineName: string, phaseName: string, appName: string): Promise<any> {
+    public async listBuildjobs(pipelineName: string, phaseName: string, appName: string): Promise<any> {
         const namespace = pipelineName + "-" + phaseName
-        let deployments =  await this.kubectl.getKuberoBuilds(namespace) as KuberoBuildList
+        let jobs =  await this.kubectl.getJobs(namespace) as V1JobList
         const appresult = await this.kubero.getApp(pipelineName, phaseName, appName)
 
         const app = appresult?.body as IKubectlApp;
 
-        if (!deployments) {
+        if (!jobs) {
             console.log('No deployments found')
             return {
                 items: []
             }
         }
-        // revert order of deployments
-        deployments.items = deployments.items.reverse()
 
-        let retBuilds = [] as KuberoBuild[]
-        for (let deployment of deployments.items) {
+        let retJobs = [] as kuberoBuildjob[]
+        for (let j of jobs.items as any) {
 
             // skip non matching apps
-            if (deployment.spec.app != appName) {
+            if (j.metadata.labels.kuberoapp != appName) {
                 continue
             }
 
-            //remove useless fields
-            delete deployment.metadata.managedFields
-            delete deployment.status?.deployedRelease
+            const retJob = {} as kuberoBuildjob
+            retJob.creationTimestamp = j.metadata.creationTimestamp
+            retJob.name = j.metadata.name
+            retJob.app = j.metadata.labels.kuberoapp
+            retJob.pipeline = j.metadata.labels.kuberopipeline
+            retJob.phase = j.metadata.labels.kuberophase || ''
+            retJob.buildstrategy = j.metadata.labels.buildstrategy
+            retJob.gitrepo = j.spec.template.spec.initContainers[0].env.find((e: any) => e.name == 'GIT_REPOSITORY').value
+            retJob.gitref = j.spec.template.spec.initContainers[0].env.find((e: any) => e.name == 'GIT_REF').value
+            retJob.image = j.spec.template.spec.containers[0].env.find((e: any) => e.name == 'REPOSITORY').value
+            retJob.tag = j.spec.template.spec.containers[0].env.find((e: any) => e.name == 'TAG').value
+            retJob.backoffLimit = j.spec.backoffLimit
+            retJob.status = j.status
 
-            if (deployment.spec.repository.image === app.spec.image.repository && deployment.spec.repository.tag === app.spec.image.tag) {
-              deployment.spec.repository.active = true
-            } else {
-              deployment.spec.repository.active = false
+            if (j.status.failed) {
+                retJob.state = 'Failed'
+                retJob.duration = ( new Date(j.status.conditions[0].lastProbeTime).getTime() - new Date(j.status.startTime).getTime() )
+            }
+            if (j.status.active) {
+                retJob.state = 'Active'
+                retJob.duration = ( new Date().getTime() - new Date(j.status.startTime).getTime() ) 
+            }
+            if (j.status.succeeded) {
+                retJob.state = 'Succeeded'
+                retJob.duration = ( new Date(j.status.completionTime).getTime() - new Date(j.status.startTime).getTime() )
             }
 
-            // load job details
-            const job = await this.kubectl.getJob(namespace, `${deployment.spec.app}-${deployment.spec.pipeline}-${deployment.spec.id}`)
-            if (job) {
-              const duration = new Date(job.status.completionTime).getTime() - new Date(job.status.startTime).getTime()
-
-              let status: "Unknown" | "Active" | "Succeeded" | "Failed" = 'Unknown'
-              if (job.status.active) {
-                status = 'Active'
-              } else if (job.status.succeeded) {
-                status = 'Succeeded'
-              } else if (job.status.failed > 1) { //2 attempts allowed
-                status = 'Failed'
-              }
-
-              deployment.jobstatus = {
-                duration: duration,
-                startTime: job.status.startTime,
-                completionTime: job.status.completionTime,
-                status: status
-              }
-            }
-
-            retBuilds.push(deployment)
+            retJobs.push(retJob)
         }
 
-        return retBuilds
+        return retJobs.reverse()
     }
 
-    public async buildImage(
+    public async triggerBuildjob(
             pipeline: string, 
             phase: string, 
             app: string, 
@@ -182,8 +219,7 @@ export class Deployments {
 
         // Create the Pipeline CRD
         try {
-            //await this.kubectl.createKuberoBuild(namespace, kuberoBuild)
-            await this.kubectl.createBuild(
+            await this.kubectl.createBuildJob(
                 namespace,
                 app,
                 pipeline,
@@ -199,7 +235,7 @@ export class Deployments {
                 }
             )
         } catch (error) {
-            console.log('Error creating KuberoBuild')
+            console.log('kubectl.createBuildJob: Error creating Kubero build job', error)
         }
         
         const m = {
@@ -208,7 +244,7 @@ export class Deployments {
             'resource': 'pipeline',
             'action': 'created',
             'severity': 'normal',
-            'message': 'Created new Build: '+app + ' in pipeline: '+pipeline,
+            'message': 'Created new Build Job: '+app + ' in pipeline: '+pipeline,
             'pipelineName':pipeline,
             'phaseName': '',
             'appName': '',
@@ -223,17 +259,17 @@ export class Deployments {
         }
     }
 
-    public async deleteDeployment(pipeline: string, phase: string, app: string, buildName: string, user: User): Promise<any> {
+    public async deleteBuildjob(pipeline: string, phase: string, app: string, buildName: string, user: User): Promise<any> {
         const namespace = pipeline + "-" + phase
-        await this.kubectl.deleteKuberoBuild(namespace, buildName)
+        await this.kubectl.deleteKuberoBuildJob(namespace, buildName)
         
         const m = {
           'name': 'newBuild',
           'user': user.username,
           'resource': 'build',
-          'action': 'created',
+          'action': 'deleted',
           'severity': 'normal',
-          'message': 'Created new Build: '+app + ' in pipeline: '+pipeline,
+          'message': 'Deleted Build Job: '+app + ' in pipeline: '+pipeline,
           'pipelineName':pipeline,
           'phaseName': '',
           'appName': '',
