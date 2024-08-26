@@ -19,12 +19,12 @@ Router.get('/deployments/:pipeline/:phase/:app', authMiddleware, async function 
     // #swagger.parameters['app'] = { description: 'App name' }
 
 
-    const deployments = await req.app.locals.deployments.getDeployments(
+    const jobs = await req.app.locals.deployments.listBuildjobs(
         req.params.pipeline,
         req.params.phase,
         req.params.app
     );
-    res.send(deployments)
+    res.send(jobs)
     //res.send('ok');
 });
 
@@ -37,7 +37,7 @@ Router.post('/deployments/build/:pipeline/:phase/:app', authMiddleware, async fu
     // #swagger.parameters['app'] = { description: 'App name' }
 
     const user = auth.getUser(req);
-    const deployments = await req.app.locals.deployments.buildImage(
+    const deployments = await req.app.locals.deployments.triggerBuildjob(
         req.params.pipeline,
         req.params.phase,
         req.params.app,
@@ -59,14 +59,14 @@ Router.delete('/deployments/:pipeline/:phase/:app/:buildName', authMiddleware, a
     // #swagger.parameters['app'] = { description: 'App name' }
 
     const user = auth.getUser(req);
-    const deployments = await req.app.locals.deployments.deleteDeployment(
+    const job = await req.app.locals.deployments.deleteBuildjob(
         req.params.pipeline,
         req.params.phase,
         req.params.app,
         req.params.buildName,
         user
     );
-    res.send(deployments);
+    res.send(job);
 });
 
 Router.get('/deployments/:pipeline/:phase/:app/:build/:container/history', authMiddleware, async function (req: Request, res: Response) {
