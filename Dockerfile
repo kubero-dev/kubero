@@ -1,15 +1,17 @@
-FROM node:21-alpine AS build
+FROM node:22-alpine AS build
 ENV NODE_ENV=development
 
 WORKDIR /build
 
 COPY server ./server
 RUN cd server && \
+    yarn install && \
     yarn build && \
     yarn swaggergen && \
     cd ..
 COPY client ./client
 RUN cd client && \
+    yarn install && \
     yarn build && \
     cd ..
 
@@ -25,6 +27,7 @@ WORKDIR /app/
 
 COPY --from=build /build/server/dist /app/server
 COPY --from=build /build/server/package.json /app/server/package.json
+COPY --from=build /build/server/src/modules/templates /app/server/modules/templates
 COPY --from=build /build/server/node_modules /app/server/node_modules
 COPY --from=build /build/server/swagger.json /app/swagger.json
 
