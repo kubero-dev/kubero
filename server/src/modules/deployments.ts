@@ -210,6 +210,12 @@ export class Deployments {
             dockerfilePath: string,
             user: User
         ): Promise<any> {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not triggering build for app: '+app + ' in pipeline: '+pipeline);
+            return;
+        }
+
         const namespace = pipeline + "-" + phase
         
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -260,6 +266,12 @@ export class Deployments {
     }
 
     public async deleteBuildjob(pipeline: string, phase: string, app: string, buildName: string, user: User): Promise<any> {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not creating app: '+app + ' in pipeline: '+pipeline);
+            return;
+        }
+
         const namespace = pipeline + "-" + phase
         await this.kubectl.deleteKuberoBuildJob(namespace, buildName)
         

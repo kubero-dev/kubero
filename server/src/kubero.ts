@@ -186,7 +186,7 @@ export class Kubero {
         debug.debug('create Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not creting pipeline '+ pipeline.name);
             return;
         }
 
@@ -216,7 +216,7 @@ export class Kubero {
         debug.debug('update Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not updating pipelline ' + pipeline.name);
             return;
         }
 
@@ -294,7 +294,7 @@ export class Kubero {
         debug.debug('deletePipeline: '+pipelineName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not deleting pipeline '+ pipelineName);
             return;
         }
 
@@ -333,7 +333,7 @@ export class Kubero {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not creating app');
+            console.log('KUBERO_READONLY is set to true, not creating app ' + app.name);
             return;
         }
 
@@ -371,7 +371,7 @@ export class Kubero {
         await this.setContext(app.pipeline, app.phase);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not updating app ' + app.name);
             return;
         }
 
@@ -407,7 +407,7 @@ export class Kubero {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not deleting app '+appName+' in '+ pipelineName+' phase: '+phaseName);
             return;
         }
 
@@ -506,6 +506,12 @@ export class Kubero {
     }
 
     public restartApp(pipelineName: string, phaseName: string, appName: string, user: User) {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not restarting app'+appName+' in '+ pipelineName+' phase: '+phaseName);
+            return;
+        }
+
         debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
@@ -662,6 +668,12 @@ export class Kubero {
 
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not creating PR app '+title+' in '+ branch+' pipeline: '+pipelineName);
+            return;
+        }
+
         debug.log('createPRApp: ', branch, title, ssh_url);
         let pipelines = await this.listPipelines() as IPipelineList;
 
