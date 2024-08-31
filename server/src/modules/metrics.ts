@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PrometheusDriver, PrometheusQueryDate, QueryResult } from 'prometheus-query';
+import { PrometheusDriver, PrometheusQueryDate, QueryResult, RuleGroup } from 'prometheus-query';
 
 export interface MetricsOptions {
     enabled: boolean,
@@ -35,6 +35,7 @@ type Rule = {
 
 export class Metrics {
     private prom: PrometheusDriver
+    private status: boolean = false;
 
     constructor(
         options: MetricsOptions
@@ -47,15 +48,28 @@ export class Metrics {
         });
         
         if (!options.enabled) {
-            console.log('❌ Prometheus Metrics disabled');
+            console.log('☑️ Feature: Prometheus Metrics not enabled ...');
+            this.status = false;
             return
         }
 
         this.prom.status().then((status) => {
-            console.log('✅ Prometheus Metrics initialized:', options.endpoint);
+            console.log('✅ Feature: Prometheus Metrics initialized:::', options.endpoint);
+            this.status = true;
         }).catch((error) => {
-            console.log('❌ Prometheus status:', error);
+            console.log('❌ Feature: Prometheus not accesible ...');
+            this.status = false;
         })
+
+    }
+
+    public async getStatus(): Promise<boolean> {
+        const status = await this.prom.status();
+        if (status === undefined || status === null || status === false) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public async getLongTermMetrics(query: string): Promise<QueryResult | undefined> {
@@ -311,7 +325,12 @@ export class Metrics {
     }
 
     public async getRules(q: {app: string, phase: string, pipeline: string}): Promise<any> {
-        let rules = await this.prom.rules();
+        let rules: RuleGroup[] = [];
+        try {
+            rules = await this.prom.rules();
+        } catch (error) {
+            console.log("error fetching rules")
+        }
 
         let ruleslist: Rule[] = [];
         

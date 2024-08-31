@@ -25,7 +25,7 @@ export class BitbucketApi extends Repo {
             this.bitbucket = new Bitbucket(clientOptions)
         } else {
             this.bitbucket = new Bitbucket()
-            console.log("No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
+            console.log("☑️  Feature: BitBucket disabled: No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
         }
     }
 
@@ -311,6 +311,57 @@ export class BitbucketApi extends Repo {
         }
 
         return [];
+
+    }
+
+
+
+    public async getReferences(gitrepo: string): Promise<string[]>{
+
+        let ret: string[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const branches = await this.bitbucket.repositories.listBranches({
+                repo_slug: repo,
+                workspace: owner,
+                sort: '-name'
+            })
+            if (branches.data.values != undefined) {
+                ret = branches.data.values.map((branch: any) => branch.name);
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const tags = await this.bitbucket.repositories.listTags({
+                repo_slug: repo,
+                workspace: owner,
+                sort: '-name'
+            })
+            if (tags.data.values != undefined) {
+                ret = ret.concat(tags.data.values.map((tag: any) => tag.name));
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        try {
+            const commits = await this.bitbucket.repositories.listCommits({
+                repo_slug: repo,
+                workspace: owner,
+                sort: '-date'
+            })
+            if (commits.data.values != undefined) {
+                ret = ret.concat(commits.data.values.map((commit: any) => commit.hash));
+            }
+        } catch (error) {
+            debug.log(error)
+        }
+
+        return ret;
 
     }
 

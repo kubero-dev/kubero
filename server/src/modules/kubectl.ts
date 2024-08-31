@@ -25,16 +25,16 @@ import {
     StorageV1Api,
     BatchV1Api,
     NetworkingV1Api,
-    V1ServiceAccount
+    V1ServiceAccount,
+    V1Job
 } from '@kubernetes/client-node'
 import { IPipeline, IKubectlPipeline, IKubectlPipelineList, IKubectlAppList, IKuberoConfig, Uptime} from '../types';
 import { App, KubectlApp } from './application';
 import { KubectlPipeline } from './pipeline';
-import { IAddon, IAddonMinimal } from './addons';
-import { version } from 'os';
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
+import { loadJob } from './deployments';
 
 export class Kubectl {
     private kc: KubeConfig;
@@ -118,6 +118,11 @@ export class Kubectl {
 
     public async setCurrentContext(context: string) {
         this.kc.setCurrentContext(context)
+    }
+
+    public async getNamespaces(): Promise<V1Namespace[]> {
+        const namespaces = await this.coreV1Api.listNamespace();
+        return namespaces.body.items;
     }
 
     public async getPipelinesList() {
@@ -317,20 +322,25 @@ export class Kubectl {
         const patch = [
             {
               op: 'add',
-              path: '/spec/template/metadata/annotations',
+              path: '/spec/restartedAt',
               value: {
-                  'kubectl.kubero.dev/restartedAt': date.toISOString()
+                  'restartedAt': date.toISOString()
               }
             },
           ];
 
+        const apiVersion = "v1alpha1"
+        const group = "application.kubero.dev"
+        const plural = "kuberoapps"
+
         const options = { "headers": { "Content-type": 'application/json-patch+json' } };
-        this.appsV1Api.patchNamespacedDeployment(
-            deploymentName,
+        this.customObjectsApi.patchNamespacedCustomObject(
+            group,
+            apiVersion,
             namespace,
+            plural,
+            appName,
             patch,
-            undefined,
-            undefined,
             undefined,
             undefined,
             undefined,
@@ -644,6 +654,27 @@ export class Kubectl {
         return ret;
     }
 
+    public async  getIngressClasses(): Promise<Object[]> {
+        // undefind = default
+        let ret = [{
+            name: undefined
+        }] as Object[];
+        try {
+            const ingressClasses = await this.networkingV1Api.listIngressClass();
+            for (let i = 0; i < ingressClasses.body.items.length; i++) {
+                const ic = ingressClasses.body.items[i];
+                const ingressClass = {
+                    name: ic.metadata?.name,
+                }
+                ret.push(ingressClass);
+            }
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR fetching ingressclasses');
+        }
+        return ret;
+    }
+
     private async deleteScanJob(namespace: string, name: string): Promise<any> {
         try {
             await this.batchV1Api.deleteNamespacedJob(name, namespace);
@@ -833,188 +864,80 @@ export class Kubectl {
             console.log('ERROR fetching pod by label');
         }
     }
-
-    public async createBuildImageJob(namespace: string, app: string, gitrepo: string, branch: string, image: string, tag: string, dockerfilePath: string): Promise<any> {
-
-        const job = {
-            apiVersion: 'batch/v1',
-            kind: 'Job',
-            metadata: {
-                name: app+'-kuberoapp-build',
-                namespace: namespace,
-            },
-            spec: {
-                ttlSecondsAfterFinished: 86400,
-                completions: 1,
-                backoffLimit: 1,
-                template: {
-                    metadata: {
-                        labels: {
-                            build: app
-                        }
-                    },
-                    spec: {
-                        initContainers: [
-                          {
-                            name: "kuberoapp-fetcher",
-                            securityContext: {
-                              readOnlyRootFilesystem: false
-                            },
-                            image: "ghcr.io/kubero-dev/buildpacks/fetch:main",
-                            imagePullPolicy: "Always",
-                            workingDir: "/app",
-                            env: [
-                              {
-                                name: "GIT_REPOSITORY",
-                                value: gitrepo
-                              },
-                              {
-                                name: "GIT_BRANCH",
-                                value: branch
-                              },
-                              {
-                                name: "GIT_REF",
-                                value: "refs/heads/dummy-pr" // TODO: this needs to be a real reference !!
-                              },
-                              {
-                                name: "KUBERO_BUILDPACK_DEFAULT_BUILD_CMD",
-                                value: "npm install"
-                              },
-                              {
-                                name: "KUBERO_BUILDPACK_DEFAULT_RUN_CMD",
-                                value: "node index.js"
-                              }
-                            ],
-                            volumeMounts: [
-                              {
-                                mountPath: "/root/.ssh",
-                                name: "deployment-keys",
-                                readOnly: true
-                              },
-                              {
-                                mountPath: "/app",
-                                name: "app-storage"
-                              }
-                            ]
-                          },
-                          {
-                            name: "kuberoapp-docker",
-                            image: "quay.io/containers/buildah:v1.29",
-                            workingDir: "/app",
-                            env: [
-                                {
-                                    name: "REGISTRY_AUTH_FILE",
-                                    value: "/etc/buildah/auth/.dockerconfigjson"
-                                },
-                                {
-                                    name: "BUILD_IMAGE",
-                                    value: image+":"+tag
-                                },
-                                {
-                                    name: "BUILDAH_DOCKERFILE_PATH",
-                                    value: "/app/"+dockerfilePath
-                                }
-                            ],
-                            securityContext: {
-                              privileged: true
-                            },
-                            command: [
-                              "sh",
-                              "-c",
-                              "buildah build -f $BUILDAH_DOCKERFILE_PATH --isolation chroot -t $BUILD_IMAGE .\nbuildah push --tls-verify=false $BUILD_IMAGE"
-                              //"tail -f /dev/null" // for debugging
-                            ],
-                            volumeMounts: [
-                              {
-                                mountPath: "/app",
-                                name: "app-storage",
-                                readOnly: true
-                              },
-                              {
-                                mountPath: "/etc/buildah/auth",
-                                name: "pull-secret",
-                                readOnly: true
-                              }
-                            ]
-                          }
-                        ],
-                        containers: [
-                          {
-                            name: "kuberoapp-deployer",
-                            image: "bitnami/kubectl:latest",
-                            command: [
-                              "sh",
-                              "-c",
-                              "kubectl patch kuberoapps "+app+" --type=merge -p '{\"spec\":{\"image\":{\"repository\": \""+image+"\",\"tag\": \""+tag+"\"}}}'"
-                            ]
-                          }
-                        ],
-                        restartPolicy: "Never",
-                        serviceAccountName: app+'-kuberoapp',
-                        serviceAccount: app+'-kuberoapp',
-                        automountServiceAccountToken: true,
-                        volumes: [
-                          {
-                            name: "deployment-keys",
-                            secret: {
-                              defaultMode: 384,
-                              secretName: "deployment-keys"
-                            }
-                          },
-                          {
-                            name: "app-storage",
-                            emptyDir: {}
-                          },
-                          {
-                            name: "pull-secret",
-                            secret: {
-                                defaultMode: 384,
-                                secretName: app+"-kuberoapp-pull-secret"
-                            }
-                        }
-                        ]
-                    }
-                }
-            }
-        };
-
-        job.spec.template.spec.initContainers.splice(1, 0, {
-            name: "kuberoapp-nixpacks",
-            image: "ghcr.io/kubero-dev/buildpacks/build:latest",
-            workingDir: "/app",
-            env: [],
-            securityContext: {
-              privileged: false
-            },
-            command: [
-              "sh",
-              "-c",
-              "nixpacks build . -o ."
-              //"tail -f /dev/null" // for debugging
-            ],
-            volumeMounts: [
-              {
-                mountPath: "/app",
-                name: "app-storage",
-                readOnly: false
-              }
-            ]
-          }
-        );
-
-        try {
-            return await this.batchV1Api.createNamespacedJob(namespace, job);
-        } catch (error) {
-            console.log(error);
-            console.log('ERROR creating build job');
+/*
+    public async createBuild(
+        namespace: string,
+        appName: string, 
+        pipelineName: string,
+        buildstrategy: 'buildpacks' | 'dockerfile' | 'nixpacks' | 'plain',
+        dockerfilePath: string | undefined,
+        git: {
+            url: string,
+            ref: string
+        },
+        repository: {
+            image: string,
+            tag: string
         }
-    }
+        ): Promise<any> {
+            //console.log('Build image: ', `${pipelineName}/${appName}:${git.ref}`);
+            //console.log('Docker repo: ', repository.image+':' + repository.tag);
 
-    public async deployAppDisabled(namespace: string, app: string, tag: string): Promise<any> {
 
-        console.log("deploy app: " + app, ",namespace: " + namespace, ",tag: " + tag);
-    }
+            // Format to date YYYYMMDD-HHMM
+            const date = new Date();
+            const id = date.toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
 
+            const name = appName + "-" + pipelineName + "-" + id;
+
+            const build = {
+                apiVersion: "application.kubero.dev/v1alpha1",
+                kind: "KuberoBuild",
+                metadata: {
+                    name: name.substring(0, 53), // max 53 characters allowed within kubernetes
+                },
+                spec: {
+                    buildstrategy: buildstrategy, // "buildpack" or "docker" or "nixpack"
+                    app: appName,
+                    pipeline: pipelineName,
+                    id: id,
+                    repository: {
+                        image: repository.image,  // registry.yourdomain.com/name/namespace
+                        tag: repository.tag + "-" + id
+                    },
+                    git: {
+                        url: git.url,
+                        ref: git.ref
+                    },
+                    buildpack: {
+                        path: dockerfilePath,
+                        cnbPlatformApi: "0.13",
+                    },
+                    dockerfile: {
+                        path: dockerfilePath,
+                    },
+                    nixpack: {
+                        path: dockerfilePath || ".nixpacks/Dockerfile",
+                    },
+                }
+            };
+
+            try {
+                this.customObjectsApi.createNamespacedCustomObject(
+                    "application.kubero.dev",
+                    "v1alpha1",
+                    namespace,
+                    "kuberobuilds",
+                    build
+                ).catch(error => {
+                    debug.log(error);
+                });
+            } catch (error) {
+                console.log(error);
+                console.log('ERROR creating build job');
+            }
+        }
+*/
     public async deployApp(namespace: string, appName: string, tag: string) {
 
         let deploymentName = appName+'-kuberoapp-web';
@@ -1167,4 +1090,95 @@ export class Kubectl {
         }
     }
 
+    public async createBuildJob(
+        namespace: string,
+        appName: string, 
+        pipelineName: string,
+        buildstrategy: 'buildpacks' | 'dockerfile' | 'nixpacks' | 'plain',
+        dockerfilePath: string | undefined,
+        git: {
+            url: string,
+            ref: string
+        },
+        repository: {
+            image: string,
+            tag: string
+        }
+        ): Promise<any> {
+        let job = loadJob(buildstrategy) as any
+
+        const id = new Date().toISOString().replace(/[-:]/g, '').replace(/[T]/g, '-').substring(0, 13);
+        const name = appName + "-" + pipelineName + "-" + id;
+
+        job.metadata.name = name.substring(0, 53); // max 53 characters allowed within kubernetes
+        //job.metadata.namespace = namespace;
+        job.metadata.labels['job-name'] = name.substring(0, 53);
+        job.metadata.labels['batch.kubernetes.io/job-name'] = name.substring(0, 53);
+        job.metadata.labels['kuberoapp'] = appName;
+        job.metadata.labels['kuberopipeline'] = pipelineName;
+        job.spec.template.metadata.labels['job-name'] = name.substring(0, 53);
+        job.spec.template.metadata.labels['batch.kubernetes.io/job-name'] = name.substring(0, 53);
+        job.spec.template.metadata.labels['kuberoapp'] = appName;
+        job.spec.template.metadata.labels['kuberopipeline'] = pipelineName;
+        job.spec.template.spec.serviceAccountName = appName+'-kuberoapp';
+        job.spec.template.spec.serviceAccount = appName+'-kuberoapp';
+        job.spec.template.spec.initContainers[0].env[0].value = git.url;
+        job.spec.template.spec.initContainers[0].env[1].value = git.ref;
+        job.spec.template.spec.containers[0].env[0].value = repository.image
+        job.spec.template.spec.containers[0].env[1].value = repository.tag+"-"+id;
+        job.spec.template.spec.containers[0].env[2].value = appName;
+
+        if (buildstrategy === 'buildpacks') {
+            // configure build container
+            job.spec.template.spec.initContainers[1].args[1] = repository.image+":"+repository.tag+"-"+id;
+        }
+        if (buildstrategy === 'dockerfile') {
+            // configure push container
+            job.spec.template.spec.initContainers[1].env[1].value = repository.image+":"+repository.tag+"-"+id;
+            job.spec.template.spec.initContainers[1].env[2].value = dockerfilePath;
+        }
+        if (buildstrategy === 'nixpacks') {
+            // configure push container
+            job.spec.template.spec.initContainers[2].env[1].value = repository.image+":"+repository.tag+"-"+id;
+            job.spec.template.spec.initContainers[2].env[2].value = dockerfilePath;
+        }
+
+        console.log("create build job: " + job);
+
+        try {
+            return await this.batchV1Api.createNamespacedJob(namespace, job);
+        } catch (error) {
+            console.log(error);
+            console.log('ERROR creating build job');
+        }
+    }
+
+    public async deleteKuberoBuildJob(namespace: string, buildName: string) {
+        try {
+            await this.batchV1Api.deleteNamespacedJob(buildName, namespace)
+        } catch (error) {
+            debug.log(error);
+        }
+    }
+
+
+    public async getJob(namespace: string, jobName: string): Promise<any> {
+        try {
+            const job = await this.batchV1Api.readNamespacedJob(jobName, namespace)
+            return job.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getJob: error getting job");
+        }
+    }
+
+    public async getJobs(namespace: string): Promise<any> {
+        try {
+            const jobs = await this.batchV1Api.listNamespacedJob(namespace)
+            return jobs.body;
+        } catch (error) {
+            debug.log(error);
+            debug.log("getJobs: error getting jobs");
+        }
+    }
 }

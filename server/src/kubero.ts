@@ -38,6 +38,21 @@ export class Kubero {
     public config: IKuberoConfig;
     private audit: Audit;
     private execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
+    private features: {[key: string]: boolean} = {
+        sleep: false,
+        metrics: false,
+        /* suggested features
+        console: false,
+        logs: false,
+        audit: false,
+        notifications: false,
+        templates: false,
+        addons: false,
+        deployments: false,
+        security: false,
+        settings: false,
+        */
+    }
 
     constructor(io: Server, audit: Audit, kubectl: Kubectl, notifications: Notifications) {
         this.config = this.loadConfig(process.env.KUBERO_CONFIG_PATH as string || './config.yaml');
@@ -68,6 +83,13 @@ export class Kubero {
         this.githubApi = new GithubApi(process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string);
         this.gitlabApi = new GitlabApi(process.env.GITLAB_BASEURL as string, process.env.GITLAB_PERSONAL_ACCESS_TOKEN as string);
         this.bitbucketApi = new BitbucketApi(process.env.BITBUCKET_USERNAME as string, process.env.BITBUCKET_APP_PASSWORD as string);
+
+        this.runFeatureCheck();
+    }
+
+    private async runFeatureCheck() {
+        //this.features.sleep = this.config.sleep.enabled;
+        this.features.sleep = await this.checkForZeropod()
     }
 
     public getKubernetesVersion() {
@@ -164,7 +186,7 @@ export class Kubero {
         debug.debug('create Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not creting pipeline '+ pipeline.name);
             return;
         }
 
@@ -194,7 +216,7 @@ export class Kubero {
         debug.debug('update Pipeline: '+pipeline.name);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not updating pipelline ' + pipeline.name);
             return;
         }
 
@@ -272,7 +294,7 @@ export class Kubero {
         debug.debug('deletePipeline: '+pipelineName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not deleting pipeline '+ pipelineName);
             return;
         }
 
@@ -311,7 +333,7 @@ export class Kubero {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not creating app');
+            console.log('KUBERO_READONLY is set to true, not creating app ' + app.name);
             return;
         }
 
@@ -319,7 +341,7 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
                 this.triggerImageBuild(app.pipeline, app.phase, app.name);
             }
             this.appStateList.push(app);
@@ -349,11 +371,11 @@ export class Kubero {
         await this.setContext(app.pipeline, app.phase);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not updating app ' + app.name);
             return;
         }
 
-        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks')){
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
             this.triggerImageBuild(app.pipeline, app.phase, app.name);
         }
 
@@ -385,7 +407,7 @@ export class Kubero {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
 
         if ( process.env.KUBERO_READONLY == 'true'){
-            console.log('KUBERO_READONLY is set to true, not deleting app');
+            console.log('KUBERO_READONLY is set to true, not deleting app '+appName+' in '+ pipelineName+' phase: '+phaseName);
             return;
         }
 
@@ -484,6 +506,12 @@ export class Kubero {
     }
 
     public restartApp(pipelineName: string, phaseName: string, appName: string, user: User) {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not restarting app'+appName+' in '+ pipelineName+' phase: '+phaseName);
+            return;
+        }
+
         debug.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
         const contextName = this.getContext(pipelineName, phaseName);
         if (contextName) {
@@ -544,45 +572,6 @@ export class Kubero {
     }
 */
 
-    public async listRepos(repoProvider: string) {
-        debug.log('listRepos: '+repoProvider);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.listRepos();
-            case 'gitea':
-                return this.giteaApi.listRepos();
-            case 'gogs':
-                return this.gogsApi.listRepos();
-            case 'gitlab':
-                return this.gitlabApi.listRepos();
-            case 'bitbucket':
-                return this.bitbucketApi.listRepos();
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
-
-    public async connectRepo(repoProvider: string, repoAddress: string) {
-        debug.log('connectRepo: '+repoProvider+' '+repoAddress);
-
-        switch (repoProvider) {
-            case 'github':
-                return this.githubApi.connectRepo(repoAddress);
-            case 'gitea':
-                return this.giteaApi.connectRepo(repoAddress);
-            case 'gogs':
-                return this.gogsApi.connectRepo(repoAddress);
-            case 'gitlab':
-                return this.gitlabApi.connectRepo(repoAddress);
-            case 'bitbucket':
-                return this.bitbucketApi.connectRepo(repoAddress);
-            case 'onedev':
-            default:
-                return {'error': 'unknown repo provider'};
-        }
-    }
 
     public async handleWebhook(repoProvider: string, event: string, delivery: string, signature: string, body: any) {
         debug.log('handleWebhook');
@@ -666,71 +655,6 @@ export class Kubero {
         }
     }
 
-    public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let branches: Promise<string[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                branches = this.githubApi.getBranches(repo);
-                break;
-            case 'gitea':
-                branches = this.giteaApi.getBranches(repo);
-                break;
-            case 'gogs':
-                branches = this.gogsApi.getBranches(repo);
-                break;
-            case 'gitlab':
-                branches = this.gitlabApi.getBranches(repo);
-                break;
-            case 'bitbucket':
-                branches = this.bitbucketApi.getBranches(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return branches
-    }
-
-
-    public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
-        //return this.git.listRepoBranches(repo, repoProvider);
-        let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
-            resolve([]);
-        });
-
-        const repo = Buffer.from(repoB64, 'base64').toString('ascii');
-
-        switch (repoProvider) {
-            case 'github':
-                pulls = this.githubApi.getPullrequests(repo);
-                break;
-            case 'gitea':
-                pulls = this.giteaApi.getPullrequests(repo);
-                break;
-            case 'gogs':
-                pulls = this.gogsApi.getPullrequests(repo);
-                break;
-            case 'gitlab':
-                pulls = this.gitlabApi.getPullrequests(repo);
-                break;
-            case 'bitbucket':
-                pulls = this.bitbucketApi.getPullrequests(repo);
-                break;
-            case 'onedev':
-            default:
-                break;
-        }
-
-        return pulls
-    }
-
     private async getAppsByRepoAndBranch(repository: string, branch: string) {
         debug.log('getAppsByBranch: '+branch);
         let apps: IApp[] = [];
@@ -744,6 +668,12 @@ export class Kubero {
 
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not creating PR app '+title+' in '+ branch+' pipeline: '+pipelineName);
+            return;
+        }
+
         debug.log('createPRApp: ', branch, title, ssh_url);
         let pipelines = await this.listPipelines() as IPipelineList;
 
@@ -767,6 +697,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
+                    sleep: '600s', //TODO use config value
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
@@ -774,7 +705,6 @@ export class Kubero {
                     phase: phaseName,
                     branch: branch,
                     autodeploy: true,
-                    domain: websaveTitle+"."+pipeline.domain,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     envVars: [], //TODO use custom env vars,
@@ -958,8 +888,63 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    public setMetricsStatus(status: boolean) {
+        this.features.metrics = status
+    }
+
     public getMetricsEnabled(): boolean{
-        return process.env.KUBERO_PROMETHEUS_ENDPOINT ? process.env.KUBERO_PROMETHEUS_ENDPOINT != undefined : false
+        return this.features.metrics
+    }
+/*
+    private checkForPrometheus(): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            if (process.env.KUBERO_PROMETHEUS_ENDPOINT) {
+                fetch(process.env.KUBERO_PROMETHEUS_ENDPOINT)
+                .then(response => {
+                    if (response.ok) {
+                        console.log('☑️ Feature: Prometheus Metrics disabled');
+                        resolve(true);
+                    } else {
+                        console.log('❌ Feature: Prometheus not accesible');
+                        resolve(false);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Feature: Prometheus not accesible');
+                    resolve(false);
+                });
+            } else {
+                console.log('☑️ Feature: Prometheus Metrics not enabled');
+                resolve(false);
+            }
+        });
+    }
+*/
+    public getBuildpipelineEnabled(){
+        return process.env.KUBERO_BUILD_REGISTRY ? process.env.KUBERO_BUILD_REGISTRY != undefined : false
+    }
+
+    private async checkForZeropod(): Promise<boolean> {
+        // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present. 
+        // But it does not check if the Zeropod controller is complete and running.
+        let enabled = false
+        try {
+            const nsList = await this.kubectl.getNamespaces()
+            for (const ns of nsList) {
+                if (ns.metadata?.name == 'zeropod-system') {
+                    enabled = true
+                }
+            }
+        } catch (error) {
+            console.log('Error: getSleepEnabled: ', error)
+            return false
+        }
+        
+        return enabled
+    }
+
+    public getSleepEnabled(): boolean {
+        return this.features.sleep
     }
     
     public getAdminDisabled(){
@@ -1117,8 +1102,11 @@ export class Kubero {
                 if (pod.metadata?.name?.startsWith(appName)) {
                     if (container == 'web') {
                         for (const container of pod.spec?.containers || []) {
-                            const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
-                            loglines = loglines.concat(ll);
+                            // only fetch logs for the web container, exclude trivy and build jobs
+                            if (!pod.metadata?.labels?.["job-name"]) {
+                                const ll = await this.fetchLogs(namespace, pod.metadata.name, container.name, pipelineName, phaseName, appName)
+                                loglines = loglines.concat(ll);
+                            }
                         }
                     } else if (container == 'builder' || container == 'fetcher') {
                         const ll = await this.fetchLogs(namespace, pod.metadata.name, "kuberoapp-"+container, pipelineName, phaseName, appName)
@@ -1133,7 +1121,7 @@ export class Kubero {
         return loglines;
     }
 
-    private async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
+    public async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
         let loglines: ILoglines[] = [];
 
         const logStream = new Stream.PassThrough();
@@ -1143,7 +1131,6 @@ export class Kubero {
             logs += chunk.toString();
         });
 
-        console.log('getting logs for '+podName+' '+containerName);
         try {
             await this.kubectl.log.log(namespace, podName, containerName, logStream, {follow: false, tailLines: 80, pretty: false, timestamps: true})
         } catch (error) {
@@ -1245,6 +1232,10 @@ export class Kubero {
 
     public getNodeMetrics() {
         return this.kubectl.getNodeMetrics();
+    }
+
+    public getIngressClasses() {
+        return this.kubectl.getIngressClasses();
     }
 
     public getStorageglasses() {
@@ -1417,23 +1408,25 @@ export class Kubero {
             dockerfilePath = '.nixpacks/Dockerfile';
         }
 
-        // TODO: Make image configurable
-        const registry = process.env.KUBERO_BUILD_REGISTRY || 'registry.kubero.svc.cluster.local:5000';
-        const image = `${registry}/${pipeline}/${appName}`;
-
-        console.log('Build image: ', image);
 
         const timestamp = new Date().getTime();
         if (contextName) {
             this.kubectl.setCurrentContext(contextName);
-            this.kubectl.createBuildImageJob(
-                namespace,                      // namespace
-                appName,                        // app
-                repo,                           // gitrepo
-                app.spec.branch,                // branch
-                image,                          // image
-                app.spec.branch+"-"+timestamp,  // tag // TODO : use a git reference here instead of timestamp
-                dockerfilePath                  // dockerfile
+            
+            this.kubectl.createBuildJob(
+                namespace,
+                appName, 
+                pipeline,
+                app.spec.buildstrategy, 
+                dockerfilePath,
+                {
+                    url: repo,
+                    ref: app.spec.branch, //git commit reference
+                },
+                {
+                    image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
+                    tag: app.spec.branch+"-"+timestamp
+                }
             );
         }
 

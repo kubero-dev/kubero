@@ -21,24 +21,17 @@ Router.all("/session", (req: Request, res: Response) => {
         }
     }
 
-    let buildPipeline = false
-    if ( process.env.KUBERO_BUILD_REGISTRY != undefined ) {
-        buildPipeline = true
-    } 
-
-
-    templatesEnabled = true
-
     let message = {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
         "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
-        "buildPipeline": buildPipeline,
+        "buildPipeline": req.app.locals.kubero.getBuildpipelineEnabled(),
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
         "auditEnabled": req.app.locals.audit.getAuditEnabled(),
         "adminDisabled": req.app.locals.kubero.getAdminDisabled(),
         "consoleEnabled": req.app.locals.kubero.getConsoleEnabled(),
         "metricsEnabled": req.app.locals.kubero.getMetricsEnabled(),
+        "sleepEnabled": req.app.locals.kubero.getSleepEnabled(),
     }
     res.status(status).send(message)
 })

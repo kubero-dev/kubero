@@ -11,15 +11,19 @@
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))" v-if="appData.spec.gitrepo != undefined">
                         <tbody>
                         <tr>
-                            <th>Domain</th>
-                            <td>{{ appData.spec.domain }}</td>
+                            <th>Domains</th>
+                            <td>
+                                <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
+                                    <a :href="'https://' + host.host" target="_blank">{{ host.host }}</a>
+                                </li>
+                            </td>
                         </tr>
                         <tr>
                             <th>Deployment Strategy</th>
                             <td>{{ appData.spec.deploymentstrategy }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git' && appData.spec.deploymentstrategy == 'plain'">
-                            <th>Buildpack</th>
+                            <th>Runpack</th>
                             <td>{{ appData.spec.buildpack }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">
@@ -318,7 +322,6 @@ interface Spec {
   gitrepo: GitRepo;
   branch: string;
   autodeploy: boolean;
-  domain: string;
   podsize: PodSize;
   autoscale: boolean;
   envVars: any[];
@@ -374,7 +377,6 @@ type appData = {
         gitrepo: GitRepo,
         branch: string,
         autodeploy: boolean,
-        domain: string,
         podsize: PodSize,
         autoscale: boolean,
         envVars: any[],

@@ -18,13 +18,17 @@ export class GitlabApi extends Repo {
 
     constructor(baseURL: string, token: string) {
         super("gitlab");
-
-        console.log("Gitlab API: "+baseURL)
-        //console.log("Gitlab token: "+token)
+        const host = baseURL || 'https://gitlab.com';
+        
+        if (token == undefined) {
+            console.log('☑️  Feature: Gitlab not configured (no token)');
+        } else {
+            console.log('✅ Feature: Gitlab configured: '+host);
+        }
 
         this.gitlab = new GitlabClient({
             token: token,
-            host: baseURL || 'https://gitlab.com',
+            host: host,
         });
     }
 
@@ -309,6 +313,56 @@ export class GitlabApi extends Repo {
             console.log(error)
         }
 
+
+        return ret;
+    }
+
+    public async getReferences(gitrepo: string): Promise<string[]>{
+        let ret: string[] = [];
+
+        let {repo, owner} = this.parseRepo(gitrepo)
+
+        try {
+            const branches:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/branches`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let branch of branches) {
+                ret.push(branch.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            const tags:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/tags`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let tag of tags) {
+                ret.push(tag.name)
+            }
+        } catch (error) {
+            console.log(error)
+        }
+
+        try {
+            const commits:any = await this.gitlab.get(`projects/${owner}%2F${repo}/repository/commits`)
+            .catch((error: any) => {
+                console.log(error)
+                return ret;
+            })
+
+            for (let commit of commits) {
+                ret.push(commit.id)
+            }
+        } catch (error) {
+            console.log(error)
+        }
 
         return ret;
     }
