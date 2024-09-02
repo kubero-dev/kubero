@@ -35,7 +35,9 @@ const { KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') } = process.
 
 export const configure = async (app: Express, server: Server) => {
     // Load Version from File
-    process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');;
+    process.env.npm_package_version = fs.readFileSync('./VERSION','utf8');
+
+    console.log("Kubero Version: " + process.env.npm_package_version);
 
     app.use(cors())
     app.use(cookieParser())

@@ -64,11 +64,16 @@ export class Metrics {
     }
 
     public async getStatus(): Promise<boolean> {
-        const status = await this.prom.status();
-        if (status === undefined || status === null || status === false) {
+        try {
+            const status = await this.prom.status();
+            
+            if (status === undefined || status === null || status === false) {
+                return false;
+            } else {
+                return true;
+            }
+        } catch (error) {
             return false;
-        } else {
-            return true;
         }
     }
 
