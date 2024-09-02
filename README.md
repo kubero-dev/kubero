@@ -12,7 +12,8 @@
 
 
 <br>
-Kubero [pronounced: Kube Hero] is a fully self-hosted Internal Developer Platform (IDP) that brings the workflows of Heroku to your Kubernetes cluster. It enables you to deploy your applications with a few clicks. It has a built-in CI/CD pipeline and supports multiple staging environments.
+Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on containers or from source code.
+
 <br>
 <br>
 
@@ -63,9 +64,6 @@ Basically *everything* that can be packaged in a single container can be deploye
 - Static HTML
 - Rust (including Rocket)
 - ...
-
-You find the preconfigured buildpacks and examples here:
-https://github.com/kubero-dev/buildpacks
 
 ## Add-ons
 
