@@ -12,7 +12,7 @@
 
 
 <br>
-Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on containers or from source code.
+Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on existing containers or from source code.
 
 <br>
 <br>
@@ -22,21 +22,21 @@ Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) tha
 More <a href="https://docs.kubero.dev/screenshots" target="_blank">Screenshots</a> and a full video on
 <a href="https://www.youtube.com/watch?v=kmqhddc6UlI" target="_blank">YouTube</a><p>
 
-## How it Works ([DEMO](https://demo.kubero.dev))
+## How GitOps Works ([DEMO](https://demo.kubero.dev))
 1. Create a pipeline with the phases you need (review, test, stage, production)
-2. Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
+2. (optional) Connect the pipeline to your git repository (Github, Bitbucket, Gitlab, Gitea, Gogs)
 3. Configure your apps with cronjobs and addons
 
-Kubero initiates two containers: one for cloning your repository and another for building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
+Kubero starts now building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
 
 ## Features
 - Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
 - Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
-- Deploy well known apps with **templates** [(Wordpress, Grafana, ...)](https://www.kubero.dev/templates)
+- Deploy well known apps with **templates** [(WordPress, Grafana, ...)](https://www.kubero.dev/templates)
 - Easy deployment of your docker containers on Kubernetes **without writing helm charts**
-- Deploy **add-ons** for your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
+- Deploy **add-ons** along your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
 - Easy access of **application logs** in the web-UI
 - Easy and safe **restart** of the application in the web-UI
 - Triggered or periodic **vulnerability scans** of your running apps
@@ -90,9 +90,9 @@ Basically *everything* that can be packaged in a single container can be deploye
 \* Ships with the Kubero Operator
 
 ## 80+ Application templates (similar to Heroku Buttons)
-- Wordpress
+- WordPress
 - Grafana
-- Bluesky PDS (Personal Data Server)
+- Bitwarden
 - <a href="https://uptime.kuma.pet" target="_blank">Kuma</a>
 - <a href="https://github.com/zadam/trilium" target="_blank">Trilium Notes</a>
 - ...
@@ -100,7 +100,7 @@ Basically *everything* that can be packaged in a single container can be deploye
 Check out the full [list here](https://www.kubero.dev/templates/) or submit your own app! [Read here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
 
 ## Basic Concept 
-Kubero is Kubernetes native and runs with two containers on any Kubernetes instance.
+Kubero is Kubernetes native and runs with two containers on any Kubernetes instance (kubero-ui and Operator). All data is stored on your Kubernetes etcd without an extra database.
 <br>
 <br>
 
@@ -114,7 +114,7 @@ Binaries (MacOS, Linux)
 curl -fsSL get.kubero.dev | bash
 ```
 
- Brew (MacOS, Linux)
+Brew (MacOS, Linux)
 ```
 brew tap kubero-dev/kubero
 brew install kubero-cli
@@ -122,7 +122,7 @@ brew install kubero-cli
 
 **2) Run `kubero install` to install all components on a new or your existing cluster**
 
-You can bring your own cluster or create one with the kubero install on one of the following providers:
+You can bring your own existing cluster or create one with the kubero install on one of the following providers:
 - GKE
 - Scaleway
 - DigitalOcean
@@ -140,10 +140,10 @@ https://github.com/orgs/kubero-dev/projects/1/views/3
 
 ## Contributing
 All contributions are welcome!
- - Open an issue
- - Add a feature or open a feature request
- - Discuss ideas in the discussions
- - Fix typos
+ - Rise an issue/bug/error
+ - Open a feature request
+ - Discuss ideas in the discussions section or discord
+ - Fix typos (I do a lot of them) 
  - Contribute code
  - Write articles
 
