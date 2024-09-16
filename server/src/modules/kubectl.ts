@@ -793,7 +793,7 @@ export class Kubectl {
                                         name: 'TRIVY_USERNAME',
                                         valueFrom: {
                                             secretKeyRef: {
-                                                name: app+'-kuberoapp-registry-login',
+                                                name: 'registry-credentials',
                                                 key: 'username',
                                                 optional: true
                                             }
@@ -803,7 +803,7 @@ export class Kubectl {
                                         name: 'TRIVY_PASSWORD',
                                         valueFrom: {
                                             secretKeyRef: {
-                                                name: app+'-kuberoapp-registry-login',
+                                                name: 'registry-credentials',
                                                 key: 'password',
                                                 optional: true
                                             }
