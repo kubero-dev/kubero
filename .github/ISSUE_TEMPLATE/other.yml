@@ -1,7 +1,7 @@
 name: Other issue
 description: Use this for any other issues. Do NOT create blank issues
 #title: "[OTHER]: "
-#labels: ["🛠 awaiting triage"] # Requires a new label to be created
+labels: ["question"]
 body:
   - type: textarea
     id: description
