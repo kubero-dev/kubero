@@ -53,4 +53,4 @@ body:
       description: Are you the maintainer of the application?
       options:
         - label: I am the maintainer
-          required: true
+          required: false
