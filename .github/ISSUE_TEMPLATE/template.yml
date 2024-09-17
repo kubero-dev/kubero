@@ -3,7 +3,7 @@ description: Sugest or request a new template
 labels: ["template"]
 body:
   - type: input
-    id: Application Name
+    id: name
     attributes:
       label: Application Name
       description: Name of the application.
