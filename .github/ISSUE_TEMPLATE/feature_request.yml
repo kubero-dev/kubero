@@ -1,7 +1,7 @@
 name: Feature request
 description: Suggest features, propose improvements, discuss new ideas
-title: "[FEATURE]: "
-labels: ["🚀 feature"]
+#title: "[FEATURE]: "
+labels: ["Idea/discussion"]
 body:
   - type: textarea
     id: description
