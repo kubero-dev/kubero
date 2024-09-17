@@ -1,12 +1,13 @@
 name: Bug report
 description: Create a bug report to help us improve
-title: "[BUG]: "
+#title: "[BUG]: "
 labels: ["bug"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report! 
+        ## Please read before submitting a bug report
+        Thanks for taking the time to fill out this bug report. Your feedback helps us improve Kubero.
         Before you submit, please make sure you have read our [Troubleshooting](https://docs.kubero.dev/Installation/troubleshooting) guide.
   - type: textarea
     id: description
