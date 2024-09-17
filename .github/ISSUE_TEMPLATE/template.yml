@@ -2,7 +2,7 @@ name: Template
 description: Sugest or request a new template
 labels: ["template"]
 body:
-  - type: text
+  - type: input
     id: Application Name
     attributes:
       label: Application Name
