@@ -1,5 +1,6 @@
 name: Template
 description: Sugest or request a new template
+title: "Add template for "
 labels: ["template"]
 body:
   - type: input
