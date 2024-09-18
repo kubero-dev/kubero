@@ -30,7 +30,7 @@ spec:
               rootPassword: ghost
               username: ghost
             global:
-              storageClass: standard
+              storageClass:
             primary:
               persistence:
                 accessModes:
@@ -57,7 +57,7 @@ spec:
     mountPath: /var/lib/ghost/content
     name: ghost-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

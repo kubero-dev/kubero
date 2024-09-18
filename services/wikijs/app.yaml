@@ -23,7 +23,7 @@ spec:
     mountPath: /wiki/data
     name: wikijs-data
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

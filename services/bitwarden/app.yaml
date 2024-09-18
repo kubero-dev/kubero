@@ -32,7 +32,7 @@ spec:
           mountPath: /etc/bitwarden
           name: bitwarden
           size: 1Gi
-          storageClass: standard
+          storageClass:
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -55,7 +55,7 @@ spec:
                                       password: bitwarden
                                       postgresPassword: bitwarden
                                       username: bitwarden
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi

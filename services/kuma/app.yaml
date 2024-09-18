@@ -19,7 +19,7 @@ spec:
     mountPath: /app/data
     name: kuma-data
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

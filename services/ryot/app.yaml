@@ -35,7 +35,7 @@ spec:
                                       password: ryot
                                       postgresPassword: postgres
                                       username: ryot
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi

@@ -47,7 +47,7 @@ spec:
                                       password: keila
                                       postgresPassword: keila
                                       username: keila
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi

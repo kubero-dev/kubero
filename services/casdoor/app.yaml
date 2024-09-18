@@ -30,7 +30,7 @@ spec:
               rootPassword: casdoor
               username: casdoor
             global:
-              storageClass: standard
+              storageClass:
             primary:
               persistence:
                 accessModes:

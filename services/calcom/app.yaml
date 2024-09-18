@@ -33,7 +33,7 @@ spec:
                   password: calcom
                   postgresPassword: calcom
                   username: calcom
-              storageClass: standard
+              storageClass:
             primary:
               persistence:
                 size: 1Gi

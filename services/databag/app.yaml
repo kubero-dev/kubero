@@ -18,7 +18,7 @@ spec:
           mountPath: /var/lib/databag
           name: databag-data
           size: 1Gi
-          storageClass: standard
+          storageClass:
     cronjobs: []
     addons: []
     web:

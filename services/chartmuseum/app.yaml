@@ -23,7 +23,7 @@ spec:
     mountPath: /charts
     name: chartmuseum-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

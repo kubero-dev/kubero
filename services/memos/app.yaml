@@ -19,7 +19,7 @@ spec:
     mountPath: /var/opt/memos
     name: memos-data
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

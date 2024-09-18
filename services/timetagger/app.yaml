@@ -25,7 +25,7 @@ spec:
     mountPath: /data/_timetagger
     name: timetagger-data
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

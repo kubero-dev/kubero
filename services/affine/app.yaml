@@ -32,7 +32,7 @@ spec:
           mountPath: /root/.affine
           name: affine-volume
           size: 1Gi
-          storageClass: standard
+          storageClass:
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -55,7 +55,7 @@ spec:
                                       password: afffine
                                       postgresPassword: postgres
                                       username: affine
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi
@@ -78,7 +78,7 @@ spec:
                           global:
                               redis:
                                   password: affine
-                              storageClass: standard
+                              storageClass:
                           master:
                               persistence:
                                   size: 1Gi

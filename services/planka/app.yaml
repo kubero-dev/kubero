@@ -30,7 +30,7 @@ spec:
           mountPath: /app/public/user-avatars
           name: planka-user-avatars
           size: 0.1Gi
-          storageClass: standard
+          storageClass:
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -38,7 +38,7 @@ spec:
           mountPath: /app/public/project-background-images
           name: planka-project-background-images
           size: 0.5Gi
-          storageClass: standard
+          storageClass:
         - accessMode: ReadWriteOnce
           accessModes:
               - ReadWriteOnce
@@ -46,7 +46,7 @@ spec:
           mountPath: /app/private/attachments
           name: planka-attachments
           size: 1Gi
-          storageClass: standard
+          storageClass:
     cronjobs: []
     addons:
         - displayName: Postgresql
@@ -69,7 +69,7 @@ spec:
                                       password: postgresql
                                       postgresPassword: postgresql
                                       username: planka
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi

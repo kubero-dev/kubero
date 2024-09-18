@@ -19,7 +19,7 @@ spec:
     mountPath: /datastore
     name: changedetection-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

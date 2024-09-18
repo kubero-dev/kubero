@@ -19,14 +19,14 @@ spec:
     mountPath: /usr/src/app/weights
     name: weights
     size: 70Gi
-    storageClass: standard
+    storageClass:
   - accessModes:
     - ReadWriteOnce
     emptyDir: false
     mountPath: /data/db
     name: datadb
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

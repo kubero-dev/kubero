@@ -22,7 +22,7 @@ spec:
     mountPath: /appsmith-stacks
     name: appsmith-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:
