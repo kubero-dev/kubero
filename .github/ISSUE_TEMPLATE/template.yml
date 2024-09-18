@@ -1,0 +1,56 @@
+name: Template
+description: Sugest or request a new template
+title: "Add template for "
+labels: ["template"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Application Name
+      description: Name of the application.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the application
+      description: A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: input
+    id: URL
+    attributes:
+      label: URL to the application
+      description: Main URL to the application. 
+    validations:
+      required: false
+  - type: input
+    id: source
+    attributes:
+      label: Source code
+      description: A link to the source code of the application. (if available)
+    validations:
+      required: false
+#  - type: dropdown
+#    attributes:
+#    id: tags
+#      label: select some tags that apply to the application
+#      multiple: true
+#      options:
+#        - Helper
+#        - Developer
+  - type: input
+    id: dockercompose
+    attributes:
+      label: Link to Docker compose
+      description: A link to the Docker compose of the application. (if available)
+    validations:
+      required: false
+  - type: checkboxes
+    id: maintainer
+    attributes:
+      label: Maintainer
+      description: Are you the maintainer of the application?
+      options:
+        - label: I am the maintainer
+          required: false

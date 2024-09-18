@@ -1,8 +1,14 @@
 name: Bug report
 description: Create a bug report to help us improve
-title: "[BUG]: "
-labels: ["🐞 bug"]
+#title: "[BUG]: "
+labels: ["bug"]
 body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Please read before submitting a bug report
+        Thanks for taking the time to fill out this bug report. Your feedback helps us improve Kubero.
+        Before you submit, please make sure you have read our [Troubleshooting](https://docs.kubero.dev/Installation/troubleshooting) guide.
   - type: textarea
     id: description
     attributes:
@@ -41,5 +47,12 @@ body:
     attributes:
       label: Additional information
       description: Is there anything else we should know about this bug report?
+    validations:
+      required: false
+  - type: textarea
+    id: debug
+    attributes:
+      label: Debug information
+      description: Run `kubero debug` and provide the output. (remove sensitive information)
     validations:
       required: false
