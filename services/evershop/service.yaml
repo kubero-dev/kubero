@@ -1,0 +1,9 @@
+name: Evershop
+description: 'Ecommerce platform with essential commerce features Built with React, modular and fully customizable'
+tags:
+- ecommerce
+source: https://github.com/evershopcommerce/evershop
+website: https://evershop.io/
+icon: https://avatars.githubusercontent.com/u/83757778?s=200&v=4
+screenshots:
+- https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/banner.png
