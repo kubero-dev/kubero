@@ -39,7 +39,7 @@
             border="start"
             v-if="auditEvents.length <1">
             <h3>Audit</h3>
-            The audi log is ether empty or disabled.
+            The audit log is ether empty or disabled.
 
         </v-alert>
     </div>
