@@ -1,0 +1,42 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: sqlpad
+    labels:
+        manager: kubero
+spec:
+    name: sqlpad
+    deploymentstrategy: docker
+    envVars:
+        - name: SQLPAD_ADMIN_PASSWORD
+          value: admin
+        - name: SQLPAD_ADMIN
+          value: admin
+    serviceAccount:
+        annotations: {}
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: sqlpad/sqlpad
+        tag: latest
+        run:
+            command: node index.js
+            readOnlyAppStorage: false
+            repository: node
+            securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
+                capabilities:
+                    add: []
+                    drop: []
+            tag: latest
