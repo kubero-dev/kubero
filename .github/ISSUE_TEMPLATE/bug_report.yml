@@ -9,6 +9,16 @@ body:
         ## Please read before submitting a bug report
         Thanks for taking the time to fill out this bug report. Your feedback helps us improve Kubero.
         Before you submit, please make sure you have read our [Troubleshooting](https://docs.kubero.dev/Installation/troubleshooting) guide.
+  - type: dropdown
+    id: component
+    attributes:
+      label: Which component(s) is affected?
+      multiple: true
+      options:
+        - Kubero UI
+        - Kubero CLI
+        - Operator
+        - Documentation
   - type: textarea
     id: description
     attributes:
