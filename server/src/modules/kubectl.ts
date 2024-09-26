@@ -63,17 +63,19 @@ export class Kubectl {
             const kubeconfig = buff.toString('ascii');
             this.kc.loadFromString(kubeconfig);
         } else if(process.env.KUBECONFIG_PATH) {
-            debug.log("Use kubectl config from file");
+            debug.log("Use kubectl config from file " + process.env.KUBECONFIG_PATH);
             this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
         } else{
             try {
                 this.kc.loadFromCluster();
                 debug.log("Kubeconfig loaded from cluster");
             } catch (error) {
-                debug.log("Error loading from cluster");
+                debug.log("❌ Error loading from cluster");
                 debug.log(error);
             }
         }
+
+        this.log = new KubeLog(this.kc);
 
         try {
             this.versionApi = this.kc.makeApiClient(VersionApi);
@@ -87,8 +89,10 @@ export class Kubectl {
             this.exec = new Exec(this.kc)
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
         } catch (error) {
-            debug.log("error creating api clients. Check kubeconfig, cluster connectivity and context");
+            debug.log("❌ Error creating api clients. Check kubeconfig, cluster connectivity and context");
             debug.log(error);
+            this.kubeVersion = void 0;
+            return;
         }
 
         this.kubeVersion = new VersionInfo();
@@ -97,7 +101,6 @@ export class Kubectl {
             this.kubeVersion = v;
         })
 
-        this.log = new KubeLog(this.kc);
     }
 
     public async getKubeVersion(): Promise<VersionInfo | void>{
@@ -790,7 +793,7 @@ export class Kubectl {
                                         name: 'TRIVY_USERNAME',
                                         valueFrom: {
                                             secretKeyRef: {
-                                                name: app+'-kuberoapp-registry-login',
+                                                name: 'registry-credentials',
                                                 key: 'username',
                                                 optional: true
                                             }
@@ -800,7 +803,7 @@ export class Kubectl {
                                         name: 'TRIVY_PASSWORD',
                                         valueFrom: {
                                             secretKeyRef: {
-                                                name: app+'-kuberoapp-registry-login',
+                                                name: 'registry-credentials',
                                                 key: 'password',
                                                 optional: true
                                             }
