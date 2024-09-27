@@ -47,14 +47,16 @@
     </v-card-text>
 
     <table style="width: 100%;" v-if="vulnSummary.unknown != undefined">
-      <tr>
-        <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ vulnSummary.unknown }}<br>UNKNOWN</td>
-        <td title="LOW" class="vuln-summary severity-low">{{ vulnSummary.low }}<br>LOW</td>
-        <td title="MEDIUM" class="vuln-summary severity-medium">{{ vulnSummary.medium }}<br>MEDIUM</td>
-        <td title="HIGH" class="vuln-summary severity-high">{{ vulnSummary.high }}<br>HIGH</td>
-        <td title="CRITICAL" class="vuln-summary severity-critical">{{ vulnSummary.critical }}<br>CRITICAL</td>
-        <td title="TOTAL" class="vuln-summary severity-total">{{ vulnSummary.total }}<br>TOTAL</td>
-      </tr>
+      <tbody>
+        <tr>
+          <td title="UNKNOWN" class="vuln-summary severity-unknown">{{ vulnSummary.unknown }}<br>UNKNOWN</td>
+          <td title="LOW" class="vuln-summary severity-low">{{ vulnSummary.low }}<br>LOW</td>
+          <td title="MEDIUM" class="vuln-summary severity-medium">{{ vulnSummary.medium }}<br>MEDIUM</td>
+          <td title="HIGH" class="vuln-summary severity-high">{{ vulnSummary.high }}<br>HIGH</td>
+          <td title="CRITICAL" class="vuln-summary severity-critical">{{ vulnSummary.critical }}<br>CRITICAL</td>
+          <td title="TOTAL" class="vuln-summary severity-total">{{ vulnSummary.total }}<br>TOTAL</td>
+        </tr>
+      </tbody>
     </table>
 
     <v-divider></v-divider>

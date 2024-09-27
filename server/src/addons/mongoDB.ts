@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class MongoDB extends Plugin implements IPlugin {
     public id: string = 'mongodb-operator';//same as operator name
     public displayName = 'Percona MongoDB'
-    public icon = '/img/addons/MongoDB.png'
+    public icon = '/img/addons/mongo.svg'
     public install: string = 'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml'
     public url = 'https://artifacthub.io/packages/olm/community-operators/mongodb-operator'
     public docs = [

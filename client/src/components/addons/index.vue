@@ -16,12 +16,11 @@
                     <v-list-item class="justify-center">
                         <div  class="d-flex justify-center" style="margin-top: 20px;">
                             <v-avatar
-                                size="57"
-                                rounded
-                                ><v-img
-                                :src="addon.icon"
-                                :alt="addon.displayName"
-                                ></v-img>
+                                size="100"
+                                rounded="0"
+                                class="pa-3"
+                                :image="addon.icon"
+                                >
                             </v-avatar>
                             <v-badge
                                 v-if="addon.beta"

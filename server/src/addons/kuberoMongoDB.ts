@@ -4,7 +4,7 @@ import {Plugin, IPlugin, IPluginFormFields} from './plugin';
 export class KuberoMongoDB extends Plugin implements IPlugin {
     public id: string = 'kubero-operator';//same as operator name
     public displayName = 'MongoDB'
-    public icon = '/img/addons/MongoDB.png'
+    public icon = '/img/addons/mongo.svg'
     public install: string = ''
     public url = 'https://artifacthub.io/packages/olm/community-operators/kubero-operator'
     public docs = [
