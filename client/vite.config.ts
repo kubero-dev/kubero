@@ -9,6 +9,18 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  css: {
+    preprocessorOptions: {
+      sass: {
+        //silenceDeprecations: ["legacy-js-api"],
+        api: 'modern-compiler', // or "modern", "legacy"
+      },
+      scss: {
+        //silenceDeprecations: ["legacy-js-api"],
+        api: 'modern-compiler', // or "modern", "legacy"
+      },
+    },
+  },
   plugins: [
     vue({
       template: { transformAssetUrls },
