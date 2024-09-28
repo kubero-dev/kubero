@@ -5,8 +5,8 @@
 | Version | Supported          |
 | ------- | ------------------ |
 | 2.X.X   | :white_check_mark: |
-| 1.X.X   | security patches |
-| 0.X.X   |  |
+| 1.X.X   | EOL 28.09.2024     |
+| 0.X.X   |                    |
 
 ## Reporting a Vulnerability
 
