@@ -3,8 +3,12 @@
     <v-container>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h2>
+
+            <h2 v-if="pipelineName=='new'">
                 Create a new Pipeline
+            </h2>
+            <h2 v-if="pipelineName!='new'">
+                Edit <span style="color: rgb(var(--v-theme-kubero))">{{ pipelineName }}</span>
             </h2>
             <p class="text-justify">
                 A Pipeline may have several stages with apps
