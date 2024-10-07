@@ -269,4 +269,8 @@ export default defineComponent({
     visibility: hidden;
     content: "";
 }
+button:where(.swal2-styled)  {
+    color: #FFF !important;
+}
+
 </style>

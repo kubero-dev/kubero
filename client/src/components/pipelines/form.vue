@@ -1,10 +1,15 @@
 <template>
   <v-form v-model="valid">
     <v-container>
+      <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h2>
+
+            <h2 v-if="pipeline=='new'">
                 Create a new Pipeline
+            </h2>
+            <h2 v-if="pipeline!='new'">
+                Edit <span style="color: rgb(var(--v-theme-kubero))">{{ pipelineName }}</span>
             </h2>
             <p class="text-justify">
                 A Pipeline may have several stages with apps
@@ -220,6 +225,7 @@
 <script lang="ts">
 import axios from "axios";
 import { defineComponent } from 'vue'
+import Breadcrumbs from "../breadcrumbs.vue";
 
 type Buildpack = {
   name?: string,
@@ -253,7 +259,15 @@ export default defineComponent({
         default: "new"
       }
     },
-    data: () => ({
+    data () {
+    return {
+      breadcrumbItems: [
+          {
+              title: 'dashboard.-',
+              disabled: false,
+              to: { name: 'Pipelines', params: {}}
+          },
+      ],
       gitops: false,
       dockerimage: '',
       deploymentstrategy: "git",
@@ -344,7 +358,7 @@ export default defineComponent({
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
         (v: any) => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
       ],
-    }),
+    }}, 
     computed: {
       showConnectButton() {
         return this.gitrepoItems.includes(this.gitrepo) && this.repository_status.connected === false;
@@ -356,6 +370,9 @@ export default defineComponent({
       this.listBuildpacks();
       this.loadRepository();
       this.loadPipeline();
+    },
+    components: {
+        Breadcrumbs,
     },
     methods: {
       updateBuildpack(buildpack: Buildpack) {
