@@ -51,105 +51,241 @@
         >
           <v-switch
             v-model="gitops"
-            label="Connect pipeline to a Git repository (GitOps)"
+            label="Enable Pipeline for GitOps"
             color="primary"
           ></v-switch>
         </v-col>
       </v-row>
 
-      <v-row v-if="gitops">
-        <v-col
-          cols="12"
-          md="8"
-        >
-        <v-tabs v-model="repotab" stacked centered @click="loadRepository">
-            <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
-            <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
-            <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
-            <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
-            <v-tab value="gogs" :disabled="repositoriesList.gogs == false || !newPipeline"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
-            <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
-        </v-tabs>
-        </v-col>
-      </v-row>
+      <v-card elevation="2" color="cardBackground" v-if="gitops" style="margin-bottom: 20px">
+        <v-card-title>Deployment</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col
+              cols="12"
+              md="8"
+            >
+            <v-tabs v-model="repotab" stacked centered @click="loadRepository">
+                <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
+                <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
+                <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
+                <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
+                <v-tab value="gogs" :disabled="repositoriesList.gogs == false || !newPipeline"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
+                <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
+            </v-tabs>
+            </v-col>
+          </v-row>
 
-      <v-row v-if="gitops">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-combobox
-            v-model="gitrepo"
-            :rules="repositoryRules"
-            :counter="60"
-            :items="gitrepoItems"
-            label="Repository *"
-            :disabled="repository_status.connected || !newPipeline"
-            required
-          ></v-combobox>
-        </v-col>
-      </v-row>
-      <v-row
-        v-if="gitops && showConnectButton"
-      >
-        <v-col
-          cols="12"
-          md="6"
-        >
-            <v-alert
-                v-show="repository_status.error"
-                outlined
-                type="warning"
-                prominent
-                border="start"
-                >{{repository_status.statusTxt}}
-            </v-alert>
-            <v-btn
-                color="primary"
-                elevation="2"
-                :disabled="!repotab"
-                @click="connectRepo()"
-                >Connect</v-btn>
-        </v-col>
-      </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-combobox
+                v-model="gitrepo"
+                :rules="repositoryRules"
+                :counter="60"
+                :items="gitrepoItems"
+                label="Repository *"
+                :disabled="repository_status.connected || !newPipeline"
+                required
+              ></v-combobox>
+            </v-col>
+          </v-row>
 
-      <v-row
-        v-if="gitops && repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
-      >
-        <v-col
-          cols="12"
-          md="4"
-        >
-              <v-alert class="alert mb-5"
-                type="success"
-                elevation="6"
-                transition="scale-transition"
-              >Webhook created
+          <v-row>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-radio-group v-model="buildstrategy">
+                <v-radio
+                  key="0"
+                  label="Runpacks"
+                  value="plain"
+                ></v-radio>
+                <v-radio
+                  key="2"
+                  label="External CI/CD"
+                  value="external"
+                ></v-radio>
+                <v-radio
+                  key="1"
+                  label="Nixpacks"
+                  value="nixpacks"
+                ></v-radio>
+                <v-radio
+                  key="1"
+                  label="Buildpacks"
+                  value="buildpacks"
+                ></v-radio>
+                <v-radio
+                  key="2"
+                  label="Dockerfile"
+                  value="dockerfile"
+                ></v-radio>
+              </v-radio-group>
+            </v-col>
+            <v-col
+              cols="12"
+              md="8"
+            >
+            
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
+                <h3>
+                  Runpacks
+                </h3>
+                <div>Your code is build and running on official images. The code will be built for every pod in a init container. This is the fastes way, to run your code, but becomes more inefficient with every replica.</div>
               </v-alert>
-              <v-alert class="alert"
-                type="success"
-                elevation="6"
-                transition="scale-transition"
-              >Deploy keys added
-              </v-alert>
-        </v-col>
-      </v-row>
 
-      <v-row v-if="gitops">
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-select
-            v-model="buildpack"
-            :items="buildpackList"
-            label="Buildpack *"
-            item-title="text"
-            item-text="value"
-            @update:modelValue="updateBuildpack"
-          ></v-select>
-        </v-col>
-      </v-row>
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'nixpacks'">
+                <h3>
+                  Nixpacks
+                </h3>
+                <div>
+                  <a href="https://nixpacks.com/" target="_blank" style="text-decoration: underline;">Nixpacks</a> is a open source project to build docker images with nix. It is a good way to build images without a Dockerfile, if you want to have a reproducable build process.
+                </div>
+              </v-alert>
+
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'buildpacks'">
+                <h3>
+                  Buildpacks
+                </h3>
+                <div>
+                  <a href="https://buildpacks.io/" target="_blank" style="text-decoration: underline;">Buildpacks</a> are a set of scripts and binaries used to transform application source code into a deployable image, automating the process of compiling, building, and configuring the app for deployment.
+                </div>
+              </v-alert>
+
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'dockerfile'">
+                <h3>
+                  Dockerfile
+                </h3>
+                <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
+              </v-alert>
+
+              <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'external'">
+                <h3>
+                  External CI/CD
+                </h3>
+                <div>You are building your image on a external CI/CD and deploy it by changing the image tag thrue the API</div>
+              </v-alert>
+
+            </v-col>
+          </v-row>
+
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+              v-if="buildstrategy == 'plain'"
+            >
+              <v-select
+                v-model="buildpack"
+                :items="buildpackList"
+                label="Runpack *"
+                item-title="text"
+                item-text="value"
+                @update:modelValue="updateBuildpack"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+
+          <v-row
+            v-if="buildstrategy == 'dockerfile'">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="dockerfilepath"
+                :rules="imageRules"
+                label="Dockerfile path"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-if="buildstrategy == 'dockerfile' || buildstrategy == 'nixpacks' || buildstrategy == 'buildpacks'">
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="registry.host"
+                label="Registry Host"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="registry.username"
+                label="Username"
+              ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="4"
+            >
+              <v-text-field
+                v-model="registry.password"
+                label="Password"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-if="repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
+          >
+            <v-col
+              cols="12"
+              md="4"
+            >
+                  <v-alert class="alert mb-5"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Webhook created
+                  </v-alert>
+                  <v-alert class="alert"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Deploy keys added
+                  </v-alert>
+            </v-col>
+          </v-row>
+
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+                <v-alert
+                    v-show="repository_status.error"
+                    outlined
+                    type="warning"
+                    prominent
+                    border="start"
+                    >{{repository_status.statusTxt}}
+                </v-alert>
+                <v-btn
+                    color="primary"
+                    elevation="2"
+                    :disabled="!repotab"
+                    @click="connectRepo()"
+                    >Connect</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+
+
       <v-card elevation="2" color="cardBackground">
         <v-card-title>Phases</v-card-title>
         <v-card-text>
@@ -271,6 +407,13 @@ export default defineComponent({
       gitops: false,
       dockerimage: '',
       deploymentstrategy: "git",
+      buildstrategy: "plain",
+      dockerfilepath: '/',
+      registry: {
+        host: 'https://',
+        username: '',
+        password: '',
+      },
       newPipeline: true,
       resourceVersion: undefined,
       repotab: 'github', //selected tab
@@ -349,8 +492,8 @@ export default defineComponent({
         (v: any) => v !== 'new' || 'Name cannot be "new"',
       ],
       domainRules: [
-        (v: any) => v.length <= 253 || 'Name must be less than 253 characters',
-        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || 'Not a domain',
+        //(v: any) => v.length <= 253 || 'Name must be less than 253 characters',
+        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$|^localhost$|^$/.test(v) || 'Not a domain',
       ],
       repositoryRules: [
         (v: any) => !!v || 'Repository is required',
@@ -367,6 +510,7 @@ export default defineComponent({
     mounted() {
       this.getContextList();
       this.listRepositories();
+      this.loadDefaultregistry();
       this.listBuildpacks();
       this.loadRepository();
       this.loadPipeline();
@@ -465,6 +609,23 @@ export default defineComponent({
         });
       },
 
+      loadDefaultregistry() {
+        if (this.pipeline === 'new') {
+          axios.get(`/api/config/registry`)
+          .then(response => {
+            if (response.data.host && response.data.account.username && response.data.account.password) {
+              this.registry ={
+                host: 'https://'+response.data.host,
+                username: response.data.account.username,
+                password: response.data.account.password,
+              }
+            }
+          }).catch(error => {
+            console.log(error);
+          });
+        }
+      },
+
       connectRepository(repo: string) {
         axios.post(`/api/repo/${repo}/connect`, {
           gitrepo: this.gitrepo
@@ -535,6 +696,8 @@ export default defineComponent({
             this.phases = p.phases;
             this.reviewapps = p.reviewapps;
             this.git = p.git;
+            this.registry = p.registry || this.registry;
+            this.buildstrategy = p.buildstrategy || this.buildstrategy;
             this.dockerimage = p.dockerimage;
             this.deploymentstrategy = p.deploymentstrategy;
             this.buildpack = p.buildpack;
@@ -572,8 +735,10 @@ export default defineComponent({
           phases: this.phases,
           reviewapps: this.reviewapps,
           git: this.git,
+          registry: this.registry,
           dockerimage: '',
-          deploymentstrategy: "git", // DEPRECATED
+          deploymentstrategy: this.deploymentstrategy,
+          buildstrategy: this.buildstrategy,
           buildpack: this.buildpack,
         })
         .then(response => {
@@ -594,8 +759,10 @@ export default defineComponent({
           phases: this.phases,
           reviewapps: this.reviewapps,
           git: this.git,
+          registry: this.registry,
           dockerimage: '',
-          deploymentstrategy: "git", // DEPRECATED 
+          deploymentstrategy: this.deploymentstrategy,
+          buildstrategy: this.buildstrategy,
           buildpack: this.buildpack,
         })
         .then(response => {
