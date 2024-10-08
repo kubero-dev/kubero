@@ -4,7 +4,7 @@ tags:
 - pastebin
 source: https://github.com/szabodanika/microbin
 website: https://microbin.eu/
-icon: https://microbin.eu/img/logo-square.png
+icon: https://raw.githubusercontent.com/szabodanika/microbin/refs/heads/master/templates/assets/logo-square.png
 screenshots:
 - https://microbin.eu/img/screenshot7.png
 - https://microbin.eu/img/screenshot6.png
