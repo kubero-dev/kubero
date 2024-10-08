@@ -1,0 +1,54 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: lychee
+    labels:
+        manager: kubero
+spec:
+    name: lychee
+    deploymentstrategy: docker
+    envVars:
+        - name: PHP_TZ
+          value: UTC
+        - name: DB_CONNECTION
+          value: sqlite
+        - name: APP_ENV
+          value: local
+        - name: DB_DATABASE
+          value: /local/db/lychee
+        - name: STARTUP_DELAY
+          value: "5"
+        - name: TRUSTED_PROXIES
+          value: "*"
+        - name: APP_FORCE_HTTPS
+          value: "false"
+        - name: APP_URL
+          value: https://lychee.localhost
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /local/db
+          name: lychee-db-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /uploads
+          name: lychee-upload-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: lycheeorg/lychee
+        tag: latest
