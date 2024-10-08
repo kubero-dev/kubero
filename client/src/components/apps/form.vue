@@ -1409,6 +1409,8 @@ export default defineComponent({
           provider: '',
           repository: {} as GitRepo,
         },
+        buildstrategy: 'plain',
+        deploymentstrategy: 'git',
       },
       appname: '',
       resourceVersion: '',
@@ -1754,6 +1756,8 @@ export default defineComponent({
 
           this.loadBranches();
           this.buildpack = this.pipelineData.buildpack;
+          this.buildstrategy = this.pipelineData.buildstrategy;
+          this.deploymentstrategy = this.pipelineData.deploymentstrategy;
 
           if (this.app == 'new') {
             this.ingress.hosts[0].host = this.pipelineData.domain;

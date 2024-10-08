@@ -60,6 +60,12 @@ Router.get('/config/buildpacks', authMiddleware, async function (req: Request, r
     res.send(await req.app.locals.kubero.getBuildpacks());
 });
 
+Router.get('/config/registry', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Get the default registry list'
+    res.send(await req.app.locals.settings.getDefaultRegistry());
+});
+
 
 Router.get('/cli/config/k8s/context', bearerMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Config']

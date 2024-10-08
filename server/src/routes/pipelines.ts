@@ -61,9 +61,11 @@ Router.post('/cli/pipelines',bearerMiddleware, async function (req: Request, res
         phases: req.body.phases,
         buildpack: selectedBuildpack,
         reviewapps: req.body.reviewapps,
-        git: git,
         dockerimage: req.body.dockerimage,
+        git: git,
+        registry: req.body.registry,
         deploymentstrategy: req.body.deploymentstrategy,
+        buildstrategy: req.body.buildstrategy,
     };
     const user = auth.getUser(req);
     req.app.locals.kubero.newPipeline(pipeline, user);
@@ -80,10 +82,12 @@ Router.post('/pipelines',authMiddleware, async function (req: Request, res: Resp
         domain: req.body.domain,
         phases: req.body.phases,
         buildpack: req.body.buildpack,
+        dockerimage: req.body.dockerimage,
         reviewapps: req.body.reviewapps,
         git: req.body.git,
-        dockerimage: req.body.dockerimage,
+        registry: req.body.registry,
         deploymentstrategy: req.body.deploymentstrategy,
+        buildstrategy: req.body.buildstrategy,
     };
     req.app.locals.kubero.newPipeline(pipeline, user);
     res.send("new");
@@ -101,9 +105,11 @@ Router.put('/pipelines/:pipeline',authMiddleware, async function (req: Request, 
         phases: req.body.phases,
         buildpack: req.body.buildpack,
         reviewapps: req.body.reviewapps,
-        git: req.body.git,
         dockerimage: req.body.dockerimage,
+        git: req.body.git,
+        registry: req.body.registry,
         deploymentstrategy: req.body.deploymentstrategy,
+        buildstrategy: req.body.buildstrategy,
     };
     req.app.locals.kubero.updatePipeline(pipeline, req.body.resourceVersion, user);
     res.send("new");

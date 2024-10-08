@@ -175,6 +175,13 @@ export class Settings {
         });
     }
 
+    public async getDefaultRegistry(): Promise<any> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+
+        return kuberoes.spec.registry
+    }
+
     public async getDomains(): Promise<any> {
         let allIngress = await this.kubectl.getAllIngress()
         let domains: string[] = []
