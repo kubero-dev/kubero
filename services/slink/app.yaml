@@ -28,7 +28,7 @@ spec:
           mountPath: /var/data
           name: slink-volume
           size: 10Gi
-          storageClass: standard
+          storageClass:
     cronjobs: []
     addons: []
     web:

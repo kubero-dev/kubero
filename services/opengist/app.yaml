@@ -18,7 +18,7 @@ spec:
     mountPath: /root/.opengist
     name: opengist-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:
