@@ -1,0 +1,9 @@
+name: Peppermint
+description: 'An open source ticket management & help desk solution. A zendesk/freshdesk alternative'
+tags:
+- helpdesk
+source: https://github.com/Peppermint-Lab/peppermint
+website: https://peppermint.sh/
+icon: https://avatars.githubusercontent.com/u/76014454?s=200&v=4
+screenshots:
+- https://peppermint.sh/dashboard.jpeg
