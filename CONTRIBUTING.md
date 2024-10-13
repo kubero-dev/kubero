@@ -1,12 +1,13 @@
 # How to contribute
+> "Great to see you here! We are happy you are considering contributing to Kubero." @mms-gianni
 
-All contributions are welcome. For simple typos, just open a PR.
-For bigger ideas it might be better to open an issue first before you put a lot of work into it. 
+All contributions are welcome. For simple typo's, just open a PR. For bigger ideas/changes we kindly ask you to reach out on discord or open an issue first before you put a lot of work into it. We are very happy to discuss your ideas and help you to get started.
 
-Want to contribute, but don't know where to start? Have a look into the [Roadmap](https://github.com/orgs/kubero-dev/projects/1).
+Willing to contribute something, but you don't know where to start? Have a look into the [Roadmap](https://github.com/orgs/kubero-dev/projects/1). 
 
+## Process
 1. Setup your development environment
-2. Fork the repository
+2. Fork the repository and checkout the code
 3. Create a new branch
 4. Make your changes
 5. Open a PR
