@@ -20,45 +20,52 @@ Want to contribute, but don't know where to start? Have a look into the [Roadmap
 - kubero-cli
 - git
 
-### 1) prepare your local code
-Fork the repository https://github.com/kubero-dev/kubero into your account.
 
-### 2) Start a cluster
+### 1) Start a local Kubernetes cluster with Kind
 Run `kubero install` with the [CLI](https://github.com/kubero-dev/kubero-cli/releases/latest) and select `kind`. 
 This will install a local cluster with a single node and all required components.
 
 You can skip the kubero-UI step since we will use our local code.
 
-### 3) Export the kubeconfig
+### 2) Export the kubeconfig
 ```bash
 kind export kubeconfig --name kubero-XXX --kubeconfig ./kubeconfig
 ```
 
-### Create a dev namespace
+### 3) Create a dev namespace
 This step is optional but will avoid interference with the local InCluster kubero-ui instance.
 ```bash
 kubectl create namespace kubero-dev
 ```
 
-### Configure Kubero's environment
+### 4) Prepare your local code
+Fork the repository https://github.com/kubero-dev/kubero into your account.
+
+Clone your Fork to your local disk.
+
+### 5) Configure Kubero's environment
 ```bash
 mv .env.template .env
 ```
 
-### Start local node server
+### 6) Start local node server
+This will start the server part. 
 ```bash
 cd server
 yarn install
 yarn dev
 ```
 
+Initiate the client JS part. 
 ```bash
 cd client
 yarn install
 yarn watch
 ```
 
-### start optional services 
+You should be able to reach your local dev instance via http://localhost:2000 
+
+### 7) start optional services 
 If you need any additional services (Gitea, Github ...), just run `docker-compose up -d`, or add it to the `docker-compose.yml` file, if it is missing.
 
 Nope. No extra database is required. All data is stored in the Kubernetes cluster.
