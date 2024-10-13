@@ -30,10 +30,6 @@ Willing to contribute something, but you don't know where to start? Have a look 
 
 ### Requirements
 
-<<<<<<< HEAD
-
-### 1) Start a local Kubernetes cluster with Kind
-=======
 To get started with Kubero development, you will need the following toolbelt:
 
 - Docker
@@ -44,46 +40,27 @@ To get started with Kubero development, you will need the following toolbelt:
 - Code editor of your choice (VSCode, Webstorm, Atom, ...)
 
 ### 1) Start a Local Kubernetes Cluster with Kind
->>>>>>> dev-setup
 Run `kubero install` with the [CLI](https://github.com/kubero-dev/kubero-cli/releases/latest) and select `kind`. 
 This will install a local cluster with a single node and all required components.
 
 You can skip the kubero-UI step since we will use our local code.
 
-<<<<<<< HEAD
-### 2) Export the kubeconfig
-=======
 ### 2) Export the Kubeconfig
->>>>>>> dev-setup
 ```bash
 kind export kubeconfig --name kubero-XXX --kubeconfig ./kubeconfig
 ```
 This step exports the kubeconfig for your local cluster, making it available for Kubero.
 
-<<<<<<< HEAD
-### 3) Create a dev namespace
-This step is optional but will avoid interference with the local InCluster kubero-ui instance.
-=======
 ### 3) Create a Development Namespace (Optional)
 Although optional, creating a separate namespace helps prevent interference with the local in-cluster Kubero-UI instance.
->>>>>>> dev-setup
 ```bash
 kubectl create namespace kubero-dev
 ```
 
-<<<<<<< HEAD
-### 4) Prepare your local code
-Fork the repository https://github.com/kubero-dev/kubero into your account.
-
-Clone your Fork to your local disk.
-
-### 5) Configure Kubero's environment
-=======
 ### 4) Checkout the Code
 1. Fork the [Kubero](https://github.com/kubero-dev/kubero) repository to your GitHub account.
 2. Clone your forked repository to your local machine.
 
->>>>>>> dev-setup
 ```bash
 git clone https://github.com/YOUR_USERNAME/kubero.git
 cd kubero
@@ -96,34 +73,19 @@ cd server
 mv .env.template .env
 ```
 
-<<<<<<< HEAD
-### 6) Start local node server
-This will start the server part. 
-=======
 Install the dependencies, and start the server:
->>>>>>> dev-setup
 ```bash
 yarn install
 yarn dev
 ```
 
-<<<<<<< HEAD
-Initiate the client JS part. 
-=======
 Next, set up the client JavaScript part:
->>>>>>> dev-setup
 ```bash
 cd client
 yarn install
 yarn watch
 ```
 
-<<<<<<< HEAD
-You should be able to reach your local dev instance via http://localhost:2000 
-
-### 7) start optional services 
-If you need any additional services (Gitea, Github ...), just run `docker-compose up -d`, or add it to the `docker-compose.yml` file, if it is missing.
-=======
 You should now be able to access your local development instance at http://localhost:2000 
 
 ### 6) Start Additional Services (Optional)
@@ -132,7 +94,6 @@ If you need additional services (such as Gitea or GitHub integration), run the f
 docker-compose up -d
 ```
 If any services are missing, you can add them to the `docker-compose.yml` file.
->>>>>>> dev-setup
 
 Nope. No extra database is required. All data is stored in the Kubernetes cluster.
 
