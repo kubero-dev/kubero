@@ -92,6 +92,8 @@
             </v-list-item>
             -->
             <v-list-item
+                link href="https://github.com/kubero-dev/kubero/releases" 
+                target="_blank"
                 prepend-icon="mdi-star"
                 :title="''+ kubero.version">
             </v-list-item>
