@@ -19,14 +19,14 @@ spec:
     mountPath: /app/data/configs
     name: homar-config
     size: 10Mi
-    storageClass: standard
+    storageClass:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /app/public/icons
     name: homarr-icons
     size: 200Mi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:
