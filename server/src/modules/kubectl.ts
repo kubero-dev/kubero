@@ -746,9 +746,9 @@ export class Kubectl {
         }
     }
 
-    public async createScanImageJob(namespace: string, app: string, image: string, tag: string): Promise<any> {
+    public async createScanImageJob(namespace: string, app: string, image: string, tag: string, withCredentials: boolean): Promise<any> {
         await this.deleteScanJob(namespace, app+'-kuberoapp-vuln');
-        const job = {
+        let job = {
             apiVersion: 'batch/v1',
             kind: 'Job',
             metadata: {
@@ -788,34 +788,39 @@ export class Kubectl {
                                     "--exit-code",
                                     "0"
                                 ],
-                                env: [
-                                    {
-                                        name: 'TRIVY_USERNAME',
-                                        valueFrom: {
-                                            secretKeyRef: {
-                                                name: 'registry-credentials',
-                                                key: 'username',
-                                                optional: true
-                                            }
-                                        }
-                                    },
-                                    {
-                                        name: 'TRIVY_PASSWORD',
-                                        valueFrom: {
-                                            secretKeyRef: {
-                                                name: 'registry-credentials',
-                                                key: 'password',
-                                                optional: true
-                                            }
-                                        }
-                                    }
-                                ],
+                                env: [] as { name: string; valueFrom: { secretKeyRef: { name: string; key: string; optional: true; }; }; }[],
                             }
                         ]
                     }
                 }
             }
         };
+
+        if (withCredentials) {
+            job.spec.template.spec.containers[0].env = [
+                {
+                    name: 'TRIVY_USERNAME',
+                    valueFrom: {
+                        secretKeyRef: {
+                            name: 'registry-credentials',
+                            key: 'username',
+                            optional: true
+                        }
+                    }
+                },
+                {
+                    name: 'TRIVY_PASSWORD',
+                    valueFrom: {
+                        secretKeyRef: {
+                            name: 'registry-credentials',
+                            key: 'password',
+                            optional: true
+                        }
+                    }
+                }
+            ]
+        }
+        
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
         } catch (error) {

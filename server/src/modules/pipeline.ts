@@ -1,4 +1,4 @@
-import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IgitLink, IGithubRepository} from '../types';
+import { IBuildpack , IPipeline, IPipelinePhase, IKubectlPipeline, IKubectlMetadata, IgitLink, IGithubRepository, IRegistry} from '../types';
 
 export class Pipeline implements IPipeline {
     public name: string;
@@ -8,7 +8,9 @@ export class Pipeline implements IPipeline {
     public phases: IPipelinePhase[];
     public buildpack: IBuildpack;
     public deploymentstrategy: 'git' | 'docker';
+    public buildstrategy : 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks';
     public git: IgitLink;
+    public registry: IRegistry;
 
     constructor(
         pl: IPipeline,
@@ -19,8 +21,10 @@ export class Pipeline implements IPipeline {
         this.phases = pl.phases;
         this.buildpack = pl.buildpack;
         this.dockerimage = pl.dockerimage;
-        this.git = pl.git;
         this.deploymentstrategy = pl.deploymentstrategy;
+        this.buildstrategy = pl.buildstrategy;
+        this.git = pl.git;
+        this.registry = pl.registry;
     }
 }
 

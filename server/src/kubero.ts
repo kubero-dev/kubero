@@ -1263,10 +1263,15 @@ export class Kubero {
             } else {
                 debug.log('no git repo found to run scan');
             }
+        } else if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy != 'plain') {
+            if (contextName) {
+                this.kubectl.setCurrentContext(contextName);
+                this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag, true);
+            }
         } else {
             if (contextName) {
                 this.kubectl.setCurrentContext(contextName);
-                this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag);
+                this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag, false);
             }
         }
 

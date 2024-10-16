@@ -199,9 +199,17 @@ export interface IPipeline {
     phases: IPipelinePhase[];
     buildpack: IBuildpack
     git: IgitLink;
+    registry: IRegistry;
     dockerimage: string;
     deploymentstrategy: 'git' | 'docker',
+    buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks',
     resourceVersion?: string; // required to update resource, not part of spec
+}
+
+export interface IRegistry {
+    host: string;
+    username: string;
+    password: string;
 }
 
 export interface IgitLink {
