@@ -55,7 +55,7 @@ export class Auth {
             //console.log("initialize Local Auth");
 
             try {
-                const b = Buffer.from(process.env.KUBERO_USERS as string, 'base64').toString('ascii')
+                const b = process.env.KUBERO_USERS as string
                 this.users = JSON.parse(b);
             } catch (error) {
                 console.log("ERROR loading local Users");
