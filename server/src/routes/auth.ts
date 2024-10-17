@@ -25,6 +25,7 @@ Router.all("/session", (req: Request, res: Response) => {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
         "kubernetesVersion": req.app.locals.kubero.getKubernetesVersion(),
+        "operatorVersion": req.app.locals.kubero.getOperatorVersion(),
         "buildPipeline": req.app.locals.kubero.getBuildpipelineEnabled(),
         "templatesEnabled": req.app.locals.kubero.getTemplateEnabled(),
         "auditEnabled": req.app.locals.audit.getAuditEnabled(),
