@@ -92,13 +92,93 @@
             </v-list-item>
             -->
             <v-list-item
-                link href="https://github.com/kubero-dev/kubero/releases" 
-                target="_blank"
+                @click="debugDialog = true"
                 prepend-icon="mdi-star"
                 :title="''+ kubero.version">
             </v-list-item>
         </v-list>
     </template>
+    <v-dialog
+      v-model="debugDialog"
+      width="auto"
+    >
+      <v-card
+        min-width="400"
+        prepend-icon="mdi-information-outline"
+        title="Version and Features"
+      >
+        <v-card-text>
+            <v-row dense>
+                <v-col cols="12">
+                    <v-textarea
+                    label="Debug"
+                        :model-value="'Kubero UI Version: ' + kubero.version
+                        + '\nKubero Operator Version: ' + kubero.operatorVersion
+                        + '\nKubernetes Version: ' + kubero.kubernetesVersion
+                        + '\nTemplates: ' + kubero.templatesEnabled
+                        + '\nAdmin: ' + kubero.adminDisabled
+                        + '\nWeb Console: ' + kubero.consoleEnabled
+                        + '\nBuild Pipeline: ' + kubero.buildPipeline
+                        + '\nMetrics: ' + kubero.metricsEnabled
+                        + '\nAudit: ' + kubero.auditEnabled
+                        + '\nZeropod Sleep: ' + kubero.sleepEnabled"
+                        readonly
+                        name="debug"
+                        variant="filled"
+                        auto-grow
+                    ></v-textarea>
+
+                    <a href="https://github.com/kubero-dev/kubero/releases" target="_blank">List of latest Kubero releases</a>
+                </v-col>
+                <!--
+                <v-col cols="12">
+                    <v-text-field
+                        label="Kubero UI Version"
+                        v-model="kubero.version"
+                        readonly
+                        density="compact"
+                        variant="plain"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field
+                        label="Kubero Operotor Version"
+                        v-model="kubero.operatorVersion"
+                        readonly
+                        density="compact"
+                        variant="plain"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                    <v-text-field
+                        label="Kubernetes Version"
+                        v-model="kubero.kubernetesVersion"
+                        readonly
+                        density="compact"
+                        variant="plain"
+                    ></v-text-field>
+                </v-col>
+                <v-col cols="12">
+                    <v-checkbox readonly density="compact" label="Templates" v-model="kubero.templatesEnabled"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Admin" v-model="kubero.adminDisabled"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Web Console" v-model="kubero.consoleEnabled"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Build Pipeline" v-model="kubero.buildPipeline"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Metrics" v-model="kubero.metricsEnabled"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Audit" v-model="kubero.auditEnabled"></v-checkbox>
+                    <v-checkbox readonly density="compact" label="Zeropod Sleep" v-model="kubero.sleepEnabled"></v-checkbox>
+                </v-col>
+                -->
+            </v-row>
+        </v-card-text>
+        <template v-slot:actions>
+          <v-btn
+            class="ms-auto"
+            text="Ok"
+            @click="debugDialog = false"
+          ></v-btn>
+        </template>
+      </v-card>
+    </v-dialog>
   </v-navigation-drawer>
 </template>
 
@@ -127,7 +207,8 @@ export default defineComponent({
         return {
         version: '0.0.1',
         templatesEnabled: false,
-        session: false
+        session: false,
+        debugDialog: false
         }
     },
     computed: {

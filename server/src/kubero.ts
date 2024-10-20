@@ -100,6 +100,14 @@ export class Kubero {
         }
     }
 
+    public getOperatorVersion() {
+        if (this.kubectl.kuberoOperatorVersion) {
+            return this.kubectl.kuberoOperatorVersion;
+        } else {
+            return 'unknown';
+        }
+    }
+
     public updateState() {
         this.pipelineStateList = [];
         this.appStateList = [];
