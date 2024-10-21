@@ -19,14 +19,14 @@ spec:
     mountPath: /var/lib
     name: whoogle-tor
     size: 1Gi
-    storageClass: standard
+    storageClass:
   - accessModes:
     - ReadWriteMany
     emptyDir: false
     mountPath: /whoogle/app/static/build
     name: whoogle-build
     size: 20Mi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:
