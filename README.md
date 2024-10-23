@@ -96,12 +96,7 @@ Check out the full [list here](https://www.kubero.dev/templates/) or submit your
 Kubero is Kubernetes native and runs with two containers on any Kubernetes instance (kubero-ui and Operator). All data is stored on your Kubernetes etcd without an extra database.
 
 
-
-
-
-
-
-![](docs/img/highlevel.png)
+![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/img/kubero-concept.png))
 
 ## Quickstart
 **1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a>** (MacOS, Linux, Windows)<p>
