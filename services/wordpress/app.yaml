@@ -30,7 +30,7 @@ spec:
               rootPassword: wordpress
               username: wordpress
             global:
-              storageClass: standard
+              storageClass:
             primary:
               persistence:
                 accessModes:
@@ -53,7 +53,7 @@ spec:
     mountPath: /bitnami/wordpress
     name: wordpress-data
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

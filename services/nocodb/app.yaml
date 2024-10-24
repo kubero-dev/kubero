@@ -22,7 +22,7 @@ spec:
     mountPath: /usr/app/data/
     name: nocodb-data-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

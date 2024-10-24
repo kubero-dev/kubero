@@ -27,7 +27,7 @@ spec:
     mountPath: /app/data
     name: gotify-volume
     size: 1Gi
-    storageClass: standard
+    storageClass:
   web:
     replicaCount: 1
   worker:

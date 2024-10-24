@@ -67,7 +67,7 @@ spec:
                                       password: activepieces
                                       postgresPassword: admin
                                       username: activepieces
-                              storageClass: standard
+                              storageClass:
                           primary:
                               persistence:
                                   size: 1Gi
@@ -90,7 +90,7 @@ spec:
                           global:
                               redis:
                                   password: activepieces
-                              storageClass: standard
+                              storageClass:
                           master:
                               persistence:
                                   size: 1Gi
