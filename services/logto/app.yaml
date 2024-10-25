@@ -1,0 +1,56 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: logto
+    labels:
+        manager: kubero
+spec:
+    name: logto
+    deploymentstrategy: docker
+    image:
+        containerPort: "3001"
+        pullPolicy: Always
+        repository: svhd/logto
+        tag: latest
+        run:
+            command: node index.js
+            readOnlyAppStorage: false
+            repository: node
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    envVars:
+        - name: TRUST_PROXY_HEADER
+          value: "1"
+        - name: DB_URL
+          value: postgres://postgres:p0stgr3s@logto-postgresql:5432/logto
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: logto-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: logto
+                                      password: p0stgr3s
+                                      postgresPassword: p0stgr3s
+                                      username: logto
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
