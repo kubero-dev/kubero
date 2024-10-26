@@ -1,0 +1,56 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: kanboard
+    labels:
+        manager: kubero
+spec:
+    name: kanboard
+    deploymentstrategy: docker
+    envVars:
+        - name: PLUGIN_INSTALLER
+          value: "true"
+    serviceAccount:
+        annotations: {}
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/app/data
+          name: kanboard-data-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/app/plugins
+          name: kanboard-plugins-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: kanboard/kanboard
+        tag: latest
+        run:
+            command: node index.js
+            readOnlyAppStorage: false
+            repository: node
+            securityContext:
+                runAsUser: 0
+                runAsGroup: 0
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: false
+                runAsNonRoot: false
+                capabilities:
+                    add: []
+                    drop: []
+            tag: latest
