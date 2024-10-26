@@ -10,8 +10,6 @@ spec:
     envVars:
         - name: PLUGIN_INSTALLER
           value: "true"
-    serviceAccount:
-        annotations: {}
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
@@ -40,17 +38,3 @@ spec:
         pullPolicy: Always
         repository: kanboard/kanboard
         tag: latest
-        run:
-            command: node index.js
-            readOnlyAppStorage: false
-            repository: node
-            securityContext:
-                runAsUser: 0
-                runAsGroup: 0
-                allowPrivilegeEscalation: false
-                readOnlyRootFilesystem: false
-                runAsNonRoot: false
-                capabilities:
-                    add: []
-                    drop: []
-            tag: latest
