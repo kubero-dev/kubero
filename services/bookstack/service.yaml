@@ -1,0 +1,13 @@
+name: Bookstack
+description: 'BookStack is an opinionated documentation platform that provides a pleasant and simple out-of-the-box experience.'
+tags:
+- documentation
+source: https://github.com/BookStackApp/BookStack
+website: https://www.bookstackapp.com/
+icon: https://avatars.githubusercontent.com/u/20912696?s=200&v=4
+screenshots:
+- https://www.bookstackapp.com/images/screenshots/page-view.png
+- https://www.bookstackapp.com/images/screenshots/page-edit.png
+- https://www.bookstackapp.com/images/screenshots/books-view.png
+- https://www.bookstackapp.com/images/screenshots/book-sorting.png
+- https://www.bookstackapp.com/images/screenshots/search.png
