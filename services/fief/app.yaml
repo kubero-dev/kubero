@@ -9,19 +9,19 @@ spec:
     deploymentstrategy: docker
     envVars:
         - name: SECRET
-          value:
+          value: epawllxPnSpKSVjhRSqO2HyIf6VMfSKTWb7MVFkgidwDn0pEKzaMCfN4y82UH5Ei5lQ6A5iOt8U7-QXayIxttQ
         - name: FIEF_CLIENT_ID
-          value:
+          value: 0joSJuS_7pVbgQScEx5F7q2TM0vPF3aF0Ks8IyXE-Dk
         - name: FIEF_CLIENT_SECRET
-          value:
+          value: 3eYbWM4DEvxIp9wxF50YmxoQ_20_f8WpVXvq-wnHKA8
         - name: ENCRYPTION_KEY
-          value:
+          value: N5hKEoZjXLLf2v6uYuAHxjFVjF3F9Yif4Cm18eHBNW4=
         - name: FIEF_DOMAIN
-          value:
+          value: fief.localhost
         - name: FIEF_MAIN_USER_EMAIL
           value: example@example.com
         - name: FIEF_MAIN_USER_PASSWORD
-          value:
+          value: CXIexRIJssVFDkPUHShSxk36QBDEA
         - name: CSRF_COOKIE_SECURE
           value: "False"
         - name: SESSION_DATA_COOKIE_SECURE
@@ -34,7 +34,21 @@ spec:
           value: "False"
         - name: FIEF_ADMIN_SESSION_COOKIE_SECURE
           value: "False"
-    extraVolumes: []
+        - name: TELEMETRY_ENABLED
+          value: "False"
+        - name: CLIENT_REDIRECT_URI_SSL_REQUIRED
+          value: "True"
+        - name: FORWARDED_ALLOW_IPS
+          value: "*"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /data/db
+          name: fief-db-volume
+          size: 1Gi
+          storageClass: standard
     cronjobs: []
     addons: []
     web:
