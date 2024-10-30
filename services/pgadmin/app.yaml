@@ -1,0 +1,26 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: pgadmin
+    labels:
+        manager: kubero
+spec:
+    name: pgadmin
+    deploymentstrategy: docker
+    envVars:
+        - name: PGADMIN_DEFAULT_EMAIL
+          value: example@example.com
+        - name: PGADMIN_DEFAULT_PASSWORD
+          value: example
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: dpage/pgadmin4
+        tag: latest
