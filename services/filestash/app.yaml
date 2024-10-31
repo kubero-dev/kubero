@@ -1,0 +1,22 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: filestash
+    labels:
+        manager: kubero
+spec:
+    name: filestash
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8334"
+        pullPolicy: Always
+        repository: machines/filestash
+        tag: latest
