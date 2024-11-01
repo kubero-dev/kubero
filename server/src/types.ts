@@ -16,6 +16,7 @@ export interface IApp {
     image : {
         repository: string,
         tag: string,
+        command: [string],
         pullPolicy: 'Always',
         containerPort: number,
         fetch: {
