@@ -1646,15 +1646,12 @@ export default defineComponent({
       },
     },
     mounted() {
-      this.loadPipeline();
+      this.loadPipelineAndApp();
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
       this.loadClusterIssuers();
       this.getDomains();
-      if (this.app != 'new') {
-        this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
-      }
 
       if (this.$route.query.template && this.$route.query.catalogId) {
         const catalogId = this.$route.query.catalogId as string;
@@ -1762,7 +1759,7 @@ export default defineComponent({
       changeName(name: string) {
         this.ingress.hosts[0].host = name+"."+this.pipelineData.domain;
       },
-      loadPipeline() {
+      loadPipelineAndApp() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
           this.pipelineData = response.data;
 
@@ -1802,6 +1799,11 @@ export default defineComponent({
           if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
+
+          if (this.app != 'new') {
+            this.loadApp();
+          }
+
 
         });
       },
