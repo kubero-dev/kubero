@@ -8,17 +8,17 @@ spec:
   image:
     repository: typesense/typesense
     tag: latest
-    containerPort: "8108"
+    containerPort: '8108'
   addons: []
   envVars:
     - name: TYPESENSE_API_KEY
-      value: "your-api-key" # Replace with your actual API key
+      value: 'your-api-key' # Replace with your actual API key
     - name: TYPESENSE_DATA_DIR
-      value: "/data"
+      value: '/data'
   cronjobs: []
   extraVolumes:
     - accessModes:
-      - ReadWriteOnce
+        - ReadWriteOnce
       emptyDir: false
       mountPath: /data
       name: typesense-data
