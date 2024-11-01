@@ -2031,8 +2031,10 @@ export default defineComponent({
         this.setSSL();
 
         let command = [] as string[];
-        if (this.docker.command != '') {
+        if (this.docker.command.length > 0) {
           command = this.docker.command.split(' ');
+        } else {
+          command = [];
         }
 
         let postdata = {
@@ -2048,7 +2050,7 @@ export default defineComponent({
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
-            command: this.docker.command.split(' '),
+            command: command,
             fetch: this.buildpack?.fetch,
             build: this.buildpack?.build,
             run: this.buildpack?.run,
