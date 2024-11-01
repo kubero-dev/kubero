@@ -177,7 +177,7 @@
                 value="git"
               ></v-radio>
               <v-radio
-                label="Docker Image"
+                label="Container Image"
                 value="docker"
               ></v-radio>
               <!--
