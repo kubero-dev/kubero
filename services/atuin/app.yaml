@@ -1,0 +1,75 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: Atuin
+    annotations:
+        icon: "avatars.githubusercontent.com/u/122059230?s=200&v=4"
+        description: 'Atuin replaces your existing shell history with a SQLite database, and records additional context for your commands.'
+        source: "github.com/atuinsh/atuin"
+        website: "atuin.sh"
+        documentation: ""
+        screenshots: |
+            - https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif
+        tags: |
+            - administration
+        installation-message: |
+            Make sure you have selected the correct storageclass for the database. If you are unsure, you can check the available storage classes by running the following command:
+            ```bash
+            kubectl get storageclass
+            ```
+    labels:
+        manager: kubero
+spec:
+    name: atuin
+    deploymentstrategy: docker
+    envVars:
+        - name: ATUIN_HOST
+          value: 0.0.0.0
+        - name: ATUIN_OPEN_REGISTRATION
+          value: "true"
+        - name: ATUIN_DB_URI
+          value: postgres://atuin:atuin@atuin-autin-postgresql/atuin
+        - name: RUST_LOG
+          value: info,atuin_server=debug
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: atuin-autin-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: atuin
+                                      password: atuin
+                                      postgresPassword: atuin
+                                      username: atuin
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8888"
+        pullPolicy: Always
+        repository: ghcr.io/atuinsh/atuin
+        tag: latest
+        command:
+        - atuin
+        - server
+        - start
