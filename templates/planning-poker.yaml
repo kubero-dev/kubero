@@ -1,0 +1,38 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A hassle-free Planning Poker application to deploy
+      on your NAS.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/icon.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://github.com/axeleroy/self-host-planning-poker"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/axeleroy/self-host-planning-poker
+    kubero.dev/template.tags: '["poker","game"]'
+    kubero.dev/template.title: Planing Poker
+    kubero.dev/template.website: https://github.com/axeleroy/self-host-planning-poker
+  name: planning-poker
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: planning-poker-volume
+    size: 1Gi
+    storageClass: default
+  image:
+    containerPort: '8000'
+    repository: axeleroy/self-host-planning-poker
+    tag: latest
+  name: planning-poker
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

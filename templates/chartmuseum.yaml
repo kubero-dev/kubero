@@ -1,0 +1,42 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: ChartMuseum is an open-source Helm Chart Repository
+      server written in Go.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/30879152?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/helm/chartmuseum
+    kubero.dev/template.tags: '["repository"]'
+    kubero.dev/template.title: chartMuseum
+    kubero.dev/template.website: https://chartmuseum.com/
+  name: chartmuseum
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: STORAGE
+    value: local
+  - name: STORAGE_LOCAL_ROOTDIR
+    value: /charts
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /charts
+    name: chartmuseum-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: ghcr.io/helm/chartmuseum
+    tag: canary
+  name: chartmuseum
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

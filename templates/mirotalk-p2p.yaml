@@ -1,0 +1,55 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: WebRTC - P2P - Simple, Secure, Fast, Real-Time
+      Video Conferences Up to 4k and 60fps, compatible with all browsers and platforms.
+    kubero.dev/template.icon: https://www.saashub.com/images/app/service_logos/213/pgzsasbgu5fr/large.png?1653219756
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/miroslavpejic85/mirotalk/raw/master/public/images/mirotalk-header.gif"]'
+    kubero.dev/template.source: https://github.com/miroslavpejic85/mirotalk
+    kubero.dev/template.tags: '["Video Conferencing"]'
+    kubero.dev/template.title: MiroTalk P2P
+    kubero.dev/template.website: https://p2p.mirotalk.com
+  name: mirotalk-p2p
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: HTTPS
+    value: 'false'
+  - name: HOST
+    value: miro.linode.shoks.ch
+  - name: HOST_PROTECTED
+    value: 'false'
+  - name: HOST_USERNAME
+    value: user
+  - name: HOST_PASSWORD
+    value: secret
+  - name: NGROK_ENABLED
+    value: 'false'
+  - name: STUN
+    value: stun:stun.l.google.com:19302
+  - name: TURN_ENABLED
+    value: 'false'
+  - name: API_KEY_SECRET
+    value: mirotalk_default_secret
+  - name: SURVEY_ENABLED
+    value: 'false'
+  - name: SENTRY_ENABLED
+    value: 'false'
+  - name: SLACK_ENABLED
+    value: 'false'
+  extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: mirotalk/p2p
+    tag: latest
+  name: mirotalk-p2p
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

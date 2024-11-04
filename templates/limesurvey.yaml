@@ -1,0 +1,76 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: LimeSurvey is the simple, quick and anonymous
+      online survey tool that's bursting with juicy insights.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1364105?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
+    kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'
+    kubero.dev/template.source: https://github.com/LimeSurvey/LimeSurvey
+    kubero.dev/template.tags: '["survel"]'
+    kubero.dev/template.title: LimeSurvey
+    kubero.dev/template.website: https://www.limesurvey.org
+  labels:
+    manager: kubero
+  name: limesurvey
+spec:
+  addons:
+  - KuberoMysql:
+      apiVersion: application.kubero.dev/v1alpha1
+      kind: KuberoMysql
+      metadata: null
+      mysql:
+        auth: null
+        createDatabase: true
+        database: limesurvey
+        global: null
+        password: root
+        persistence:
+          accessModes:
+          - ReadWriteOnce
+          size: 1Gi
+        primary: null
+        rootPassword: root
+        storageClass: standard
+        username: root
+      name: limesurvey-mysql
+      spec: null
+    displayName: Kubero Mysql
+    env: []
+    icon: /img/addons/MySQL.png
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions: null
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: LIMESURVEY_DB_PASSWORD
+    value: root
+  - name: LIMESURVEY_ADMIN_USER
+    value: root
+  - name: LIME_ADMIN_PASSWORD
+    value: root
+  - LIMESURVEY_ADMIN_NAME: null
+    value: Lime Administrator
+  - LIMESURVEY_ADMIN_EMAIL: null
+    value: lime@lime.llime
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/www/html
+    name: limesurvey-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8082'
+    repository: adamzammit/limesurvey
+    tag: latest
+  name: limesurvey
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

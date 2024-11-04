@@ -1,0 +1,38 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Trilium Notes is a hierarchical note taking
+      application with focus on building large personal knowledge bases. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/zadam/trilium/master/images/app-icons/png/256x256.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/wiki/zadam/trilium/images/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/zadam/trilium
+    kubero.dev/template.tags: '["note taking","knowledge base"]'
+    kubero.dev/template.title: Trilium Notes
+    kubero.dev/template.website: https://github.com/zadam/trilium
+  name: trilium
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /home/node/trilium-data
+    name: trilium-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: zadam/trilium
+    tag: latest
+  name: trilium
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

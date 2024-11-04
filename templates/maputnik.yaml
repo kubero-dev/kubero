@@ -1,0 +1,31 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A free and open visual editor for the Mapbox
+      GL styles targeted at developers and map designers.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/22297422?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/e417a4c766f2f3245803f93ed2bdad17d13f20d114330e2436f91ecfadd1e7bf/68747470733a2f2f6a2e676966732e636f6d2f6b3567384f4a2e676966"]'
+    kubero.dev/template.source: https://github.com/maputnik/editor
+    kubero.dev/template.tags: '["mapping","maps","cartography"]'
+    kubero.dev/template.title: Maputnik
+    kubero.dev/template.website: https://maputnik.github.io/editor/
+  name: gatus
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    repository: twinproduction/gatus
+    tag: latest
+  name: gatus
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

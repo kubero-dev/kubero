@@ -1,0 +1,82 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: BookStack is an opinionated documentation platform
+      that provides a pleasant and simple out-of-the-box experience.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/20912696?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://www.bookstackapp.com/images/screenshots/page-view.png","https://www.bookstackapp.com/images/screenshots/page-edit.png","https://www.bookstackapp.com/images/screenshots/books-view.png","https://www.bookstackapp.com/images/screenshots/book-sorting.png","https://www.bookstackapp.com/images/screenshots/search.png"]'
+    kubero.dev/template.source: https://github.com/BookStackApp/BookStack
+    kubero.dev/template.tags: '["documentation"]'
+    kubero.dev/template.title: Bookstack
+    kubero.dev/template.website: https://www.bookstackapp.com/
+  labels:
+    manager: kubero
+  name: bookstack
+spec:
+  addons:
+  - displayName: MySQL
+    env: []
+    icon: /img/addons/mysql.svg
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions:
+      KuberoMysql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMysql
+        metadata:
+          name: bookstack-mysql
+        spec:
+          mysql:
+            auth:
+              createDatabase: true
+              database: bookstack
+              password: bookstack
+              rootPassword: bookstack
+              username: bookstack
+            global:
+              storageClass: standard
+            primary:
+              persistence:
+                accessModes:
+                - ReadWriteOnce
+                size: 1Gi
+    version:
+      latest: 0.1.5
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: PUID
+    value: '1000'
+  - name: PGID
+    value: '1000'
+  - name: TZ
+    value: Etc/UTC
+  - name: APP_URL
+    value: http://bookstack.example.com
+  - name: APP_KEY
+    value: base64:dm1hdnZvbmdvaDhxcTlnZXZkeXVzdmU4MnRnaWlhcDg=
+  - name: DB_HOST
+    value: bookstack-mysql
+  - name: DB_PORT
+    value: '3306'
+  - name: DB_USERNAME
+    value: bookstack
+  - name: DB_PASSWORD
+    value: bookstack
+  - name: DB_DATABASE
+    value: bookstack
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: lscr.io/linuxserver/bookstack
+    tag: latest
+  name: bookstack
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

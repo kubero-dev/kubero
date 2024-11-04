@@ -1,0 +1,76 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Leantime is a goals focused project management
+      system for non-project managers. Building with ADHD, Autism, and dyslexia in
+      mind.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/11252321?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/mywork.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/dark.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/kanban.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/timeline.png"]'
+    kubero.dev/template.source: https://github.com/Leantime/leantime
+    kubero.dev/template.tags: '["project-management"]'
+    kubero.dev/template.title: Leantime
+    kubero.dev/template.website: https://leantime.io/
+  labels:
+    manager: kubero
+  name: leantime
+spec:
+  addons:
+  - displayName: MySQL
+    env: []
+    icon: /img/addons/MySQL.png
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions:
+      KuberoMysql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMysql
+        metadata:
+          name: leantime-mysql
+        spec:
+          mysql:
+            auth:
+              createDatabase: true
+              database: leantime
+              password: 321.qwerty
+              rootPassword: leantime
+              username: leantime
+            global:
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                accessModes:
+                - ReadWriteOnce
+                size: 1Gi
+    version:
+      latest: 0.0.165
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: LEAN_DB_HOST
+    value: leantime-mysql
+  - name: LEAN_DB_USER
+    value: root
+  - name: LEAN_DB_PASSWORD
+    value: leantime
+  - name: LEAN_DB_DATABASE
+    value: leantime
+  - name: LEAN_EMAIL_RETURN
+    value: changeme@local.local
+  - name: LEAN_APP_URL
+    value: https://leantime.demo.kubero.dev
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    repository: leantime/leantime
+    tag: latest
+  name: leantime
+  serviceAccount:
+    annotations: {}
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

@@ -13,8 +13,8 @@ jobs:
       - name: 'Yamllint'
         uses: karancode/yamllint-github-action@master
         with:
-          yamllint_file_or_dir: 'services'
-          yamllint_config_datapath: 'services/.yamllint'
+          yamllint_file_or_dir: 'templates'
+          yamllint_config_datapath: 'templates/.yamllint'
           yamllint_strict: false
           yamllint_comment: true
         env:

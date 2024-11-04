@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Grafana open source software enables you to query,
+      visualize, alert on, and explore your metrics, logs, and traces wherever they
+      are stored.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/devicons/devicon/1119b9f84c0290e0f0b38982099a2bd027a48bf1/icons/grafana/grafana-original.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Grafana_screenshot.png/800px-Grafana_screenshot.png","https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Grafana_dashboard.png/800px-Grafana_dashboard.png"]'
+    kubero.dev/template.source: https://github.com/grafana/grafana
+    kubero.dev/template.tags: '["monitoring","metrics","dashboard"]'
+    kubero.dev/template.title: Grafana
+    kubero.dev/template.website: https://grafana.com/
+  name: grafana
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: GF_INSTALL_PLUGINS
+    value: grafana-clock-panel,grafana-simple-json-datasource
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/lib/grafana
+    name: grafana-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '3000'
+    repository: grafana/grafana-oss
+    tag: latest
+  name: grafana
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
