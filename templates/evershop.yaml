@@ -1,0 +1,70 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Ecommerce platform with essential commerce features
+      Built with React, modular and fully customizable
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/83757778?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/banner.png"]'
+    kubero.dev/template.source: https://github.com/evershopcommerce/evershop
+    kubero.dev/template.tags: '["ecommerce"]'
+    kubero.dev/template.title: Evershop
+    kubero.dev/template.website: https://evershop.io/
+  labels:
+    manager: kubero
+  name: evershop
+spec:
+  addons:
+  - displayName: Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: evershop-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: postgres
+                  postgresPassword: postgres
+                  username: evershop
+              storageClass: standard
+            primary:
+              persistence:
+                size: 1Gi
+    version:
+      latest: 0.1.2
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DB_HOST
+    value: evershop-postgresql
+  - name: DB_PORT
+    value: '5432'
+  - name: DB_NAME
+    value: postgresql
+  - name: DB_USER
+    value: evershop
+  - name: DB_PASSWORD
+    value: postgres
+  extraVolumes: []
+  image:
+    containerPort: '3000'
+    pullPolicy: Always
+    repository: evershop/evershop
+    tag: latest
+  name: evershop
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

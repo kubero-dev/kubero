@@ -1,0 +1,56 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Laravel is a web application framework with expressive,
+      elegant syntax.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/958072?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/laravel/laravel
+    kubero.dev/template.tags: '["framework","php"]'
+    kubero.dev/template.title: Laravel
+    kubero.dev/template.website: https://laravel.com
+  name: laravel
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: git
+  envVars:
+  - name: APP_NAME
+    value: Demo
+  - name: APP_KEY
+    value: base64:YmhiZ3J6NXV4aGE1bnh6cTh0eXJ0NzFqanozMnRmOXk=
+  - name: APP_ENV
+    value: local
+  - name: APP_DEBUG
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/storage
+    name: laravel-storage
+    size: 1Gi
+  image:
+    build:
+      command: composer install; chown -R 1000:1000 /app; mkdir -p storage/framework/cache
+        storage/framework/sessions storage/framework/views storage/framework/testing
+        storage/logs storage/app/public
+      repository: composer
+      tag: latest
+    containerPort: '8080'
+    run:
+      command: apache2-foreground
+      readOnlyAppStorage: false
+      repository: ghcr.io/kubero-dev/buildpacks/php
+      securityContext:
+        readOnlyRootFilesystem: false
+      tag: latest
+  name: laravel
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

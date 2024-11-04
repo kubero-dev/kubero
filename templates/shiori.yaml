@@ -1,0 +1,30 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Shiori is a simple bookmark manager. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/go-shiori/shiori/master/internal/view/assets/res/apple-touch-icon-152x152.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/go-shiori/shiori/master/docs/readme/cover.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/02-home.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/04-options.png"]'
+    kubero.dev/template.source: https://github.com/go-shiori/shiori
+    kubero.dev/template.tags: '["bookmark manager"]'
+    kubero.dev/template.title: Shiori
+    kubero.dev/template.website: https://github.com/go-shiori/shiori
+  name: shiori
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    repository: ghcr.io/go-shiori/shiori
+    tag: latest
+  name: shiori
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

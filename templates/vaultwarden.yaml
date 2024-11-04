@@ -1,0 +1,38 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'A Bitwarden compatible paswordsafe server written
+      in Rust. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
+    kubero.dev/template.tags: '["password manager","password storage"]'
+    kubero.dev/template.title: Vaultwarden
+    kubero.dev/template.website: https://github.com/dani-garcia/vaultwarden
+  name: vaultwarden
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /data
+    name: vaultwarden-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '80'
+    repository: vaultwarden/server
+    tag: latest
+  name: vaultwarden
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

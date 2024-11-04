@@ -1,0 +1,38 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: pgAdmin is the most popular and feature rich
+      Open Source administration and development platform for PostgreSQL.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/113517144?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/pgadmin-org/pgadmin4
+    kubero.dev/template.tags: '["database"]'
+    kubero.dev/template.title: pgAdmin
+    kubero.dev/template.website: https://www.pgadmin.org
+  labels:
+    manager: kubero
+  name: pgadmin
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: PGADMIN_DEFAULT_EMAIL
+    value: example@example.com
+  - name: PGADMIN_DEFAULT_PASSWORD
+    value: example
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: dpage/pgadmin4
+    tag: latest
+  name: pgadmin
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

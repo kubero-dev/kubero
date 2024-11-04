@@ -1,0 +1,37 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Memos is a simple note taking app. '
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/95764151?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://usememos.com/demo.webp"]'
+    kubero.dev/template.source: https://github.com/usememos/memos
+    kubero.dev/template.tags: '["note taking"]'
+    kubero.dev/template.title: Memos
+    kubero.dev/template.website: https://usememos.com/
+  name: memos
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/opt/memos
+    name: memos-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '5230'
+    repository: neosmemo/memos
+    tag: latest
+  name: memos
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

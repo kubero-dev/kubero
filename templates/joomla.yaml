@@ -1,0 +1,73 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Joomla is a free and open-source content management
+      system for publishing web content on websites.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/751633?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/9/96/Backend_Joomla_4_en.png"]'
+    kubero.dev/template.source: https://github.com/joomla/joomla-cms
+    kubero.dev/template.tags: '["CMS"]'
+    kubero.dev/template.title: Joomla
+    kubero.dev/template.website: https://joomla.org
+  name: joomla
+spec:
+  addons:
+  - displayName: Kubero Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: joomla-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: joomla
+                  postgresPassword: joomla
+                  username: joomla
+              storageClass: standard
+            primary:
+              persistence:
+                size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: JOOMLA_DB_HOST
+    value: joomla-mysql
+  - name: JOOMLA_DB_PASSWORD
+    value: joomla
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/www/html
+    name: joomla-volume
+    size: 1Gi
+    storageClass: standard
+  - accessModes:
+    - ReadWriteMany
+    emptyDir: false
+    mountPath: /var/run/apache2
+    name: joomla-rundir
+    size: 1Mi
+    storageClass: standard
+  image:
+    containerPort: '80'
+    repository: joomla
+    tag: latest
+  name: joomla
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
