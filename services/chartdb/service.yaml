@@ -3,7 +3,7 @@ description: A database diagrams editor to visualize and design your DB with a s
 tags:
 - administration
 - database
-source: https://github.com/chartdb/chartdb/
+source: https://github.com/chartdb/chartdb
 website: https://chartdb.io/
 icon: https://avatars.githubusercontent.com/u/177466511?s=200&v=4
 screenshots:
