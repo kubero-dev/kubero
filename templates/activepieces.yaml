@@ -1,0 +1,138 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: "Your friendliest open source all-in-one automation\
+      \ tool \u2728 Workflow automation tool 100+ integration / Enterprise automation\
+      \ tool / Zapier Alternative"
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/99494700?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/activepieces/activepieces/assets/1812998/e75616ce-7801-45b7-b3fa-eba778bebde3"]'
+    kubero.dev/template.source: https://github.com/activepieces/activepieces
+    kubero.dev/template.tags: '["Workflow","Automation","low-code","no-code"]'
+    kubero.dev/template.title: Activepieces
+    kubero.dev/template.website: https://www.activepieces.com/
+  labels:
+    manager: kubero
+  name: activepieces
+spec:
+  addons:
+  - displayName: Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: activepieces-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: activepieces
+                  postgresPassword: admin
+                  username: activepieces
+              storageClass: standard
+            primary:
+              persistence:
+                size: 1Gi
+    version:
+      latest: 0.0.151
+  - displayName: Redis
+    env: []
+    icon: /img/addons/Redis.png
+    id: kubero-operator
+    kind: KuberoRedis
+    resourceDefinitions:
+      KuberoRedis:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoRedis
+        metadata:
+          name: activepieces-redis
+        spec:
+          redis:
+            architecture: replication
+            global:
+              redis:
+                password: activepieces
+              storageClass: standard
+            master:
+              persistence:
+                size: 1Gi
+            replica:
+              persistence:
+                size: 1Gi
+              replicaCount: 3
+    version:
+      latest: 0.0.151
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: AP_POSTGRES_DATABASE
+    value: postgresql
+  - name: AP_POSTGRES_PASSWORD
+    value: activepieces
+  - name: AP_POSTGRES_USERNAME
+    value: activepieces
+  - name: AP_ENGINE_EXECUTABLE_PATH
+    value: dist/packages/engine/main.js
+  - name: AP_JWT_SECRET
+    value: secret
+  - name: AP_ENVIRONMENT
+    value: prod
+  - name: AP_FRONTEND_URL
+    value: http://activepieces.lacolhost.com
+  - name: AP_WEBHOOK_TIMEOUT_SECONDS
+    value: '30'
+  - name: AP_TRIGGER_DEFAULT_POLL_INTERVAL
+    value: '5'
+  - name: AP_REDIS_HOST
+    value: activepieces-redis-master
+  - name: AP_REDIS_PORT
+    value: '6379'
+  - name: AP_SANDBOX_RUN_TIME_SECONDS
+    value: '600'
+  - name: AP_TELEMETRY_ENABLED
+    value: 'true'
+  - name: AP_TEMPLATES_SOURCE_URL
+    value: https://cloud.activepieces.com/api/v1/flow-templates
+  - name: AP_POSTGRES_HOST
+    value: activepieces-postgresql
+  - name: AP_POSTGRES_PORT
+    value: '5432'
+  - name: AP_REDIS_PASSWORD
+    value: activepieces
+  - name: AP_ENCRYPTION_KEY
+    value: secretsecret
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/activepieces/activepieces
+    run:
+      command: node index.js
+      readOnlyAppStorage: true
+      repository: node
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          add: []
+          drop: []
+        readOnlyRootFilesystem: false
+        runAsGroup: 0
+        runAsNonRoot: false
+        runAsUser: 0
+      tag: latest
+    tag: latest
+  name: activepieces
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

@@ -1,0 +1,73 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Users and authentication management
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/97037414?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '"https://docs.fief.dev"'
+    kubero.dev/template.screenshots: '["https://www.fief.dev/illustrations/signin.png"]'
+    kubero.dev/template.source: https://github.com/fief-dev/fief
+    kubero.dev/template.tags: '["security","authentication"]'
+    kubero.dev/template.title: Fief
+    kubero.dev/template.website: https://www.fief.dev
+  labels:
+    manager: kubero
+  name: fief
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SECRET
+    value: epawllxPnSpKSVjhRSqO2HyIf6VMfSKTWb7MVFkgidwDn0pEKzaMCfN4y82UH5Ei5lQ6A5iOt8U7-QXayIxttQ
+  - name: FIEF_CLIENT_ID
+    value: 0joSJuS_7pVbgQScEx5F7q2TM0vPF3aF0Ks8IyXE-Dk
+  - name: FIEF_CLIENT_SECRET
+    value: 3eYbWM4DEvxIp9wxF50YmxoQ_20_f8WpVXvq-wnHKA8
+  - name: ENCRYPTION_KEY
+    value: N5hKEoZjXLLf2v6uYuAHxjFVjF3F9Yif4Cm18eHBNW4=
+  - name: FIEF_DOMAIN
+    value: fief.localhost
+  - name: FIEF_MAIN_USER_EMAIL
+    value: example@example.com
+  - name: FIEF_MAIN_USER_PASSWORD
+    value: CXIexRIJssVFDkPUHShSxk36QBDEA
+  - name: CSRF_COOKIE_SECURE
+    value: 'False'
+  - name: SESSION_DATA_COOKIE_SECURE
+    value: 'False'
+  - name: USER_LOCALE_COOKIE_SECURE
+    value: 'False'
+  - name: LOGIN_SESSION_COOKIE_SECURE
+    value: 'False'
+  - name: SESSION_COOKIE_SECURE
+    value: 'False'
+  - name: FIEF_ADMIN_SESSION_COOKIE_SECURE
+    value: 'False'
+  - name: TELEMETRY_ENABLED
+    value: 'False'
+  - name: CLIENT_REDIRECT_URI_SSL_REQUIRED
+    value: 'True'
+  - name: FORWARDED_ALLOW_IPS
+    value: '*'
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data/db
+    name: fief-db-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/fief-dev/fief
+    tag: latest
+  name: fief
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

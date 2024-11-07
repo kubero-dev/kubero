@@ -1,0 +1,72 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: WordPress is a free and open-source content management
+      system written in hypertext preprocessor language.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/276006?s=280
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'
+    kubero.dev/template.source: https://github.com/WordPress/WordPress
+    kubero.dev/template.tags: '["Search"]'
+    kubero.dev/template.title: WordPress
+    kubero.dev/template.website: https://github.com/benbusby/whoogle-search
+  name: wordpress
+spec:
+  addons:
+  - displayName: Kubero Mysql
+    env: []
+    icon: /img/addons/MySQL.png
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions:
+      KuberoMysql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMysql
+        metadata:
+          name: mysql2
+        spec:
+          mysql:
+            auth:
+              createDatabase: true
+              database: wordpress
+              password: wordpress
+              rootPassword: wordpress
+              username: wordpress
+            global:
+              storageClass: standard
+            primary:
+              persistence:
+                accessModes:
+                - ReadWriteMany
+                size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: WORDPRESS_DATABASE_HOST
+    value: mysql2
+  - name: WORDPRESS_DATABASE_USER
+    value: wordpress
+  - name: WORDPRESS_DATABASE_PASSWORD
+    value: wordpress
+  - name: WORDPRESS_DATABASE_NAME
+    value: wordpress
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /bitnami/wordpress
+    name: wordpress-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: bitnami/wordpress
+    tag: latest
+  name: wordpress
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

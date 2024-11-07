@@ -1,0 +1,65 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: An Identity and Access Management (IAM) / Single-Sign-On
+      (SSO) platform with beautiful web UI and the official client SDKs
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/72992104?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://casdoor.org/assets/images/import_success-8be0db7efa60235af1149e529292948b.png","https://casdoor.org/assets/images/dashboard-951aa5187e74f5446a91447e00111c79.png","https://casdoor.org/assets/images/step4_result2-5f31450f52b9f797c8f1afcf2fd19914.png"]'
+    kubero.dev/template.source: https://github.com/casdoor/casdoor
+    kubero.dev/template.tags: '["authentication"]'
+    kubero.dev/template.title: Casdoor
+    kubero.dev/template.website: https://casdoor.org
+  name: casdoor
+spec:
+  addons:
+  - displayName: Kubero Mysql
+    env: []
+    icon: /img/addons/MySQL.png
+    id: kubero-operator
+    kind: KuberoMysql
+    resourceDefinitions:
+      KuberoMysql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMysql
+        metadata:
+          name: casdoor-mysql
+        spec:
+          mysql:
+            auth:
+              createDatabase: true
+              database: casdoor
+              password: casdoor
+              rootPassword: casdoor
+              username: casdoor
+            global:
+              storageClass: standard
+            primary:
+              persistence:
+                accessModes:
+                - ReadWriteOnce
+                size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: driverName
+    value: mysql
+  - name: dataSourceName
+    value: root:casdoor@tcp(casdoor-mysql:3306)/
+  - name: dbName
+    value: casdoor
+  - name: initScore
+    value: '2000'
+  extraVolumes: []
+  image:
+    containerPort: '8000'
+    repository: casbin/casdoor
+    tag: latest
+  name: casdoor
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

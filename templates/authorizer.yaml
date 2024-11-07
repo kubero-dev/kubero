@@ -1,0 +1,44 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Authorizer is an open-source authentication and
+      authorization solution for your applications.
+    kubero.dev/template.icon: https://authorizer.dev/images/favicon_io/android-chrome-192x192.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://docs.authorizer.dev/images/authorizer-arch.png"]'
+    kubero.dev/template.source: https://github.com/authorizerdev/authorizer
+    kubero.dev/template.tags: '["authentication"]'
+    kubero.dev/template.title: Authorizer
+    kubero.dev/template.website: https://authorizer.dev/
+  name: authorizer
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_TYPE
+    value: sqlite
+  - name: DATABASE_URL
+    value: /database/authorizer.db
+  - name: ADMIN_SECRET
+    value: changeMe
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /database
+    name: authorizer-data-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: lakhansamani/authorizer
+    tag: latest
+  name: authorizer
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

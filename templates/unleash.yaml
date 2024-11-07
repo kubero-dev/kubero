@@ -1,0 +1,65 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Unleash is an open source feature management
+      solution.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/23053233?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Unleash/unleash/main/.github/github_online_demo.svg"]'
+    kubero.dev/template.source: https://github.com/Unleash/unleash
+    kubero.dev/template.tags: '["feature-toggle"]'
+    kubero.dev/template.title: Unleash
+    kubero.dev/template.website: https://getunleash.io/
+  name: unleash
+spec:
+  addons:
+  - displayName: Kubero Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: undleash-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgres
+                  password: postgres
+                  postgresPassword: postgres
+                  username: postgres
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_SSL
+    value: 'false'
+  - name: LOG_LEVEL
+    value: warn
+  - name: INIT_FRONTEND_API_TOKENS
+    value: default:development.unleash-insecure-frontend-api-token
+  - name: INIT_CLIENT_API_TOKENS
+    value: default:development.unleash-insecure-api-token
+  - name: DATABASE_URL
+    value: postgres://postgres:postgres@undleash-postgresql/postgres
+  extraVolumes: []
+  image:
+    containerPort: '4242'
+    repository: unleashorg/unleash-server
+    tag: latest
+  name: unleash
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

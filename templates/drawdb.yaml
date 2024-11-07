@@ -1,0 +1,34 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Free, simple, and intuitive online database diagram
+      editor and SQL generator.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/139706923?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/drawdb-io/.github/main/profile/assets/cover.png"]'
+    kubero.dev/template.source: https://github.com/drawdb-io/drawdb
+    kubero.dev/template.tags: '["developer-tools"]'
+    kubero.dev/template.title: DrawDB
+    kubero.dev/template.website: https://drawdb.app/
+  labels:
+    manager: kubero
+  name: drawdb
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/drawdb-io/drawdb
+    tag: latest
+  name: drawdb
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

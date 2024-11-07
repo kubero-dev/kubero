@@ -1,0 +1,95 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A tiny, self-contained, configurable paste bin
+      and URL shortener written in Rust.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/szabodanika/microbin/refs/heads/master/templates/assets/logo-square.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://microbin.eu/img/screenshot7.png","https://microbin.eu/img/screenshot6.png","https://microbin.eu/img/screenshot1.png","https://microbin.eu/img/screenshot4.png","https://microbin.eu/img/screenshot5.png","https://microbin.eu/img/screenshot3.png","https://microbin.eu/img/screenshot2.png"]'
+    kubero.dev/template.source: https://github.com/szabodanika/microbin
+    kubero.dev/template.tags: '["pastebin"]'
+    kubero.dev/template.title: MicroBin
+    kubero.dev/template.website: https://microbin.eu/
+  name: microbin
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: MICROBIN_ADMIN_USERNAME
+    value: admin
+  - name: MICROBIN_ADMIN_PASSWORD
+    value: m1cr0b1n
+  - name: MICROBIN_FOOTER_TEXT
+    value: custom footer
+  - name: MICROBIN_HIDE_HEADER
+    value: 'false'
+  - name: MICROBIN_HIDE_FOOTER
+    value: 'false'
+  - name: MICROBIN_HIDE_LOGO
+    value: 'false'
+  - name: MICROBIN_HIGHLIGHTSYNTAX
+    value: 'true'
+  - name: MICROBIN_PRIVATE
+    value: 'true'
+  - name: MICROBIN_DATA_DIR
+    value: microbin_data
+  - name: MICROBIN_JSON_DB
+    value: 'false'
+  - name: MICROBIN_READONLY
+    value: 'false'
+  - name: MICROBIN_TITLE
+    value: custom title
+  - name: MICROBIN_GC_DAYS
+    value: '90'
+  - name: MICROBIN_ENABLE_BURN_AFTER
+    value: 'true'
+  - name: MICROBIN_DEFAULT_BURN_AFTER
+    value: '0'
+  - name: MICROBIN_WIDE
+    value: 'false'
+  - name: MICROBIN_QR
+    value: 'true'
+  - name: MICROBIN_ETERNAL_PASTA
+    value: 'false'
+  - name: MICROBIN_ENABLE_READONLY
+    value: 'true'
+  - name: MICROBIN_DEFAULT_EXPIRY
+    value: 24hour
+  - name: MICROBIN_NO_FILE_UPLOAD
+    value: 'false'
+  - name: MICROBIN_HASH_IDS
+    value: 'false'
+  - name: MICROBIN_ENCRYPTION_CLIENT_SIDE
+    value: 'true'
+  - name: MICROBIN_ENCRYPTION_SERVER_SIDE
+    value: 'true'
+  - name: MICROBIN_MAX_FILE_SIZE_ENCRYPTED_MB
+    value: '256'
+  - name: MICROBIN_MAX_FILE_SIZE_UNENCRYPTED_MB
+    value: '2048'
+  - name: MICROBIN_DISABLE_UPDATE_CHECKING
+    value: 'false'
+  - name: MICROBIN_DISABLE_TELEMETRY
+    value: 'false'
+  - name: MICROBIN_LIST_SERVER
+    value: 'false'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/microbin_data
+    name: microbin-volume
+    size: 1Gi
+  image:
+    containerPort: '8080'
+    repository: danielszabo99/microbin
+    tag: latest
+  name: microbin
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

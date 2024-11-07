@@ -1,0 +1,31 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A reasonably complete and well-tested golang
+      port of httpbin, with zero dependencies outside the go stdlib.
+    kubero.dev/template.icon: https://httpwg.org/assets/http.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://cdn.hashnode.com/res/hashnode/image/upload/v1650233795205/xWudUDZjZ.png?auto=compress,format&format=webp"]'
+    kubero.dev/template.source: https://github.com/mccutchen/go-httpbin
+    kubero.dev/template.tags: '["debugging"]'
+    kubero.dev/template.title: go-httpbin
+    kubero.dev/template.website: https://httpbingo.org
+  name: go-httpbin
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '8080'
+    repository: mccutchen/go-httpbin
+    tag: latest
+  name: go-httpbin
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

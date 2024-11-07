@@ -1,0 +1,109 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: AFFiNE is a next-gen knowledge base that brings
+      planning, sorting and creating all together
+    kubero.dev/template.icon: https://raw.githubusercontent.com/toeverything/AFFiNE.pro/60f42504c0e1572a2ede0a8d95a398a229b0bb9a/public/overview/stay-focused-logo.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD"]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/toeverything/AFFiNE
+    kubero.dev/template.tags: '["drawing","planning","collaboration"]'
+    kubero.dev/template.title: AFFiNE
+    kubero.dev/template.website: https://affine.pro/
+  labels:
+    manager: kubero
+  name: affine
+spec:
+  addons:
+  - displayName: Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: affine-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: afffine
+                  postgresPassword: postgres
+                  username: affine
+              storageClass: standard
+            primary:
+              persistence:
+                size: 1Gi
+    version:
+      latest: 0.0.159
+  - displayName: Redis
+    env: []
+    icon: /img/addons/Redis.png
+    id: kubero-operator
+    kind: KuberoRedis
+    resourceDefinitions:
+      KuberoRedis:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoRedis
+        metadata:
+          name: affine-redis
+        spec:
+          redis:
+            architecture: replication
+            global:
+              redis:
+                password: affine
+              storageClass: standard
+            master:
+              persistence:
+                size: 1Gi
+            replica:
+              persistence:
+                size: 1Gi
+              replicaCount: 1
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: NODE_OPTIONS
+    value: --import=./scripts/register.js
+  - name: REDIS_SERVER_HOST
+    value: affine-redis-master
+  - name: DATABASE_URL
+    value: postgres://affine:afffine@affine-postgresql:5432/postgresql
+  - name: NODE_ENV
+    value: production
+  - name: AFFINE_ADMIN_EMAIL
+    value: admin@admin.com
+  - name: AFFINE_ADMIN_PASSWORD
+    value: admin
+  - name: TELEMETRY_ENABLE
+    value: 'false'
+  - name: REDIS_SERVER_PASSWORD
+    value: affine
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /root/.affine
+    name: affine-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '3010'
+    pullPolicy: Always
+    repository: ghcr.io/toeverything/affine-graphql
+    tag: stable
+  name: affine
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

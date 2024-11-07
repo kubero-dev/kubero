@@ -1,0 +1,59 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Rallly is an open-source scheduling and collaboration
+      tool designed to make organizing events and meetings easier.
+    kubero.dev/template.icon: https://rallly.co/favicon-196x196.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://github.com/lukevella/rallly-selfhosted"]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/lukevella/rallly/main/docs/images/poll-image.png"]'
+    kubero.dev/template.source: https://github.com/lukevella/rallly
+    kubero.dev/template.tags: '["collaboration","scheduling"]'
+    kubero.dev/template.title: Rallly
+    kubero.dev/template.website: https://rallly.co
+  name: rallly
+spec:
+  addons:
+  - displayName: Kubero Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: rallly-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: rallly
+                  postgresPassword: rallly
+                  username: rallly
+              storageClass: linode-block-storage
+            primary:
+              persistence:
+                size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: DATABASE_URL
+    value: postgres://rallly:rallly@rallly-postgresql:5432/postgresql
+  - name: SECRET_PASSWORD
+    value: replace-me-now-with-a-own-secret
+  extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: lukevella/rallly
+    tag: latest
+  name: rallly
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

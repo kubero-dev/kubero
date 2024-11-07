@@ -1,0 +1,60 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Bluesky PDS (Personal Data Server). Your own
+      Personal Data Server that is capable of federating with the wider Bluesky social
+      network
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/94650532?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/bluesky-social/pds
+    kubero.dev/template.tags: '["social network"]'
+    kubero.dev/template.title: BlueSky PDS
+    kubero.dev/template.website: https://github.com/bluesky-social/pds
+  name: bluesky-pds
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: PDS_HOSTNAME
+    value: bsky.changeme.com
+  - name: PDS_JWT_SECRET
+    value: changeme
+  - name: PDS_ADMIN_PASSWORD
+    value: changeme
+  - name: PDS_REPO_SIGNING_KEY_K256_PRIVATE_KEY_HEX
+    value: changeme
+  - name: PDS_PLC_ROTATION_KEY_K256_PRIVATE_KEY_HEX
+    value: changeme
+  - name: PDS_DB_SQLITE_LOCATION
+    value: /pds/pds.sqlite
+  - name: PDS_BLOBSTORE_DISK_LOCATION
+    value: /pds/blocks
+  - name: PDS_DID_PLC_URL
+    value: https://plc.bsky-sandbox.dev
+  - name: PDS_BSKY_APP_VIEW_URL
+    value: https://api.bsky-sandbox.dev
+  - name: PDS_BSKY_APP_VIEW_DID
+    value: did:web:api.bsky-sandbox.dev
+  - name: PDS_CRAWLERS
+    value: https://bgs.bsky-sandbox.dev
+  extraVolumes:
+  - accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /pds
+    name: bsk-data
+    size: 40Gi
+  image:
+    containerPort: '3000'
+    repository: ghcr.io/bluesky-social/pds
+    tag: latest
+  name: bluesky-pds
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

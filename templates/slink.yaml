@@ -1,0 +1,53 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted image sharing service.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/andrii-kryvoviaz/slink/main/client/static/favicon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/andrii-kryvoviaz/slink/raw/main/screens/e98ea79e-01bb-4e23-98ba-b18841d09c9b.png"]'
+    kubero.dev/template.source: https://github.com/andrii-kryvoviaz/slink
+    kubero.dev/template.tags: '["images","gallery","sharing"]'
+    kubero.dev/template.title: Slink
+    kubero.dev/template.website: https://github.com/andrii-kryvoviaz/slink
+  labels:
+    manager: kubero
+  name: slink
+spec:
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SWOOLE_WORKER_NUM
+    value: '4'
+  - name: API_ENABLED
+    value: 'true'
+  - name: CORS_ALLOW_ORIGIN
+    value: ^https?://(localhost||slink\.yourdomain\.com|127\.0\.0\.1)(:[0-9]+)?$
+  - name: USER_APPROVAL_REQUIRED
+    value: 'true'
+  - name: USER_APPROVAL_REQUIRED
+    value: 15M
+  - name: ORIGIN
+    value: http://slink.yourdomain.com
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/data
+    name: slink-volume
+    size: 10Gi
+    storageClass: standard
+  image:
+    containerPort: '2000'
+    pullPolicy: Always
+    repository: anirdev/slink
+    tag: latest
+  name: slink
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
