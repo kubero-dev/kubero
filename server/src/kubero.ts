@@ -726,6 +726,7 @@ export class Kubero {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
                         tag: "main",
+                        command: [''],
                         pullPolicy: "Always",
                         fetch: pipeline.buildpack.fetch,
                         build: pipeline.buildpack.build,
