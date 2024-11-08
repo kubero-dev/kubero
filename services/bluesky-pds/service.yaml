@@ -1,8 +1,0 @@
-name: BlueSky PDS
-description: 'Bluesky PDS (Personal Data Server). Your own Personal Data Server that is capable of federating with the wider Bluesky social network'
-tags:
-- social network
-source: https://github.com/bluesky-social/pds
-website: https://github.com/bluesky-social/pds
-icon: https://avatars.githubusercontent.com/u/94650532?s=200&v=4
-screenshots:

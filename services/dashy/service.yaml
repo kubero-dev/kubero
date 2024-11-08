@@ -1,9 +1,0 @@
-name: Dashy
-description: 'Dashy helps you organize your self-hosted services by making them accessible from a single place.'
-tags:
-- dashboard
-source: https://github.com/Lissy93/dashy
-website: https://dashy.to/
-icon: https://i.ibb.co/yhbt6CY/dashy.png
-screenshots:
-- https://i.ibb.co/L8YbNNc/dashy-demo2.gif

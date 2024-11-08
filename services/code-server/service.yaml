@@ -1,9 +1,0 @@
-name: VS Code - Code Server
-description: 'Run VS Code on any machine anywhere and access it in the browser.'
-tags:
-- development
-source: https://github.com/coder/code-server
-icon: https://avatars.githubusercontent.com/u/95932066?s=200&v=4
-website: https://coder.com
-screenshots:
-- https://github.com/coder/code-server/raw/main/docs/assets/screenshot-1.png

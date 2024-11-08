@@ -1,9 +1,0 @@
-name: Whiteboard
-description: 'Lightweight collaborative Whiteboard / Sketchboard'
-tags:
-- school
-source: https://github.com/cracker0dks/whiteboard
-website: https://github.com/cracker0dks/whiteboard
-icon: https://static-00.iconduck.com/assets.00/whiteboard-icon-512x416-i0xojg3v.png
-screenshots:
-- https://raw.githubusercontent.com/cracker0dks/whiteboard/refs/heads/master/doc/start.png

@@ -1,9 +1,0 @@
-name: go-httpbin
-description: 'A reasonably complete and well-tested golang port of httpbin, with zero dependencies outside the go stdlib.'
-tags:
-- debugging
-source: https://github.com/mccutchen/go-httpbin
-website: https://httpbingo.org
-icon: https://httpwg.org/assets/http.svg
-screenshots:
-- https://cdn.hashnode.com/res/hashnode/image/upload/v1650233795205/xWudUDZjZ.png?auto=compress,format&format=webp

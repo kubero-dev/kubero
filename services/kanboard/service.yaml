@@ -1,9 +1,0 @@
-name: Kanboard
-description: 'Kanboard is a free and open source project management software focused on the Kanban methodology.'
-tags:
-- project-management
-source: https://github.com/kanboard/kanboard
-website: https://kanboard.org
-icon: https://avatars.githubusercontent.com/u/13722943?s=200&v=4
-screenshots:
-- https://kanboard.org/assets/img/board.png

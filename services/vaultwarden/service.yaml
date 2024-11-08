@@ -1,9 +1,0 @@
-name: Vaultwarden
-description: 'A Bitwarden compatible paswordsafe server written in Rust. '
-tags:
-- password manager
-- password storage
-source: https://github.com/dani-garcia/vaultwarden
-website: https://github.com/dani-garcia/vaultwarden
-icon: https://raw.githubusercontent.com/dani-garcia/vaultwarden/main/resources/vaultwarden-icon.svg
-screenshots:

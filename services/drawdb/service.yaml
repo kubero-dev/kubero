@@ -1,9 +1,0 @@
-name: DrawDB
-description: 'Free, simple, and intuitive online database diagram editor and SQL generator.'
-tags:
-- developer-tools
-source: https://github.com/drawdb-io/drawdb
-website: https://drawdb.app/
-icon: https://avatars.githubusercontent.com/u/139706923?s=200&v=4
-screenshots:
-- https://raw.githubusercontent.com/drawdb-io/.github/main/profile/assets/cover.png

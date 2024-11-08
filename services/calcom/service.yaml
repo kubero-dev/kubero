@@ -1,9 +1,0 @@
-name: cal.com
-description: 'The open source Calendly alternative. You are in charge of your own data, workflow and appearance'
-tags:
-- calendar
-source: https://github.com/calcom/cal.com
-website: https://cal.com/
-icon: https://avatars.githubusercontent.com/u/79145102?s=200&v=4
-screenshots:
-- https://user-images.githubusercontent.com/8019099/176390354-f1bc7069-0341-437a-9bb8-eb41092b4016.gif

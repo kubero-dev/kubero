@@ -1,8 +1,0 @@
-name: Homebox
-description: 'Homebox is the inventory and organization system built for the Home User'
-tags:
-- Search
-source: https://github.com/sysadminsmedia/homebox
-website: https://homebox.software
-icon: https://homebox.software/lilbox.svg
-screenshots:

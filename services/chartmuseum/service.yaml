@@ -1,8 +1,0 @@
-name: chartMuseum
-description: 'ChartMuseum is an open-source Helm Chart Repository server written in Go.'
-tags:
-- repository
-source: https://github.com/helm/chartmuseum
-website: https://chartmuseum.com/
-icon: https://avatars.githubusercontent.com/u/30879152?s=200&v=4
-screenshots:

@@ -1,9 +1,0 @@
-name: Laravel
-description: 'Laravel is a web application framework with expressive, elegant syntax.'
-tags:
-- framework
-- php
-source: https://github.com/laravel/laravel
-website: https://laravel.com
-icon: https://avatars.githubusercontent.com/u/958072?s=200&v=4
-screenshots:

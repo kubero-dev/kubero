@@ -1,9 +1,0 @@
-name: Meilisearch
-description: 'A lightning-fast search engine that fits effortlessly into your apps, websites, and workflow '
-tags:
-- search
-source: https://github.com/meilisearch/meilisearch
-website: https://www.meilisearch.com/
-icon: https://www.meilisearch.com/apple-touch-icon.png
-screenshots:
-- https://github.com/meilisearch/meilisearch/raw/main/assets/demo-light.gif

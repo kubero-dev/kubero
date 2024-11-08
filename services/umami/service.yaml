@@ -1,9 +1,0 @@
-name: umami
-description: 'Umami is a simple, fast, privacy-focused alternative to Google Analytics.'
-tags:
-- analytics
-source: https://github.com/umami-software/umami
-website: https://umami.is/
-icon: https://avatars.githubusercontent.com/u/105618662?s=200&v=4
-screenshots:
-- https://umami.is/images/languages.png

@@ -1,9 +1,0 @@
-name: Metube
-description: 'Self-hosted YouTube downloader (web UI for youtube-dl / yt-dlp)'
-tags:
-- video
-source: https://github.com/alexta69/metube
-website: hhttps://github.com/alexta69/metube
-icon: https://raw.githubusercontent.com/alexta69/metube/master/ui/src/assets/icons/android-chrome-192x192.png
-screenshots:
-- https://raw.githubusercontent.com/alexta69/metube/master/screenshot.gif

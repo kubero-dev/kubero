@@ -1,9 +1,0 @@
-name: Bitwarden
-description: 'Open source password management solutions for individuals, teams, and business organizations.'
-tags:
-- security
-source: https://github.com/bitwarden/server
-website: https://bitwarden.com/
-icon: https://avatars.githubusercontent.com/u/15990069?s=200&v=4
-screenshots:
-- https://raw.githubusercontent.com/bitwarden/brand/main/screenshots/apps-combo-logo.png

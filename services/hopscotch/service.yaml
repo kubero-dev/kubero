@@ -1,9 +1,0 @@
-name: Hoppscotch
-description: 'Open source API development ecosystem'
-tags:
-- development
-source: https://github.com/hoppscotch/hoppscotch
-website: https://hoppscotch.io
-icon: https://avatars.githubusercontent.com/u/56705483?s=200&v=4
-screenshots:
-- https://raw.githubusercontent.com/hoppscotch/hoppscotch/main/packages/hoppscotch-common/public/images/banner-light.png

@@ -1,9 +1,0 @@
-name: Symfony
-description: 'Symfony is a PHP framework for web and console applications and a set of reusable PHP components.'
-tags:
-- framework
-- php
-source: https://github.com/symfony/symfony
-website: https://symfony.com
-icon: https://avatars.githubusercontent.com/u/143937?s=200&v=4
-screenshots:
