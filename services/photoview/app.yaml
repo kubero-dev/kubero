@@ -1,14 +1,21 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Photoview is a simple and user-friendly photo
+      gallery that is made for photographers and aims to provide an easy and fast
+      way to navigate directories.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/75802894?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/photoview/photoview/master/screenshots/timeline.png"]'
+    kubero.dev/template.source: https://github.com/photoview/photoview
+    kubero.dev/template.tags: '["imaga database"]'
+    kubero.dev/template.title: Photoview
+    kubero.dev/template.website: https://photoview.github.io/
   name: photoview
 spec:
-  name: photoview
-  deploymentstrategy: docker
-  image:
-    repository: viktorstrate/photoview
-    tag: "2"
-    containerPort: "8080"
   addons:
   - displayName: Kubero Mysql
     env: []
@@ -36,22 +43,23 @@ spec:
                 accessModes:
                 - ReadWriteOnce
                 size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: PROC_TYPE
     value: web
   - name: PORT
-    value: "8080"
+    value: '8080'
   - name: PHOTOVIEW_DATABASE_DRIVER
-    value: "mysql"
+    value: mysql
   - name: PHOTOVIEW_MYSQL_URL
-    value: "photoview:photoview@tcp(photoview-mysql)/photoview"
+    value: photoview:photoview@tcp(photoview-mysql)/photoview
   - name: PHOTOVIEW_LISTEN_IP
-    value: "0.0.0.0"
+    value: 0.0.0.0
   - name: PHOTOVIEW_LISTEN_PORT
-    value: "8080"
+    value: '8080'
   - name: PHOTOVIEW_MEDIA_CACHE
-    value: "/tmp"
-  cronjobs: []
+    value: /tmp
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -60,6 +68,11 @@ spec:
     name: photoview-images
     size: 1Gi
     storageClass: default
+  image:
+    containerPort: '8080'
+    repository: viktorstrate/photoview
+    tag: '2'
+  name: photoview
   web:
     replicaCount: 1
   worker:

@@ -1,25 +1,37 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A self-hosted, file based task management board
+      that supports Markdown syntax.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/frontend/public/favicon/android-chrome-192x192.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/BaldissaraMatheus/Tasks.md/main/public/demonstration.gif"]'
+    kubero.dev/template.source: https://github.com/BaldissaraMatheus/Tasks.md
+    kubero.dev/template.tags: '["scrumboard","kanban","task","todo","list","markdown","markdown-editor"]'
+    kubero.dev/template.title: Tasks.md
+    kubero.dev/template.website: https://hub.docker.com/r/baldissaramatheus/tasks.md
   name: tasksmd
 spec:
-  name: tasksmd
-  deploymentstrategy: docker
-  image:
-    repository: baldissaramatheus/tasks.md
-    tag: latest
-    containerPort: "8080"
   addons: []
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: TITLE
     value: Demo
-  cronjobs: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     mountPath: /api/files/
     name: tasksmd-files
     size: 1Gi
+  image:
+    containerPort: '8080'
+    repository: baldissaramatheus/tasks.md
+    tag: latest
+  name: tasksmd
   web:
     replicaCount: 1
   worker:

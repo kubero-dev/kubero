@@ -1,15 +1,23 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: TimeTagger is a simple time tracking tool for
+      your terminal.
+    kubero.dev/template.icon: https://timetagger.app/timetagger_sl.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://timetagger.app/screenshot1.png","https://timetagger.app/screenshot2.png","https://timetagger.app/screenshot3.png"]'
+    kubero.dev/template.source: https://github.com/almarklein/timetagger
+    kubero.dev/template.tags: '["Time tracking"]'
+    kubero.dev/template.title: TimeTagger
+    kubero.dev/template.website: https://timetagger.app/
   name: timetagger
 spec:
-  name: timetagger
-  deploymentstrategy: docker
-  image:
-    repository: ghcr.io/almarklein/timetagger
-    tag: latest
-    containerPort: "8080"
   addons: []
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: TIMETAGGER_BIND
     value: 0.0.0.0:8080
@@ -17,7 +25,6 @@ spec:
     value: /data/_timetagger
   - name: TIMETAGGER_CREDENTIALS
     value: test:$$2a$$08$$0CD1NFiIbancwWsu3se1v.RNR/b7YeZd71yg3cZ/3whGlyU6Iny5i
-  cronjobs: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -26,6 +33,11 @@ spec:
     name: timetagger-data
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: ghcr.io/almarklein/timetagger
+    tag: latest
+  name: timetagger
   web:
     replicaCount: 1
   worker:

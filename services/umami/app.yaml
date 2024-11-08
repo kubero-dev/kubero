@@ -1,14 +1,20 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Umami is a simple, fast, privacy-focused alternative
+      to Google Analytics.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/105618662?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://umami.is/images/languages.png"]'
+    kubero.dev/template.source: https://github.com/umami-software/umami
+    kubero.dev/template.tags: '["analytics"]'
+    kubero.dev/template.title: umami
+    kubero.dev/template.website: https://umami.is/
   name: umami
 spec:
-  name: umami
-  deploymentstrategy: umami
-  image:
-    repository: ghcr.io/umami-software/umami
-    tag: postgresql-latest
-    containerPort: "3000"
   addons:
   - displayName: Kubero Postgresql
     env: []
@@ -34,6 +40,8 @@ spec:
             primary:
               persistence:
                 size: 1Gi
+  cronjobs: []
+  deploymentstrategy: umami
   envVars:
   - name: DATABASE_URL
     value: postgresql://umami:umami@umami-umami-postgresql:5432/umami
@@ -41,8 +49,12 @@ spec:
     value: postgresql
   - name: HASH_SALT
     value: replace-me-with-a-random-string
-  cronjobs: []
   extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: ghcr.io/umami-software/umami
+    tag: postgresql-latest
+  name: umami
   web:
     replicaCount: 1
   worker:

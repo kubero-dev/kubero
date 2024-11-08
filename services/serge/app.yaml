@@ -1,17 +1,24 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A web interface for chatting with Alpaca through
+      llama.cpp. Fully dockerized, with an easy to use API.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/135821135?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png"]'
+    kubero.dev/template.source: https://github.com/serge-chat/serge
+    kubero.dev/template.tags: '["LLM","AI"]'
+    kubero.dev/template.title: Serge Chat AI
+    kubero.dev/template.website: https://serge.chat
   name: serge
 spec:
-  name: serge
-  deploymentstrategy: docker
-  image:
-    repository: ghcr.io/serge-chat/serge
-    tag: latest
-    containerPort: "8008"
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -27,6 +34,11 @@ spec:
     name: datadb
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '8008'
+    repository: ghcr.io/serge-chat/serge
+    tag: latest
+  name: serge
   web:
     replicaCount: 1
   worker:

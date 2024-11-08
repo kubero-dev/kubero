@@ -3,7 +3,6 @@ on:
   pull_request:
     paths:
       - 'services/**'
-      - 'templates/**'
 jobs:
   yamllint:
     name: 'Yamllint'
@@ -16,15 +15,6 @@ jobs:
         with:
           yamllint_file_or_dir: 'services'
           yamllint_config_datapath: 'services/.yamllint'
-          yamllint_strict: false
-          yamllint_comment: true
-        env:
-          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: 'Yamllint templates'
-        uses: karancode/yamllint-github-action@master
-        with:
-          yamllint_file_or_dir: 'templates'
-          yamllint_config_datapath: 'templates/.yamllint'
           yamllint_strict: false
           yamllint_comment: true
         env:

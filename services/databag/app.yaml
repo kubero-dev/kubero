@@ -1,32 +1,44 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: databag
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A tiny selfhosted federated messenger for the
+      decentralized web.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/balzack/databag/main/doc/icon_v2.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/balzack/databag/main/doc/mobile.png","https://github.com/balzack/databag/blob/main/doc/browser.png"]'
+    kubero.dev/template.source: https://github.com/balzack/databag
+    kubero.dev/template.tags: '["chat","messenger","federated","decentralized"]'
+    kubero.dev/template.title: Databag
+    kubero.dev/template.website: https://github.com/balzack/databag
+  labels:
+    manager: kubero
+  name: databag
 spec:
-    name: databag
-    deploymentstrategy: docker
-    envVars:
-        - name: ADMIN
-          value: secret
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /var/lib/databag
-          name: databag-data
-          size: 1Gi
-          storageClass: standard
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "7000"
-        pullPolicy: Always
-        repository: balzack/databag
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: ADMIN
+    value: secret
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/lib/databag
+    name: databag-data
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '7000'
+    pullPolicy: Always
+    repository: balzack/databag
+    tag: latest
+  name: databag
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

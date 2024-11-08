@@ -1,17 +1,24 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A self-hosted free open source website change
+      detection, monitor and notification service.
+    kubero.dev/template.icon: https://changedetection.io/themes/cdio/assets/images/favicons/apple-touch-icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png"]'
+    kubero.dev/template.source: https://github.com/dgtlmoon/changedetection.io
+    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.title: changedetection.io
+    kubero.dev/template.website: https://changedetection.io/
   name: changedetection
 spec:
-  name: changedetection
-  deploymentstrategy: docker
-  image:
-    repository: dgtlmoon/changedetection.io
-    tag: latest
-    containerPort: "5000"
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -20,6 +27,11 @@ spec:
     name: changedetection-volume
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '5000'
+    repository: dgtlmoon/changedetection.io
+    tag: latest
+  name: changedetection
   web:
     replicaCount: 1
   worker:

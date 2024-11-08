@@ -1,29 +1,41 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: metube
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Self-hosted YouTube downloader (web UI for youtube-dl
+      / yt-dlp)
+    kubero.dev/template.icon: https://raw.githubusercontent.com/alexta69/metube/master/ui/src/assets/icons/android-chrome-192x192.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/alexta69/metube/master/screenshot.gif"]'
+    kubero.dev/template.source: https://github.com/alexta69/metube
+    kubero.dev/template.tags: '["video"]'
+    kubero.dev/template.title: Metube
+    kubero.dev/template.website: hhttps://github.com/alexta69/metube
+  labels:
+    manager: kubero
+  name: metube
 spec:
-    name: metube
-    deploymentstrategy: docker
-    envVars: []
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /downloads
-          name: downloads-volume
-          size: 10Gi
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "8081"
-        pullPolicy: Always
-        repository: ghcr.io/alexta69/metube
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /downloads
+    name: downloads-volume
+    size: 10Gi
+  image:
+    containerPort: '8081'
+    pullPolicy: Always
+    repository: ghcr.io/alexta69/metube
+    tag: latest
+  name: metube
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

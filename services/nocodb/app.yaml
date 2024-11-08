@@ -1,20 +1,24 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: The Open Source Airtable Alternative. Turns any
+      MySQL, PostgreSQL, SQL Server, SQLite & MariaDB into a smart-spreadsheet.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/nocodb/nocodb/develop/packages/nc-gui/assets/img/icons/512x512.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/35857179/194844858-d353bd15-1edf-406c-889b-ba60f76831f4.png","https://user-images.githubusercontent.com/35857179/194844872-1a1094b9-761b-4ab6-a0ab-8e11dcae6571.png","https://user-images.githubusercontent.com/35857179/194844881-23f12c4c-7a5f-403e-928c-ef4c53b2665d.png","https://user-images.githubusercontent.com/35857179/194844885-faaf042f-bad2-4924-84f0-2c08813271d8.png","https://user-images.githubusercontent.com/35857179/194844886-a17006e0-979d-493f-83c4-0e72f5a9b716.png","https://user-images.githubusercontent.com/35857179/194844890-b9f265ae-6e40-4fa5-9267-d1367c27c8e6.png","https://user-images.githubusercontent.com/35857179/194844903-c1e47f40-e782-4f5d-8dce-6449cc70b181.png"]'
+    kubero.dev/template.source: https://github.com/nocodb/nocodb
+    kubero.dev/template.tags: '["low-code","admin-dashboard","no-code","admin-ui"]'
+    kubero.dev/template.title: NocoDB
+    kubero.dev/template.website: https://www.nocodb.com
   name: nocodb
 spec:
-  name: nocodb
-  deploymentstrategy: docker
-  image:
-    repository: nocodb/nocodb
-    tag: latest
-    containerPort: "8080"
-    run:
-      securityContext:
-        readOnlyRootFilesystem: false
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -23,6 +27,14 @@ spec:
     name: nocodb-data-volume
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '8080'
+    repository: nocodb/nocodb
+    run:
+      securityContext:
+        readOnlyRootFilesystem: false
+    tag: latest
+  name: nocodb
   web:
     replicaCount: 1
   worker:

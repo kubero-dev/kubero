@@ -1,101 +1,112 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: keila
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open Source Newsletter Tool.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/pentacent/keila/main/.github/assets/logo.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '"https://www.keila.io/docs/configuration"'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/pentacent/keila/main/.github/assets/keila-20211203.jpg"]'
+    kubero.dev/template.source: https://github.com/pentacent/keila
+    kubero.dev/template.tags: '["newsletter"]'
+    kubero.dev/template.title: Keila
+    kubero.dev/template.website: https://keila.io/
+  labels:
+    manager: kubero
+  name: keila
 spec:
-    name: keila
-    deploymentstrategy: docker
-    envVars:
-        - name: SECRET_KEY_BASE
-          value: EiHaPZPt+t8SA9MuAIeVixPhDJI1T+XhYr1S54PcOAxNh+Z30PNWM/WSIhfREUvo
-        - name: DB_URL
-          value: postgres://postgres:keila@keila-postgresql/postgresql
-        - name: MAILER_SMTP_HOST
-          value: keila-haraka:8025
-        - name: MAILER_SMTP_USER
-          value: keila
-        - name: MAILER_SMTP_PASSWORD
-          value: keila
-        - name: KEILA_USER
-          value: root@localhost
-        - name: KEILA_PASSWORD
-          value: keila
-    serviceAccount:
-        annotations: {}
-    extraVolumes: []
-    cronjobs: []
-    addons:
-        - displayName: Postgresql
-          env: []
-          icon: /img/addons/postgresql.png
-          id: kubero-operator
-          kind: KuberoPostgresql
-          resourceDefinitions:
-              KuberoPostgresql:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoPostgresql
-                  metadata:
-                      name: keila-postgresql
-                  spec:
-                      postgresql:
-                          global:
-                              postgresql:
-                                  auth:
-                                      database: postgresql
-                                      password: keila
-                                      postgresPassword: keila
-                                      username: keila
-                              storageClass: standard
-                          primary:
-                              persistence:
-                                  size: 1Gi
-          version:
-              latest: 0.0.159
-        - displayName: Haraka Mail Server
-          env: []
-          icon: /img/addons/Haraka.png
-          id: kubero-operator
-          kind: KuberoMail
-          resourceDefinitions:
-              KuberoMail:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoMail
-                  metadata:
-                      name: keila-haraka
-                  spec:
-                      haraka:
-                          haraka:
-                              env:
-                                  - name: HARAKA_HOSTLIST
-                                    value: localhost,localhost.kubero.dev
-                                  - name: HARAKA_ME
-                                    value: keila
-                                  - name: HARAKA_PLUGINS
-                                    value: helo.checks,mail_from.is_resolvable,rcpt_to.in_host_list,headers,relay_all
-                                  - name: HARAKA_HELO_CHECKS_CHECK
-                                    value: mynameisnobody
-                                  - name: HARAKA_HELO_CHECKS_REJECT
-                                    value: host_mismatch=false,big_company=false,rdns_match=false
-                                  - name: HARAKA_HELO_CHECKS_SKIP
-                                    value: private_ip=false,relaying=true
-                                  - name: HARAKA_LOG_LEVEL
-                                    value: info
-                                  - name: HARAKA_LOG_TIMESTAMP
-                                    value: false
-                                  - name: HARAKA_LOG_FORMAT
-                                    value: info
-                          replicaCount: 1
-                          service:
-                              port: 8025
-                              type: ClusterIP
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "4000"
-        pullPolicy: Always
-        repository: pentacent/keila
-        tag: latest
+  addons:
+  - displayName: Postgresql
+    env: []
+    icon: /img/addons/postgresql.png
+    id: kubero-operator
+    kind: KuberoPostgresql
+    resourceDefinitions:
+      KuberoPostgresql:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoPostgresql
+        metadata:
+          name: keila-postgresql
+        spec:
+          postgresql:
+            global:
+              postgresql:
+                auth:
+                  database: postgresql
+                  password: keila
+                  postgresPassword: keila
+                  username: keila
+              storageClass: standard
+            primary:
+              persistence:
+                size: 1Gi
+    version:
+      latest: 0.0.159
+  - displayName: Haraka Mail Server
+    env: []
+    icon: /img/addons/Haraka.png
+    id: kubero-operator
+    kind: KuberoMail
+    resourceDefinitions:
+      KuberoMail:
+        apiVersion: application.kubero.dev/v1alpha1
+        kind: KuberoMail
+        metadata:
+          name: keila-haraka
+        spec:
+          haraka:
+            haraka:
+              env:
+              - name: HARAKA_HOSTLIST
+                value: localhost,localhost.kubero.dev
+              - name: HARAKA_ME
+                value: keila
+              - name: HARAKA_PLUGINS
+                value: helo.checks,mail_from.is_resolvable,rcpt_to.in_host_list,headers,relay_all
+              - name: HARAKA_HELO_CHECKS_CHECK
+                value: mynameisnobody
+              - name: HARAKA_HELO_CHECKS_REJECT
+                value: host_mismatch=false,big_company=false,rdns_match=false
+              - name: HARAKA_HELO_CHECKS_SKIP
+                value: private_ip=false,relaying=true
+              - name: HARAKA_LOG_LEVEL
+                value: info
+              - name: HARAKA_LOG_TIMESTAMP
+                value: false
+              - name: HARAKA_LOG_FORMAT
+                value: info
+            replicaCount: 1
+            service:
+              port: 8025
+              type: ClusterIP
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: SECRET_KEY_BASE
+    value: EiHaPZPt+t8SA9MuAIeVixPhDJI1T+XhYr1S54PcOAxNh+Z30PNWM/WSIhfREUvo
+  - name: DB_URL
+    value: postgres://postgres:keila@keila-postgresql/postgresql
+  - name: MAILER_SMTP_HOST
+    value: keila-haraka:8025
+  - name: MAILER_SMTP_USER
+    value: keila
+  - name: MAILER_SMTP_PASSWORD
+    value: keila
+  - name: KEILA_USER
+    value: root@localhost
+  - name: KEILA_PASSWORD
+    value: keila
+  extraVolumes: []
+  image:
+    containerPort: '4000'
+    pullPolicy: Always
+    repository: pentacent/keila
+    tag: latest
+  name: keila
+  serviceAccount:
+    annotations: {}
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

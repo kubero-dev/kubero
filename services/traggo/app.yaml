@@ -1,23 +1,36 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'Traggo is a self-hosted time tracking tool.
+      It is designed to be easy to use and to be self-hosted. It is written in Go
+      and uses Vue.js for the frontend. '
+    kubero.dev/template.icon: https://raw.githubusercontent.com/traggo/logo/master/logo.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/traggo/server/raw/master/.github/traggo_list.png","https://github.com/traggo/server/raw/master/.github/traggo_calendar.png","https://github.com/traggo/server/raw/master/.github/traggo_dashboard.png"]'
+    kubero.dev/template.source: https://github.com/traggo/server
+    kubero.dev/template.tags: '["time tracking","time management"]'
+    kubero.dev/template.title: Traggo
+    kubero.dev/template.website: https://traggo.net
   name: traggo
 spec:
-  name: traggo
-  deploymentstrategy: docker
-  image:
-    repository: traggo/server
-    tag: latest
-    containerPort: "3030"
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
     mountPath: /opt/traggo/data
     name: traggo-data
     size: 1Gi
+  image:
+    containerPort: '3030'
+    repository: traggo/server
+    tag: latest
+  name: traggo
   web:
     replicaCount: 1
   worker:

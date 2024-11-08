@@ -1,14 +1,21 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Rocket.Chat is an open-source fully customizable
+      communications platform developed in JavaScript for organizations with high
+      standards of data protection.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/12508788?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/6464d93d33af48db33864025_Team%20Collab.webp","https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/615d85d3d3ae5682e8571dfb_Group%203924%20(1).png"]'
+    kubero.dev/template.source: https://github.com/RocketChat/Rocket.Chat
+    kubero.dev/template.tags: '["communications"]'
+    kubero.dev/template.title: Rocket.Chat
+    kubero.dev/template.website: https://rocket.chat/
   name: rocketchat
 spec:
-  name: rocketchat
-  deploymentstrategy: docker
-  image:
-    repository: registry.rocket.chat/rocketchat/rocket.chat
-    tag: latest
-    containerPort: "3000"
   addons:
   - displayName: Kubero MongoDB
     env: []
@@ -40,6 +47,8 @@ spec:
             persistence:
               size: 1Gi
             replicaCount: 1
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: MONGO_URL
     value: mongodb://rocket:rocket@rocketchat-mongodb:27017/kubero
@@ -47,8 +56,12 @@ spec:
     value: https://rocketchat.demo.kubero.dev
   - name: DEPLOY_METHOD
     value: docker
-  cronjobs: []
   extraVolumes: []
+  image:
+    containerPort: '3000'
+    repository: registry.rocket.chat/rocketchat/rocket.chat
+    tag: latest
+  name: rocketchat
   web:
     replicaCount: 1
   worker:

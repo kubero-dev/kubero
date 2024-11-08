@@ -1,22 +1,34 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: chartdb
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A database diagrams editor to visualize and design
+      your DB with a single query.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/177466511?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/chartdb/chartdb/main/public/chartdb.png"]'
+    kubero.dev/template.source: https://github.com/chartdb/chartdb
+    kubero.dev/template.tags: '["administration","database"]'
+    kubero.dev/template.title: ChartDB
+    kubero.dev/template.website: https://chartdb.io/
+  labels:
+    manager: kubero
+  name: chartdb
 spec:
-    name: chartdb
-    deploymentstrategy: docker
-    envVars: []
-    extraVolumes: []
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "80"
-        pullPolicy: Always
-        repository: ghcr.io/chartdb/chartdb
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: ghcr.io/chartdb/chartdb
+    tag: latest
+  name: chartdb
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

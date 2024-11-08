@@ -1,17 +1,24 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: 'A lightning-fast search engine that fits effortlessly
+      into your apps, websites, and workflow '
+    kubero.dev/template.icon: https://www.meilisearch.com/apple-touch-icon.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/meilisearch/meilisearch/raw/main/assets/demo-light.gif"]'
+    kubero.dev/template.source: https://github.com/meilisearch/meilisearch
+    kubero.dev/template.tags: '["search"]'
+    kubero.dev/template.title: Meilisearch
+    kubero.dev/template.website: https://www.meilisearch.com/
   name: meilisearch
 spec:
-  name: meilisearch
-  deploymentstrategy: docker
-  image:
-    repository: getmeili/meilisearch
-    tag: latest
-    containerPort: "7700"
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteOnce
@@ -20,6 +27,11 @@ spec:
     name: meilidata-volume
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '7700'
+    repository: getmeili/meilisearch
+    tag: latest
+  name: meilisearch
   web:
     replicaCount: 1
   worker:

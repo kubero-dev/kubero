@@ -1,19 +1,30 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: kubectl
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Run kubectl command in web browser
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/52770786?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/KubeOperator/webkubectl/raw/master/web-resources/webkubectl.gif"]'
+    kubero.dev/template.source: https://github.com/KubeOperator/webkubectl
+    kubero.dev/template.tags: '["kubernetes"]'
+    kubero.dev/template.title: Web Kubectl
+    kubero.dev/template.website: https://github.com/KubeOperator/webkubectl
+  name: kubectl
 spec:
-    name: kubectl
-    deploymentstrategy: docker
-    envVars: []
-    extraVolumes: []
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: 8080
-        repository: kubeoperator/webkubectl
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
+  image:
+    containerPort: 8080
+    repository: kubeoperator/webkubectl
+    tag: latest
+  name: kubectl
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

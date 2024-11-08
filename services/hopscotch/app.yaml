@@ -1,18 +1,29 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Open source API development ecosystem
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/56705483?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/hoppscotch/hoppscotch/main/packages/hoppscotch-common/public/images/banner-light.png"]'
+    kubero.dev/template.source: https://github.com/hoppscotch/hoppscotch
+    kubero.dev/template.tags: '["development"]'
+    kubero.dev/template.title: Hoppscotch
+    kubero.dev/template.website: https://hoppscotch.io
   name: hopscotch
 spec:
-  name: hopscotch
+  addons: []
+  cronjobs: []
   deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
   image:
+    containerPort: '3000'
     repository: hoppscotch/hoppscotch
     tag: latest
-    containerPort: "3000"
-  addons: []
-  envVars: []
-  cronjobs: []
-  extraVolumes: []
+  name: hopscotch
   web:
     replicaCount: 1
   worker:

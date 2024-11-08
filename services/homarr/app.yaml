@@ -1,17 +1,24 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Homarr is a simple and lightweight homepage for
+      your server, that helps you easily access all of your services in one place.
+    kubero.dev/template.icon: https://github.com/ajnart/homarr/raw/dev/public/imgs/logo/logo-color.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif"]'
+    kubero.dev/template.source: https://github.com/ajnart/homarr
+    kubero.dev/template.tags: '["homepage"]'
+    kubero.dev/template.title: Homarr
+    kubero.dev/template.website: https://homarr.dev
   name: homarr
 spec:
-  name: homarr
-  deploymentstrategy: docker
-  image:
-    repository: ghcr.io/ajnart/homarr
-    tag: latest
-    containerPort: "7575"
   addons: []
-  envVars: []
   cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -27,6 +34,11 @@ spec:
     name: homarr-icons
     size: 200Mi
     storageClass: standard
+  image:
+    containerPort: '7575'
+    repository: ghcr.io/ajnart/homarr
+    tag: latest
+  name: homarr
   web:
     replicaCount: 1
   worker:

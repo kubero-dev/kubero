@@ -17,7 +17,6 @@ on:
     paths-ignore:
       - 'docs/**'
       - 'services/**'
-      - 'templates/**'
       - '.github/**'
   pull_request:
     # The branches below must be a subset of the branches above

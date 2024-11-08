@@ -1,21 +1,33 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: ILLA is a robust open source low-code platform
+      for developers to build internal tools.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/93245159?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://www.illacloud.com/_next/image?url=https%3A%2F%2Fcdn.illacloud.com%2Fofficial-website%2Fimg%2Fhome%2FplayVideoCover.png&w=3840&q=75"]'
+    kubero.dev/template.source: https://github.com/illacloud/illa-builder
+    kubero.dev/template.tags: '["low-code"]'
+    kubero.dev/template.title: Illa
+    kubero.dev/template.website: https://illacloud.com
   name: gatus
 spec:
-  name: gatus
+  addons: []
+  cronjobs: []
   deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
   image:
+    containerPort: '80'
     repository: illasoft/illa-builder
-    tag: latest
-    containerPort: "80"
     run:
       securityContext:
         readOnlyRootFilesystem: false
-  addons: []
-  envVars: []
-  cronjobs: []
-  extraVolumes: []
+    tag: latest
+  name: gatus
   web:
     replicaCount: 1
   worker:

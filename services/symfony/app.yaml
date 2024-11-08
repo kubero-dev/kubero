@@ -1,15 +1,44 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Symfony is a PHP framework for web and console
+      applications and a set of reusable PHP components.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/143937?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/symfony/symfony
+    kubero.dev/template.tags: '["framework","php"]'
+    kubero.dev/template.title: Symfony
+    kubero.dev/template.website: https://symfony.com
   name: symfony
 spec:
-  name: symfony
+  addons: []
+  cronjobs: []
   deploymentstrategy: git
+  envVars:
+  - name: APP_SECRET
+    value: 20bd009a24d5db6d813bccb1a539da7a
+  - name: APP_DEBUG
+    value: 'false'
+  - name: APP_ENV
+    value: prod
+  - name: PHP_EXTENSION_INTL
+    value: '1'
+  extraVolumes:
+  - accessModes:
+    - ReadWriteMany
+    mountPath: /app/var
+    name: symfony-var
+    size: 1Gi
   image:
     build:
       command: composer install; mkdir -p var/cache var/log; chown -R 1000:1000 /app
       repository: composer
       tag: latest
+    containerPort: '8080'
     run:
       command: apache2-foreground
       readOnlyAppStorage: false
@@ -17,24 +46,7 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
       tag: latest
-    containerPort: "8080"
-  addons: []
-  envVars:
-  - name: APP_SECRET
-    value: 20bd009a24d5db6d813bccb1a539da7a
-  - name: APP_DEBUG
-    value: "false"
-  - name: APP_ENV
-    value: prod
-  - name: PHP_EXTENSION_INTL
-    value: "1"
-  cronjobs: []
-  extraVolumes:
-  - accessModes:
-    - ReadWriteMany
-    mountPath: /app/var
-    name: symfony-var
-    size: 1Gi
+  name: symfony
   web:
     replicaCount: 1
   worker:

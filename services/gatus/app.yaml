@@ -1,18 +1,31 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Gatus is a service that allows you to monitor
+      the availability and latency of your services and expose this information a
+      beautiful dashboard.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/TwiN/gatus/9e46e3972d382c62ebf954eb109b3c856d33bd58/web/app/public/logo-192x192.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png"]'
+    kubero.dev/template.source: https://github.com/TwiN/gatus
+    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.title: Gatus
+    kubero.dev/template.website: https://gatus.io/
   name: gatus
 spec:
-  name: gatus
+  addons: []
+  cronjobs: []
   deploymentstrategy: docker
+  envVars: []
+  extraVolumes: []
   image:
+    containerPort: '8080'
     repository: twinproduction/gatus
     tag: latest
-    containerPort: "8080"
-  addons: []
-  envVars: []
-  cronjobs: []
-  extraVolumes: []
+  name: gatus
   web:
     replicaCount: 1
   worker:

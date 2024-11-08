@@ -1,40 +1,52 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: kanboard
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Kanboard is a free and open source project management
+      software focused on the Kanban methodology.
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/13722943?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://kanboard.org/assets/img/board.png"]'
+    kubero.dev/template.source: https://github.com/kanboard/kanboard
+    kubero.dev/template.tags: '["project-management"]'
+    kubero.dev/template.title: Kanboard
+    kubero.dev/template.website: https://kanboard.org
+  labels:
+    manager: kubero
+  name: kanboard
 spec:
-    name: kanboard
-    deploymentstrategy: docker
-    envVars:
-        - name: PLUGIN_INSTALLER
-          value: "true"
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /var/www/app/data
-          name: kanboard-data-volume
-          size: 1Gi
-          storageClass: standard
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /var/www/app/plugins
-          name: kanboard-plugins-volume
-          size: 1Gi
-          storageClass: standard
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "80"
-        pullPolicy: Always
-        repository: kanboard/kanboard
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: PLUGIN_INSTALLER
+    value: 'true'
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/app/data
+    name: kanboard-data-volume
+    size: 1Gi
+    storageClass: standard
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /var/www/app/plugins
+    name: kanboard-plugins-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '80'
+    pullPolicy: Always
+    repository: kanboard/kanboard
+    tag: latest
+  name: kanboard
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

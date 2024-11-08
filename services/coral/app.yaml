@@ -1,14 +1,20 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: A better onlne commenting experience from Vox
+      Media
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/9255912?s=200&v=4
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '["https://docs.coralproject.net/","https://github.com/coralproject/talk/blob/main/docs/docs/environment-variables.md"]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/coralproject/talk
+    kubero.dev/template.tags: '["commments","community"]'
+    kubero.dev/template.title: Coral
+    kubero.dev/template.website: https://coralproject.net
   name: coral
 spec:
-  name: coral
-  deploymentstrategy: docker
-  image:
-    repository: coralproject/talk
-    tag: "7"
-    containerPort: "8080"
   addons:
   - displayName: Kubero Redis
     env: []
@@ -65,6 +71,8 @@ spec:
             persistence:
               size: 1Gi
             replicaCount: 1
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: SIGNING_SECRET
     value: change-me-to-make-me-secure
@@ -76,8 +84,12 @@ spec:
     value: production
   - name: LOGGING_LEVEL
     value: info
-  cronjobs: []
   extraVolumes: []
+  image:
+    containerPort: '8080'
+    repository: coralproject/talk
+    tag: '7'
+  name: coral
   web:
     replicaCount: 1
   worker:

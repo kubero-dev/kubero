@@ -1,14 +1,20 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Ghost is a powerful app for new-media creators
+      to publish, share, and grow a business around their content.
+    kubero.dev/template.icon: https://ghost.org/images/logos/ghost-logo-orb.png
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png"]'
+    kubero.dev/template.source: https://github.com/TryGhost/Ghost
+    kubero.dev/template.tags: '["CMS","Blogging","Publishing"]'
+    kubero.dev/template.title: Ghost
+    kubero.dev/template.website: https://ghost.org/
   name: ghost
 spec:
-  name: ghost
-  deploymentstrategy: docker
-  image:
-    repository: ghost
-    tag: latest
-    containerPort: "2368"
   addons:
   - displayName: Kubero Mysql
     env: []
@@ -36,6 +42,8 @@ spec:
                 accessModes:
                 - ReadWriteOnce
                 size: 1Gi
+  cronjobs: []
+  deploymentstrategy: docker
   envVars:
   - name: database__client
     value: mysql
@@ -49,7 +57,6 @@ spec:
     value: ghost
   - name: url
     value: http://ghost.lacolhost.com:81
-  cronjobs: []
   extraVolumes:
   - accessModes:
     - ReadWriteMany
@@ -58,6 +65,11 @@ spec:
     name: ghost-volume
     size: 1Gi
     storageClass: standard
+  image:
+    containerPort: '2368'
+    repository: ghost
+    tag: latest
+  name: ghost
   web:
     replicaCount: 1
   worker:

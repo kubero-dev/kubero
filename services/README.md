@@ -22,6 +22,18 @@ If you have a running instace of Kubero you can use the CLI to lookup the values
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
+  annotations:
+    kubero.dev/template.architecture: '["arm64", "amd64"]' # optional, architecture of the service
+    kubero.dev/template.description: Describe your service as good as you can in one sentence (max 140 characters) # mandatatory
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/64215741?s=200&v=4 # mandatatory (must be a publicly accesible a URL, square, max 300x300px)
+    kubero.dev/template.installation: Some installation instructions to get started with your service. 
+      This can be a link to your documentation or a quick start guide. Can be markdown. # optional
+    kubero.dev/template.links: '["https://docs.mydomain.com", "https://additionallink.com"]' # optional, up to 5 links
+    kubero.dev/template.screenshots: '["https://mydomain.com/screenshot1.png" , "https://mydomain.com/screenshot2.png"]' # optional, up to 5 screenshots
+    kubero.dev/template.source: https://github.com/me/myservice # mandatatory
+    kubero.dev/template.tags: '["project management"]' # optional, up to 5 tags
+    kubero.dev/template.title: Myservice # mandatatory
+    kubero.dev/template.website: https://mydomain.com/ # mandatatory, must be publicly accessible, might be the same as source
   name: myservice
 spec:
   name: myservice
@@ -38,20 +50,4 @@ spec:
     replicaCount: 1
   worker:
     replicaCount: 0
-```
-
-### service.yaml
-The service yaml that describes your service to the users and holds all the metadata.
-```yaml
-name: Myservice # mandatatory
-description: "Describe your service as good as you can in one sentence (max 140 characters)"  # mandatatory
-tags: # optional, up to 5 tags
-- time tracking
-- time management
-source: https://github.com/me/myservice # optional
-website: https://www.myservice.org # mandatatory, must be publicly accessible, might be the same as source
-icon: https://mydomain.com/logo.png  # mandatatory (must be a publicly accesible a URL, square, max 300x300px)
-screenshots: # optional, up to 5 screenshots
-- https://mydomain.com/screenshot1.png
-- https://mydomain.com/screenshot2.png
 ```
