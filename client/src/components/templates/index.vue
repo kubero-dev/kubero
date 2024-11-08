@@ -109,7 +109,7 @@
                             color="primary"
                             dark
                             :disabled="!pipeline || !phase"
-                            @click="openInstall(clickedTemplate.dirname, pipeline, phase, catalogId)"
+                            @click="openInstall(clickedTemplate.template, pipeline, phase)"
                             >
                             Load template
                         </v-btn>
@@ -153,6 +153,7 @@ type Template = {
     website: string,
     screenshots: string[],
     dirname: string,
+    template: string,
 }
 
 type Templates = {
@@ -209,9 +210,10 @@ export default defineComponent({
             }
             this.dialog = false;
         },
-        openInstall(templatename: string, pipeline: string, phase: string, catalogId: number) {
+        openInstall(templateurl: string, pipeline: string, phase: string) {
             // redirect to install page
-            this.$router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templatename, catalogId: catalogId }})
+            const templateurlB64 = btoa(templateurl);
+            this.$router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templateurlB64 }})
 
         },
         openInstallDialog(template: Template) {
