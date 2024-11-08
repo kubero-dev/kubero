@@ -1,36 +1,48 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: note-mark
-    labels:
-        manager: kubero
+  annotations:
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: Note Mark is a lighting fast and minimal; web-based
+      Markdown notes app.
+    kubero.dev/template.icon: https://raw.githubusercontent.com/enchant97/note-mark/refs/heads/main/frontend/public/icon.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/enchant97/note-mark/main/site/static/preview.webp"]'
+    kubero.dev/template.source: https://github.com/enchant97/note-mark
+    kubero.dev/template.tags: '["developer-tools"]'
+    kubero.dev/template.title: Note Mark
+    kubero.dev/template.website: https://notemark.docs.enchantedcode.co.uk/
+  labels:
+    manager: kubero
+  name: note-mark
 spec:
-    name: note-mark
-    deploymentstrategy: docker
-    envVars:
-        - name: CORS_ORIGINS
-          value: "*"
-        - name: JWT_SECRET
-          value: 0ed825bbf34860212fe3ee7ae1ee0c02daed3655973f19549c50c5edd44adcb7f01256e9335aa01c7ca5bc2175b5fb40fae34d99daea58f8b9cbbb92e595ba297720c3bcf3b3f4b500d83da5fb92d04d1d1fcf856f9af48447f000c1816d76dcbd54eea77276422792de56d809b5d11a17e1d52ebc6effce59b86683598108ae296bd502c935b8ad1cf0025b5e6dc1ade1326c5ffd4eb7d6b83e8ee67130fd63b95e1d161171b63399bf2f15f138b6bdfad08f5a5131eef4cff30fe7fe285c82c6f7d7c5d6d6d5d8d76f33af5b392366c9793d16e98aeac4dec96e8c64a022727e9ded1315731135b56544192f54e6834adb4192590b6a11a5335f436d20b9f0
-    serviceAccount:
-        annotations: {}
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /data
-          name: note-mark-data-volume
-          size: 1Gi
-          storageClass: standard
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "8000"
-        pullPolicy: Always
-        repository: ghcr.io/enchant97/note-mark-aio
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars:
+  - name: CORS_ORIGINS
+    value: '*'
+  - name: JWT_SECRET
+    value: 0ed825bbf34860212fe3ee7ae1ee0c02daed3655973f19549c50c5edd44adcb7f01256e9335aa01c7ca5bc2175b5fb40fae34d99daea58f8b9cbbb92e595ba297720c3bcf3b3f4b500d83da5fb92d04d1d1fcf856f9af48447f000c1816d76dcbd54eea77276422792de56d809b5d11a17e1d52ebc6effce59b86683598108ae296bd502c935b8ad1cf0025b5e6dc1ade1326c5ffd4eb7d6b83e8ee67130fd63b95e1d161171b63399bf2f15f138b6bdfad08f5a5131eef4cff30fe7fe285c82c6f7d7c5d6d6d5d8d76f33af5b392366c9793d16e98aeac4dec96e8c64a022727e9ded1315731135b56544192f54e6834adb4192590b6a11a5335f436d20b9f0
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /data
+    name: note-mark-data-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: ghcr.io/enchant97/note-mark-aio
+    tag: latest
+  name: note-mark
+  serviceAccount:
+    annotations: {}
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0

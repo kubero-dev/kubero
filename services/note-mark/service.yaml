@@ -1,9 +1,0 @@
-name: Note Mark
-description: 'Note Mark is a lighting fast and minimal; web-based Markdown notes app.'
-tags:
-- developer-tools
-source: https://github.com/enchant97/note-mark
-website: https://notemark.docs.enchantedcode.co.uk/
-icon: https://raw.githubusercontent.com/enchant97/note-mark/refs/heads/main/frontend/public/icon.svg
-screenshots:
-- https://raw.githubusercontent.com/enchant97/note-mark/main/site/static/preview.webp
