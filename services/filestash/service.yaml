@@ -1,0 +1,10 @@
+name: Filestash
+description: 'A file manager / web client for SFTP, S3, FTP, WebDAV, Git, Minio, LDAP, CalDAV, CardDAV, Mysql, Backblaze, ...'
+tags:
+- monitoring
+source: https://github.com/mickael-kerjean/filestash
+website: https://www.filestash.app/
+icon: https://raw.githubusercontent.com/mickael-kerjean/filestash/refs/heads/master/public/assets/logo/favicon.svg
+screenshots:
+- https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/photo.jpg
+- https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/navigation.gif
