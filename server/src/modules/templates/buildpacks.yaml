@@ -30,7 +30,7 @@ spec:
     spec:
       automountServiceAccountToken: true
       securityContext:
-        fsGroup: 1001
+        fsGroup: 1000
       containers:
         - name: deploy
           env:
@@ -72,6 +72,19 @@ spec:
           - mountPath: /home/kubero/.ssh-mounted
             name: deployment-keys
             readOnly: true
+          - mountPath: /app
+            name: app-storage
+          workingDir: /app
+        - command:
+          - sh
+          - -c
+          - chmod -R g+w /app
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: permissions
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
           - mountPath: /app
             name: app-storage
           workingDir: /app
