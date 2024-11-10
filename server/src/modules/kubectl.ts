@@ -1176,7 +1176,7 @@ export class Kubectl {
 
         if (buildstrategy === 'buildpacks') {
             // configure build container
-            job.spec.template.spec.initContainers[1].args[2] = repository.image+":"+repository.tag+"-"+id;
+            job.spec.template.spec.initContainers[2].args[1] = repository.image+":"+repository.tag+"-"+id;
         }
         if (buildstrategy === 'dockerfile') {
             // configure push container
