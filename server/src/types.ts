@@ -384,7 +384,7 @@ export interface IKuberoConfig {
             {
                 name: string;
                 description: string;
-                templateBasePath: string;
+                templateBasePath?: string; // deprecated v2.4.4
                 index: {
                     url: string;
                     format: string;

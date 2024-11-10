@@ -43,17 +43,17 @@
             <v-row>
                 <v-col
                     cols="12"
-                    md="10"
+                    md="6"
                 >
-                    <v-text-field
-                    v-model="catalog.templateBasePath"
-                    label="Template Base Path"
+                    <v-select
+                    v-model="catalog.index.format"
+                    :items="['json']"
+                    label="Index Format"
                     required
-                    density="compact"
-                    ></v-text-field>
+                    ></v-select>
                 </v-col>
             </v-row>
-            <v-row>
+            <v-row justify="space-between">
                 <v-col
                     cols="12"
                     md="10"
@@ -67,19 +67,12 @@
                 </v-col>
             </v-row>
             <v-row justify="space-between">
+
                 <v-col
                     cols="12"
-                    md="6"
+                    md="10"
                 >
-                    <v-select
-                    v-model="catalog.index.format"
-                    :items="['json']"
-                    label="Index Format"
-                    required
-                    ></v-select>
                 </v-col>
-
-
                 <v-col
                     cols="12"
                     md="2"
@@ -156,7 +149,6 @@ export default defineComponent({
             this.settings.kubero.config.templates.catalogs.push({
                 name: '',
                 description: '',
-                templateBasePath: '',
                 index: {
                     url: '',
                     format: 'json'

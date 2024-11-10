@@ -858,7 +858,6 @@ export class Kubero {
                         {
                             name: 'Kubero',
                             description: 'Kubero Templates',
-                            templateBasePath: 'https://raw.githubusercontent.com/kubero-dev/kubero/main/services/',
                             index: {
                                 url: 'https://raw.githubusercontent.com/kubero-dev/templates/main/index.json',
                                 format: 'json',
@@ -1456,10 +1455,6 @@ export class Kubero {
 
     public async getTemplateConfig() {
         return this.config.templates;
-    }
-
-    public async getTemplateBasePath(catalogId: number) {
-        return this.config.templates.catalogs[catalogId].templateBasePath;
     }
 
     public getTemplateEnabled() {

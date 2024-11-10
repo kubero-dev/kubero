@@ -1653,10 +1653,9 @@ export default defineComponent({
       this.loadClusterIssuers();
       this.getDomains();
 
-      if (this.$route.query.template && this.$route.query.catalogId) {
-        const catalogId = this.$route.query.catalogId as string;
+      if (this.$route.query.template) {
         const template = this.$route.query.template as string;
-        this.loadTemplate(catalogId, template);
+        this.loadTemplate(template);
       }
 
       //this.buildPipeline = this.$vuetify.buildPipeline
@@ -1709,8 +1708,8 @@ export default defineComponent({
           this.letsecryptClusterIssuer = response.data.id;
         });
       },
-      loadTemplate(catalogId: string, template: string) {
-        axios.get('/api/templates/'+catalogId+'/'+template).then(response => {
+      loadTemplate(template: string) {
+        axios.get('/api/templates/'+template).then(response => {
 
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;
