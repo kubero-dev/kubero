@@ -1,0 +1,12 @@
+name: Typesense
+description: 'Typesense is a fast, typo-tolerant open-source search engine optimized for instant, relevant search results.'
+tags:
+  - search
+  - database
+  - open-source
+  - indexing
+source: https://github.com/typesense/typesense
+website: https://typesense.org
+icon: https://typesense.org/_nuxt/img/typesense_logo.1be34dd.svg
+screenshots:
+  - https://github.com/typesense/typesense/blob/v28/assets/typesense_books_demo.gif?raw=true
