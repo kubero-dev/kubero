@@ -8,46 +8,18 @@ export const auth = new Auth();
 auth.init();
 export const authMiddleware = auth.getAuthMiddleware();
 export const bearerMiddleware = auth.getBearerMiddleware();
-/*
-// load all services from github repo
-Router.get('/services', authMiddleware, async function (req: Request, res: Response) {
-    // #swagger.tags = ['UI']
-    // #swagger.summary = 'Get all services'
-
-    axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/services/index.yaml')
-});
-
 
 // load a specific service from github repo
-Router.get('/services/:name', authMiddleware, async function (req: Request, res: Response) {
-    // #swagger.tags = ['UI']
-    // #swagger.summary = 'Get a specific service'
-    // #deprecated = true // since v1.11.0
-
-    const serviceName = req.params.name.replace(/[^\w.-]+/g, '');
-
-    const service = await axios.get('https://raw.githubusercontent.com/kubero-dev/kubero/main/services/' + serviceName + '/app.yaml')
-    .catch((err) => {
-        res
-            .status(500)
-            .send(err);
-    });
-    if (service) {
-        const ret = YAML.parse(service.data);
-        res.send(ret.spec);
-    }
-});
-*/
-
-// load a specific service from github repo
-Router.get('/templates/:catalogId/:template', authMiddleware, async function (req: Request, res: Response) {
+Router.get('/templates/:template', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a specific template'
+    // #swagger.description = 'Get a specific template from a catalog'
+    // #swagger.parameters['template'] = { description: 'A base64 encoded URL', type: 'string' }
 
-    const templateName = req.params.template.replace(/[^\w.-]+/g, '');
-    const templateBasePath = await req.app.locals.kubero.getTemplateBasePath(parseInt(req.params.catalogId));
+    // decode the base64 encoded URL
+    const templateUrl = Buffer.from(req.params.template, 'base64').toString('ascii');
 
-    const template = await axios.get(templateBasePath + templateName + '/app.yaml')
+    const template = await axios.get(templateUrl)
     .catch((err) => {
         res
             .status(500)
@@ -58,15 +30,3 @@ Router.get('/templates/:catalogId/:template', authMiddleware, async function (re
         res.send(ret.spec);
     }
 });
-
-// load a specific service from github repo
-Router.get('/templates/:catalogId', authMiddleware, async function (req: Request, res: Response) {
-    // #swagger.tags = ['UI']
-    // #swagger.summary = 'Get a specific template'
-    
-    const templateBasePath = await req.app.locals.kubero.getTemplateBasePath(parseInt(req.params.catalogId));
-
-    
-    axios.get(templateBasePath + '/index.yaml')
-});
-

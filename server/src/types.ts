@@ -16,6 +16,7 @@ export interface IApp {
     image : {
         repository: string,
         tag: string,
+        command: [string],
         pullPolicy: 'Always',
         containerPort: number,
         fetch: {
@@ -383,7 +384,7 @@ export interface IKuberoConfig {
             {
                 name: string;
                 description: string;
-                templateBasePath: string;
+                templateBasePath?: string; // deprecated v2.4.4
                 index: {
                     url: string;
                     format: string;

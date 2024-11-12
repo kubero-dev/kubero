@@ -177,7 +177,7 @@
                 value="git"
               ></v-radio>
               <v-radio
-                label="Docker Image"
+                label="Container Image"
                 value="docker"
               ></v-radio>
               <!--
@@ -381,9 +381,9 @@
         </div> <!-- end of buildstrategy != external -->
         </div> <!-- end of deploymentstrategy == git -->
 
-          <!-- DEPLOYMENT STRATEGY CONTAINER -->
-          <v-row
-            v-if="deploymentstrategy == 'docker' || (deploymentstrategy == 'git' && buildstrategy == 'external' )">
+        <!-- DEPLOYMENT STRATEGY CONTAINER -->
+        <div v-if="deploymentstrategy == 'docker'">
+          <v-row>
             <v-col
               cols="12"
               md="6"
@@ -396,8 +396,7 @@
               ></v-text-field>
             </v-col>
           </v-row>
-          <v-row
-            v-if="deploymentstrategy == 'docker' || (deploymentstrategy == 'git' && buildstrategy == 'external' )">
+          <v-row>
             <v-col
               cols="12"
               md="6"
@@ -410,6 +409,22 @@
               ></v-text-field>
             </v-col>
           </v-row>
+          <v-row
+            v-if="advanced">
+            <v-col
+              cols="12"
+              md="6"
+            >
+              <v-text-field
+                v-model="docker.command"
+                :counter="60"
+                label="Command"
+                required
+                bg-color="secondary"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+        </div> <!-- end of deploymentstrategy == docker -->
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -1442,6 +1457,7 @@ export default defineComponent({
       docker: {
         image: 'ghcr.io/kubero-dev/idler',
         tag: 'latest',
+        command: '',
       },
       autodeploy: true,
       sslIndex: [] as (boolean|undefined)[],
@@ -1630,20 +1646,16 @@ export default defineComponent({
       },
     },
     mounted() {
-      this.loadPipeline();
+      this.loadPipelineAndApp();
       this.loadStorageClasses();
       this.loadPodsizeList();
       this.loadBuildpacks();
       this.loadClusterIssuers();
       this.getDomains();
-      if (this.app != 'new') {
-        this.loadApp(); // this may lead into a race condition with the buildpacks loaded in loadPipeline
-      }
 
-      if (this.$route.query.template && this.$route.query.catalogId) {
-        const catalogId = this.$route.query.catalogId as string;
+      if (this.$route.query.template) {
         const template = this.$route.query.template as string;
-        this.loadTemplate(catalogId, template);
+        this.loadTemplate(template);
       }
 
       //this.buildPipeline = this.$vuetify.buildPipeline
@@ -1696,8 +1708,8 @@ export default defineComponent({
           this.letsecryptClusterIssuer = response.data.id;
         });
       },
-      loadTemplate(catalogId: string, template: string) {
-        axios.get('/api/templates/'+catalogId+'/'+template).then(response => {
+      loadTemplate(template: string) {
+        axios.get('/api/templates/'+template).then(response => {
 
           this.appname = response.data.name;
           this.containerPort = response.data.image.containerPort;
@@ -1746,7 +1758,7 @@ export default defineComponent({
       changeName(name: string) {
         this.ingress.hosts[0].host = name+"."+this.pipelineData.domain;
       },
-      loadPipeline() {
+      loadPipelineAndApp() {
         axios.get('/api/pipelines/'+this.pipeline).then(response => {
           this.pipelineData = response.data;
 
@@ -1786,6 +1798,11 @@ export default defineComponent({
           if (this.buildpack && this.buildpack.run && this.buildpack.run.readOnlyAppStorage === undefined) {
             this.buildpack.run.readOnlyAppStorage = true;
           }
+
+          if (this.app != 'new') {
+            this.loadApp();
+          }
+
 
         });
       },
@@ -1893,6 +1910,11 @@ export default defineComponent({
               this.panel.push(8)
             }
 
+            let command = '';
+            if (response.data.spec.image.command) {
+              command = response.data.spec.image.command.join(' ');
+            }
+
             this.security = response.data.spec.image.run.securityContext || {};
 
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
@@ -1909,6 +1931,7 @@ export default defineComponent({
             this.imageTag = response.data.spec.imageTag;
             this.docker.image = response.data.spec.image.repository || '';
             this.docker.tag = response.data.spec.image.tag || 'latest';
+            this.docker.command = command;
             this.autodeploy = response.data.spec.autodeploy;
             this.envvars = response.data.spec.envVars;
             this.serviceAccount = response.data.spec.serviceAccount;
@@ -2008,6 +2031,13 @@ export default defineComponent({
         this.cleanupIngressAnnotations();
         this.setSSL();
 
+        let command = [] as string[];
+        if (this.docker.command.length > 0) {
+          command = this.docker.command.split(' ');
+        } else {
+          command = [];
+        }
+
         let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
@@ -2021,6 +2051,7 @@ export default defineComponent({
             containerport: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
+            command: command,
             fetch: this.buildpack?.fetch,
             build: this.buildpack?.build,
             run: this.buildpack?.run,

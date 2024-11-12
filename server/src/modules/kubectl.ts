@@ -47,6 +47,7 @@ export class Kubectl {
     private customObjectsApi: CustomObjectsApi = {} as CustomObjectsApi;
     private networkingV1Api: NetworkingV1Api = {} as NetworkingV1Api;
     public kubeVersion: VersionInfo | void;
+    public kuberoOperatorVersion: string | undefined;
     private patchUtils: PatchUtils = {} as PatchUtils;
     public log: KubeLog;
     //public config: IKuberoConfig;
@@ -100,6 +101,16 @@ export class Kubectl {
         .then(v => {
             this.kubeVersion = v;
         })
+        .catch(error => {
+            debug.log("❌ Error getting kube version");
+            debug.log(error);
+        });
+
+        this.getOperatorVersion()
+        .then(v => {
+            debug.log("ℹ️  Operator version: " + v);
+            this.kuberoOperatorVersion = v || 'unknown';
+        })
 
     }
 
@@ -115,12 +126,39 @@ export class Kubectl {
         }
     }
 
+    private async getOperatorVersion(): Promise<string | void> {
+        const contextName = this.getCurrentContext();
+        const namespace = "kubero-operator-system";
+
+        if (contextName) {
+            const pods = await this.getPods(namespace, contextName) 
+            .catch(error => {
+                debug.log("Failed to get Operator Version", error);
+                //return 'error';
+            });
+            if (pods) {
+                for (const pod of pods) {
+                    if (pod?.metadata?.name?.startsWith('kubero-operator-controller-manager')) {
+                        const container = pod?.spec?.containers.filter((c: any) => c.name == 'manager')[0];
+                        return container?.image?.split(':')[1] || 'unknown';
+                    }
+                }
+            }else{
+                return 'error getting operator version';
+            }
+        }
+    }
+
     public getContexts() {
         return this.kc.getContexts()
     }
 
     public async setCurrentContext(context: string) {
         this.kc.setCurrentContext(context)
+    }
+
+    public getCurrentContext() {
+        return this.kc.getCurrentContext()
     }
 
     public async getNamespaces(): Promise<V1Namespace[]> {
@@ -1138,7 +1176,7 @@ export class Kubectl {
 
         if (buildstrategy === 'buildpacks') {
             // configure build container
-            job.spec.template.spec.initContainers[1].args[1] = repository.image+":"+repository.tag+"-"+id;
+            job.spec.template.spec.initContainers[2].args[1] = repository.image+":"+repository.tag+"-"+id;
         }
         if (buildstrategy === 'dockerfile') {
             // configure push container

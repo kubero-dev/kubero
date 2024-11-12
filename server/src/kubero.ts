@@ -100,6 +100,14 @@ export class Kubero {
         }
     }
 
+    public getOperatorVersion() {
+        if (this.kubectl.kuberoOperatorVersion) {
+            return this.kubectl.kuberoOperatorVersion;
+        } else {
+            return 'unknown';
+        }
+    }
+
     public updateState() {
         this.pipelineStateList = [];
         this.appStateList = [];
@@ -718,6 +726,7 @@ export class Kubero {
                         containerPort: 8080, //TODO use custom containerport
                         repository: pipeline.dockerimage, // FIXME: Maybe needs a lookup into buildpack
                         tag: "main",
+                        command: [''],
                         pullPolicy: "Always",
                         fetch: pipeline.buildpack.fetch,
                         build: pipeline.buildpack.build,
@@ -849,7 +858,6 @@ export class Kubero {
                         {
                             name: 'Kubero',
                             description: 'Kubero Templates',
-                            templateBasePath: 'https://raw.githubusercontent.com/kubero-dev/kubero/main/services/',
                             index: {
                                 url: 'https://raw.githubusercontent.com/kubero-dev/templates/main/index.json',
                                 format: 'json',
@@ -1447,10 +1455,6 @@ export class Kubero {
 
     public async getTemplateConfig() {
         return this.config.templates;
-    }
-
-    public async getTemplateBasePath(catalogId: number) {
-        return this.config.templates.catalogs[catalogId].templateBasePath;
     }
 
     public getTemplateEnabled() {

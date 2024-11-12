@@ -71,6 +71,7 @@ export class App implements IApp{
         pullPolicy: 'Always',
         repository: string,
         tag: string,
+        command: [string],
         fetch: {
             repository: string,
             tag: string,
@@ -175,6 +176,7 @@ export class App implements IApp{
             pullPolicy: 'Always',
             repository: app.image.repository || 'ghcr.io/kubero-dev/idler',
             tag: app.image.tag || 'v1',
+            command: app.image.command,
             fetch: app.image.fetch,
             build: app.image.build,
             run: app.image.run,

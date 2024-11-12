@@ -29,6 +29,7 @@ export default defineComponent({
         templatesEnabled: true,
         version: "dev",
         kubernetesVersion: "unknown",
+        operatorVersion: "unknown",
     }),
     methods: {
         checkSession() {
@@ -41,6 +42,7 @@ export default defineComponent({
                         // safe version to vuetufy gloabl scope for use in components
                         this.kubero.templatesEnabled = result.data.templatesEnabled;
                         this.kubero.version = result.data.version;
+                        this.kubero.operatorVersion = result.data.operatorVersion;
                         this.kubero.kubernetesVersion = result.data.kubernetesVersion;
                         this.kubero.isAuthenticated = result.data.isAuthenticated;
                         this.kubero.adminDisabled = result.data.adminDisabled;
