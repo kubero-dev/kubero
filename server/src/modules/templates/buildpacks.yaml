@@ -75,6 +75,19 @@ spec:
           - mountPath: /app
             name: app-storage
           workingDir: /app
+        - command:
+          - sh
+          - -c
+          - chmod -R g+w /app
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: permissions
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /app
+            name: app-storage
+          workingDir: /app
         - name: build
           args:
           - '-app=.'

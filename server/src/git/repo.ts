@@ -106,6 +106,18 @@ export abstract class Repo {
 
     }
 
+    public async disconnectRepo(gitrepo: string): Promise<boolean> {
+        debug.log('disconnectPipeline: '+gitrepo);
+
+        const {owner, repo} = this.parseRepo(gitrepo);
+
+        // TODO: implement remove deploy key and webhook for all providers
+        //this.removeDeployKey(owner, repo, 0);
+        //this.removeWebhook(owner, repo, 0);
+
+        return true;
+    }
+
     protected parseRepo(gitrepo: string): {owner: string, repo: string} {
         let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
         let repo = gitrepo.match(/^git@.*:.*\/(.*).git$/)?.[1] as string;
@@ -113,9 +125,11 @@ export abstract class Repo {
     }
 
     protected abstract addDeployKey(owner: string, repo: string): Promise<IDeploykeyR>
+    //protected abstract removeDeployKey(owner: string, repo: string, id: number): Promise<boolean>
     protected abstract getRepository(gitrepo: string): Promise<IRepository>;
     protected abstract addWebhook(owner: string, repo: string, url: string, secret: string): Promise<IWebhookR>;
     protected abstract getWebhook(event: string, delivery: string, signature: string, body: any): IWebhook | boolean;
+    //protected abstract removeWebhook(owner: string, repo: string, id: number): Promise<boolean>;
     protected abstract getBranches(repo: string): Promise<string[]> | undefined;
     protected abstract getReferences(repo: string): Promise<string[]> | undefined;
     protected abstract getPullrequests(repo: string): Promise<IPullrequest[]> | undefined;

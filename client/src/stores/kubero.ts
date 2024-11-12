@@ -4,6 +4,7 @@ export const useKuberoStore = defineStore('kubero', {
     state: () => ({
         kubero: {
             version: "dev",
+            operatorVersion: "unknown",
             session: false,
             kubernetesVersion: "",
             isAuthenticated: false,

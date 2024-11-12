@@ -101,6 +101,10 @@ Router.post('/cli/apps', bearerMiddleware, async function (req: Request, res: Re
                                         type: "string",
                                         example: "latest"
                                     },
+                                    command: {
+                                        type: "string",
+                                        example: "npm start"
+                                    },
                                     fetch: {
                                         type: "object",
                                     },
@@ -216,6 +220,7 @@ function createApp(req: Request) : IApp {
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
             tag: req.body.image.tag || "main",
+            command: req.body.image.command,
             pullPolicy: "Always",
             fetch: req.body.image.fetch,
             build: req.body.image.build,
@@ -276,6 +281,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
             containerPort: req.body.image.containerport,
             repository: req.body.image.repository,
             tag: req.body.image.tag || "latest",
+            command: req.body.image.command,
             pullPolicy: "Always",
             fetch: req.body.image.fetch,
             build: req.body.image.build,
