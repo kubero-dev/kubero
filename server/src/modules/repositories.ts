@@ -93,6 +93,26 @@ export class Repositories {
         }
     }
 
+    public async disconnectRepo(repoProvider: string, repoAddress: string) {
+        debug.log('disconnectRepo: '+repoProvider+' '+repoAddress);
+
+        switch (repoProvider) {
+            case 'github':
+                return this.githubApi.disconnectRepo(repoAddress);
+            case 'gitea':
+                return this.giteaApi.disconnectRepo(repoAddress);
+            case 'gogs':
+                return this.gogsApi.disconnectRepo(repoAddress);
+            case 'gitlab':
+                return this.gitlabApi.disconnectRepo(repoAddress);
+            case 'bitbucket':
+                return this.bitbucketApi.disconnectRepo(repoAddress);
+            case 'onedev':
+            default:
+                return {'error': 'unknown repo provider'};
+        }
+    }
+
     public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
         //return this.git.listRepoBranches(repo, repoProvider);
         let branches: Promise<string[]> = new Promise((resolve, reject) => {

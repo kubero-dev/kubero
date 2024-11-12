@@ -14,6 +14,13 @@ Router.get('/repo/:repoprovider/list', async function (req: Request, res: Respon
     res.send(repolist);
 });
 
+Router.post('/repo/:repoprovider/disconnect', async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Disconnect a repository from a pipeline by removing the webhook and deployment key'
+    let con = await req.app.locals.repositories.disconnectRepo(req.params.repoprovider, req.body.gitrepo);
+    res.send(con);
+});
+
 Router.post('/repo/:repoprovider/connect', async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Connect a repository to a pipeline'

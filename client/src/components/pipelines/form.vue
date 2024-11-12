@@ -58,7 +58,7 @@
       </v-row>
 
       <v-card elevation="2" color="cardBackground" v-if="gitops" style="margin-bottom: 20px">
-        <v-card-title>Deployment</v-card-title>
+        <v-card-title>Continuous Deployment</v-card-title>
         <v-card-text>
           <v-row>
             <v-col
@@ -84,19 +84,115 @@
               <v-combobox
                 v-model="gitrepo"
                 :rules="repositoryRules"
-                :counter="60"
                 :items="gitrepoItems"
                 label="Repository *"
                 :disabled="repository_status.connected || !newPipeline"
                 required
               ></v-combobox>
             </v-col>
+
+            <v-col
+              cols="12"
+              md="6"
+            >
+            
+              <v-alert variant="tonal" color="#8560a9" border="start">
+                <h3>
+                  Repository
+                </h3>
+                <div>When connected, webhooks and deployment keys are stored in the repository. This means that the apps configured in this project can be automatically redeployed with a 'git push' and opening a PR starts a new instance in the "review" phase.</div>
+              </v-alert>
+            </v-col>
           </v-row>
+
+          <v-row
+            v-if="repository_status.connected"
+          >
+            <v-col
+              cols="12"
+              md="4"
+            >
+                  <v-alert class="alert mb-5"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Webhook created
+                  </v-alert>
+                  <v-alert class="alert"
+                    type="success"
+                    elevation="6"
+                    transition="scale-transition"
+                  >Deploy keys added
+                  </v-alert>
+                  <v-alert
+                      v-show="repository_status.error"
+                      outlined
+                      type="warning"
+                      prominent
+                      border="start"
+                      >{{repository_status.statusTxt}}
+                  </v-alert>
+            </v-col>
+          </v-row>
+
+          <v-row
+            v-if="repository_status.error"
+          >
+            <v-col
+              cols="12"
+              md="4"
+            >
+                  <v-alert
+                      outlined
+                      type="warning"
+                      prominent
+                      border="start"
+                      >{{repository_status.statusTxt}}
+                  </v-alert>
+            </v-col>
+          </v-row>
+
 
           <v-row>
             <v-col
               cols="12"
-              md="4"
+              md="2"
+            >
+                <v-btn
+                    color="primary"
+                    elevation="2"
+                    v-if="!repository_status.connected"
+                    @click="connectRepo()"
+                    >Connect</v-btn>
+                <v-btn
+                    color="secondary"
+                    elevation="2"
+                    v-if="repository_status.connected"
+                    @click="reconnectRepo()"
+                    >Reconnect</v-btn>
+            </v-col>
+            <v-col
+              cols="12"
+              md="2"
+            >
+                <v-btn
+                    color="warning"
+                    elevation="2"
+                    v-if="repository_status.connected"
+                    @click="disconnectRepo()"
+                    >Disconnect</v-btn>
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card>
+
+      <v-card elevation="2" color="cardBackground" v-if="gitops" style="margin-bottom: 20px">
+        <v-card-title>Build</v-card-title>
+        <v-card-text>
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
             >
               <v-radio-group v-model="buildstrategy">
                 <v-radio
@@ -128,7 +224,7 @@
             </v-col>
             <v-col
               cols="12"
-              md="8"
+              md="6"
             >
             
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
@@ -236,51 +332,6 @@
               ></v-text-field>
             </v-col>
           </v-row>
-
-          <v-row
-            v-if="repository_status.connected && repository_status.statusTxt == 'Repository Connected' && repotab && repotab!='docker'"
-          >
-            <v-col
-              cols="12"
-              md="4"
-            >
-                  <v-alert class="alert mb-5"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Webhook created
-                  </v-alert>
-                  <v-alert class="alert"
-                    type="success"
-                    elevation="6"
-                    transition="scale-transition"
-                  >Deploy keys added
-                  </v-alert>
-            </v-col>
-          </v-row>
-
-
-          <v-row>
-            <v-col
-              cols="12"
-              md="6"
-            >
-                <v-alert
-                    v-show="repository_status.error"
-                    outlined
-                    type="warning"
-                    prominent
-                    border="start"
-                    >{{repository_status.statusTxt}}
-                </v-alert>
-                <v-btn
-                    color="primary"
-                    elevation="2"
-                    :disabled="!repotab"
-                    @click="connectRepo()"
-                    >Connect</v-btn>
-            </v-col>
-          </v-row>
         </v-card-text>
       </v-card>
 
@@ -326,11 +377,7 @@
           md="4"
           class="mt-8"
         >
-            <v-btn
-                color="primary"
-                v-if="newPipeline"
-                elevation="2"
-                @click="createPipeline()"
+            <!--
                 :disabled="!valid || 
                         (gitops &&
                           !(
@@ -338,19 +385,20 @@
                             buildpack
                           )
                         )"
+            -->
+            <v-btn
+                color="primary"
+                v-if="newPipeline"
+                elevation="2"
+                @click="createPipeline()"
+                :disabled="!valid"
                 >Create</v-btn>
             <v-btn
                 color="primary"
                 v-if="!newPipeline"
                 elevation="2"
                 @click="updatePipeline()"
-                :disabled="!valid || 
-                        (gitops &&
-                          !(
-                            gitrepo && 
-                            buildpack
-                          )
-                        )"
+                :disabled="!valid"
                 >Update</v-btn>
         </v-col>
       </v-row>
@@ -496,10 +544,13 @@ export default defineComponent({
         (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$|^localhost$|^$/.test(v) || 'Not a domain',
       ],
       repositoryRules: [
-        (v: any) => !!v || 'Repository is required',
-        (v: any) => v.length <= 120 || 'Repository must be less than 120 characters',
-        //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
-        (v: any) => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
+        //(v: any) => !!v || 'Repository is required',
+        //(v: any) => v.length <= 120 || 'Repository must be less than 120 characters',
+        //           ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
+        //           ((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:\/\-~]+)(\.git)
+        //           (git@[\w.]+:\/\/)([\w.\/\-~]+)(\.git) // not working
+        //           ((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
+        (v: any) => /^((git|ssh|http(s)?)|(git@[\w\.-]+))(:(\/\/)?)([\w\.@\:\/\-~]+)(\.git)(\/)?/.test(v) || 'Format "git@github.com:organisation/repository.git"',
       ],
     }}, 
     computed: {
@@ -550,6 +601,20 @@ export default defineComponent({
           }
           this.buildpack = response.data[0];
         });
+      },
+      disconnectRepo(){
+        const repo = this.repotab;
+        axios.post(`/api/repo/${repo}/disconnect`, {
+          gitrepo: this.gitrepo
+        }).then(response => {
+          this.repository_status.connected = false;
+        }).catch(error => {
+          console.log(error);
+        });
+      },
+      reconnectRepo(){
+        this.repository_status.connected = false;
+        this.connectRepo();
       },
       connectRepo() {
         //console.log(this.gitrepo);
