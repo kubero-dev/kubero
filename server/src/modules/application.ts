@@ -221,6 +221,18 @@ export class KubectlTemplate implements IKubectlTemplate{
         this.kind = "KuberoApp";
         this.metadata = {
             name: app.name,
+            annotations: {
+                'kubero.dev/template.architecture': '[]',
+                'kubero.dev/template.description': '',
+                'kubero.dev/template.icon': '',
+                'kubero.dev/template.installation': '',
+                'kubero.dev/template.links': '[]',
+                'kubero.dev/template.screenshots': '[]',
+                'kubero.dev/template.source': '',
+                'kubero.dev/template.tags': '[]',
+                'kubero.dev/template.title': '',
+                'kubero.dev/template.website': ''
+            },
             labels: {
                 manager: 'kubero',
             }
@@ -233,11 +245,13 @@ export class Template implements ITemplate{
     public name: string
     public deploymentstrategy: 'git' | 'docker'
     public envVars: {}[] = []
+    /*
     public serviceAccount: {
         annotations: Object
         create: boolean,
         name: string,
     };
+    */
     public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
     public addons: IAddon[] = []
@@ -255,12 +269,14 @@ export class Template implements ITemplate{
         pullPolicy?: 'Always',
         repository: string,
         tag: string,
+        /*
         run: {
             repository: string,
             tag: string,
             readOnlyAppStorage?: boolean,
             securityContext: ISecurityContext
         }
+        */
     };
     constructor(
         app: IApp
@@ -270,7 +286,7 @@ export class Template implements ITemplate{
 
         this.envVars =  app.envVars
 
-        this.serviceAccount = app.serviceAccount;
+        //this.serviceAccount = app.serviceAccount;
         
         this.extraVolumes =  app.extraVolumes
 
@@ -290,11 +306,11 @@ export class Template implements ITemplate{
             pullPolicy: 'Always',
             repository: app.image.repository || 'ghcr.io/kubero-dev/idler',
             tag: app.image.tag || 'v1',
-            run: app.image.run,
+            //run: app.image.run,
         }
 
         // function to set security context, required for backwards compatibility
         // Added in v1.11.0
-        this.image.run.securityContext = Buildpack.SetSecurityContext(this.image.run.securityContext)
+        //this.image.run.securityContext = Buildpack.SetSecurityContext(this.image.run.securityContext)
     }
 }
