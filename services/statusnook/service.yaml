@@ -1,0 +1,8 @@
+name: StatusNook
+description: 'StatusNook is a simple status page for your services.'
+tags:
+- monitoring
+source: https://github.com/goksan/statusnook
+website: https://statusnook.com
+icon: https://www.svgrepo.com/show/310016/status.svg
+screenshots:
