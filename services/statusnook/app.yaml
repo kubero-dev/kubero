@@ -1,42 +1,52 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: statusnook
-    annotations:
-        icon: "www.svgrepo.com/show/310016/status.svg"
-        description: 'StatusNook is a simple status page for your services.'
-        source: "github.com/goksan/statusnook"
-        website: "statusnook.com"
-        documentation: ""
-        screenshots: |
-            - https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif
-        tags: |
-            - monitoring
-        installation-message: |
-            Admin account is created with the first website visit
-    labels:
-        manager: kubero
+  annotations:
+    description: StatusNook is a simple status page for your services.
+    documentation: ''
+    icon: www.svgrepo.com/show/310016/status.svg
+    installation-message: 'Admin account is created with the first website visit
+      '
+    kubero.dev/template.architecture: '[]'
+    kubero.dev/template.description: StatusNook is a simple status page for your services.
+    kubero.dev/template.icon: https://www.svgrepo.com/show/310016/status.svg
+    kubero.dev/template.installation: ''
+    kubero.dev/template.links: '[]'
+    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.source: https://github.com/goksan/statusnook
+    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.title: StatusNook
+    kubero.dev/template.website: https://statusnook.com
+    screenshots: '- https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif
+      '
+    source: github.com/goksan/statusnook
+    tags: '- monitoring
+      '
+    website: statusnook.com
+  labels:
+    manager: kubero
+  name: statusnook
 spec:
-    name: statusnook
-    deploymentstrategy: docker
-    envVars: []
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /app/statusnook-data
-          name: statusnook-volume
-          size: 1Gi
-          storageClass: standard
-    cronjobs: []
-    addons: []
-    web:
-        replicaCount: 1
-    worker:
-        replicaCount: 0
-    image:
-        containerPort: "8000"
-        pullPolicy: Always
-        repository: goksan/statusnook
-        tag: latest
+  addons: []
+  cronjobs: []
+  deploymentstrategy: docker
+  envVars: []
+  extraVolumes:
+  - accessMode: ReadWriteOnce
+    accessModes:
+    - ReadWriteOnce
+    emptyDir: false
+    mountPath: /app/statusnook-data
+    name: statusnook-volume
+    size: 1Gi
+    storageClass: standard
+  image:
+    containerPort: '8000'
+    pullPolicy: Always
+    repository: goksan/statusnook
+    tag: latest
+  name: statusnook
+  web:
+    replicaCount: 1
+  worker:
+    replicaCount: 0
