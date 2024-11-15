@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: metabase
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Metabase is the easy, open-source way for everyone in your company to ask questions and learn from data."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/10520629"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg']"
+        kubero.dev/template.source: "https://github.com/metabase/metabase"
+        kubero.dev/template.tags: "['analytics', 'bi']"
+        kubero.dev/template.title: "Metabase"
+        kubero.dev/template.website: "https://www.metabase.com/"
+    labels:
+        manager: kubero
+spec:
+    name: metabase
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: metabase/metabase
+        tag: latest
