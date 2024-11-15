@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: chatpad
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Chatpad sets itself apart with a broader vision - to become the ultimate interface for ChatGPT users."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/deiucanta/chatpad/refs/heads/main/src/assets/favicon.png"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/deiucanta/chatpad/main/banner.png']"
+        kubero.dev/template.source: "https://github.com/deiucanta/chatpad"
+        kubero.dev/template.tags: "['chat', 'chatbot', 'ai']"
+        kubero.dev/template.title: "Chatpad"
+        kubero.dev/template.website: "https://chatpad.ai"
+    labels:
+        manager: kubero
+spec:
+    name: chatpad
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8080"
+        pullPolicy: Always
+        repository: ghcr.io/deiucanta/chatpad
+        tag: latest
