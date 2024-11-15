@@ -1,0 +1,45 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: browserless
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Deploy headless browsers in Docker. Run on our cloud or bring your own. Free for non-commercial uses."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/51244358"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "['https://docs.browserless.io/']"
+        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/browserless/browserless/main/assets/debugger.png']"
+        kubero.dev/template.source: "https://github.com/browserless/browserless/"
+        kubero.dev/template.tags: "['testing', 'development']"
+        kubero.dev/template.title: "browserless"
+        kubero.dev/template.website: "https://browserless.io/"
+    labels:
+        manager: kubero
+spec:
+    name: browserless
+    deploymentstrategy: docker
+    envVars:
+        - name: TOKEN
+          value: 6R0W53R135510
+        - name: CONCURRENT
+          value: "10"
+        - name: QUEUED
+          value: "10"
+        - name: TIMEOUT
+          value: "60000"
+        - name: HEALTH
+          value: "true"
+        - name: ALLOW_GET
+          value: "true"
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/browserless/chromium
+        tag: latest
