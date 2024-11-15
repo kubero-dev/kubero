@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: anse
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Supercharged experience for multiple models such as ChatGPT, DALL-E and Stable Diffusion."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/anse-app/anse/refs/heads/main/public/pwa-192.png"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/anse-app/anse"
+        kubero.dev/template.tags: "['chat', 'chatbot', 'ai']"
+        kubero.dev/template.title: "Anse"
+        kubero.dev/template.website: "https://anse.app"
+    labels:
+        manager: kubero
+spec:
+    name: anse
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ddiu8081/anse
+        tag: latest
