@@ -1,0 +1,55 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: libtranslate
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Free and Open Source Machine Translation API. Self-hosted, offline capable and easy to setup."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/77352747"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "['https://elest.io/images/softwares/185/screenshot2.png']"
+        kubero.dev/template.source: "https://github.com/LibreTranslate/LibreTranslate"
+        kubero.dev/template.tags: "['translation', 'language', 'nlp']"
+        kubero.dev/template.title: "LibreTranslate"
+        kubero.dev/template.website: "https://libretranslate.com"
+    labels:
+        manager: kubero
+spec:
+    name: libtranslate
+    deploymentstrategy: docker
+    envVars:
+        - name: LT_UPDATE_MODELS
+          value: "true"
+        - name: LT_LOAD_ONLY
+          value: en,es,fr,de,ja
+        - name: LT_SSL
+          value: "false"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/db
+          name: libtranslate-db-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /home/libretranslate/.local
+          name: libtranslate-models-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "5000"
+        pullPolicy: Always
+        repository: libretranslate/libretranslate
+        tag: latest
