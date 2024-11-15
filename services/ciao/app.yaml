@@ -8,7 +8,7 @@ metadata:
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/43862266"
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "['https://camo.githubusercontent.com/881ea1d50deb09a27562a6719031c9d02362249bfd2e0dac545e9eea3c1c1a16/68747470733a2f2f62726f74616e6467616d65732e636f6d2f6173736574732f6369616f2d636865636b732e706e67']"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/881ea1d50deb09a27562a6719031c9d02362249bfd2e0dac545e9eea3c1c1a16/68747470733a2f2f62726f74616e6467616d65732e636f6d2f6173736574732f6369616f2d636865636b732e706e67"]'
         kubero.dev/template.source: "https://github.com/brotandgames/ciao"
         kubero.dev/template.tags: '["monitoring", "http", "checks", "tests"]'
         kubero.dev/template.title: "ciao"
