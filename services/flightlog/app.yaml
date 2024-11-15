@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: flightlog
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Flight log web application that keeps track of your personal flight history"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/4271779"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/perdian/flightlog/main/docs/screenshots/home.png']"
+        kubero.dev/template.source: "https://github.com/perdian/flightlog"
+        kubero.dev/template.tags: "['management']"
+        kubero.dev/template.title: "Flightlog"
+        kubero.dev/template.website: "https://github.com/perdian/flightlog"
+    labels:
+        manager: kubero
+spec:
+    name: flightlog
+    deploymentstrategy: docker
+    envVars:
+        - name: FLIGHTLOG_SERVER_CONTEXT_PATH
+          value: /
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/flightlog/database
+          name: flightlog-db-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: perdian/flightlog
+        tag: latest
