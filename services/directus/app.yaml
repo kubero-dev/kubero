@@ -1,0 +1,75 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: directus
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "The flexible backend for all your projects. Turn your DB into a headless CMS, admin panels, or apps with a custom UI, instant APIs, auth & more."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/15967950"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/directus/directus"
+        kubero.dev/template.tags: "['database','cms','api']"
+        kubero.dev/template.title: "Directus"
+        kubero.dev/template.website: "https://directus.io/"
+    labels:
+        manager: kubero
+spec:
+    name: directus
+    deploymentstrategy: docker
+    envVars:
+        - name: ADMIN_EMAIL
+          value: admin@example.com
+        - name: ADMIN_PASSWORD
+          value: example
+        - name: DB_CLIENT
+          value: sqlite3
+        - name: DB_FILENAME
+          value: /directus/database/data.db
+        - name: WEBSOCKETS_ENABLED
+          value: "true"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /directus/database
+          name: directus-db-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /directus/uploads
+          name: directus-uploads-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /directus/extensions
+          name: directus-extensions-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /directus/templates
+          name: directus-templates-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8055"
+        pullPolicy: Always
+        repository: directus/directus
+        tag: "11"
