@@ -13,7 +13,7 @@ metadata:
     kubero.dev/template.tags: '["mapping","maps","cartography"]'
     kubero.dev/template.title: Maputnik
     kubero.dev/template.website: https://maputnik.github.io/editor/
-  name: gatus
+  name: maputnik
 spec:
   addons: []
   cronjobs: []
@@ -22,9 +22,9 @@ spec:
   extraVolumes: []
   image:
     containerPort: '8080'
-    repository: twinproduction/gatus
-    tag: latest
-  name: gatus
+    repository: ghcr.io/maplibre/maputnik
+    tag: main
+  name: maputnik
   web:
     replicaCount: 1
   worker:
