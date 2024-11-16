@@ -131,7 +131,7 @@ export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
     envVars: {}[],
-    serviceAccount: {
+    serviceAccount?: {
         annotations: {},
         create: boolean,
         name: string,
@@ -141,7 +141,7 @@ export interface ITemplate {
         tag: string,
         pullPolicy?: 'Always',
         containerPort: number,
-        run: {
+        run?: {
             repository: string,
             readOnlyAppStorage?: boolean,
             tag: string,
@@ -251,6 +251,7 @@ export interface IKubectlMetadata {
     creationTimestamp?: Date;
     generation?: number;
     //labels?: [Object];
+    annotations?: Object;
     labels?: {
         'kubernetes.io/metadata.name'?: String,
         manager?: string;
