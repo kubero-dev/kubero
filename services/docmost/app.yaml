@@ -1,0 +1,94 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: docmost
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Docmost is an open-source collaborative wiki and documentation software. It is an open-source alternative to Confluence and Notion."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/150462874"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/242ed60fe9d9d3c7e1d8d7d3f64d28d23c0a81e5963265880095e0e9c7604205/68747470733a2f2f646f636d6f73742e636f6d2f73637265656e73686f74732f686f6d652e706e67"]'
+        kubero.dev/template.source: "https://github.com/docmost/docmost"
+        kubero.dev/template.tags: '["wiki", "documentation", "collaboration"]'
+        kubero.dev/template.title: "Docmost"
+        kubero.dev/template.website: "https://docmost.com/"
+    labels:
+        manager: kubero
+spec:
+    name: docmost
+    deploymentstrategy: docker
+    envVars:
+        - name: APP_URL
+          value: http://docmost.localhost
+        - name: APP_SECRET
+          value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
+        - name: DATABASE_URL
+          value: postgresql://docmost:docmost@docmost-postgresql:5432/docmost?schema=public
+        - name: REDIS_URL
+          value: redis://:docmost@docmost-redis-master:6379
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: docmost-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: docmost
+                                      password: docmost
+                                      postgresPassword: docmost
+                                      username: docmost
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: docmost-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: docmost
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: docmost/docmost
+        tag: latest
