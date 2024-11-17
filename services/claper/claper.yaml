@@ -1,0 +1,93 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: claper
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Claper turns your presentations into an interactive, engaging and exciting experience."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/109804388?s=48&v=4"
+        kubero.dev/template.installation: "Some more ENV vars : https://github.com/ClaperCo/Claper/blob/main/.env.sample"
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://github.com/ClaperCo/Claper/raw/main/priv/static/images/preview.png"]'
+        kubero.dev/template.source: "https://github.com/ClaperCo/Claper"
+        kubero.dev/template.tags: '["presentation","slides","interactive"]'
+        kubero.dev/template.title: "Claper"
+        kubero.dev/template.website: "https://claper.co/"
+    labels:
+        manager: kubero
+spec:
+    name: claper
+    deploymentstrategy: docker
+    envVars:
+        - name: DATABASE_URL
+          value: postgres://claper:claper@claper-postgresql:5432/postgresql
+        - name: SECRET_KEY_BASE
+          value: 0LZiQBLw4WvqPlz4cz8RsHJlxNiSqM9B48y4ChyJ5v1oA0L/TPIqRjQNdPZN3iEG
+        - name: PRESENTATION_STORAGE
+          value: local
+        - name: PRESENTATION_STORAGE_DIR
+          value: /app/uploads
+        - name: MAIL_TRANSPORT
+          value: local
+        - name: MAIL_FROM
+          value: noreply@claper.co
+        - name: MAIL_FROM_NAME
+          value: Claper
+        - name: MAX_FILE_SIZE_MB
+          value: "15"
+        - name: ENABLE_ACCOUNT_CREATION
+          value: "true"
+        - name: ALLOW_UNLINK_EXTERNAL_PROVIDER
+          value: "false"
+        - name: GS_JPG_RESOLUTION
+          value: 300x300
+        - name: LOGOUT_REDIRECT_URL
+          value: https://google.com
+        - name: BASE_URL
+          value: http://claper.localhost
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/uploads
+          name: claper-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: claper-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: postgresql
+                                      password: claper
+                                      postgresPassword: claper
+                                      username: claper
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "4000"
+        pullPolicy: Always
+        repository: ghcr.io/claperco/claper
+        tag: latest
