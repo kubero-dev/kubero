@@ -82,7 +82,7 @@ Basically *everything* that can be packaged in a single container can be deploye
 
 \* Ships with the Kubero Operator
 
-## 80+ Application templates (similar to Heroku Buttons)
+## 100+ Application templates (similar to Heroku Buttons)
 - WordPress
 - Grafana
 - Bitwarden
