@@ -1,0 +1,85 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: zipline
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A ShareX/file upload server that is easy to use, packed with features, and with an easy setup!"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1396645"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/diced/zipline"
+        kubero.dev/template.tags: '["file", "sharex", "sharing"]'
+        kubero.dev/template.title: "Zipline"
+        kubero.dev/template.website: "https://zipline.diced.sh/"
+    labels:
+        manager: kubero
+spec:
+    name: zipline
+    deploymentstrategy: docker
+    envVars:
+        - name: CORE_RETURN_HTTPS
+          value: "false"
+        - name: CORE_SECRET
+          value: JYcxmGH3YI34I5CDQU6y5hD4ys9usyPvtjnCXF6
+        - name: CORE_HOST
+          value: 0.0.0.0
+        - name: CORE_PORT
+          value: "3000"
+        - name: CORE_DATABASE_URL
+          value: postgres://zipline:zipline@zipline-postgresql:5432/zipline
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /zipline/uploads
+          name: zipline-uploads-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /zipline/public
+          name: zipline-public-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: zipline-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: zipline
+                                      password: zipline
+                                      postgresPassword: zipline
+                                      username: zipline
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/diced/zipline
+        tag: latest
