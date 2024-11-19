@@ -42,14 +42,14 @@ export class Settings {
 
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)
-/*
+
         let configMap: KuberoConfig
         if (process.env.NODE_ENV === "production") {
             configMap = new KuberoConfig(kuberoes.spec.kubero.config)
         } else {
             configMap = new KuberoConfig(this.readConfig())
         }
-*/
+
         let config: any = {}
         config.settings = kuberoes.spec
 
@@ -176,10 +176,33 @@ export class Settings {
     }
 
     public async getDefaultRegistry(): Promise<any> {
-        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        
+        let registry = process.env.KUBERO_REGISTRY || {
+            account:{
+              hash: '$2y$05$czQZpvtDYc5OzM/1r1pH0eAplT/okohh/mXoWl/Y65ZP/8/jnSWZq',
+              password: 'kubero',
+              username: 'kubero',
 
-        return kuberoes.spec.registry
+            },
+            create: false,
+            enabled: false,
+            host: 'registry.demo.kubero.dev',
+            port: 443,
+            storage: '1Gi',
+            storageClassName: null,
+            subpath: "",
+
+        }
+        try {
+            const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+            const kuberoes = await this.kubectl.getKuberoConfig(namespace)
+            registry = kuberoes.spec.registry
+        } catch (error) {
+            console.log("Error getting kuberoes config")
+        }
+        return registry
+        
+
     }
 
     public async getDomains(): Promise<any> {
