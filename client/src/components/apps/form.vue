@@ -636,6 +636,8 @@
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
                 label="Enable CORS"
                 color="primary"
+                false-value="false"
+                true-value="true"
                 inset
               ></v-switch>
             </v-col>
@@ -649,7 +651,7 @@
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-origin']"
                 label="CORS Allow Origin"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
             <v-col
@@ -659,7 +661,7 @@
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-headers']"
                 label="CORS Allow Headers"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
             <v-col
@@ -669,7 +671,7 @@
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-expose-headers']"
                 label="CORS Expose Headers"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -683,7 +685,9 @@
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-credentials']"
                 label="CORS Allow Credentials"
                 color="primary"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                false-value="false"
+                true-value="true"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-switch>
             </v-col>
             <v-col
@@ -693,7 +697,7 @@
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-max-age']"
                 label="CORS Max Age"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
             <v-col
@@ -703,7 +707,7 @@
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-methods']"
                 label="CORS Allow Methods"
-                :disabled="!ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
+                :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -1547,13 +1551,13 @@ export default defineComponent({
         annotations: {
           'nginx.ingress.kubernetes.io/whitelist-source-range': '',
           'nginx.ingress.kubernetes.io/denylist-source-range': '',
-          'nginx.ingress.kubernetes.io/force-ssl-redirect': false,
+          'nginx.ingress.kubernetes.io/force-ssl-redirect': 'false',
           'nginx.ingress.kubernetes.io/proxy-buffer-size': '4k',
-          'nginx.ingress.kubernetes.io/enable-cors': false,
+          'nginx.ingress.kubernetes.io/enable-cors': 'false',
           'nginx.ingress.kubernetes.io/cors-allow-origin': '*',
           'nginx.ingress.kubernetes.io/cors-allow-headers': 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization',
           'nginx.ingress.kubernetes.io/cors-expose-headers': '*',
-          'nginx.ingress.kubernetes.io/cors-allow-credentials': true,
+          'nginx.ingress.kubernetes.io/cors-allow-credentials': 'true',
           'nginx.ingress.kubernetes.io/cors-max-age': '1728000',
           'nginx.ingress.kubernetes.io/cors-allow-methods': 'GET, PUT, POST, DELETE, PATCH, OPTIONS',
         },
@@ -2004,7 +2008,7 @@ export default defineComponent({
           delete this.ingress.annotations['nginx.ingress.kubernetes.io/proxy-buffer-size'];
         }
 
-        if (this.ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == false) {
+        if (this.ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false') {
           delete this.ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'];
           delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-origin'];
           delete this.ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-headers'];
