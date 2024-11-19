@@ -1,0 +1,68 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: logto
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Logto is an open-source Identity and Access Management (IAM) platform designed to streamline Customer Identity and Access Management (CIAM) and Workforce Identity Management. "
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/84981374"
+        kubero.dev/template.installation: "run kubectl `apply -f https://raw.githubusercontent.com/kubero-dev/kubero/main/services/logto/logto-admin-ingress.yaml` to enable the admin interface.
+            A list of all available environment variables can be found here : https://docs.logto.io/docs/references/core/configuration/"
+        kubero.dev/template.links: '["https://docs.logto.io/"]'
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/logto-io/logto"
+        kubero.dev/template.tags: '["identity", "access", "management"]'
+        kubero.dev/template.title: "logto"
+        kubero.dev/template.website: "https://logto.io/"
+    labels:
+        manager: kubero
+spec:
+    name: logto
+    deploymentstrategy: docker
+    envVars:
+        - name: DB_URL
+          value: postgresql://postgres:logto@logto-postgresql:5432/logto
+        - name: TRUST_PROXY_HEADER
+          value: "1"
+        - name: ENDPOINT
+          value: https://logto.localhost
+        - name: ADMIN_ENDPOINT
+          value: https://admin.logto.localhost
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: logto-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: postgresql
+                                      password: logto
+                                      postgresPassword: logto
+                                      username: logto
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: svhd/logto
+        tag: latest
