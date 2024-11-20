@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: adminerevo
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Database management in a single PHP file"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/132262423"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/adminerevo/adminerevo"
+        kubero.dev/template.tags: '["database", "administration", "development"]'
+        kubero.dev/template.title: "AdminerEvo"
+        kubero.dev/template.website: "https://docs.adminerevo.org/"
+    labels:
+        manager: kubero
+spec:
+    name: adminerevo
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ghcr.io/shyim/adminerevo
+        tag: latest
