@@ -1,0 +1,125 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: postiz
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Schedule social media posts, measure them, exchange with other members and get a lot of help from AI"
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/gitroomhq/postiz-app/21eae29b52456cb98ba1b8dcd3ed504e344c0bec/apps/frontend/public/postiz.svg"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://private-user-images.githubusercontent.com/100117126/363204406-a27ee220-beb7-4c7e-8c1b-2c44301f82ef.gif?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzIxMDU4NDEsIm5iZiI6MTczMjEwNTU0MSwicGF0aCI6Ii8xMDAxMTcxMjYvMzYzMjA0NDA2LWEyN2VlMjIwLWJlYjctNGM3ZS04YzFiLTJjNDQzMDFmODJlZi5naWY_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQxMTIwJTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MTEyMFQxMjI1NDFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1mMDI1NTI1YTM0NTBhZTEwZWRjNmMwNDdhMWQzMDdlZjNhNTdjMTdjYzM4YWVmOThjYmQyNDkwYjUzMGNlNGY0JlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.uqwvPkAVLFnwySvFdZp8IbQNGkLiM_w2_X3bB9ufz7E"]'
+        kubero.dev/template.source: "https://github.com/gitroomhq/postiz-app"
+        kubero.dev/template.tags: '["social", "tools"]'
+        kubero.dev/template.title: "Postiz"
+        kubero.dev/template.website: "https://postiz.com/"
+    labels:
+        manager: kubero
+spec:
+    name: postiz
+    deploymentstrategy: docker
+    envVars:
+        - name: MAIN_URL
+          value: https://postiz.localhost
+        - name: FRONTEND_URL
+          value: https://postiz.localhost
+        - name: JWT_SECRET
+          value: random string that is unique to every install - just type random
+              characters here!
+        - name: DATABASE_URL
+          value: postgresql://postiz:postiz@postiz-postgresql:5432/postiz
+        - name: REDIS_URL
+          value: redis://:postiz@postiz-redis-master:6379
+        - name: IS_GENERAL
+          value: "true"
+        - name: STORAGE_PROVIDER
+          value: local
+        - name: UPLOAD_DIRECTORY
+          value: /upload
+        - name: NEXT_PUBLIC_UPLOAD_DIRECTORY
+          value: /upload
+        - name: NEXT_PUBLIC_BACKEND_URL
+          value: https://postiz.localhost/api
+        - name: BACKEND_INTERNAL_URL
+          value: http://localhost:3000
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /upload
+          name: postiz-upload-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /config
+          name: postiz-config-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: postiz-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: postgresql
+                                      password: postiz
+                                      postgresPassword: postiz
+                                      username: postiz
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: postiz-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: postiz
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "5000"
+        pullPolicy: Always
+        repository: ghcr.io/gitroomhq/postiz-app
+        tag: latest
