@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: jsoncrack
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Innovative and open-source visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/48101043"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://github.com/AykutSarac/jsoncrack.com/raw/main/public/assets/editor.webp"]'
+        kubero.dev/template.source: "https://github.com/AykutSarac/jsoncrack.com"
+        kubero.dev/template.tags: '["development", "visualization", "tools"]'
+        kubero.dev/template.title: "jsoncrack.com"
+        kubero.dev/template.website: "https://jsoncrack.com"
+    labels:
+        manager: kubero
+spec:
+    name: jsoncrack
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ghcr.io/mms-gianni/jsoncrack.com
+        tag: main
