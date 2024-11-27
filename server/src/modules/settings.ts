@@ -219,4 +219,36 @@ export class Settings {
     private checkAdminDisabled() {
         return this.runningConfig.kubero.admin?.disabled || false
     }
+
+    public async validateKubeconfig(kubeConfig: string, kubeContext: string): Promise<any> {
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+        return this.kubectl.validateKubeconfig(kubeConfig, kubeContext)
+    }
+
+    public updateRunningConfig(kubeConfig: string, kubeContext: string, kuberoNamespace: string, KuberoSessionKey: string, kuberoWebhookSecret: string): {error: string, status: string} {
+
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+       
+        process.env.KUBERO_CONTEXT = kubeContext
+        process.env.KUBERO_NAMESPACE = kuberoNamespace
+        process.env.KUBERO_SESSION_KEY = KuberoSessionKey
+        process.env.KUBECONFIG_BASE64 = kubeConfig
+        process.env.KUBERO_SETUP = "disabled"
+
+        this.kubectl.updateKubectlConfig(kubeConfig, kubeContext)
+        return {
+            error: "",
+            status: "ok"
+        }
+    }
 }

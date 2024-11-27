@@ -54,8 +54,14 @@ export class Kubectl {
     private exec: Exec = {} as Exec;
 
     constructor() {
-        //this.config = config;
         this.kc = new KubeConfig();
+        this.log = new KubeLog(this.kc);
+        this.kubeVersion = new VersionInfo();
+        this.initKubeConfig();
+    }
+
+    private initKubeConfig() {
+        //this.config = config;
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
         if (process.env.KUBECONFIG_BASE64) {
@@ -76,7 +82,6 @@ export class Kubectl {
             }
         }
 
-        this.log = new KubeLog(this.kc);
 
         try {
             this.versionApi = this.kc.makeApiClient(VersionApi);
@@ -96,7 +101,6 @@ export class Kubectl {
             return;
         }
 
-        this.kubeVersion = new VersionInfo();
         this.getKubeVersion()
         .then(v => {
             this.kubeVersion = v;
@@ -111,7 +115,6 @@ export class Kubectl {
             debug.log("ℹ️  Operator version: " + v);
             this.kuberoOperatorVersion = v || 'unknown';
         })
-
     }
 
     public async getKubeVersion(): Promise<VersionInfo | void>{
@@ -177,7 +180,7 @@ export class Kubectl {
             )
             return pipelines.body as IKubectlPipelineList;
         } catch (error) {
-            //debug.log(error);
+            debug.log(error);
             debug.log("getPipelinesList: error getting pipelines");
         }
         const pipelines = {} as IKubectlPipelineList;
@@ -1227,4 +1230,39 @@ export class Kubectl {
             debug.log("getJobs: error getting jobs");
         }
     }
+
+    public async validateKubeconfig(kubeconfig: string, kubeContext: string): Promise<{error: any, valid: boolean}> {
+        // validate config for setup process
+        
+        //let buff = Buffer.from(configBase64, 'base64');
+        //const kubeconfig = buff.toString('ascii');
+
+        const kc = new KubeConfig();
+        kc.loadFromString(kubeconfig);
+        kc.setCurrentContext(kubeContext);
+
+        try {
+            const versionApi = kc.makeApiClient(VersionApi);
+            let versionInfo = await versionApi.getCode()
+            console.log(JSON.stringify(versionInfo.body));
+            return { error: null, valid: true };
+        } catch (error: any) {
+            console.log("Error validating kubeconfig: " + error);
+            console.log(error);
+            return {error: error.message, valid: false};
+        }
+    }
+
+    public updateKubectlConfig(kubeconfig: string, kubeContext: string) {
+        // update kubeconfig in the kubectl instance
+        /*
+        this.kc.loadFromString(kubeconfig);
+        this.kc.setCurrentContext(kubeContext);
+        */
+        this.initKubeConfig();
+        console.log(kubeContext, this.kc.getCurrentContext());
+
+        console.log("Kubeconfig updated");
+    }
+
 }
