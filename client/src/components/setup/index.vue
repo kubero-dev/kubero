@@ -251,12 +251,14 @@ users:
           dotenvFile += `${key}=${this.dotenv[key]}\n`
         }
       }
-      return YAML.stringify(this.dotenv)
+      return dotenvFile
     },
     actionValidation(): boolean | 'next' | 'prev' {
       if (this.kubeconfigValid && this.step === '1') {
         return 'prev'
-      } else if (this.saveSuccess == 'ok' && this.step === '2') {
+      } else if (this.saveSuccess != 'ok' && this.step === '2') {
+        return 'next'
+      }else if (this.saveSuccess == 'ok' && this.step === '2') {
         return false
       } else if (this.step === '3') {
         return 'next'
@@ -343,7 +345,8 @@ users:
     },
     async validateKubeconfig(): Promise<boolean> {
       if (this.kubeConfig === '') {
-        this.kubeconfigError = 'kubeconfig is empty'
+        //this.kubeconfigError = 'kubeconfig is empty'
+        this.kubeconfigError = ''
         return false
       }
       if (this.kubeContext === '') {
