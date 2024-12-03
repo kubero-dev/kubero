@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: dokuwiki
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "The DokuWiki Open Source Wiki Engine"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/111377700"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/dokuwiki/dokuwiki"
+        kubero.dev/template.tags: "['wiki', 'documentation']"
+        kubero.dev/template.title: "DokuWiki"
+        kubero.dev/template.website: "https://www.dokuwiki.org/"
+    labels:
+        manager: kubero
+spec:
+    name: dokuwiki
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /config
+          name: dokuwiki-config-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: lscr.io/linuxserver/dokuwiki
+        tag: latest
