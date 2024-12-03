@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '["https://github.com/concrete5-community/docker5"]'
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/concretecms/concretecms"
-        kubero.dev/template.tags: "['cms']"
+        kubero.dev/template.tags: '["cms"]'
         kubero.dev/template.title: "concrete5 CMS"
         kubero.dev/template.website: "https://www.concretecms.org/"
     labels:
