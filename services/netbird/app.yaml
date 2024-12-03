@@ -7,8 +7,8 @@ metadata:
         kubero.dev/template.description: "Connect your devices into a secure WireGuard®-based overlay network with SSO, MFA and granular access controls."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/100464677"
         kubero.dev/template.installation: ""
-        kubero.dev/template.links: '["https://docs.netbird.io/"]'
-        kubero.dev/template.screenshots: '["https://private-user-images.githubusercontent.com/700848/321150403-46bc3b73-508d-4a0e-bb9a-f465d68646ab.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzIwMjA5ODgsIm5iZiI6MTczMjAyMDY4OCwicGF0aCI6Ii83MDA4NDgvMzIxMTUwNDAzLTQ2YmMzYjczLTUwOGQtNGEwZS1iYjlhLWY0NjVkNjg2NDZhYi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQxMTE5JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MTExOVQxMjUxMjhaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT1kODNlYTRmNTc4ZGRkYmE3MjJmODRmM2E3M2JkMzg1OGZiNDJmMjI4YjE4NTI0ZDQ4ZjNjY2Y0M2UyOWIwYTlkJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCJ9.9xERN_35UkgaqrBsqheHDaSzGuyZKEW2Wcp618UZwZk"]'
+        kubero.dev/template.links: '["https://docs.netbird.io/", "https://docs.netbird.io/selfhosted/selfhosted-guide"]'
+        kubero.dev/template.screenshots: '["https://docs.netbird.io/docs-static/img/open-source-zero-trust-networking.png"]'
         kubero.dev/template.source: "https://github.com/netbirdio/netbird"
         kubero.dev/template.tags: '["security", "dashboard", "administration"]'
         kubero.dev/template.title: "netbird"
