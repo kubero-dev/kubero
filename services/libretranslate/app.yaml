@@ -8,9 +8,9 @@ metadata:
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/77352747"
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "['https://elest.io/images/softwares/185/screenshot2.png']"
+        kubero.dev/template.screenshots: '["https://elest.io/images/softwares/185/screenshot2.png"]'
         kubero.dev/template.source: "https://github.com/LibreTranslate/LibreTranslate"
-        kubero.dev/template.tags: "['translation', 'language', 'nlp']"
+        kubero.dev/template.tags: '[ "translation", "language"]'
         kubero.dev/template.title: "LibreTranslate"
         kubero.dev/template.website: "https://libretranslate.com"
     labels:
