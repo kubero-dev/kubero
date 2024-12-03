@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/directus/directus"
-        kubero.dev/template.tags: "['database','cms','api']"
+        kubero.dev/template.tags: '["database", "cms", "api"]'
         kubero.dev/template.title: "Directus"
         kubero.dev/template.website: "https://directus.io/"
     labels:
