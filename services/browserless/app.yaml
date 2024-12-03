@@ -7,10 +7,10 @@ metadata:
         kubero.dev/template.description: "Deploy headless browsers in Docker. Run on our cloud or bring your own. Free for non-commercial uses."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/51244358"
         kubero.dev/template.installation: ""
-        kubero.dev/template.links: "['https://docs.browserless.io/']"
-        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/browserless/browserless/main/assets/debugger.png']"
+        kubero.dev/template.links: '["https://docs.browserless.io/"]'
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/browserless/browserless/main/assets/debugger.png"]'
         kubero.dev/template.source: "https://github.com/browserless/browserless/"
-        kubero.dev/template.tags: "['testing', 'development']"
+        kubero.dev/template.tags: '[ "testing", "development" ]'
         kubero.dev/template.title: "browserless"
         kubero.dev/template.website: "https://browserless.io/"
     labels:
