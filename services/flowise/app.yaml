@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/FlowiseAI/Flowise"
-        kubero.dev/template.tags: "['ai', 'llm']"
+        kubero.dev/template.tags: '[ "ai" ]'
         kubero.dev/template.title: "Flowise"
         kubero.dev/template.website: "https://flowiseai.com"
     labels:
