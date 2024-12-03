@@ -8,9 +8,9 @@ metadata:
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/10520629"
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "['https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg']"
+        kubero.dev/template.screenshots: '[ "https://raw.githubusercontent.com/metabase/metabase/master/docs/images/metabase-product-screenshot.svg"]'
         kubero.dev/template.source: "https://github.com/metabase/metabase"
-        kubero.dev/template.tags: "['analytics', 'bi']"
+        kubero.dev/template.tags: '[ "analytics" ]'
         kubero.dev/template.title: "Metabase"
         kubero.dev/template.website: "https://www.metabase.com/"
     labels:
