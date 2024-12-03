@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "Building a modern alternative to Salesforce, powered by the community."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/119600397?s=48&v=4"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/119600397"
         kubero.dev/template.installation: "All available environment variables are described here : https://twenty.com/developers/section/self-hosting/self-hosting-var"
         kubero.dev/template.links: '["https://twenty.com/user-guide", "https://twenty.com/developers"]'
         kubero.dev/template.screenshots: '[
