@@ -1,0 +1,134 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: twenty
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Building a modern alternative to Salesforce, powered by the community."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/119600397"
+        kubero.dev/template.installation: "All available environment variables are described here : https://twenty.com/developers/section/self-hosting/self-hosting-var"
+        kubero.dev/template.links: '["https://twenty.com/user-guide", "https://twenty.com/developers"]'
+        kubero.dev/template.screenshots: '[
+          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/index-light.png",
+          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/kanban-light.png",
+          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/boards-light.png",
+          "https://raw.githubusercontent.com/twentyhq/twenty/v0.12.0/packages/twenty-docs/static/img/roadmap-dark.png"]'
+        kubero.dev/template.source: "https://github.com/twentyhq/twenty"
+        kubero.dev/template.tags: '["productivity", "teamwork", ]'
+        kubero.dev/template.title: "twenty"
+        kubero.dev/template.website: "https://twenty.com/"
+    labels:
+        manager: kubero
+spec:
+    name: twenty
+    deploymentstrategy: docker
+    envVars:
+        - name: FRONT_BASE_URL
+          value: twenty.localhost
+        - name: ENABLE_DB_MIGRATIONS
+          value: "true"
+        - name: CACHE_STORAGE_TYPE
+          value: redis
+        - name: REDIS_URL
+          value: redis://:twenty@twenty-redis-master:6379
+        - name: API_RATE_LIMITING_TTL
+          value: "100"
+        - name: API_RATE_LIMITING_LIMIT
+          value: "100"
+        - name: APP_SECRET
+          value: base64:Mnl3bDdlYjY2bzBmcWMzanE3dDhiN3BxY2ZqZzh3bmM=
+        - name: POSTGRES_ADMIN_PASSWORD
+          value: twenty
+        - name: PG_DATABASE_URL
+          value: postgres://twenty:twenty@twenty-postgresql:5432/twenty
+        - name: IS_SIGN_UP_DISABLED
+          value: "false"
+        - name: PASSWORD_RESET_TOKEN_EXPIRES_IN
+          value: 5m
+        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_NOTIFICATION
+          value: "365"
+        - name: WORKSPACE_INACTIVE_DAYS_BEFORE_DELETION
+          value: "400"
+        - name: STORAGE_TYPE
+          value: local
+        - name: MESSAGE_QUEUE_TYPE
+          value: pg-boss
+        - name: SIGN_IN_PREFILLED
+          value: "false"
+        - name: DEBUG_MODE
+          value: "false"
+        - name: TELEMETRY_ENABLED
+          value: "true"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/docker-data/
+          name: twenty-data-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: twenty-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: twenty
+                                      password: twenty
+                                      postgresPassword: twenty
+                                      username: twenty
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: twenty-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: twenty
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: twentycrm/twenty
+        tag: latest
