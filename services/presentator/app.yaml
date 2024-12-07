@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: presentator
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Design feedback and presentation platform"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/53578609"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/80d8158c90fdb90905c6205be717ab2fcb2bddd1f1044f935fe192dcfa26bfb0/68747470733a2f2f692e696d6775722e636f6d2f427742737236422e706e67"]'
+        kubero.dev/template.source: "https://github.com/presentator/presentator"
+        kubero.dev/template.tags: '[ "design", "collaboration" ]'
+        kubero.dev/template.title: "Presentator"
+        kubero.dev/template.website: "https://presentator.io/"
+    labels:
+        manager: kubero
+spec:
+    name: presentator
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /pr/pb_data
+          name: presentator-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ganigeorgiev/presentator
+        tag: latest
