@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: docuseal
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Open source DocuSign alternative. Create, fill, and sign digital documents"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/138379721"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"]'
+        kubero.dev/template.source: "https://github.com/docusealco/docuseal"
+        kubero.dev/template.tags: '["documents", "security"]'
+        kubero.dev/template.title: "Docuseal"
+        kubero.dev/template.website: "https://www.docuseal.com/"
+    labels:
+        manager: kubero
+spec:
+    name: docuseal
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: docuseal/docuseal
+        tag: latest

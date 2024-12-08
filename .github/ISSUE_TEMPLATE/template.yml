@@ -31,6 +31,13 @@ body:
       description: A link to the source code of the application. (if available)
     validations:
       required: false
+  - type: input
+    id: icon
+    attributes:
+      label: Application Icon
+      description: An image to a square application icon
+    validations:
+      required: false
 #  - type: dropdown
 #    attributes:
 #    id: tags

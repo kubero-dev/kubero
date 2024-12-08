@@ -1,0 +1,35 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: redisinsight
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Redis Insight is a visual tool that provides capabilities to design, develop, and optimize your Redis application."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/87389211"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://github.com/RedisInsight/RedisInsight/raw/main/.github/redisinsight_browser.png"]'
+        kubero.dev/template.source: "https://github.com/RedisInsight/RedisInsight"
+        kubero.dev/template.tags: '["redis", "database", "monitoring", "debug"]'
+        kubero.dev/template.title: "Redisinsight"
+        kubero.dev/template.website: "https://redis.com/redis-enterprise/redis-insight/"
+    labels:
+        manager: kubero
+spec:
+    name: redisinsight
+    deploymentstrategy: docker
+    envVars:
+        - name: RI_LOG_LEVEL
+          value: info
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "5540"
+        pullPolicy: Always
+        repository: redis/redisinsight
+        tag: latest

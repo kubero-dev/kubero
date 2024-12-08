@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: slash
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "An open source, self-hosted platform for sharing and managing your most frequently used links. Easily create customizable, human-readable shortcuts to streamline your link management."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/140182318"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/yourselfhosted/slash/refs/heads/main/docs/assets/demo.png"]'
+        kubero.dev/template.source: "https://github.com/yourselfhosted/slash"
+        kubero.dev/template.tags: '["link", "management", "tools"]'
+        kubero.dev/template.title: "Slash"
+        kubero.dev/template.website: "https://github.com/yourselfhosted/slash"
+    labels:
+        manager: kubero
+spec:
+    name: slash
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/opt/slash
+          name: slash-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "5231"
+        pullPolicy: Always
+        repository: yourselfhosted/slash
+        tag: latest

@@ -1,0 +1,74 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: corteza
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "The Corteza low-code platform lets you build and iterate CRM, business process and other structured data apps fast, create intelligent business process workflows and connect with almost any data source."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/50577806"
+        kubero.dev/template.installation: "Make sure to activate CORS headers"
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/cortezaproject/corteza/2024.9.x/.github/assets/hero-animation.webp"]'
+        kubero.dev/template.source: "https://github.com/cortezaproject/corteza"
+        kubero.dev/template.tags: '["crm", "erp", "low-code"]'
+        kubero.dev/template.title: "Corteza"
+        kubero.dev/template.website: "https://cortezaproject.org/"
+    labels:
+        manager: kubero
+spec:
+    name: corteza
+    deploymentstrategy: docker
+    envVars:
+        - name: VIRTUAL_HOST
+          value: corteza.localhost
+        - name: DB_DSN
+          value: postgres://corteza:corteza@corteza-postgresql:5432/corteza?sslmode=disable
+        - name: HTTP_WEBAPP_ENABLED
+          value: "true"
+        - name: ACTIONLOG_ENABLED
+          value: "false"
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: corteza-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: corteza
+                                      password: corteza
+                                      postgresPassword: corteza
+                                      username: corteza
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: cortezaproject/corteza
+        tag: "2023.3"
+    ingress:
+        annotations:
+            nginx.ingress.kubernetes.io/cors-allow-headers: '*'
+            nginx.ingress.kubernetes.io/cors-allow-origin: '*'
+            nginx.ingress.kubernetes.io/cors-expose-headers: '*'
+            nginx.ingress.kubernetes.io/enable-cors: "true"
+

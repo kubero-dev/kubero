@@ -1,0 +1,79 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: vvveb-mysql
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Powerful and easy to use cms to build websites, blogs or ecommerce stores."
+        kubero.dev/template.icon: "https://camo.githubusercontent.com/d9af82329f3a4ace7ba38d2c21120fadbdd77059bc91abdb32e0a4bdb93a0a38/68747470733a2f2f76767665622e636f6d2f61646d696e2f64656661756c742f696d672f6269676c6f676f2e706e67"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/12d4a8128b5faca1db589a968bfd0e501c6671f23deb75e5972f80f89748635a/68747470733a2f2f7777772e76767665622e636f6d2f76767665622d61646d696e2f64617368626f6172642d6c696768742e706e67"]'
+        kubero.dev/template.source: "https://github.com/givanz/Vvveb"
+        kubero.dev/template.tags: '["cms", "website", "blog", "ecommerce"]'
+        kubero.dev/template.title: "vvveb"
+        kubero.dev/template.website: "https://www.vvveb.com/"
+    labels:
+        manager: kubero
+spec:
+    name: vvveb-mysql
+    deploymentstrategy: docker
+    envVars:
+        - name: DB_USER
+          value: vvveb
+        - name: DB_PASSWORD
+          value: vvveb
+        - name: DB_NAME
+          value: vvveb
+        - name: DB_HOST
+          value: vvveb-mysql
+        - name: DB_ENGINE
+          value: mysql
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/html
+          name: vvveb-docroot-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: MySQL
+          env: []
+          icon: /img/addons/mysql.svg
+          id: kubero-operator
+          kind: KuberoMysql
+          resourceDefinitions:
+              KuberoMysql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoMysql
+                  metadata:
+                      name: vvveb-mysql
+                  spec:
+                      mysql:
+                          auth:
+                              createDatabase: true
+                              database: vvveb
+                              password: vvveb
+                              rootPassword: vvveb
+                              username: vvveb
+                          global:
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  accessModes:
+                                      - ReadWriteOnce
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: vvveb/vvvebcms
+        tag: latest

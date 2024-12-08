@@ -1,0 +1,71 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: azimutt
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Azimutt is a full-stack database exploration tool. It allows you to explore your database, run queries, and visualize the results."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/89384563"
+        kubero.dev/template.installation: "A full list of environment variables can be found here : https://github.com/azimuttapp/azimutt/blob/main/.env.example"
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/azimuttapp/azimutt"
+        kubero.dev/template.tags: '["database", "debug", "development"]'
+        kubero.dev/template.title: "Azimutt"
+        kubero.dev/template.website: "https://azimutt.app/"
+    labels:
+        manager: kubero
+spec:
+    name: azimutt
+    deploymentstrategy: docker
+    envVars:
+        - name: SECRET_KEY_BASE
+          value: 1wOVZ9rWAqPcbVZdilZzBPLXFKNrUmLUzX0q9Z02LpOy2jVWZwa6ee4fU81tuN+W
+        - name: DATABASE_URL
+          value: postgres://azimutt:azimutt@azimutt-postgresql/azimutt
+        - name: PHX_SERVER
+          value: "true"
+        - name: PHX_HOST
+          value: localhost
+        - name: FILE_STORAGE_ADAPTER
+          value: local
+        - name: AUTH_PASSWORD
+          value: "true"
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: azimutt-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: azimutt
+                                      password: azimutt
+                                      postgresPassword: azimutt
+                                      username: azimutt
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "4000"
+        pullPolicy: Always
+        repository: ghcr.io/azimuttapp/azimutt
+        tag: main

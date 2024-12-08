@@ -1,0 +1,63 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: twofauth
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "2FAuth is a web based self-hosted alternative to One Time Passcode (OTP) generators like Google Authenticator, designed for both mobile and desktop."
+        kubero.dev/template.icon: "https://docs.2fauth.app/static/2fauth_dark.png"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: '[]'
+        kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/858858/100485897-18c21400-3102-11eb-9c72-ea0b1b46ef2e.png"]'
+        kubero.dev/template.source: "https://github.com/Bubka/2FAuth"
+        kubero.dev/template.tags: '["2FA", "Authentication", "Security"]'
+        kubero.dev/template.title: "2FAuth"
+        kubero.dev/template.website: "https://docs.2fauth.app/"
+    labels:
+        manager: kubero
+spec:
+    name: twofauth
+    deploymentstrategy: docker
+    envVars:
+        - name: APP_NAME
+          value: 2Fauth
+        - name: APP_TIMEZONE
+          value: UTC
+        - name: APP_DEBUG
+          value: "false"
+        - name: SITE_OWNER
+          value: example@example.com
+        - name: APP_KEY
+          value: SomeRandomStringOf32CharsExactly
+        - name: APP_URL
+          value: https://twofauth.localhost
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /2fauth
+          name: twofauth-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8000"
+        pullPolicy: Always
+        repository: 2fauth/2fauth
+        tag: latest
+        run:
+            securityContext:
+                allowPrivilegeEscalation: false
+                capabilities:
+                    add: []
+                    drop: []
+                readOnlyRootFilesystem: false
+                runAsGroup: 1000
+                runAsNonRoot: false
+                runAsUser: 1000

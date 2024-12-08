@@ -13,7 +13,7 @@ metadata:
     kubero.dev/template.tags: '["low-code"]'
     kubero.dev/template.title: Illa
     kubero.dev/template.website: https://illacloud.com
-  name: gatus
+  name: illa
 spec:
   addons: []
   cronjobs: []
@@ -27,7 +27,7 @@ spec:
       securityContext:
         readOnlyRootFilesystem: false
     tag: latest
-  name: gatus
+  name: illa
   web:
     replicaCount: 1
   worker:

@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: elasticvue
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Elasticsearch gui for the browser"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/6764390"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://static.cars10k.de/demo.gif"]'
+        kubero.dev/template.source: "https://github.com/cars10/elasticvue"
+        kubero.dev/template.tags: '["database", "index", "management"]'
+        kubero.dev/template.title: "elasticvue"
+        kubero.dev/template.website: "https://elasticvue.com/"
+    labels:
+        manager: kubero
+spec:
+    name: elasticvue
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8080"
+        pullPolicy: Always
+        repository: cars10/elasticvue
+        tag: latest
