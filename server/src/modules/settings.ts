@@ -42,14 +42,14 @@ export class Settings {
 
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)
-/*
+
         let configMap: KuberoConfig
         if (process.env.NODE_ENV === "production") {
             configMap = new KuberoConfig(kuberoes.spec.kubero.config)
         } else {
             configMap = new KuberoConfig(this.readConfig())
         }
-*/
+
         let config: any = {}
         config.settings = kuberoes.spec
 
@@ -176,10 +176,33 @@ export class Settings {
     }
 
     public async getDefaultRegistry(): Promise<any> {
-        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        
+        let registry = process.env.KUBERO_REGISTRY || {
+            account:{
+              hash: '$2y$05$czQZpvtDYc5OzM/1r1pH0eAplT/okohh/mXoWl/Y65ZP/8/jnSWZq',
+              password: 'kubero',
+              username: 'kubero',
 
-        return kuberoes.spec.registry
+            },
+            create: false,
+            enabled: false,
+            host: 'registry.demo.kubero.dev',
+            port: 443,
+            storage: '1Gi',
+            storageClassName: null,
+            subpath: "",
+
+        }
+        try {
+            const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+            const kuberoes = await this.kubectl.getKuberoConfig(namespace)
+            registry = kuberoes.spec.registry
+        } catch (error) {
+            console.log("Error getting kuberoes config")
+        }
+        return registry
+        
+
     }
 
     public async getDomains(): Promise<any> {
@@ -195,5 +218,77 @@ export class Settings {
 
     private checkAdminDisabled() {
         return this.runningConfig.kubero.admin?.disabled || false
+    }
+
+    public async validateKubeconfig(kubeConfig: string, kubeContext: string): Promise<any> {
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+        return this.kubectl.validateKubeconfig(kubeConfig, kubeContext)
+    }
+
+    public updateRunningConfig(kubeConfig: string, kubeContext: string, kuberoNamespace: string, KuberoSessionKey: string, kuberoWebhookSecret: string): {error: string, status: string} {
+
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+       
+        process.env.KUBERO_CONTEXT = kubeContext
+        process.env.KUBERO_NAMESPACE = kuberoNamespace
+        process.env.KUBERO_SESSION_KEY = KuberoSessionKey
+        process.env.KUBECONFIG_BASE64 = kubeConfig
+        process.env.KUBERO_SETUP = "disabled"
+
+        this.kubectl.updateKubectlConfig(kubeConfig, kubeContext)
+
+        this.kubectl.createNamespace(kuberoNamespace)
+        return {
+            error: "",
+            status: "ok"
+        }
+    }
+
+    public async checkComponent(component: string): Promise<any> {
+        let ret = {
+            //reason : "Component not found",
+            status: "error"
+        }
+
+        if (component === "operator") {
+            //let operator = await this.kubectl.checkCustomResourceDefinition("kuberoes.application.kubero.dev")
+            let operator = await this.kubectl.checkNamespace("kubero-operator-system")
+            if (operator) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "metrics") {
+            let metrics = await this.kubectl.checkDeployment("kube-system", "metrics-server")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "debug") {
+            let metrics = await this.kubectl.checkNamespace("default")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "ingress") {
+            let ingress = await this.kubectl.checkNamespace("ingress-nginx")
+            if (ingress) {
+                ret.status = "ok"
+            }
+        }
+
+        return ret
     }
 }

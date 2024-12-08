@@ -10,6 +10,7 @@ export const bearerMiddleware = auth.getBearerMiddleware();
 
 
 import debug from 'debug';
+import { spawn } from 'child_process';
 debug('app:routes')
 
 Router.get('/config', authMiddleware, async function (req: Request, res: Response) {
@@ -64,6 +65,55 @@ Router.get('/config/registry', authMiddleware, async function (req: Request, res
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get the default registry list'
     res.send(await req.app.locals.settings.getDefaultRegistry());
+});
+
+Router.post('/config/k8s/kubeconfig/validate', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Validate the kubeconfig'
+    // #swagger.description = 'Validate the kubeconfig for setup process'
+    // #swagger.parameters['kubeconfig'] = { description: 'Kubeconfig' }
+    const kubeconfig = req.body.kubeconfig;
+    const kubeContext = req.body.context;
+    const result = await req.app.locals.settings.validateKubeconfig(kubeconfig, kubeContext);
+    res.send(result);
+});
+
+Router.post('/config/setup/save', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Save the initial Kubero configuration'
+    // #swagger.description = 'Save the initial Kubero configuration'
+    // #swagger.parameters['KUBECONFIG_BASE64'] = { description: 'Base 64 encoded Kubeconfig' }
+    // #swagger.parameters['KUBERO_CONTEXT'] = { description: 'Kubernetes context' }
+    // #swagger.parameters['KUBERO_NAMESPACE'] = { description: 'Kubero namespace' }
+    // #swagger.parameters['KUBERO_SESSION_KEY'] = { description: 'Kubero UI session key' }
+    const kubeconfigBase64 = req.body.KUBECONFIG_BASE64;
+    const kubeContext = req.body.KUBERO_CONTEXT;
+    const kuberoNamespace = req.body.KUBERO_NAMESPACE;
+    const KuberoSessionKey = req.body.KUBERO_SESSION_KEY;
+    const kuberoWebhookSecret = req.body.KUBERO_WEBHOOK_SECRET;
+
+    // Base64 decode the kubeconfig
+    const kubeconfigDecoded = Buffer.from(kubeconfigBase64, 'base64').toString('utf-8');
+    const resultValidation = await req.app.locals.settings.validateKubeconfig(kubeconfigDecoded, kubeContext);
+    if (resultValidation.valid === false) {
+        res.send(resultValidation);
+        return;
+    }
+
+    const resultUpdateConfig = await req.app.locals.settings.updateRunningConfig(kubeconfigBase64, kubeContext, kuberoNamespace, KuberoSessionKey, kuberoWebhookSecret);
+
+    req.app.locals.kubero.updateState();
+
+    res.send(resultUpdateConfig);
+});
+
+Router.get('/config/setup/check/:component', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Check if a specific component is installed'
+    // #swagger.parameters['component'] = { description: 'Component to check' }
+    const component = req.params.component;
+    const result = await req.app.locals.settings.checkComponent(component);
+    res.send(result);
 });
 
 

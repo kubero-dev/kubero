@@ -96,6 +96,17 @@ const routes = [
     ],
   },
   {
+    path: '/setup',
+    component: () => import('@/layouts/setup/Setup.vue'),
+    children: [
+      {
+        path: '/setup',
+        name: 'Setup',
+        component: () => import('@/views/Setup.vue'),
+      },
+    ],
+  },
+  {
     path: '/popup',
     component: () => import('@/layouts/default/Popup.vue'),
     children: [
