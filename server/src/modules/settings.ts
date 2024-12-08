@@ -251,4 +251,42 @@ export class Settings {
             status: "ok"
         }
     }
+
+    public async checkComponent(component: string): Promise<any> {
+        let ret = {
+            //reason : "Component not found",
+            status: "error"
+        }
+
+        if (component === "operator") {
+            //let operator = await this.kubectl.checkCustomResourceDefinition("kuberoes.application.kubero.dev")
+            let operator = await this.kubectl.checkNamespace("kubero-operator-system")
+            if (operator) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "metrics") {
+            let metrics = await this.kubectl.checkDeployment("kube-system", "metrics-server")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "debug") {
+            let metrics = await this.kubectl.checkNamespace("default")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "ingress") {
+            let ingress = await this.kubectl.checkNamespace("ingress-nginx")
+            if (ingress) {
+                ret.status = "ok"
+            }
+        }
+
+        return ret
+    }
 }

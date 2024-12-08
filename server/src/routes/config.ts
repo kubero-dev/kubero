@@ -107,6 +107,15 @@ Router.post('/config/setup/save', authMiddleware, async function (req: Request, 
     res.send(resultUpdateConfig);
 });
 
+Router.get('/config/setup/check/:component', authMiddleware, async function (req: Request, res: Response) {
+    // #swagger.tags = ['UI']
+    // #swagger.summary = 'Check if a specific component is installed'
+    // #swagger.parameters['component'] = { description: 'Component to check' }
+    const component = req.params.component;
+    const result = await req.app.locals.settings.checkComponent(component);
+    res.send(result);
+});
+
 
 Router.get('/cli/config/k8s/context', bearerMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['Config']

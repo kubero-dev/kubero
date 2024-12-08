@@ -3,13 +3,11 @@
       align="center"
       justify="space-around"
   >
-      <v-card
-      elevation="10"
-      width="800px"
-      class="ma-10"
-      >
-      <v-card-text>
-        <v-stepper v-model="step">
+        <v-stepper 
+          v-model="step"
+          elevation="10"
+          class="ma-10"
+          width="800px">
 
 
           <template v-slot:default="{ prev, next }" >
@@ -22,14 +20,20 @@
 
                 <v-divider></v-divider>
                 <v-stepper-item
-                  title="Configure"
+                  title="Save"
                   value="2"
                 ></v-stepper-item>
 
                 <v-divider></v-divider>
                 <v-stepper-item
-                  title="Download"
+                  title="Check"
                   value="3"
+                ></v-stepper-item>
+
+                <v-divider></v-divider>
+                <v-stepper-item
+                  title="Download"
+                  value="4"
                 ></v-stepper-item>
             </v-stepper-header>
 
@@ -149,6 +153,130 @@
                 <v-card flat>
                   <v-row>
                     <v-col cols="12">
+                      <v-alert
+                        title="Kubero Operator"
+                        :type="installedComponents.operator ? 'success' : 'error'"
+                        variant="tonal"
+                      >
+                        <v-row>
+                          <v-col cols="8">
+                            Check if the Kubero operator is installed in your cluster. The operator is responsible for managing the Kubero application.
+                          </v-col>
+                          <v-col cols="4" class="d-flex justify-end">
+                            <v-btn
+                              color="primary"
+                              v-if="!installedComponents.operator"
+                              @click="checkInstalled('operator')"
+                            >
+                              Recheck
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="!installedComponents.operator">
+                          <v-col cols="12">
+                            <p>Install the operator by running the following command: </p>
+                            <VCodeBlock
+                              code="kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+                              highlightjs
+                              copy-tab
+                              tabs
+                              :floating-tabs="false"
+                              :run-tab="false"
+                              codeBlockRadius="0.25rem"
+                              lang="javascript"
+                              theme="rainbow"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-alert>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-alert
+                        title="Nginx Ingress"
+                        :type="installedComponents.ingress ? 'success' : 'error'"
+                        variant="tonal"
+                      >
+                        <v-row>
+                          <v-col cols="8">
+                            Check if the Nginx Ingress controller is installed in your cluster. The Ingress controller is responsible for routing traffic to the Kubero application.
+                          </v-col>
+                          <v-col cols="4" class="d-flex justify-end">
+                            <v-btn
+                              color="primary"
+                              v-if="!installedComponents.ingress"
+                              @click="checkInstalled('ingress')"
+                            >
+                              Recheck
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="!installedComponents.ingress">
+                          <v-col cols="12">
+                            <p>Install the Ingress controller by running the following command: </p>
+                            <VCodeBlock
+                              code="kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/kind/deploy.yaml"
+                              highlightjs
+                              copy-tab
+                              tabs
+                              :floating-tabs="false"
+                              :run-tab="false"
+                              codeBlockRadius="0.25rem"
+                              lang="javascript"
+                              theme="rainbow"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-alert>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-alert
+                        title="Metrics (optional)"
+                        :type="installedComponents.metrics ? 'success' : 'warning'"
+                        variant="tonal"
+                      >
+                        <v-row>
+                          <v-col cols="8">
+                            Check if the metrics server is installed in your cluster. The metrics server is responsible for collecting metrics from the cluster.
+                          </v-col>
+                          <v-col cols="4" class="d-flex justify-end">
+                            <v-btn
+                              color="primary"
+                              v-if="!installedComponents.metrics"
+                              @click="checkInstalled('metrics')"
+                            >
+                              Recheck
+                            </v-btn>
+                          </v-col>
+                        </v-row>
+                        <v-row v-if="!installedComponents.metrics">
+                          <v-col cols="12">
+                            <p>Install the metrics server by running the following command: </p>
+                            <VCodeBlock
+                              code="kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+                              highlightjs
+                              copy-tab
+                              tabs
+                              :floating-tabs="false"
+                              :run-tab="false"
+                              codeBlockRadius="0.25rem"
+                              lang="javascript"
+                              theme="rainbow"
+                            />
+                          </v-col>
+                        </v-row>
+                      </v-alert>
+                    </v-col>
+                  </v-row>
+                </v-card>
+              </v-stepper-window-item>
+              <v-stepper-window-item>
+                <v-card flat>
+                  <v-row>
+                    <v-col cols="12">
                       <v-textarea 
                       rows=30 
                       label=".env file" 
@@ -188,8 +316,6 @@
           </template>
 
         </v-stepper>
-      </v-card-text>
-      </v-card>
   </v-row>
 </template>
 
@@ -237,10 +363,18 @@ users:
         KUBERO_SESSION_KEY: '',
         KUBERO_WEBHOOK_SECRET: ''
       } as Record<string, string>,
-      kubeconfigValid: false
+      kubeconfigValid: false,
+      installedComponents: {
+        operator: false,
+        ingress: false,
+        metrics: false
+      },
     }
   },
   computed: {
+    componentsInstalled() {
+      return this.installedComponents.operator && this.installedComponents.ingress
+    },
     toDotenv() {
       let dotenvFile = ''
       for (const key in this.dotenv) {
@@ -260,7 +394,11 @@ users:
         return 'next'
       }else if (this.saveSuccess == 'ok' && this.step === '2') {
         return false
-      } else if (this.step === '3') {
+      } else if (!this.componentsInstalled && this.step === '3') {
+        return 'next'
+      } else if (this.componentsInstalled && this.step === '3') {
+        return false
+      } else if (this.step === '4') {
         return 'next'
       } else {
         return true
@@ -269,6 +407,14 @@ users:
     }
   },
   methods: {
+    checkInstalled(component: 'operator' | 'ingress' | 'metrics') {
+      axios.get(`/api/config/setup/check/${component}`)
+      .then((response) => {
+        if (response.status === 200 && response.data.status === 'ok') {
+          this.installedComponents[component] = true
+        }
+      })
+    },
     reload() {
       // perform a full page reload
       window.location.href = '/'
@@ -279,6 +425,9 @@ users:
         if (response.status === 200 && response.data.status === 'ok') {
           this.saveSuccess = 'ok'
           this.saveErrorMessage = ''
+          this.checkInstalled('operator')
+          this.checkInstalled('ingress')
+          this.checkInstalled('metrics')
         } else {
           this.saveSuccess = 'error'
           this.saveErrorMessage = response.data.error

@@ -1265,4 +1265,45 @@ export class Kubectl {
         console.log("Kubeconfig updated");
     }
 
+    public async checkNamespace(namespace: string): Promise<boolean> {
+        try {
+            const ns = await this.coreV1Api.readNamespace(namespace);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    public async checkPod(namespace: string, podName: string): Promise<boolean> {
+        try {
+            const pod = await this.coreV1Api.readNamespacedPod(podName, namespace);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    public async checkDeployment(namespace: string, deploymentName: string): Promise<boolean> {
+        try {
+            const deployment = await this.appsV1Api.readNamespacedDeployment(deploymentName, namespace);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    public async checkCustomResourceDefinition(plural: string): Promise<boolean> {
+        try {
+            const crd = await this.customObjectsApi.listClusterCustomObject(
+                'apiextensions.k8s.io',
+                'v1',
+                plural
+            );
+            return true;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+
 }
