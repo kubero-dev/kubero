@@ -14,7 +14,7 @@
 
             <v-stepper-header>
                 <v-stepper-item
-                  title="Connect"
+                  title="Configure"
                   value="1"
                 ></v-stepper-item>
 

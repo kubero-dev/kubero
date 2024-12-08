@@ -65,20 +65,21 @@ export class Kubectl {
         //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
         if (process.env.KUBECONFIG_BASE64) {
-            debug.log("Use kubectl config from base64");
             let buff = Buffer.from(process.env.KUBECONFIG_BASE64, 'base64');
             const kubeconfig = buff.toString('ascii');
             this.kc.loadFromString(kubeconfig);
+
+            debug.log("ℹ️  Kubeconfig loaded from base64");
         } else if(process.env.KUBECONFIG_PATH) {
-            debug.log("Use kubectl config from file " + process.env.KUBECONFIG_PATH);
             this.kc.loadFromFile(process.env.KUBECONFIG_PATH);
+            debug.log("ℹ️  Kubeconfig loaded from file " + process.env.KUBECONFIG_PATH);
         } else{
             try {
                 this.kc.loadFromCluster();
-                debug.log("Kubeconfig loaded from cluster");
+                debug.log("ℹ️  Kubeconfig loaded from cluster");
             } catch (error) {
                 debug.log("❌ Error loading from cluster");
-                debug.log(error);
+                //debug.log(error);
             }
         }
 
@@ -95,19 +96,25 @@ export class Kubectl {
             this.exec = new Exec(this.kc)
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
         } catch (error) {
-            debug.log("❌ Error creating api clients. Check kubeconfig, cluster connectivity and context");
-            debug.log(error);
+            console.log("❌ Error creating api clients. Check kubeconfig, cluster connectivity and context");
+            //debug.log(error);
             this.kubeVersion = void 0;
             return;
         }
 
         this.getKubeVersion()
         .then(v => {
+            if (v && v.gitVersion) {
+                console.log("ℹ️  Kube version: " + v.gitVersion);
+            } else {
+                console.log("❌ Failed to get Kubernetes version");
+                process.env.KUBERO_SETUP = 'enabled';
+            }
             this.kubeVersion = v;
         })
         .catch(error => {
-            debug.log("❌ Error getting kube version");
-            debug.log(error);
+            console.log("❌ Failed to get Kubernetes version");
+            //debug.log(error);
         });
 
         this.getOperatorVersion()
@@ -121,7 +128,7 @@ export class Kubectl {
         // TODO and WARNING: This does not respect the context set by the user!
         try {
             let versionInfo = await this.versionApi.getCode()
-            debug.debug(JSON.stringify(versionInfo.body));
+            //debug.debug(JSON.stringify(versionInfo.body));
             return versionInfo.body;
         } catch (error) {
             debug.log("getKubeVersion: error getting kube version");
@@ -136,7 +143,8 @@ export class Kubectl {
         if (contextName) {
             const pods = await this.getPods(namespace, contextName) 
             .catch(error => {
-                debug.log("Failed to get Operator Version", error);
+                debug.log("❌ Failed to get Operator Version");
+                //debug.log(error);
                 //return 'error';
             });
             if (pods) {
@@ -180,8 +188,8 @@ export class Kubectl {
             )
             return pipelines.body as IKubectlPipelineList;
         } catch (error) {
-            debug.log(error);
-            debug.log("getPipelinesList: error getting pipelines");
+            //debug.log(error);
+            debug.log("❌ getPipelinesList: error getting pipelines");
         }
         const pipelines = {} as IKubectlPipelineList;
         pipelines.items = [];
@@ -200,7 +208,8 @@ export class Kubectl {
             "kuberopipelines",
             pipeline
         ).catch(error => {
-            debug.log(error);
+            debug.log("❌ Error creating pipeline: " + pl.name);
+            //debug.log(error);
         });
     }
 
@@ -218,7 +227,8 @@ export class Kubectl {
             pl.name,
             pipeline
         ).catch(error => {
-            debug.log(error);
+            debug.log("❌ Error updating pipeline: " + pl.name);
+            //debug.log(error);
         });
     }
 
@@ -246,7 +256,8 @@ export class Kubectl {
             "kuberopipelines",
             pipelineName
         ).catch(error => {
-            debug.log(error);
+            //debug.log(error);
+            debug.log("getPipeline: error getting pipeline");
             throw error;
         });
         if (pipeline) {
@@ -346,7 +357,7 @@ export class Kubectl {
             )
             return appslist.body as IKubectlAppList;
         } catch (error) {
-            debug.log(error);
+            //debug.log(error);
             debug.log("getAppsList: error getting apps");
         }
         const appslist = {} as IKubectlAppList;
@@ -412,7 +423,7 @@ export class Kubectl {
             //let operators = response.body as KubernetesListObject<KubernetesObject>;
             operators = response.body as any // TODO : fix type. This is a hacky way to get the type to work
         } catch (error) {
-            debug.log(error);
+            //debug.log(error);
             debug.log("error getting operators");
         }
 
@@ -1077,7 +1088,7 @@ export class Kubectl {
             //console.log(config.body);
             return config.body;
         } catch (error) {
-            debug.log(error);
+            //debug.log(error);
             debug.log("getKuberoConfig: error getting config");
         }
     }
@@ -1303,6 +1314,22 @@ export class Kubectl {
         } catch (error) {
             console.log(error);
             return false;
+        }
+    }
+
+    public async createNamespace(namespace: string): Promise<any> {
+        const ns = {
+            apiVersion: 'v1',
+            kind: 'Namespace',
+            metadata: {
+                name: namespace
+            }
+        }
+        try {
+            return await this.coreV1Api.createNamespace(ns);
+        } catch (error) {
+            //console.log(error);
+            console.log('ERROR creating namespace');
         }
     }
 

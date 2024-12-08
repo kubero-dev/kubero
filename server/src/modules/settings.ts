@@ -246,6 +246,8 @@ export class Settings {
         process.env.KUBERO_SETUP = "disabled"
 
         this.kubectl.updateKubectlConfig(kubeConfig, kubeContext)
+
+        this.kubectl.createNamespace(kuberoNamespace)
         return {
             error: "",
             status: "ok"
