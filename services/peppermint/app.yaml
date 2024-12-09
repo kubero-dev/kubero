@@ -1,0 +1,67 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: peppermint
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Ticket Management System in order to help helpdesks & service desks manage internal staff & customer requests"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/76014454"
+        kubero.dev/template.installation: "Default user is 'admin@admin.com' with password '1234'."
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/Peppermint-Lab/peppermint"
+        kubero.dev/template.tags: '["helpdesk", "ticketing", "service desk", "customer support"]'
+        kubero.dev/template.title: "Peppermint"
+        kubero.dev/template.website: "https://peppermint.sh/"
+    labels:
+        manager: kubero
+spec:
+    name: peppermint
+    deploymentstrategy: docker
+    envVars:
+        - name: DB_USERNAME
+          value: peppermint
+        - name: DB_PASSWORD
+          value: peppermint
+        - name: DB_HOST
+          value: peppermint-postgresql
+        - name: SECRET
+          value: peppermint4life
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: peppermint-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: peppermint
+                                      password: peppermint
+                                      postgresPassword: peppermint
+                                      username: peppermint
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: pepperlabs/peppermint
+        tag: latest
