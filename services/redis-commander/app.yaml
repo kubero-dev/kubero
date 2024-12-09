@@ -1,0 +1,35 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: redis-commander
+    annotations:
+        kubero.dev/template.architecture: '[]'
+        kubero.dev/template.description: Redis management tool written in node.js
+        kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1529926
+        kubero.dev/template.installation: ''
+        kubero.dev/template.links: '[]'
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/joeferner/redis-commander/master/docs/GUI_EXAMPLE.png"]'
+        kubero.dev/template.source: https://github.com/joeferner/redis-commander
+        kubero.dev/template.tags: '["redis", "management", "database"]'
+        kubero.dev/template.title: Redis Commander
+        kubero.dev/template.website: http://joeferner.github.io/redis-commander/
+    labels:
+        manager: kubero
+spec:
+    name: redis-commander
+    deploymentstrategy: docker
+    envVars:
+        - name: REDIS_HOSTS
+          value: myapp-redis-master:6379
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8081"
+        pullPolicy: Always
+        repository: ghcr.io/joeferner/redis-commander
+        tag: latest
