@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: netbird
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Connect your devices into a secure WireGuard®-based overlay network with SSO, MFA and granular access controls."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/100464677"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: '["https://docs.netbird.io/", "https://docs.netbird.io/selfhosted/selfhosted-guide"]'
+        kubero.dev/template.screenshots: '["https://docs.netbird.io/docs-static/img/open-source-zero-trust-networking.png"]'
+        kubero.dev/template.source: "https://github.com/netbirdio/netbird"
+        kubero.dev/template.tags: '["security", "dashboard", "administration"]'
+        kubero.dev/template.title: "netbird"
+        kubero.dev/template.website: "https://netbird.io/"
+    labels:
+        manager: kubero
+spec:
+    name: netbird
+    deploymentstrategy: docker
+    envVars:
+        - name: AUTH0_DOMAIN
+          value: https://example.com
+        - name: AUTH0_CLIENT_ID
+          value: "123456456546547988"
+        - name: AUTH0_AUDIENCE
+          value: team
+        - name: NETBIRD_MGMT_API_ENDPOINT
+          value: https://netbird.localhost
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: netbirdio/dashboard
+        tag: main
