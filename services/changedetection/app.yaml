@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/dgtlmoon/changedetection.io/master/docs/screenshot.png"]'
     kubero.dev/template.source: https://github.com/dgtlmoon/changedetection.io
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: changedetection.io
     kubero.dev/template.website: https://changedetection.io/
   name: changedetection

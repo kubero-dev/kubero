@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/134f49a62801ab393c211125515d108439c67b59befb2ec3e42e7235af4f5d6c/68747470733a2f2f646c2e67697465612e696f2f73637265656e73686f74732f686f6d655f74696d656c696e652e706e67","https://camo.githubusercontent.com/186c2a4c286dcb5e6c419ae11c062721ba73eafcc40e518f237adcc9985385db/68747470733a2f2f646c2e67697465612e696f2f73637265656e73686f74732f757365725f70726f66696c652e706e67"]'
     kubero.dev/template.source: https://github.com/go-gitea/gitea
-    kubero.dev/template.tags: '["git repository","git"]'
+    kubero.dev/template.categories: '["git repository","git"]'
     kubero.dev/template.title: gitea
     kubero.dev/template.website: https://gitea.io/
   name: gitea

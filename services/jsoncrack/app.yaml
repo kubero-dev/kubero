@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://github.com/AykutSarac/jsoncrack.com/raw/main/public/assets/editor.webp"]'
         kubero.dev/template.source: "https://github.com/AykutSarac/jsoncrack.com"
-        kubero.dev/template.tags: '["development", "visualization", "tools"]'
+        kubero.dev/template.categories: '["development", "visualization", "tools"]'
         kubero.dev/template.title: "jsoncrack.com"
         kubero.dev/template.website: "https://jsoncrack.com"
     labels:

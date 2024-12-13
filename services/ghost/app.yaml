@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/353959/169805900-66be5b89-0859-4816-8da9-528ed7534704.png"]'
     kubero.dev/template.source: https://github.com/TryGhost/Ghost
-    kubero.dev/template.tags: '["CMS","Blogging","Publishing"]'
+    kubero.dev/template.categories: '["CMS","Blogging","Publishing"]'
     kubero.dev/template.title: Ghost
     kubero.dev/template.website: https://ghost.org/
   name: ghost

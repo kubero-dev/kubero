@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/deiucanta/chatpad/main/banner.png"]'
         kubero.dev/template.source: "https://github.com/deiucanta/chatpad"
-        kubero.dev/template.tags: '["chat", "chatbot", "ai"]'
+        kubero.dev/template.categories: '["chat", "chatbot", "ai"]'
         kubero.dev/template.title: "Chatpad"
         kubero.dev/template.website: "https://chatpad.ai"
     labels:

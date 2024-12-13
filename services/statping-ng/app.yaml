@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/2e6247a73a3ef41ee0884415c6ec63c9caa4d9dc8fdb4a8ecf64342b00a29a0f/68747470733a2f2f7374617470696e672d6e672e6769746875622e696f2f6173736574732f65787465726e616c2f736c61636b2d6e6f74696665722e706e67"]'
     kubero.dev/template.source: https://github.com/statping-ng/statping-ng
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Statping NG
     kubero.dev/template.website: https://statping-ng.github.io
   name: statping-ng

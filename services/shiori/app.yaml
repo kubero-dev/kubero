@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/go-shiori/shiori/master/docs/readme/cover.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/02-home.png","https://raw.githubusercontent.com/go-shiori/shiori/master/docs/screenshots/04-options.png"]'
     kubero.dev/template.source: https://github.com/go-shiori/shiori
-    kubero.dev/template.tags: '["bookmark manager"]'
+    kubero.dev/template.categories: '["bookmark manager"]'
     kubero.dev/template.title: Shiori
     kubero.dev/template.website: https://github.com/go-shiori/shiori
   name: shiori

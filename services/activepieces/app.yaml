@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/activepieces/activepieces/assets/1812998/e75616ce-7801-45b7-b3fa-eba778bebde3"]'
     kubero.dev/template.source: https://github.com/activepieces/activepieces
-    kubero.dev/template.tags: '["Workflow","Automation","low-code","no-code"]'
+    kubero.dev/template.categories: '["Workflow","Automation","low-code","no-code"]'
     kubero.dev/template.title: Activepieces
     kubero.dev/template.website: https://www.activepieces.com/
   labels:

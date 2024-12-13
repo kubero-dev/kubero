@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/evershopcommerce/evershop/dev/.github/images/banner.png"]'
     kubero.dev/template.source: https://github.com/evershopcommerce/evershop
-    kubero.dev/template.tags: '["ecommerce"]'
+    kubero.dev/template.categories: '["ecommerce"]'
     kubero.dev/template.title: Evershop
     kubero.dev/template.website: https://evershop.io/
   labels:

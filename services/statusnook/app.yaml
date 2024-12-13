@@ -14,7 +14,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/goksan/statusnook
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: StatusNook
     kubero.dev/template.website: https://statusnook.com
     screenshots: '- https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif

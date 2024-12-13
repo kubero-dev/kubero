@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/pgadmin-org/pgadmin4
-    kubero.dev/template.tags: '["database"]'
+    kubero.dev/template.categories: '["database"]'
     kubero.dev/template.title: pgAdmin
     kubero.dev/template.website: https://www.pgadmin.org
   labels:

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/e417a4c766f2f3245803f93ed2bdad17d13f20d114330e2436f91ecfadd1e7bf/68747470733a2f2f6a2e676966732e636f6d2f6b3567384f4a2e676966"]'
     kubero.dev/template.source: https://github.com/maputnik/editor
-    kubero.dev/template.tags: '["mapping","maps","cartography"]'
+    kubero.dev/template.categories: '["mapping","maps","cartography"]'
     kubero.dev/template.title: Maputnik
     kubero.dev/template.website: https://maputnik.github.io/editor/
   name: maputnik

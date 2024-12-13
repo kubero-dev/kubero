@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/9674a2b1b7d094b060fd79e6df7dca10b86a484ce6015b2668cff768dfc786ee/68747470733a2f2f757074696d652e6b756d612e7065742f696d672f6461726b2e6a7067"]'
     kubero.dev/template.source: https://github.com/louislam/uptime-kuma
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Kuma
     kubero.dev/template.website: https://uptime.kuma.pet
   name: kuma

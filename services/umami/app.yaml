@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://umami.is/images/languages.png"]'
     kubero.dev/template.source: https://github.com/umami-software/umami
-    kubero.dev/template.tags: '["analytics"]'
+    kubero.dev/template.categories: '["analytics"]'
     kubero.dev/template.title: umami
     kubero.dev/template.website: https://umami.is/
   name: umami

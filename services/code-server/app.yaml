@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/coder/code-server/raw/main/docs/assets/screenshot-1.png"]'
     kubero.dev/template.source: https://github.com/coder/code-server
-    kubero.dev/template.tags: '["development"]'
+    kubero.dev/template.categories: '["development"]'
     kubero.dev/template.title: VS Code - Code Server
     kubero.dev/template.website: https://coder.com
   labels:

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '["https://docs.coralproject.net/","https://github.com/coralproject/talk/blob/main/docs/docs/environment-variables.md"]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/coralproject/talk
-    kubero.dev/template.tags: '["commments","community"]'
+    kubero.dev/template.categories: '["commments","community"]'
     kubero.dev/template.title: Coral
     kubero.dev/template.website: https://coralproject.net
   name: coral

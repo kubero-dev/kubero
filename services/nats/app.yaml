@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/nats-io/nats-server
-    kubero.dev/template.tags: '["network","pubsub","microservices"]'
+    kubero.dev/template.categories: '["network","pubsub","microservices"]'
     kubero.dev/template.title: Nats
     kubero.dev/template.website: https://nats.io
   name: nats

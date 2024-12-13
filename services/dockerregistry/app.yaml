@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/distribution/distribution
-    kubero.dev/template.tags: '["docker"]'
+    kubero.dev/template.categories: '["docker"]'
     kubero.dev/template.title: Docker Registry
     kubero.dev/template.website: https://docs.docker.com/registry/
   name: dockerregistry

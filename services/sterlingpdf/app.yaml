@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Frooodle/Stirling-PDF/main/images/stirling-home.png"]'
     kubero.dev/template.source: https://github.com/Frooodle/Stirling-PDF
-    kubero.dev/template.tags: '["PDF"]'
+    kubero.dev/template.categories: '["PDF"]'
     kubero.dev/template.title: Stirling PDF
     kubero.dev/template.website: https://github.com/Frooodle/Stirling-PDF
   name: stirlingpdf

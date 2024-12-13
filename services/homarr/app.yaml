@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/71191962/169860380-856634fb-4f41-47cb-ba54-6a9e7b3b9c81.gif"]'
     kubero.dev/template.source: https://github.com/ajnart/homarr
-    kubero.dev/template.tags: '["homepage"]'
+    kubero.dev/template.categories: '["homepage"]'
     kubero.dev/template.title: Homarr
     kubero.dev/template.website: https://homarr.dev
   name: homarr

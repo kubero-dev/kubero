@@ -17,7 +17,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"]'
     kubero.dev/template.source: https://github.com/atuinsh/atuin
-    kubero.dev/template.tags: '["administration"]'
+    kubero.dev/template.categories: '["administration"]'
     kubero.dev/template.title: Atuin
     kubero.dev/template.website: https://atuin.sh/
     screenshots: '- https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif '

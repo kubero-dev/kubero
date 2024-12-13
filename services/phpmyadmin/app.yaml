@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/1/13/PhpMyAdmin-main-en.png"]'
     kubero.dev/template.source: https://github.com/phpmyadmin/phpmyadmin
-    kubero.dev/template.tags: '["database","administration"]'
+    kubero.dev/template.categories: '["database","administration"]'
     kubero.dev/template.title: phpMyAdmin
     kubero.dev/template.website: https://www.phpmyadmin.net/
   labels:

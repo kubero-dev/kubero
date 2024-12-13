@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://www.bookstackapp.com/images/screenshots/page-view.png","https://www.bookstackapp.com/images/screenshots/page-edit.png","https://www.bookstackapp.com/images/screenshots/books-view.png","https://www.bookstackapp.com/images/screenshots/book-sorting.png","https://www.bookstackapp.com/images/screenshots/search.png"]'
     kubero.dev/template.source: https://github.com/BookStackApp/BookStack
-    kubero.dev/template.tags: '["documentation"]'
+    kubero.dev/template.categories: '["documentation"]'
     kubero.dev/template.title: Bookstack
     kubero.dev/template.website: https://www.bookstackapp.com/
   labels:

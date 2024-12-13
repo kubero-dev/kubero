@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/TwiN/gatus/raw/master/.github/assets/dashboard-dark.png"]'
     kubero.dev/template.source: https://github.com/TwiN/gatus
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Gatus
     kubero.dev/template.website: https://gatus.io/
   name: gatus

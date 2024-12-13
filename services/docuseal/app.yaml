@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://www.docuseal.com/packs/static/images/resources/quick-start-1-216aeed1da1db5b3e718.jpg"]'
         kubero.dev/template.source: "https://github.com/docusealco/docuseal"
-        kubero.dev/template.tags: '["documents", "security"]'
+        kubero.dev/template.categories: '["documents", "security"]'
         kubero.dev/template.title: "Docuseal"
         kubero.dev/template.website: "https://www.docuseal.com/"
     labels:

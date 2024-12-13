@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/242ed60fe9d9d3c7e1d8d7d3f64d28d23c0a81e5963265880095e0e9c7604205/68747470733a2f2f646f636d6f73742e636f6d2f73637265656e73686f74732f686f6d652e706e67"]'
         kubero.dev/template.source: "https://github.com/docmost/docmost"
-        kubero.dev/template.tags: '["wiki", "documentation", "collaboration"]'
+        kubero.dev/template.categories: '["wiki", "documentation", "collaboration"]'
         kubero.dev/template.title: "Docmost"
         kubero.dev/template.website: "https://docmost.com/"
     labels:

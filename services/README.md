@@ -31,7 +31,7 @@ metadata:
     kubero.dev/template.links: '["https://docs.mydomain.com", "https://additionallink.com"]' # optional, up to 5 links
     kubero.dev/template.screenshots: '["https://mydomain.com/screenshot1.png" , "https://mydomain.com/screenshot2.png"]' # optional, up to 5 screenshots
     kubero.dev/template.source: https://github.com/me/myservice # mandatatory
-    kubero.dev/template.tags: '["project management"]' # optional, up to 5 tags
+    kubero.dev/template.categories: '["project management"]' # optional, up to 5 tags
     kubero.dev/template.title: Myservice # mandatatory
     kubero.dev/template.website: https://mydomain.com/ # mandatatory, must be publicly accessible, might be the same as source
   name: myservice

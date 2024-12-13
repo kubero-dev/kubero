@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://lycheeorg.github.io/assets/3.BzY-5hAj.jpg"]'
     kubero.dev/template.source: https://github.com/LycheeOrg/Lychee
-    kubero.dev/template.tags: '["Search"]'
+    kubero.dev/template.categories: '["Search"]'
     kubero.dev/template.title: Lychee
     kubero.dev/template.website: https://lycheeorg.github.io/
   labels:

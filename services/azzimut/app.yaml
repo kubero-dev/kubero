@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/azimuttapp/azimutt"
-        kubero.dev/template.tags: '["database", "debug", "development"]'
+        kubero.dev/template.categories: '["database", "debug", "development"]'
         kubero.dev/template.title: "Azimutt"
         kubero.dev/template.website: "https://azimutt.app/"
     labels:

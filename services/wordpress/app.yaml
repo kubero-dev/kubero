@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://wordpress.org/documentation/files/2021/07/test-widgets_v2-1-1024x643.jpeg","https://user-images.githubusercontent.com/12400734/168248949-f19a1a73-2c02-4eab-84d1-faaff57dbd07.png","https://wordpress.org/documentation/files/2021/06/menu-add-items-1024x557.png"]'
     kubero.dev/template.source: https://github.com/WordPress/WordPress
-    kubero.dev/template.tags: '["Search"]'
+    kubero.dev/template.categories: '["Search"]'
     kubero.dev/template.title: WordPress
     kubero.dev/template.website: https://github.com/benbusby/whoogle-search
   name: wordpress

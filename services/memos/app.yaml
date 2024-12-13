@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://usememos.com/demo.webp"]'
     kubero.dev/template.source: https://github.com/usememos/memos
-    kubero.dev/template.tags: '["note taking"]'
+    kubero.dev/template.categories: '["note taking"]'
     kubero.dev/template.title: Memos
     kubero.dev/template.website: https://usememos.com/
   name: memos

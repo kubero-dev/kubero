@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/alexta69/metube/master/screenshot.gif"]'
     kubero.dev/template.source: https://github.com/alexta69/metube
-    kubero.dev/template.tags: '["video"]'
+    kubero.dev/template.categories: '["video"]'
     kubero.dev/template.title: Metube
     kubero.dev/template.website: hhttps://github.com/alexta69/metube
   labels:

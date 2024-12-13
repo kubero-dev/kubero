@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/diced/zipline"
-        kubero.dev/template.tags: '["file", "sharex", "sharing"]'
+        kubero.dev/template.categories: '["file", "sharex", "sharing"]'
         kubero.dev/template.title: "Zipline"
         kubero.dev/template.website: "https://zipline.diced.sh/"
     labels:

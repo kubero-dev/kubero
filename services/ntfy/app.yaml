@@ -12,7 +12,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://ntfy.sh/static/img/screenshot-web-detail.png","https://ntfy.sh/static/img/screenshot-curl.png","https://ntfy.sh/static/img/screenshot-phone-notification.jpg","https://ntfy.sh/static/img/screenshot-phone-detail.jpg"]'
     kubero.dev/template.source: https://github.com/binwiederhier/ntfy
-    kubero.dev/template.tags: '["notifications","push","pubsub"]'
+    kubero.dev/template.categories: '["notifications","push","pubsub"]'
     kubero.dev/template.title: NTFY
     kubero.dev/template.website: https://ntfy.sh/
   name: ntfy

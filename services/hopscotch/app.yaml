@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/hoppscotch/hoppscotch/main/packages/hoppscotch-common/public/images/banner-light.png"]'
     kubero.dev/template.source: https://github.com/hoppscotch/hoppscotch
-    kubero.dev/template.tags: '["development"]'
+    kubero.dev/template.categories: '["development"]'
     kubero.dev/template.title: Hoppscotch
     kubero.dev/template.website: https://hoppscotch.io
   name: hopscotch

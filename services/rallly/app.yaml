@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '["https://github.com/lukevella/rallly-selfhosted"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/lukevella/rallly/main/docs/images/poll-image.png"]'
     kubero.dev/template.source: https://github.com/lukevella/rallly
-    kubero.dev/template.tags: '["collaboration","scheduling"]'
+    kubero.dev/template.categories: '["collaboration","scheduling"]'
     kubero.dev/template.title: Rallly
     kubero.dev/template.website: https://rallly.co
   name: rallly

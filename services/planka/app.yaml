@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/plankanban/planka/master/demo.gif"]'
     kubero.dev/template.source: https://github.com/plankanban/planka
-    kubero.dev/template.tags: '["project management"]'
+    kubero.dev/template.categories: '["project management"]'
     kubero.dev/template.title: Planka
     kubero.dev/template.website: https://planka.app/
   labels:

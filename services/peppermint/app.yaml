@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/Peppermint-Lab/peppermint"
-        kubero.dev/template.tags: '["helpdesk", "ticketing", "service desk", "customer support"]'
+        kubero.dev/template.categories: '["helpdesk", "ticketing", "service desk", "customer support"]'
         kubero.dev/template.title: "Peppermint"
         kubero.dev/template.website: "https://peppermint.sh/"
     labels:

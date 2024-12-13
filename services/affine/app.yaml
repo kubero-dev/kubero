@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '["https://docs.affine.pro/docs/hello-bonjour-aloha-%E4%BD%A0%E5%A5%BD"]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/toeverything/AFFiNE
-    kubero.dev/template.tags: '["drawing","planning","collaboration"]'
+    kubero.dev/template.categories: '["drawing","planning","collaboration"]'
     kubero.dev/template.title: AFFiNE
     kubero.dev/template.website: https://affine.pro/
   labels:

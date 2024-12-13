@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '"https://docs.fief.dev"'
     kubero.dev/template.screenshots: '["https://www.fief.dev/illustrations/signin.png"]'
     kubero.dev/template.source: https://github.com/fief-dev/fief
-    kubero.dev/template.tags: '["security","authentication"]'
+    kubero.dev/template.categories: '["security","authentication"]'
     kubero.dev/template.title: Fief
     kubero.dev/template.website: https://www.fief.dev
   labels:

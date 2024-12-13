@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '["https://github.com/Erikvl87/docker-languagetool/blob/master/docker-compose.yml"]'
     kubero.dev/template.screenshots: '["https://languagetool.org/videos/gmail_de_en.mp4"]'
     kubero.dev/template.source: https://github.com/languagetool-org/languagetool
-    kubero.dev/template.tags: '["spellcheck","grammar"]'
+    kubero.dev/template.categories: '["spellcheck","grammar"]'
     kubero.dev/template.title: LanguageTool
     kubero.dev/template.website: https://languagetool.org/
   name: languagetool

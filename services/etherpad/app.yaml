@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '["https://github.com/ether/etherpad-lite/blob/develop/doc/docker.md"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/ether/etherpad-lite/develop/doc/images/etherpad_demo.gif"]'
     kubero.dev/template.source: https://github.com/ether/etherpad-lite
-    kubero.dev/template.tags: '["collaboration","documents","editor","writing"]'
+    kubero.dev/template.categories: '["collaboration","documents","editor","writing"]'
     kubero.dev/template.title: Etherpad
     kubero.dev/template.website: https://etherpad.org/
   name: etherpad

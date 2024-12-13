@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/wiki/zadam/trilium/images/screenshot.png"]'
     kubero.dev/template.source: https://github.com/zadam/trilium
-    kubero.dev/template.tags: '["note taking","knowledge base"]'
+    kubero.dev/template.categories: '["note taking","knowledge base"]'
     kubero.dev/template.title: Trilium Notes
     kubero.dev/template.website: https://github.com/zadam/trilium
   name: trilium

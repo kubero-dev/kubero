@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/Requarks/wiki
-    kubero.dev/template.tags: '["wiki"]'
+    kubero.dev/template.categories: '["wiki"]'
     kubero.dev/template.title: Wiki.js
     kubero.dev/template.website: https://js.wiki/
   name: wikijs

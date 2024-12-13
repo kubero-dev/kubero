@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://static.cars10k.de/demo.gif"]'
         kubero.dev/template.source: "https://github.com/cars10/elasticvue"
-        kubero.dev/template.tags: '["database", "index", "management"]'
+        kubero.dev/template.categories: '["database", "index", "management"]'
         kubero.dev/template.title: "elasticvue"
         kubero.dev/template.website: "https://elasticvue.com/"
     labels:

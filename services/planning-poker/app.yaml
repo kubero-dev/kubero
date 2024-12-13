@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '["https://github.com/axeleroy/self-host-planning-poker"]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/axeleroy/self-host-planning-poker/main/assets/screenshot.png"]'
     kubero.dev/template.source: https://github.com/axeleroy/self-host-planning-poker
-    kubero.dev/template.tags: '["poker","game"]'
+    kubero.dev/template.categories: '["poker","game"]'
     kubero.dev/template.title: Planing Poker
     kubero.dev/template.website: https://github.com/axeleroy/self-host-planning-poker
   name: planning-poker

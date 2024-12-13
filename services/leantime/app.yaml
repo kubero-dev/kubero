@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/mywork.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/dark.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/kanban.png","https://raw.githubusercontent.com/Leantime/leantime/master/public/assets/images/Screenshots/timeline.png"]'
     kubero.dev/template.source: https://github.com/Leantime/leantime
-    kubero.dev/template.tags: '["project-management"]'
+    kubero.dev/template.categories: '["project-management"]'
     kubero.dev/template.title: Leantime
     kubero.dev/template.website: https://leantime.io/
   labels:

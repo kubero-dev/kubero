@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/nirui/sshwifty/master/Screenshot.png"]'
     kubero.dev/template.source: https://github.com/nirui/sshwifty
-    kubero.dev/template.tags: '["client"]'
+    kubero.dev/template.categories: '["client"]'
     kubero.dev/template.title: Sshwifty
     kubero.dev/template.website: https://sshwifty-demo.nirui.org
   name: sshwifty

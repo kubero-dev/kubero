@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/22f0b90b2c9ec4f1c9ec9ed920bb7b794bc1f1ac93bf61099ef298369b8850e5/68747470733a2f2f7261772e6769746875622e636f6d2f6261737469656e776972747a2f686f6d65722f6d61696e2f646f63732f73637265656e73686f742e706e67"]'
     kubero.dev/template.source: https://github.com/bastienwirtz/homer
-    kubero.dev/template.tags: '["homepage","dashboard"]'
+    kubero.dev/template.categories: '["homepage","dashboard"]'
     kubero.dev/template.title: Homer
     kubero.dev/template.website: https://github.com/bastienwirtz/homer
   name: homer

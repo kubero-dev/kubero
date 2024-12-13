@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://docs.authorizer.dev/images/authorizer-arch.png"]'
     kubero.dev/template.source: https://github.com/authorizerdev/authorizer
-    kubero.dev/template.tags: '["authentication"]'
+    kubero.dev/template.categories: '["authentication"]'
     kubero.dev/template.title: Authorizer
     kubero.dev/template.website: https://authorizer.dev/
   name: authorizer

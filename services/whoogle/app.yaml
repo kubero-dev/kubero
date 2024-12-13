@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_desktop.png","https://raw.githubusercontent.com/benbusby/whoogle-search/main/docs/screenshot_mobile.png"]'
     kubero.dev/template.source: https://github.com/benbusby/whoogle-search
-    kubero.dev/template.tags: '["Search"]'
+    kubero.dev/template.categories: '["Search"]'
     kubero.dev/template.title: Whoogle
     kubero.dev/template.website: https://github.com/benbusby/whoogle-search
   name: whoogle

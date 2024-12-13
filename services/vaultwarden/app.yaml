@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/dani-garcia/vaultwarden
-    kubero.dev/template.tags: '["password manager","password storage"]'
+    kubero.dev/template.categories: '["password manager","password storage"]'
     kubero.dev/template.title: Vaultwarden
     kubero.dev/template.website: https://github.com/dani-garcia/vaultwarden
   name: vaultwarden

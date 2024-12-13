@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/andrii-kryvoviaz/slink/raw/main/screens/e98ea79e-01bb-4e23-98ba-b18841d09c9b.png"]'
     kubero.dev/template.source: https://github.com/andrii-kryvoviaz/slink
-    kubero.dev/template.tags: '["images","gallery","sharing"]'
+    kubero.dev/template.categories: '["images","gallery","sharing"]'
     kubero.dev/template.title: Slink
     kubero.dev/template.website: https://github.com/andrii-kryvoviaz/slink
   labels:

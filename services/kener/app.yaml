@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/8d4f2ea8ac5a6200ad87e39a21be25c5b279d540a886db131a076ef69227ca7a/68747470733a2f2f6b656e65722e696e672f73732e706e67"]'
     kubero.dev/template.source: https://github.com/rajnandan1/kener
-    kubero.dev/template.tags: '["monitoring"]'
+    kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: Kener
     kubero.dev/template.website: https://www.kener.ing
   name: kener

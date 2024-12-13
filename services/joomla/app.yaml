@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/9/96/Backend_Joomla_4_en.png"]'
     kubero.dev/template.source: https://github.com/joomla/joomla-cms
-    kubero.dev/template.tags: '["CMS"]'
+    kubero.dev/template.categories: '["CMS"]'
     kubero.dev/template.title: Joomla
     kubero.dev/template.website: https://joomla.org
   name: joomla

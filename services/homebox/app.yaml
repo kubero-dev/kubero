@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/sysadminsmedia/homebox
-    kubero.dev/template.tags: '["Search"]'
+    kubero.dev/template.categories: '["Search"]'
     kubero.dev/template.title: Homebox
     kubero.dev/template.website: https://homebox.software
   name: homebox
