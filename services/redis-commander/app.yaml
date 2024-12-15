@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '[]'
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/joeferner/redis-commander/master/docs/GUI_EXAMPLE.png"]'
         kubero.dev/template.source: https://github.com/joeferner/redis-commander
-        kubero.dev/template.tags: '["redis", "management", "database"]'
+        kubero.dev/template.categories: '["redis", "management", "database"]'
         kubero.dev/template.title: Redis Commander
         kubero.dev/template.website: http://joeferner.github.io/redis-commander/
     labels:
