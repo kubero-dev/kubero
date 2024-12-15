@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '["https://docs.netbird.io/", "https://docs.netbird.io/selfhosted/selfhosted-guide"]'
         kubero.dev/template.screenshots: '["https://docs.netbird.io/docs-static/img/open-source-zero-trust-networking.png"]'
         kubero.dev/template.source: "https://github.com/netbirdio/netbird"
-        kubero.dev/template.categories: '["security", "dashboard", "administration"]'
+        kubero.dev/template.categories: '["security", "dashboard", "admin"]'
         kubero.dev/template.title: "netbird"
         kubero.dev/template.website: "https://netbird.io/"
     labels:

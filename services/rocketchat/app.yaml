@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/6464d93d33af48db33864025_Team%20Collab.webp","https://global-uploads.webflow.com/611a19b9853b7414a0f6b3f6/615d85d3d3ae5682e8571dfb_Group%203924%20(1).png"]'
     kubero.dev/template.source: https://github.com/RocketChat/Rocket.Chat
-    kubero.dev/template.categories: '["communications"]'
+    kubero.dev/template.categories: '["communication", "collaboration", "work", "utilities"]'
     kubero.dev/template.title: Rocket.Chat
     kubero.dev/template.website: https://rocket.chat/
   name: rocketchat

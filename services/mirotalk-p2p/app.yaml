@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/miroslavpejic85/mirotalk/raw/master/public/images/mirotalk-header.gif"]'
     kubero.dev/template.source: https://github.com/miroslavpejic85/mirotalk
-    kubero.dev/template.categories: '["Video Conferencing"]'
+    kubero.dev/template.categories: '["communication", "work"]'
     kubero.dev/template.title: MiroTalk P2P
     kubero.dev/template.website: https://p2p.mirotalk.com
   name: mirotalk-p2p

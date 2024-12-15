@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/chartdb/chartdb/main/public/chartdb.png"]'
     kubero.dev/template.source: https://github.com/chartdb/chartdb
-    kubero.dev/template.categories: '["administration","database"]'
+    kubero.dev/template.categories: '["admin","data", "development"]'
     kubero.dev/template.title: ChartDB
     kubero.dev/template.website: https://chartdb.io/
   labels:

@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '"https://www.keila.io/docs/configuration"'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/pentacent/keila/main/.github/assets/keila-20211203.jpg"]'
     kubero.dev/template.source: https://github.com/pentacent/keila
-    kubero.dev/template.categories: '["newsletter"]'
+    kubero.dev/template.categories: '["communication", "work"]'
     kubero.dev/template.title: Keila
     kubero.dev/template.website: https://keila.io/
   labels:

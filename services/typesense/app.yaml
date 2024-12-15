@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/typesense/typesense/blob/v28/assets/typesense_books_demo.gif?raw=true"]'
     kubero.dev/template.source: https://github.com/typesense/typesense
-    kubero.dev/template.categories: '["search","database","open-source","indexing"]'
+    kubero.dev/template.categories: '["data", "accessories"]'
     kubero.dev/template.title: Typesense
     kubero.dev/template.website: https://typesense.org
   name: typesense

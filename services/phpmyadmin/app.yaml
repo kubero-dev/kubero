@@ -4,13 +4,13 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: phpMyAdmin is a free software tool written in
-      PHP, intended to handle the administration of MySQL and MariaDB over the Web.
+      PHP, intended to handle the admin of MySQL and MariaDB over the Web.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/1351977?s=200&v=4
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/1/13/PhpMyAdmin-main-en.png"]'
     kubero.dev/template.source: https://github.com/phpmyadmin/phpmyadmin
-    kubero.dev/template.categories: '["database","administration"]'
+    kubero.dev/template.categories: '["data","admin", "development", "debug"]'
     kubero.dev/template.title: phpMyAdmin
     kubero.dev/template.website: https://www.phpmyadmin.net/
   labels:

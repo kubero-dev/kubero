@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/914224/134777345-8789d9e4-ff0d-439c-b80e-ddc56b74fcee.png"]'
         kubero.dev/template.source: "https://github.com/semaphoreui/semaphore"
-        kubero.dev/template.categories: '["devops", "infrastructure"]'
+        kubero.dev/template.categories: '["development", "admin"]'
         kubero.dev/template.title: "Semaphore"
         kubero.dev/template.website: "https://semaphoreui.com/"
     labels:

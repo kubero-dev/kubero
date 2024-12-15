@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://cdn.hashnode.com/res/hashnode/image/upload/v1650233795205/xWudUDZjZ.png?auto=compress,format&format=webp"]'
     kubero.dev/template.source: https://github.com/mccutchen/go-httpbin
-    kubero.dev/template.categories: '["debugging"]'
+    kubero.dev/template.categories: '["debug", "development"]'
     kubero.dev/template.title: go-httpbin
     kubero.dev/template.website: https://httpbingo.org
   name: go-httpbin

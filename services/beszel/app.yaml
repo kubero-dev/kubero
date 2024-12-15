@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/49a777d47b027b633444519e4d9f62b1327e3155e511760b8029124c7ff03d91/68747470733a2f2f68656e727967642d6173736574732e622d63646e2e6e65742f6265737a656c2f73637265656e73686f742e706e67"]'
         kubero.dev/template.source: "https://github.com/henrygd/beszel"
-        kubero.dev/template.categories: '["monitoring"]'
+        kubero.dev/template.categories: '["monitoring", "debug"]'
         kubero.dev/template.title: "Beszel"
         kubero.dev/template.website: "https://github.com/henrygd/beszel"
     labels:

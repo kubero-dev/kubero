@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/cracker0dks/whiteboard/refs/heads/master/doc/start.png"]'
     kubero.dev/template.source: https://github.com/cracker0dks/whiteboard
-    kubero.dev/template.categories: '["school"]'
+    kubero.dev/template.categories: '["school", "work", "utilities"]'
     kubero.dev/template.title: Whiteboard
     kubero.dev/template.website: https://github.com/cracker0dks/whiteboard
   labels:

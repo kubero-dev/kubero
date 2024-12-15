@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/KubeOperator/webkubectl/raw/master/web-resources/webkubectl.gif"]'
     kubero.dev/template.source: https://github.com/KubeOperator/webkubectl
-    kubero.dev/template.categories: '["kubernetes"]'
+    kubero.dev/template.categories: '["utilities", "admin"]'
     kubero.dev/template.title: Web Kubectl
     kubero.dev/template.website: https://github.com/KubeOperator/webkubectl
   name: kubectl

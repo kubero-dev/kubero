@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/gotify/server/raw/master/ui.png"]'
     kubero.dev/template.source: https://github.com/gotify/server
-    kubero.dev/template.categories: '["monitoring"]'
+    kubero.dev/template.categories: '["communication", "accessories"]'
     kubero.dev/template.title: Gotify
     kubero.dev/template.website: https://gotify-net
   name: gotify

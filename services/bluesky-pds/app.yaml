@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/bluesky-social/pds
-    kubero.dev/template.categories: '["social network"]'
+    kubero.dev/template.categories: '["social"]'
     kubero.dev/template.title: BlueSky PDS
     kubero.dev/template.website: https://github.com/bluesky-social/pds
   name: bluesky-pds

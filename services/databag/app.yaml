@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/balzack/databag/main/doc/mobile.png","https://github.com/balzack/databag/blob/main/doc/browser.png"]'
     kubero.dev/template.source: https://github.com/balzack/databag
-    kubero.dev/template.categories: '["chat","messenger","federated","decentralized"]'
+    kubero.dev/template.categories: '["communication", "social"]'
     kubero.dev/template.title: Databag
     kubero.dev/template.website: https://github.com/balzack/databag
   labels:

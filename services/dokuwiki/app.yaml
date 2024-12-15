@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/dokuwiki/dokuwiki"
-        kubero.dev/template.categories: '[ "wiki", "documentation" ]'
+        kubero.dev/template.categories: '[ "work", "documentation" ]'
         kubero.dev/template.title: "DokuWiki"
         kubero.dev/template.website: "https://www.dokuwiki.org/"
     labels:

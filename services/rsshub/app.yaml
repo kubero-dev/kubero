@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/DIYgod/RSSHub
-    kubero.dev/template.categories: '["tools"]'
+    kubero.dev/template.categories: '["utilities"]'
     kubero.dev/template.title: RSSHub
     kubero.dev/template.website: https://docs.rsshub.app/
   labels:

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/303966/99915755-32f78e80-2ccb-11eb-9f74-b18846d6108d.png"]'
     kubero.dev/template.source: https://github.com/sqlpad/sqlpad
-    kubero.dev/template.categories: '["tools","database"]'
+    kubero.dev/template.categories: '["data", "development", "work"]'
     kubero.dev/template.title: SQLPad
     kubero.dev/template.website: https://getsqlpad.com/
   labels:

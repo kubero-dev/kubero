@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/cortezaproject/corteza/2024.9.x/.github/assets/hero-animation.webp"]'
         kubero.dev/template.source: "https://github.com/cortezaproject/corteza"
-        kubero.dev/template.categories: '["crm", "erp", "low-code"]'
+        kubero.dev/template.categories: '["crm", "erp" ]'
         kubero.dev/template.title: "Corteza"
         kubero.dev/template.website: "https://cortezaproject.org/"
     labels:

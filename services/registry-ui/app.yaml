@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/Joxit/docker-registry-ui
-    kubero.dev/template.categories: '["registry"]'
+    kubero.dev/template.categories: '["development", "utilities"]'
     kubero.dev/template.title: Docker Registry UI
     kubero.dev/template.website: https://joxit.dev/docker-registry-ui/
   name: registry-ui

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/bitwarden/brand/main/screenshots/apps-combo-logo.png"]'
     kubero.dev/template.source: https://github.com/bitwarden/server
-    kubero.dev/template.categories: '["security"]'
+    kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: Bitwarden
     kubero.dev/template.website: https://bitwarden.com/
   labels:

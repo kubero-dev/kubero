@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/drawdb-io/.github/main/profile/assets/cover.png"]'
     kubero.dev/template.source: https://github.com/drawdb-io/drawdb
-    kubero.dev/template.categories: '["developer-tools"]'
+    kubero.dev/template.categories: '["development", "data", "admin"]'
     kubero.dev/template.title: DrawDB
     kubero.dev/template.website: https://drawdb.app/
   labels:

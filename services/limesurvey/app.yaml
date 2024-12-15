@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '"https://manual.limesurvey.org/LimeSurvey_Manual"'
     kubero.dev/template.screenshots: '["https://manual.limesurvey.org/images/1/15/Surveys-alternative_button.png","https://manual.limesurvey.org/images/5/50/Newsurveyscreen.png"]'
     kubero.dev/template.source: https://github.com/LimeSurvey/LimeSurvey
-    kubero.dev/template.categories: '["survel"]'
+    kubero.dev/template.categories: '["communication", "utilities"]'
     kubero.dev/template.title: LimeSurvey
     kubero.dev/template.website: https://www.limesurvey.org
   labels:

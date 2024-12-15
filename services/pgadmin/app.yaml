@@ -4,13 +4,13 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: pgAdmin is the most popular and feature rich
-      Open Source administration and development platform for PostgreSQL.
+      Open Source admin and development platform for PostgreSQL.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/113517144?s=200&v=4
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/pgadmin-org/pgadmin4
-    kubero.dev/template.categories: '["database"]'
+    kubero.dev/template.categories: '["data", "development", "admin", "debug"]'
     kubero.dev/template.title: pgAdmin
     kubero.dev/template.website: https://www.pgadmin.org
   labels:

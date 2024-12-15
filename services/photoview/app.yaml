@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/photoview/photoview/master/screenshots/timeline.png"]'
     kubero.dev/template.source: https://github.com/photoview/photoview
-    kubero.dev/template.categories: '["imaga database"]'
+    kubero.dev/template.categories: '["utilities"]'
     kubero.dev/template.title: Photoview
     kubero.dev/template.website: https://photoview.github.io/
   name: photoview

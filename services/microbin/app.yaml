@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://microbin.eu/img/screenshot7.png","https://microbin.eu/img/screenshot6.png","https://microbin.eu/img/screenshot1.png","https://microbin.eu/img/screenshot4.png","https://microbin.eu/img/screenshot5.png","https://microbin.eu/img/screenshot3.png","https://microbin.eu/img/screenshot2.png"]'
     kubero.dev/template.source: https://github.com/szabodanika/microbin
-    kubero.dev/template.categories: '["pastebin"]'
+    kubero.dev/template.categories: '["utilities"]'
     kubero.dev/template.title: MicroBin
     kubero.dev/template.website: https://microbin.eu/
   name: microbin

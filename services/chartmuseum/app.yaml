@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/helm/chartmuseum
-    kubero.dev/template.categories: '["repository"]'
+    kubero.dev/template.categories: '["accessories"]'
     kubero.dev/template.title: chartMuseum
     kubero.dev/template.website: https://chartmuseum.com/
   name: chartmuseum

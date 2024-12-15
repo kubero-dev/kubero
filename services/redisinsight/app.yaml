@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://github.com/RedisInsight/RedisInsight/raw/main/.github/redisinsight_browser.png"]'
         kubero.dev/template.source: "https://github.com/RedisInsight/RedisInsight"
-        kubero.dev/template.categories: '["redis", "database", "monitoring", "debug"]'
+        kubero.dev/template.categories: '["data", "development", "admin", "debug"]'
         kubero.dev/template.title: "Redisinsight"
         kubero.dev/template.website: "https://redis.com/redis-enterprise/redis-insight/"
     labels:

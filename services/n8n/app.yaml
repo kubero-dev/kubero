@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/9a0a5cdb7d4805104de24a4626a015cdc4ed26062b9fb5f6beda2a8b6d5c68c2/68747470733a2f2f6e386e696f73746f726167656163636f756e742e626c6f622e636f72652e77696e646f77732e6e65742f6e386e696f2d7374726170692d626c6f62732d70726f642f6173736574732f6769746875625f73637265656e5f325f383631353532333463332e706e67","https://raw.githubusercontent.com/n8n-io/n8n/master/assets/n8n-screenshot.png"]'
     kubero.dev/template.source: https://github.com/n8n-io/n8n
-    kubero.dev/template.categories: '["workflow","automation"]'
+    kubero.dev/template.categories: '["work", "productivity", "utilities"]'
     kubero.dev/template.title: n8n
     kubero.dev/template.website: https://n8n.io
   name: n8n

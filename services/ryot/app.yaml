@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/ignisda/ryot
-    kubero.dev/template.categories: '["metrics"]'
+    kubero.dev/template.categories: '["productivity"]'
     kubero.dev/template.title: Ryot
     kubero.dev/template.website: https://github.com/ignisda/ryot
   labels:

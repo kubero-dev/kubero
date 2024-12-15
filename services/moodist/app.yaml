@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: 'null'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/remvze/moodist
-    kubero.dev/template.categories: '["tools"]'
+    kubero.dev/template.categories: '["utility", "productivity"]'
     kubero.dev/template.title: Moodist
     kubero.dev/template.website: https://moodist.app/
   labels:

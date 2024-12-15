@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/yourselfhosted/slash/refs/heads/main/docs/assets/demo.png"]'
         kubero.dev/template.source: "https://github.com/yourselfhosted/slash"
-        kubero.dev/template.categories: '["link", "management", "tools"]'
+        kubero.dev/template.categories: '["utilities"]'
         kubero.dev/template.title: "Slash"
         kubero.dev/template.website: "https://github.com/yourselfhosted/slash"
     labels:

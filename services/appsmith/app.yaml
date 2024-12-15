@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://images.ctfassets.net/lpvian6u6i39/57xRxbPxLB5Rx6YYCQstyW/d605683e09640cabbb15e9a9d65dc03d/img-cta.png"]'
     kubero.dev/template.source: https://github.com/appsmithorg/appsmith
-    kubero.dev/template.categories: '["admin-dashboard","workflows","app-builder"]'
+    kubero.dev/template.categories: '["utilities", "work"]'
     kubero.dev/template.title: Appsmith
     kubero.dev/template.website: https://www.appsmith.com
   name: appsmith

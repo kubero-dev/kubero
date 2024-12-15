@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/laravel/laravel
-    kubero.dev/template.categories: '["framework","php"]'
+    kubero.dev/template.categories: '["framework", "development"]'
     kubero.dev/template.title: Laravel
     kubero.dev/template.website: https://laravel.com
   name: laravel

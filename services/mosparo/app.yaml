@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://d4.alternativeto.net/HPWhNJQo67junwVeSlN5ovWPz-UkZrQel0IxkNXUVbs/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMTA2NTE1X2Z1bGwuanBn.jpg","https://d4.alternativeto.net/DYwswFga7YcsviDw-b71168EBIS45dqsbHE0cNb8phk/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fNTUyMjcxX2Z1bGwuanBn.jpg","https://d4.alternativeto.net/AsvhGcW3WdllXHft46cSiW5yq_l3bgdyf1-EARYjSzU/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMjgyMjI5X2Z1bGwuanBn.jpg","https://d4.alternativeto.net/8jPSunVUELUMLlyhW0UjOYFCQm9uKkgwE38WdUYm0V4/rs:fit:1200:1200:0/g:ce:0:0/YWJzOi8vZGlzdC9zL21vc3Bhcm9fMjYzNjQ4X2Z1bGwuanBn.jpg"]'
     kubero.dev/template.source: https://github.com/mosparo/mosparo
-    kubero.dev/template.categories: '["spam protection"]'
+    kubero.dev/template.categories: '["security","accessories"]'
     kubero.dev/template.title: Mosparo
     kubero.dev/template.website: https://mosparo.io/
   name: mosparo

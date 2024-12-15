@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/meilisearch/meilisearch/raw/main/assets/demo-light.gif"]'
     kubero.dev/template.source: https://github.com/meilisearch/meilisearch
-    kubero.dev/template.categories: '["search"]'
+    kubero.dev/template.categories: '["accessories", "development"]'
     kubero.dev/template.title: Meilisearch
     kubero.dev/template.website: https://www.meilisearch.com/
   name: meilisearch

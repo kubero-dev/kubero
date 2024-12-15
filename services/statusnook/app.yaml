@@ -2,27 +2,16 @@ apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
   annotations:
-    description: StatusNook is a simple status page for your services.
-    documentation: ''
-    icon: www.svgrepo.com/show/310016/status.svg
-    installation-message: 'Admin account is created with the first website visit
-      '
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: StatusNook is a simple status page for your services.
     kubero.dev/template.icon: https://www.svgrepo.com/show/310016/status.svg
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: 'Admin account is created with the first website visit'
     kubero.dev/template.links: '[]'
-    kubero.dev/template.screenshots: 'null'
+    kubero.dev/template.screenshots: '[]'
     kubero.dev/template.source: https://github.com/goksan/statusnook
     kubero.dev/template.categories: '["monitoring"]'
     kubero.dev/template.title: StatusNook
     kubero.dev/template.website: https://statusnook.com
-    screenshots: '- https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif
-      '
-    source: github.com/goksan/statusnook
-    tags: '- monitoring
-      '
-    website: statusnook.com
   labels:
     manager: kubero
   name: statusnook

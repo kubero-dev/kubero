@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Grafana_screenshot.png/800px-Grafana_screenshot.png","https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Grafana_dashboard.png/800px-Grafana_dashboard.png"]'
     kubero.dev/template.source: https://github.com/grafana/grafana
-    kubero.dev/template.categories: '["monitoring","metrics","dashboard"]'
+    kubero.dev/template.categories: '["monitoring","debug","dashboard"]'
     kubero.dev/template.title: Grafana
     kubero.dev/template.website: https://grafana.com/
   name: grafana

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://excalidraw.nyc3.cdn.digitaloceanspaces.com/github%2Fproduct_showcase.png"]'
     kubero.dev/template.source: https://github.com/excalidraw/excalidraw
-    kubero.dev/template.categories: '["drawing","collaboration","whiteboard"]'
+    kubero.dev/template.categories: '["documentation", "work", "collaboration"]'
     kubero.dev/template.title: Excalidraw
     kubero.dev/template.website: https://excalidraw.com/
   name: excalidraw

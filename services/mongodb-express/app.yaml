@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["http://i.imgur.com/XiYhblA.png","http://i.imgur.com/XWcIgY1.png","https://imgur.com/UmGSr3x.png","https://imgur.com/lL38abn.png"]'
     kubero.dev/template.source: https://github.com/mongo-express/mongo-express
-    kubero.dev/template.categories: '["database administration"]'
+    kubero.dev/template.categories: '["data", "development", "admin"]'
     kubero.dev/template.title: MongoDB Express
     kubero.dev/template.website: https://github.com/mongo-express/mongo-express
   name: mongodb-express

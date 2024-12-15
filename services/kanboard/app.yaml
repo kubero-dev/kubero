@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://kanboard.org/assets/img/board.png"]'
     kubero.dev/template.source: https://github.com/kanboard/kanboard
-    kubero.dev/template.categories: '["project-management"]'
+    kubero.dev/template.categories: '["work", "development", "utilities"]'
     kubero.dev/template.title: Kanboard
     kubero.dev/template.website: https://kanboard.org
   labels:

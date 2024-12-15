@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Unleash/unleash/main/.github/github_online_demo.svg"]'
     kubero.dev/template.source: https://github.com/Unleash/unleash
-    kubero.dev/template.categories: '["feature-toggle"]'
+    kubero.dev/template.categories: '["development", "utilities", "accessories"]'
     kubero.dev/template.title: Unleash
     kubero.dev/template.website: https://getunleash.io/
   name: unleash

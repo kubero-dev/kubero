@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/8019099/176390354-f1bc7069-0341-437a-9bb8-eb41092b4016.gif"]'
     kubero.dev/template.source: https://github.com/calcom/cal.com
-    kubero.dev/template.categories: '["calendar"]'
+    kubero.dev/template.categories: '["work", "utilities"]'
     kubero.dev/template.title: cal.com
     kubero.dev/template.website: https://cal.com/
   name: calcom

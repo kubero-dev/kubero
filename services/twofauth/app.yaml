@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '[]'
         kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/858858/100485897-18c21400-3102-11eb-9c72-ea0b1b46ef2e.png"]'
         kubero.dev/template.source: "https://github.com/Bubka/2FAuth"
-        kubero.dev/template.categories: '["2FA", "Authentication", "Security"]'
+        kubero.dev/template.categories: '["security", "accessories"]'
         kubero.dev/template.title: "2FAuth"
         kubero.dev/template.website: "https://docs.2fauth.app/"
     labels:

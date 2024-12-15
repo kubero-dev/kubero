@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://casdoor.org/assets/images/import_success-8be0db7efa60235af1149e529292948b.png","https://casdoor.org/assets/images/dashboard-951aa5187e74f5446a91447e00111c79.png","https://casdoor.org/assets/images/step4_result2-5f31450f52b9f797c8f1afcf2fd19914.png"]'
     kubero.dev/template.source: https://github.com/casdoor/casdoor
-    kubero.dev/template.categories: '["authentication"]'
+    kubero.dev/template.categories: '["security", "accessories"]'
     kubero.dev/template.title: Casdoor
     kubero.dev/template.website: https://casdoor.org
   name: casdoor

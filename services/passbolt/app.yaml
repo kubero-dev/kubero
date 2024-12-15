@@ -9,7 +9,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-login.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot-share.png","https://raw.githubusercontent.com/passbolt/passbolt_styleguide/master/src/img/screenshots/teaser-screenshot4.png"]'
     kubero.dev/template.source: https://github.com/passbolt/passbolt_api
-    kubero.dev/template.categories: '["password","security"]'
+    kubero.dev/template.categories: '["security", "utilities"]'
     kubero.dev/template.title: Passbolt
     kubero.dev/template.website: https://www.passbolt.com
   name: passbolt

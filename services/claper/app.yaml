@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://github.com/ClaperCo/Claper/raw/main/priv/static/images/preview.png"]'
         kubero.dev/template.source: "https://github.com/ClaperCo/Claper"
-        kubero.dev/template.categories: '["presentation","slides","interactive"]'
+        kubero.dev/template.categories: '["communication", "work"]'
         kubero.dev/template.title: "Claper"
         kubero.dev/template.website: "https://claper.co/"
     labels:

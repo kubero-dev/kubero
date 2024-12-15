@@ -11,7 +11,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/traggo/server/raw/master/.github/traggo_list.png","https://github.com/traggo/server/raw/master/.github/traggo_calendar.png","https://github.com/traggo/server/raw/master/.github/traggo_dashboard.png"]'
     kubero.dev/template.source: https://github.com/traggo/server
-    kubero.dev/template.categories: '["time tracking","time management"]'
+    kubero.dev/template.categories: '["productivity", "utilities", "work"]'
     kubero.dev/template.title: Traggo
     kubero.dev/template.website: https://traggo.net
   name: traggo

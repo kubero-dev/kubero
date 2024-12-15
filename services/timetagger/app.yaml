@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://timetagger.app/screenshot1.png","https://timetagger.app/screenshot2.png","https://timetagger.app/screenshot3.png"]'
     kubero.dev/template.source: https://github.com/almarklein/timetagger
-    kubero.dev/template.categories: '["Time tracking"]'
+    kubero.dev/template.categories: '["productivity", "development"]'
     kubero.dev/template.title: TimeTagger
     kubero.dev/template.website: https://timetagger.app/
   name: timetagger

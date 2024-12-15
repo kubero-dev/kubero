@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/anse-app/anse"
-        kubero.dev/template.categories: '["chat", "chatbot", "ai"]'
+        kubero.dev/template.categories: '["communication", "ai"]'
         kubero.dev/template.title: "Anse"
         kubero.dev/template.website: "https://anse.app"
     labels:

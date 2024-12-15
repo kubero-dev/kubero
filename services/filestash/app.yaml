@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/photo.jpg","https://raw.githubusercontent.com/mickael-kerjean/filestash_images/master/.assets/navigation.gif"]'
     kubero.dev/template.source: https://github.com/mickael-kerjean/filestash
-    kubero.dev/template.categories: '["monitoring"]'
+    kubero.dev/template.categories: '["work", "development"]'
     kubero.dev/template.title: Filestash
     kubero.dev/template.website: https://www.filestash.app/
   labels:

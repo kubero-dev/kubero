@@ -2,28 +2,19 @@ apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
   annotations:
-    description: Atuin replaces your existing shell history with a SQLite database,
-      and records additional context for your commands.
-    documentation: ''
-    icon: avatars.githubusercontent.com/u/122059230?s=200&v=4
-    installation-message: 'Make sure you have selected the correct storageclass for
-      the database. If you are unsure, you can check the available storage classes
-      by running the following command: ```bash kubectl get storageclass ``` '
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Atuin replaces your existing shell history with
       a SQLite database, and records additional context for your commands.
     kubero.dev/template.icon: https://avatars.githubusercontent.com/u/122059230?s=200&v=4
-    kubero.dev/template.installation: ''
+    kubero.dev/template.installation: 'Make sure you have selected the correct storageclass for
+      the database. If you are unsure, you can check the available storage classes
+      by running the following command: ```bash kubectl get storageclass ``` '
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif"]'
     kubero.dev/template.source: https://github.com/atuinsh/atuin
-    kubero.dev/template.categories: '["administration"]'
+    kubero.dev/template.categories: '["development", "utilities"]'
     kubero.dev/template.title: Atuin
     kubero.dev/template.website: https://atuin.sh/
-    screenshots: '- https://raw.githubusercontent.com/atuinsh/atuin/main/demo.gif '
-    source: github.com/atuinsh/atuin
-    tags: '- administration '
-    website: atuin.sh
   labels:
     manager: kubero
   name: atuin
