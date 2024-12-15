@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://i.ibb.co/L8YbNNc/dashy-demo2.gif"]'
     kubero.dev/template.source: https://github.com/Lissy93/dashy
-    kubero.dev/template.categories: '["dashboard", "utility"]'
+    kubero.dev/template.categories: '["dashboard", "utilities"]'
     kubero.dev/template.title: Dashy
     kubero.dev/template.website: https://dashy.to/
   name: dashy

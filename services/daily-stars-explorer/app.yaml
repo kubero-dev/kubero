@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://github.com/emanuelef/daily-stars-explorer/assets/48717/9402696a-0f23-445c-a4fe-29a10c18bc3e"]'
     kubero.dev/template.source: https://github.com/emanuelef/daily-stars-explorer
-    kubero.dev/template.categories: '["development", "utility"]'
+    kubero.dev/template.categories: '["development", "utilities"]'
     kubero.dev/template.title: Stars Explorer
     kubero.dev/template.website: https://github.com/emanuelef/daily-stars-explorer
   labels:

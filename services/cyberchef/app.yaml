@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/gchq/CyberChef
-    kubero.dev/template.categories: '["security", "development", "utility"]'
+    kubero.dev/template.categories: '["security", "development", "utilities"]'
     kubero.dev/template.title: CyberChef
     kubero.dev/template.website: https://github.com/gchq/CyberChef
   name: cyberchef

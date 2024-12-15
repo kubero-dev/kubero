@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/enchant97/note-mark/main/site/static/preview.webp"]'
     kubero.dev/template.source: https://github.com/enchant97/note-mark
-    kubero.dev/template.categories: '["productivity", "utility"]'
+    kubero.dev/template.categories: '["productivity", "utilities"]'
     kubero.dev/template.title: Note Mark
     kubero.dev/template.website: https://notemark.docs.enchantedcode.co.uk/
   labels:

@@ -10,7 +10,7 @@ metadata:
     kubero.dev/template.links: 'null'
     kubero.dev/template.screenshots: 'null'
     kubero.dev/template.source: https://github.com/thomiceli/opengist
-    kubero.dev/template.categories: '["productivity", "utility"]'
+    kubero.dev/template.categories: '["productivity", "utilities"]'
     kubero.dev/template.title: opengist
     kubero.dev/template.website: https://github.com/thomiceli/opengist
   name: opengist
