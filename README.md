@@ -82,7 +82,7 @@ Basically *everything* that can be packaged in a single container can be deploye
 
 \* Ships with the Kubero Operator
 
-## 100+ Application templates (similar to Heroku Buttons)
+## 125+ Application templates (similar to Heroku Buttons)
 - WordPress
 - Grafana
 - Bitwarden
@@ -96,7 +96,7 @@ Check out the full [list here](https://www.kubero.dev/templates/) or submit your
 Kubero is Kubernetes native and runs with two containers on any Kubernetes instance (kubero-ui and Operator). All data is stored on your Kubernetes etcd without an extra database.
 
 
-![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/img/kubero-concept.png))
+![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/img/kubero-concept.png)
 
 ## Quickstart
 **1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a>** (MacOS, Linux, Windows)<p>
