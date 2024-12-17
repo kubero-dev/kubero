@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: screego
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Screen sharing for developers"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/72201776"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/screego/server"
+        kubero.dev/template.categories: '["collaboration", "work", "development"]'
+        kubero.dev/template.title: "Screego"
+        kubero.dev/template.website: "https://screego.net"
+    labels:
+        manager: kubero
+spec:
+    name: screego
+    deploymentstrategy: docker
+    envVars:
+        - name: SCREEGO_EXTERNAL_IP
+          value: 127.0.0.1
+        - name: SCREEGO_SECRET
+          value: somerandomsecret
+        - name: SCREEGO_SESSION_TIMEOUT_SECONDS
+          value: "600"
+        - name: SCREEGO_PROMETHEUS
+          value: "false"
+        - name: SCREEGO_LOG_LEVEL
+          value: info
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "5050"
+        pullPolicy: Always
+        repository: ghcr.io/screego/server
+        tag: "1"
