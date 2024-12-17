@@ -1,0 +1,140 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: paperless-ngx
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A community-supported supercharged version of paperless: scan, index and archive all your physical documents"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/99562962"
+        kubero.dev/template.installation: "run `python3 manage.py createsuperuser` from within the container to create an admin user"
+        kubero.dev/template.links: '["https://docs.paperless-ngx.com/setup/#docker"]'
+        kubero.dev/template.screenshots: '["https://docs.paperless-ngx.com/assets/screenshots/dashboard.png", "https://docs.paperless-ngx.com/assets/screenshots/documents-largecards.png"]'
+        kubero.dev/template.source: "https://github.com/paperless-ngx/paperless-ngx"
+        kubero.dev/template.categories: '["productivity", "work", "utilities"]'
+        kubero.dev/template.title: "Paperless-NGX PostgreSQL"
+        kubero.dev/template.website: "https://docs.paperless-ngx.com/"
+    labels:
+        manager: kubero
+spec:
+    name: paperless-ngx
+    deploymentstrategy: docker
+    envVars:
+        - name: PAPERLESS_SECRET_KEY
+          value: 70zcjuy9cy9NcIrj++eK2FR0E/Kdb3d3VZhRw8UmDSg=
+        - name: PAPERLESS_REDIS
+          value: redis://:paperless@paperless-ngx-redis-master:6379
+        - name: PAPERLESS_URL
+          value: https://paperless-ngx.localhost
+        - name: PAPERLESS_DBHOST
+          value: paperless-ngx-postgresql
+        - name: PAPERLESS_DBNAME
+          value: paperless
+        - name: PAPERLESS_DBPORT
+          value: "5432"
+        - name: PAPERLESS_DBUSER
+          value: paperless
+        - name: PAPERLESS_DBPASS
+          value: paperless
+        - name: PAPERLESS_ADMIN_USER
+          value: administrator
+        - name: PAPERLESS_ADMIN_MAIL
+          value: admin@example.com
+        - name: PAPERLESS_ADMIN_PASSWORD
+          value: administrator
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /usr/src/paperless/export
+          name: paperless-export-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /usr/src/paperless/consume
+          name: paperless-consume-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /usr/src/paperless/media
+          name: paperless-media-volume
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /usr/src/paperless/data
+          name: paperless-data-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: paperless-ngx-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: paperless
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.5
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: paperless-ngx-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: paperless
+                                      password: paperless
+                                      postgresPassword: paperless
+                                      username: paperless
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8000"
+        pullPolicy: Always
+        repository: ghcr.io/paperless-ngx/paperless-ngx
+        tag: latest
