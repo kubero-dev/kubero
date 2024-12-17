@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: grav
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Modern, fast and easy Flat-File CMS powered by PHP, Markdown, Twig, and Symfony"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/8237355"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/getgrav/grav/"
+        kubero.dev/template.categories: '["cms"]'
+        kubero.dev/template.title: "Grav"
+        kubero.dev/template.website: "https://getgrav.org/"
+    labels:
+        manager: kubero
+spec:
+    name: grav
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /config
+          name: grav-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: lscr.io/linuxserver/grav
+        tag: latest
