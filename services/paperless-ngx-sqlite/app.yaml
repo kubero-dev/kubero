@@ -1,7 +1,7 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: paperless-ngx
+    name: paperless-ngx-sqlite
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "A community-supported supercharged version of paperless: scan, index and archive all your physical documents"
@@ -11,7 +11,7 @@ metadata:
         kubero.dev/template.screenshots: '["https://docs.paperless-ngx.com/assets/screenshots/dashboard.png", "https://docs.paperless-ngx.com/assets/screenshots/documents-largecards.png"]'
         kubero.dev/template.source: "https://github.com/paperless-ngx/paperless-ngx"
         kubero.dev/template.categories: '["productivity", "work", "utilities"]'
-        kubero.dev/template.title: "Paperless-NGX"
+        kubero.dev/template.title: "Paperless-NGX SQLite"
         kubero.dev/template.website: "https://docs.paperless-ngx.com/"
     labels:
         manager: kubero
