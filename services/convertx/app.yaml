@@ -1,0 +1,41 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: convertx
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Self-hosted online file converter. Supports 1000+ formats"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/18604702"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/C4illin/ConvertX"
+        kubero.dev/template.categories: '["media", "utilities"]'
+        kubero.dev/template.title: "ConvertX"
+        kubero.dev/template.website: "https://github.com/C4illin/ConvertX"
+    labels:
+        manager: kubero
+spec:
+    name: convertx
+    deploymentstrategy: docker
+    envVars:
+        - name: JWT_SECRET
+          value: aLongAndSecretStringUsedToSignTheJSONWebToken1234
+        - name: ACCOUNT_REGISTRATION
+          value: "false"
+        - name: ALLOW_UNAUTHENTICATED
+          value: "true"
+        - name: AUTO_DELETE_EVERY_N_HOURS
+          value: "24"
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/c4illin/convertx
+        tag: latest
