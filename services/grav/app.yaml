@@ -9,7 +9,7 @@ metadata:
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://github.com/getgrav/grav/"
+        kubero.dev/template.source: "https://github.com/getgrav/grav"
         kubero.dev/template.categories: '["cms"]'
         kubero.dev/template.title: "Grav"
         kubero.dev/template.website: "https://getgrav.org/"
