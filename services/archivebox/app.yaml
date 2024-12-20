@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://github-production-user-asset-6210df.s3.amazonaws.com/511499/294289510-e8e0b6f8-8fdf-4b7f-8124-c10d8699bdb2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241220%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241220T155851Z&X-Amz-Expires=300&X-Amz-Signature=9d8be033a8c15bfbea945d4e60dd54b54e569576c014fd87b5e91603906b448d&X-Amz-SignedHeaders=host"]'
         kubero.dev/template.source: "https://github.com/ArchiveBox/ArchiveBox"
-        kubero.dev/template.tags: '["utility","work"]'
+        kubero.dev/template.categories: '["utility","work"]'
         kubero.dev/template.title: "Archivebox"
         kubero.dev/template.website: "https://archivebox.io/"
     labels:
