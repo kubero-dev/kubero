@@ -1,0 +1,55 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: archivebox
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "ArchiveBox is a powerful, self-hosted internet archiving solution to collect, save, and view websites offline."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/74894248"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://github-production-user-asset-6210df.s3.amazonaws.com/511499/294289510-e8e0b6f8-8fdf-4b7f-8124-c10d8699bdb2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20241220%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20241220T155851Z&X-Amz-Expires=300&X-Amz-Signature=9d8be033a8c15bfbea945d4e60dd54b54e569576c014fd87b5e91603906b448d&X-Amz-SignedHeaders=host"]'
+        kubero.dev/template.source: "https://github.com/ArchiveBox/ArchiveBox"
+        kubero.dev/template.tags: '["utility","work"]'
+        kubero.dev/template.title: "Archivebox"
+        kubero.dev/template.website: "https://archivebox.io/"
+    labels:
+        manager: kubero
+spec:
+    name: archivebox
+    deploymentstrategy: docker
+    envVars:
+        - name: ADMIN_USERNAME
+          value: admin
+        - name: ADMIN_PASSWORD
+          value: random24
+        - name: CSRF_TRUSTED_ORIGINS
+          value: archivebox.localhost
+        - name: ALLOWED_HOSTS
+          value: "*"
+        - name: PUBLIC_INDEX
+          value: "True"
+        - name: PUBLIC_SNAPSHOTS
+          value: "True"
+        - name: PUBLIC_ADD_VIEW
+          value: "False"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /data
+          name: arvicebox-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8000"
+        pullPolicy: Always
+        repository: archivebox/archivebox
+        tag: latest
