@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: screen-sharing
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Share your screen with one simple room code. No downloads or sign-ups required."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/6596480"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/tonghohin/screen-sharing"
+        kubero.dev/template.categories: '["communication", "work"]'
+        kubero.dev/template.title: "Screen Sharing"
+        kubero.dev/template.website: "https://share-your-screen.vercel.app/"
+    labels:
+        manager: kubero
+spec:
+    name: screen-sharing
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/tonghohin/screen-sharing
+        tag: latest
