@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: web-check
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "All-in-one OSINT tool for analysing any website web"
+        kubero.dev/template.icon: "https://camo.githubusercontent.com/e081ebebf2ef1dbe9ecffa081063db7c9f696e5913d75699f7d2968a186d0d72/68747470733a2f2f692e6962622e636f2f7131675a4e32702f7765622d636865636b2d6c6f676f2e706e67"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/5848c091c38749d187599505b7c2e1c9e4689dbc93e9c438ed785528da891d49/68747470733a2f2f692e6962622e636f2f72306a584e36732f7765622d636865636b2e706e67"]'
+        kubero.dev/template.source: "https://github.com/Lissy93/web-check"
+        kubero.dev/template.categories: '["security", "monitoring", "web"]'
+        kubero.dev/template.title: "web-check"
+        kubero.dev/template.website: "https://web-check.xyz/"
+    labels:
+        manager: kubero
+spec:
+    name: web-check
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: lissy93/web-check
+        tag: latest
