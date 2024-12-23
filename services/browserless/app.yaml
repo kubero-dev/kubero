@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '["https://docs.browserless.io/"]'
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/browserless/browserless/main/assets/debugger.png"]'
         kubero.dev/template.source: "https://github.com/browserless/browserless/"
-        kubero.dev/template.tags: '[ "testing", "development" ]'
+        kubero.dev/template.categories: '[ "testing", "development" ]'
         kubero.dev/template.title: "browserless"
         kubero.dev/template.website: "https://browserless.io/"
     labels:
