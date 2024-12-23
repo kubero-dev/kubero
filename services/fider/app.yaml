@@ -1,0 +1,77 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: fider
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Open platform to collect and prioritize feedback"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/25187431"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://fider.io/_next/image?url=%2Fimages%2Fscreenshot%2Fhome2.png&w=1920&q=75"]'
+        kubero.dev/template.source: "https://github.com/getfider/fider"
+        kubero.dev/template.categories: '["collaboration","productivity"]'
+        kubero.dev/template.title: "Fider"
+        kubero.dev/template.website: "https://fider.io"
+    labels:
+        manager: kubero
+spec:
+    name: fider
+    deploymentstrategy: docker
+    envVars:
+        - name: BASE_URL
+          value: https://fider.localhost
+        - name: DATABASE_URL
+          value: postgres://fider:fider@fider-postgresql/fider?sslmode=disable
+        - name: JWT_SECRET
+          value: random64
+        - name: EMAIL_NOREPLY
+          value: noreply@example.com
+        - name: EMAIL_SMTP_HOST
+          value: smtp.yourdomain.com
+        - name: EMAIL_SMTP_PORT
+          value: "587"
+        - name: EMAIL_SMTP_USERNAME
+          value: user@yourdomain.com
+        - name: EMAIL_SMTP_PASSWORD
+          value: s0m3p4ssw0rd
+        - name: EMAIL_SMTP_ENABLE_STARTTLS
+          value: "true"
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: fider-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: fider
+                                      password: fider
+                                      postgresPassword: fider
+                                      username: fider
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: getfider/fider
+        tag: stable
