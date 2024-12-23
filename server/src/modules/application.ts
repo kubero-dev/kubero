@@ -229,7 +229,7 @@ export class KubectlTemplate implements IKubectlTemplate{
                 'kubero.dev/template.links': '[]',
                 'kubero.dev/template.screenshots': '[]',
                 'kubero.dev/template.source': '',
-                'kubero.dev/template.tags': '[]',
+                'kubero.dev/template.categories': '[]',
                 'kubero.dev/template.title': '',
                 'kubero.dev/template.website': ''
             },
