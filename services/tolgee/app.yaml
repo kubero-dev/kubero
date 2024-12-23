@@ -1,0 +1,83 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: tolgee
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Developer & translator friendly web-based localization platform"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/78480209"
+        kubero.dev/template.installation: "Make sure you have enough RAM and CPU resources available.The JWT secret is a long string of random characters. Please generate a new one for your installation."
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/tolgee/tolgee-platform"
+        kubero.dev/template.categories: '["work","development","collaboration"]'
+        kubero.dev/template.title: "Tolgee"
+        kubero.dev/template.website: "https://tolgee.io/"
+    labels:
+        manager: kubero
+spec:
+    name: tolgee
+    deploymentstrategy: docker
+    envVars:
+        - name: TOLGEE_AUTHENTICATION_ENABLED
+          value: "true"
+        - name: TOLGEE_AUTHENTICATION_INITIAL_PASSWORD
+          value: random24
+        - name: TOLGEE_AUTHENTICATION_INITIAL_USERNAME
+          value: admin
+        - name: TOLGEE_AUTHENTICATION_JWT_SECRET
+          value: e106753fee68e054223a008638516ac00df6af5a651e74d1e003791e403292b14ae5d6afa76a3589baa62d57fa89384edcf81ddf0f0f824854ddd09d1f0dbbfb688f48f50f49f9d0277f856ff3b56fcd5cc216c96e654afbe1eefa4fb1aa2163a0e694a4683759d9ae48973ba30bbe493a67f6a328186aeb3564075785306fec7cae7166f8d7cd0267a1c49304ac23924d49a5c67fcdb3c7a8c091f713d366f6bcf0fd811990b3f96db59227c5af7782643a3aa30dc8989d378fa68f65dbac5a2c425539e1c989defe72a33a0f0b194b2aca03e693cd98af23adb4a10be34941bad0e71634021450b8a503f1353911b42fd0732cf811adb4e65d83a0894feb67
+        - name: TOLGEE_POSTGRES_AUTOSTART_ENABLED
+          value: "false"
+        - name: SPRING_DATASOURCE_URL
+          value: jdbc:postgresql://tolgee-postgresql:5432/tolgee
+        - name: SPRING_DATASOURCE_USERNAME
+          value: tolgee
+        - name: SPRING_DATASOURCE_PASSWORD
+          value: tolgee
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /data
+          name: tolgee-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: tolgee-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: tolgee
+                                      password: tolgee
+                                      postgresPassword: tolgee
+                                      username: tolgee
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: tolgee/tolgee
+        tag: latest
