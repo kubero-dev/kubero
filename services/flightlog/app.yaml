@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/perdian/flightlog/main/docs/screenshots/home.png"]'
         kubero.dev/template.source: "https://github.com/perdian/flightlog"
-        kubero.dev/template.tags: '["management", "log"]'
+        kubero.dev/template.categories: '["management", "log"]'
         kubero.dev/template.title: "Flightlog"
         kubero.dev/template.website: "https://github.com/perdian/flightlog"
     labels:
