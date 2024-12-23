@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/adminerevo/adminerevo"
-        kubero.dev/template.tags: '["database", "administration", "development"]'
+        kubero.dev/template.categories: '["database", "administration", "development"]'
         kubero.dev/template.title: "AdminerEvo"
         kubero.dev/template.website: "https://docs.adminerevo.org/"
     labels:
