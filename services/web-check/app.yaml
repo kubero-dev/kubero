@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://camo.githubusercontent.com/5848c091c38749d187599505b7c2e1c9e4689dbc93e9c438ed785528da891d49/68747470733a2f2f692e6962622e636f2f72306a584e36732f7765622d636865636b2e706e67"]'
         kubero.dev/template.source: "https://github.com/Lissy93/web-check"
-        kubero.dev/template.tags: '["security", "monitoring", "web"]'
+        kubero.dev/template.categories: '["security", "monitoring", "web"]'
         kubero.dev/template.title: "web-check"
         kubero.dev/template.website: "https://web-check.xyz/"
     labels:
