@@ -1,0 +1,37 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: penpot-exporter
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Penpot is a open-source design tool for design and code collaboration."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/30179644"
+        kubero.dev/template.installation: "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend"
+        kubero.dev/template.links: '["https://community.penpot.app/"]'
+        kubero.dev/template.screenshots: '["https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png", "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"]'
+        kubero.dev/template.source: "https://github.com/penpot/penpot/"
+        kubero.dev/template.categories: '["work","collaboration"]'
+        kubero.dev/template.title: "Penpot (Exporter)"
+        kubero.dev/template.website: "https://penpot.app/"
+    labels:
+        manager: kubero
+spec:
+    name: penpot-exporter
+    deploymentstrategy: docker
+    envVars:
+        - name: PENPOT_PUBLIC_URI
+          value: penpot-frontend
+        - name: PENPOT_REDIS_URI
+          value: redis://penpot@penpot-backend-redis-master:6379/0?verifyPeer=NONE
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 0
+    worker:
+        replicaCount: 1
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: penpotapp/exporter
+        tag: latest
