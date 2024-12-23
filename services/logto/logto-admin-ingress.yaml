@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+  name: logto-kuberoapp-admin
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: admin.logto.localhost
+    http:
+      paths:
+      - backend:
+          service:
+            name: logto-kuberoapp-admin
+            port:
+              number: 81
+        path: /
+        pathType: ImplementationSpecific
+  tls:
+  - secretName: logto-tls
+status:
+  loadBalancer:
+    ingress:
+    - hostname: localhost
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logto-kuberoapp-admin
+spec:
+  ports:
+  - name: http
+    port: 81
+    protocol: TCP
+    targetPort: 3002
+  selector:
+    app.kubernetes.io/instance: logto-web
+    app.kubernetes.io/name: kuberoapp
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
