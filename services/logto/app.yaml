@@ -11,7 +11,7 @@ metadata:
         kubero.dev/template.links: '["https://docs.logto.io/"]'
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/logto-io/logto"
-        kubero.dev/template.tags: '["identity", "access", "management"]'
+        kubero.dev/template.categories: '["identity", "access", "management"]'
         kubero.dev/template.title: "logto"
         kubero.dev/template.website: "https://logto.io/"
     labels:
