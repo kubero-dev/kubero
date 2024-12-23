@@ -2,8 +2,27 @@
     <v-container>
 
         <v-row class="justify-space-between">
-            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
+            <v-col cols="6" sm="12" md="12" lg="6" xl="6">
                 <h1>Templates</h1>
+            </v-col>
+            <v-col cols="3" sm="6" md="3">
+                <v-text-field 
+                    label="Search"
+                    v-model="search"
+                    color="secondary"
+                    @input="searchTemplates"
+                    density="comfortable"
+                ></v-text-field>
+            </v-col>
+            <v-col cols="3" sm="6" md="3">
+                <v-select
+                    :items="categories"
+                    color="secondary"
+                    density="comfortable"
+                    @update:modelValue="filterByCategory"
+                    label="Category"
+                    :v-model="selectedCategory"
+                ></v-select>
             </v-col>
         </v-row>
         <v-row>
@@ -19,7 +38,7 @@
         </v-row>
         <v-row>
             <v-col cols="12" sm="12" md="3"
-            v-for="template in services.services" :key="template.name">
+            v-for="template in showedTemplates.services" :key="template.name">
                 <v-card
                     style="padding-bottom: 40px;"
                     height="320px"
@@ -123,6 +142,7 @@
 
 <script lang="ts">
 import axios from "axios";
+import { forEach } from "lodash";
 import { defineComponent } from 'vue'
 
 type Pipeline = {
@@ -139,10 +159,6 @@ type Pipeline = {
     }[]
 }
 
-type PipelineList = {
-    items: Pipeline[]
-}
-
 type Template = {
     name: string,
     description: string,
@@ -154,6 +170,13 @@ type Template = {
     screenshots: string[],
     dirname: string,
     template: string,
+    addons: string[],
+    language: string,
+    categories: string[],
+    created_at: string,
+    last_updated: string,
+    last_pushed: string,
+    status: string,
 }
 
 type Templates = {
@@ -173,8 +196,13 @@ type Catalog = {
     }
 }
 
-type Services = {
+type TemplatesList = {
     services: Template[],
+    categories: Object,
+    // categories: {
+    //     title: string,
+    //     count: number,
+    // }[]
 }
 
 export default defineComponent({
@@ -189,7 +217,8 @@ export default defineComponent({
         phase: '',
         pipelines: [] as string[],
         phases: {} as { [key: string]: string[] },
-        services: {} as Services,
+        templatesList: {} as TemplatesList,
+        showedTemplates: {} as TemplatesList,
         dialog: false,
         clickedTemplate: {} as Template,
         catalogId: 0,
@@ -198,6 +227,14 @@ export default defineComponent({
             catalogs: [] as Catalog[],
         },
         catalogTabs: [] as string[],
+        categories: [
+            { title: 'All', value: 'All' },
+        ],
+        search: '',
+        selectedCategory: {
+            title: 'All',
+            value: 'All',
+        },
     }),
     components: {
     },
@@ -224,7 +261,7 @@ export default defineComponent({
             const self = this;
             axios.get(`/api/config/catalogs`)
             .then(response => {
-                self.templates = response.data;
+                self.templates = response.data as Templates;
                 if (self.templates.catalogs.length > 0 && self.templates.enabled == true) {
                     self.loadTemplates(self.templates.catalogs[catalogId].index.url)
                 }
@@ -234,11 +271,34 @@ export default defineComponent({
                 console.log(error);
             });
         },
+        filterByCategory(selectedCategory: string) {
+            console.log(selectedCategory);
+            if (selectedCategory === 'All') {
+                this.showedTemplates.services = this.templatesList.services;
+            } else {
+                this.showedTemplates.services = this.templatesList.services.filter((template) => {
+                    return template.categories.includes(selectedCategory);
+                });
+            }
+        },
+        searchTemplates() {
+            if (this.search !== '') {
+                this.showedTemplates.services = this.templatesList.services.filter((template) => {
+                    return template.name.toLowerCase().includes(this.search.toLowerCase());
+                });
+            } else {
+                this.showedTemplates.services = this.templatesList.services;
+            }
+        },
         async loadTemplates(indexUrl: string) {
             const self = this;
             axios.get(indexUrl)
             .then(response => {
-                self.services = response.data;
+                self.templatesList = response.data;
+                forEach(self.templatesList.categories, (value, key) => {
+                    self.categories.push({ title: key + ' (' + value + ')', value: key });
+                });
+                self.searchTemplates();
             })
             .catch(error => {
                 console.log(error);

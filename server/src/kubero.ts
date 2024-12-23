@@ -944,7 +944,8 @@ export class Kubero {
                 }
             }
         } catch (error) {
-            console.log('Error: getSleepEnabled: ', error)
+            console.log('❌ getSleepEnabled: could not check for Zeropod')
+            //console.log(error)
             return false
         }
         

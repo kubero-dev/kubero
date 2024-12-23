@@ -10,13 +10,14 @@
             <v-col class="text-right">
                 <v-btn
                 elevation="2"
+                :disabled="kubero.kubernetesVersion == 'unknown'"
                 color="primary"
                 :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
                 >New Pipeline</v-btn>
             </v-col>
         </v-row>
 
-        <v-row v-if="pipelines && pipelines.length < 1" class="delay-visible-enter-active">
+        <v-row v-if="(pipelines && pipelines.length < 1) && kubero.kubernetesVersion != 'unknown'" class="delay-visible-enter-active">
             <v-alert
                 color="info"
                 icon="mdi-star-outline"
@@ -42,6 +43,22 @@
                 :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
                 >Create your first pipeline</v-btn>
             </v-col>
+        </v-row>
+        <v-row v-if="kubero.kubernetesVersion == 'unknown'">
+            <v-alert
+                type="error"
+                prominent
+                title="Kubernetes Connection Error"
+                variant="tonal"
+                >
+                <p>Kubero can't reach your kubernetes cluster. Please proceed with the setup to continue.</p>
+
+                <v-btn
+                color="success"
+                class="mt-4"
+                :to="{ name: 'Setup', params: { step: '1' }}"
+                >Start Setup</v-btn>
+            </v-alert>
         </v-row>
 
         <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
@@ -113,6 +130,7 @@ import axios from "axios";
 import { ref, defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
 import { useKuberoStore } from '../../stores/kubero'
+import { mapState } from 'pinia'
 import Swal from 'sweetalert2';
 
 type Pipeline = {
@@ -172,6 +190,9 @@ export default defineComponent({
             }
         ],
     }},
+    computed: {
+      ...mapState(useKuberoStore, ['kubero']),
+    },
     methods: {
       async loadPipelinesList() {
         const self = this;
