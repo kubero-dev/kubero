@@ -71,4 +71,3 @@ spec:
             nginx.ingress.kubernetes.io/cors-allow-origin: '*'
             nginx.ingress.kubernetes.io/cors-expose-headers: '*'
             nginx.ingress.kubernetes.io/enable-cors: "true"
-
