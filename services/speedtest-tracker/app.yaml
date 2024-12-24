@@ -1,0 +1,63 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: speedtest-tracker
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Speedtest Tracker is a self-hosted application that monitors the performance and uptime of your internet connection."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/speedtest-tracker-logo.png"
+        kubero.dev/template.installation: "Generate an APP_KEY and set the APP_URL environment variable 
+          to the domain you will be hosting the application on. 
+          Use this site to generate the App Key : https://generate-random.org/laravel-key-generator?count=1"
+        kubero.dev/template.links: '["https://docs.speedtest-tracker.dev/"]'
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/alexjustesen/speedtest-tracker"
+        kubero.dev/template.categories: '["monitoring", "utilities"]'
+        kubero.dev/template.title: "Speedtest Tracker"
+        kubero.dev/template.website: "https://speedtest-tracker.dev/"
+    labels:
+        manager: kubero
+spec:
+    name: speedtest-tracker
+    deploymentstrategy: docker
+    envVars:
+        - name: APP_KEY
+          value: base64:dmhkaGltaGF0NXdpcmIyeDU2Y3RxNzRzbXZqZzBuamw=
+        - name: DB_CONNECTION
+          value: sqlite
+        - name: APP_URL
+          value: https://speedtest-tracker.localhost
+        - name: APP_NAME
+          value: Speedtest Tracker
+        - name: APP_TIMEZONE
+          value: UTC
+        - name: APP_LOCALE
+          value: en
+        - name: APP_FALLBACK_LOCALE
+          value: en
+        - name: BCRYPT_ROUNDS
+          value: "12"
+        - name: APP_FAKER_LOCALE
+          value: en_US
+        - name: PRUNE_RESULTS_OLDER_THAN
+          value: "0"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /config
+          name: speedtest-tracker-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: lscr.io/linuxserver/speedtest-tracker
+        tag: latest
