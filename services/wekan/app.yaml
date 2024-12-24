@@ -1,0 +1,89 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: wekan
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64"]'
+        kubero.dev/template.description: "The Open Source kanban board"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/11725037"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://wekan.github.io/wekan-dark-mode.png"]'
+        kubero.dev/template.source: "https://github.com/wekan/wekan"
+        kubero.dev/template.categories: '["work", "development"]'
+        kubero.dev/template.title: "Wekan"
+        kubero.dev/template.website: "https://wekan.github.io/"
+    labels:
+        manager: kubero
+spec:
+    name: wekan
+    deploymentstrategy: docker
+    envVars:
+        - name: WRITABLE_PATH
+          value: /data
+        - name: MONGO_URL
+          value: mongodb://wekan:wekan@wekan-mongodb:27017/wekan
+        - name: ROOT_URL
+          value: https://wekan.localhost
+        - name: WITH_API
+          value: "true"
+        - name: RICHER_CARD_COMMENT_EDITOR
+          value: "false"
+        - name: CARD_OPENED_WEBHOOK_ENABLED
+          value: "false"
+        - name: BIGEVENTS_PATTERN
+          value: NONE
+        - name: BROWSER_POLICY_ENABLED
+          value: "true"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: WRITABLE_PATH
+          name: wekan-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: MongoDB
+          env: []
+          icon: /img/addons/mongo.svg
+          id: kubero-operator
+          kind: KuberoMongoDB
+          resourceDefinitions:
+              KuberoMongoDB:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoMongoDB
+                  metadata:
+                      name: wekan-mongodb
+                  spec:
+                      mongodb:
+                          architecture: standalone
+                          auth:
+                              databases:
+                                  - wekan
+                              passwords:
+                                  - wekan
+                              rootPassword: wekan
+                              rootUser: root
+                              usernames:
+                                  - wekan
+                          directoryPerDB: false
+                          disableJavascript: false
+                          global:
+                              storageClass: standard
+                          persistence:
+                              size: 1Gi
+                          replicaCount: 1
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ghcr.io/wekan/wekan
+        tag: latest
