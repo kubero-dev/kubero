@@ -6,8 +6,8 @@ metadata:
         kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
         kubero.dev/template.description: "Speedtest Tracker is a self-hosted application that monitors the performance and uptime of your internet connection."
         kubero.dev/template.icon: "https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/speedtest-tracker-logo.png"
-        kubero.dev/template.installation: "Generate an APP_KEY and set the APP_URL environment variable 
-          to the domain you will be hosting the application on. 
+        kubero.dev/template.installation: "Generate an APP_KEY and set the APP_URL environment variable
+          to the domain you will be hosting the application on.
           Use this site to generate the App Key : https://generate-random.org/laravel-key-generator?count=1"
         kubero.dev/template.links: '["https://docs.speedtest-tracker.dev/"]'
         kubero.dev/template.screenshots: "[]"
