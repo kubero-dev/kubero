@@ -1,0 +1,47 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: doccano
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Open source annotation tool for machine learning practitioners."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/58067660"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://doccano.github.io/doccano/"
+        kubero.dev/template.categories: '["ai"]'
+        kubero.dev/template.title: "Doccano"
+        kubero.dev/template.website: "https://doccano.github.io/doccano/"
+    labels:
+        manager: kubero
+spec:
+    name: doccano
+    deploymentstrategy: docker
+    envVars:
+        - name: ADMIN_USERNAME
+          value: admin
+        - name: ADMIN_EMAIL
+          value: admin@example.com
+        - name: ADMIN_PASSWORD
+          value: random16
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /data
+          name: doccano-data-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8000"
+        pullPolicy: Always
+        repository: doccano/doccano
+        tag: latest
