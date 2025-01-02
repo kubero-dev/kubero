@@ -1,4 +1,4 @@
-![](docs/logo/kubero-logo-horizontal.png)
+![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/logo/kubero-logo-horizontal.png)
 
 ---
 
@@ -10,19 +10,12 @@
 
 Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on existing containers or from source code.
 
-![](docs/screenshots/createapp.gif)
+![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/screenshots/createapp.gif)
 
-More [Screenshots](https://docs.kubero.dev/screenshots) and a full video on
+More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 [YouTube](https://www.youtube.com/watch?v=kmqhddc6UlI)
 
-## How GitOps Works ([DEMO](https://demo.kubero.dev))
-1. Create a pipeline with the phases you need (review, test, stage, production)
-2. (optional) Connect the pipeline to your git repository (GitHub, Bitbucket, GiLab, Gitea, Gogs)
-3. Configure your apps with cronjobs and addons
-
-Kubero starts now building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
-
-## Features
+## Features ([DEMO](https://demo.kubero.dev))
 - Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
 - Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
 - Automatic **redeployment** of the app based on a push to a branch or tag
@@ -39,24 +32,12 @@ Kubero starts now building your app. Once the build is complete, Kubero will lau
 - Integrated **metrics and monitoring**
 - **SSO** with GitHub and Oauth2
 
-## Supported GIT repositories (hosted and self-hosted)
-- Gitea / Forgejo
-- Gogs
-- Github
-- Gitlab
-- Bitbucket
 
-## Tested languages/frameworks
-Basically *everything* that can be packaged in a single container can be deployed by Kubero.
+## Basic Concept 
+Kubero is Kubernetes native and runs with two containers on any Kubernetes instance (kubero-ui and Operator). All data is stored on your Kubernetes etcd without an extra database.
 
-- GoLang (including Hugo, gin-gonic)
-- Python (including Flask)
-- JavaScript/NodeJS
-- PHP (including Laravel)
-- Ruby (including Rails)
-- Static HTML
-- Rust (including Rocket)
-- ...
+
+![kubero  concept overview](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/docs/img/kubero-concept.png)
 
 ## Add-ons
 
@@ -82,7 +63,7 @@ Basically *everything* that can be packaged in a single container can be deploye
 
 \* Ships with the Kubero Operator
 
-## 125+ Application templates (similar to Heroku Buttons)
+## 139+ Application templates (similar to Heroku Buttons)
 - WordPress
 - Grafana
 - Bitwarden
@@ -91,12 +72,6 @@ Basically *everything* that can be packaged in a single container can be deploye
 - ...
 
 Check out the full [list here](https://www.kubero.dev/templates/) or submit your own app! [Read here](https://github.com/kubero-dev/kubero/blob/main/services/) how to do it.
-
-## Basic Concept 
-Kubero is Kubernetes native and runs with two containers on any Kubernetes instance (kubero-ui and Operator). All data is stored on your Kubernetes etcd without an extra database.
-
-
-![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/img/kubero-concept.png)
 
 ## Quickstart
 **1) Download and unpack the <a href="https://github.com/kubero-dev/kubero-cli/releases/latest">Kubero CLI</a>** (MacOS, Linux, Windows)<p>
@@ -123,8 +98,35 @@ You can bring your own existing cluster or create one with the kubero install on
 - Linode
 - Kind (local)
 
+
+## Supported GIT repositories (hosted and self-hosted)
+- Gitea / Forgejo
+- Gogs
+- Github
+- Gitlab
+- Bitbucket
+
+## Tested languages/frameworks
+Basically *everything* that can be packaged in a single container can be deployed by Kubero.
+
+- GoLang (including Hugo, gin-gonic)
+- Python (including Flask)
+- JavaScript/NodeJS
+- PHP (including Laravel)
+- Ruby (including Rails)
+- Static HTML
+- Rust (including Rocket)
+- ...
+
+## How GitOps Works 
+1. Create a pipeline with the phases you need (review, test, stage, production)
+2. (optional) Connect the pipeline to your git repository (GitHub, Bitbucket, GiLab, Gitea, Gogs)
+3. Configure your apps with cronjobs and addons
+
+Kubero starts now building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
+
 ## Documentation
-https://docs.kubero.dev/
+https://www.kubero.dev/docs
 
 ## Roadmap
 https://github.com/orgs/kubero-dev/projects/1/views/3
