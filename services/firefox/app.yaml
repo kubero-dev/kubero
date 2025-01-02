@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
         kubero.dev/template.source: "https://github.com/jlesage/docker-firefox"
-        kubero.dev/template.tags: '["security", "utility"]'
+        kubero.dev/template.categories: '["security", "utility"]'
         kubero.dev/template.title: "Firefox"
         kubero.dev/template.website: "https://www.mozilla.org/en-US/firefox/new/"
     labels:
