@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: gotenberg
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A developer-friendly API for converting numerous document formats into PDF files, and more!"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/66820499"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/gotenberg/gotenberg"
+        kubero.dev/template.categories: '["accessories"]'
+        kubero.dev/template.title: "Gotenberg"
+        kubero.dev/template.website: "https://gotenberg.dev/"
+    labels:
+        manager: kubero
+spec:
+    name: gotenberg
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 0
+    worker:
+        replicaCount: 1
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: gotenberg/gotenberg
+        tag: "8"
