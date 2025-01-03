@@ -1,0 +1,73 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: documenso
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8"]'
+        kubero.dev/template.description: "The Open Source DocuSign Alternative."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/127681099"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: '["https://docs.documenso.com/"]'
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/documenso/documenso"
+        kubero.dev/template.categories: '["security", "work", "productivity"]'
+        kubero.dev/template.title: "Documenso"
+        kubero.dev/template.website: "https://www.documenso.com/"
+    labels:
+        manager: kubero
+spec:
+    name: documenso
+    deploymentstrategy: docker
+    envVars:
+        - name: NEXTAUTH_URL
+          value: https://documenso.localhost
+        - name: NEXTAUTH_SECRET
+          value: random64
+        - name: NEXT_PRIVATE_ENCRYPTION_KEY
+          value: DYKf6hj9+o9hrcnpl/ELUaRjwg13VKPhReE7sjv08rGLy1SZGLpXBLkvjNWy8UK90E4le1+k9rRQNFGGuB83USHXJU45llBBpjqZctDXHAU=
+        - name: NEXT_PRIVATE_ENCRYPTION_SECONDARY_KEY
+          value: xFtITgOSSvu/bTTJ11G/czyXlvhF8txPhr2GwSTQUm/+m6YLIfrC/LTgHq2yFi9l+KBWN+Wx5YgRFoWOvdkePs5N31/1RBhx3/qApQ2lIbY=
+        - name: NEXT_PUBLIC_WEBAPP_URL
+          value: https://documenso.localhost
+        - name: NEXT_PRIVATE_DATABASE_URL
+          value: postgresql://documenso:documenso@documenso-postgresql/docusano
+        - name: NEXT_PRIVATE_DIRECT_DATABASE_URL
+          value: postgresql://documenso:documenso@documenso-postgresql/docusano
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: documenso-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: documenso
+                                      password: documenso
+                                      postgresPassword: documenso
+                                      username: documenso
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: documenso/documenso
+        tag: latest
