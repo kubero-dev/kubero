@@ -1,0 +1,120 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: penpot-backend
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Penpot is a open-source design tool for design and code collaboration."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/30179644"
+        kubero.dev/template.installation: "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend"
+        kubero.dev/template.links: '["https://community.penpot.app/"]'
+        kubero.dev/template.screenshots: '["https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png", "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"]'
+        kubero.dev/template.source: "https://github.com/penpot/penpot/"
+        kubero.dev/template.categories: '["work","collaboration"]'
+        kubero.dev/template.title: "Penpot (Backend)"
+        kubero.dev/template.website: "https://penpot.app/"
+    labels:
+        manager: kubero
+spec:
+    name: penpot-backend
+    deploymentstrategy: docker
+    envVars:
+        - name: PENPOT_SECRET_KEY
+          value: super-secret-devenv-key
+        - name: PENPOT_SMTP_ENABLED
+          value: "false"
+        - name: PENPOT_DATABASE_URI
+          value: postgresql://penpot-backend-postgresql/penpot
+        - name: PENPOT_REDIS_URI
+          value: redis://penpot@penpot-backend-redis-master:6379/0?verifyPeer=NONE
+        - name: PENPOT_TELEMETRY_ENABLED
+          value: "true"
+        - name: PENPOT_HTTP_SERVER_PORT
+          value: "6060"
+        - name: PENPOT_STORAGE_ASSETS_FS_DIRECTORY
+          value: /opt/data/assets
+        - name: PENPOT_ASSETS_STORAGE_BACKEND
+          value: assets-fs
+        - name: PENPOT_DATABASE_USERNAME
+          value: penpot
+        - name: PENPOT_DATABASE_PASSWORD
+          value: penpot
+        - name: PENPOT_EXPORTER_URI
+          value: http://penpot-exporter-kuberoapp
+        - name: PENPOT_BACKEND_URI
+          value: http://penpot-backend-kuberoapp
+        - name: PENPOT_PUBLIC_URI
+          value: https://penpot-frontend.localhost/
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /opt/data/assets
+          name: penpot-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: penpot-backend-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: penpot
+                                      password: penpot
+                                      postgresPassword: penpot
+                                      username: penpot
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.5
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: penpot-backend-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: penpot
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.5
+    web:
+        replicaCount: 0
+    worker:
+        replicaCount: 1
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: penpotapp/backend
+        tag: latest
