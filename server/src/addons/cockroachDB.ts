@@ -6,6 +6,7 @@ export class Cockroachdb extends Plugin implements IPlugin {
     public displayName = 'CockroachDB'
     public icon = '/img/addons/CockroachDB.svg'
     public install: string = 'kubectl create -f https://operatorhub.io/install/cockroachdb.yaml'
+    public install_olm: string = 'kubectl create -f https://operatorhub.io/install/cockroachdb.yaml'
     public url = 'https://artifacthub.io/packages/olm/community-operators/cockroachdb'
     public docs = [
         {
