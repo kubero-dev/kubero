@@ -9,7 +9,7 @@ metadata:
         kubero.dev/template.installation: "Make sure you have all three services running: penpot-backend, penpot-exporter, penpot-frontend"
         kubero.dev/template.links: '["https://community.penpot.app/"]'
         kubero.dev/template.screenshots: '["https://penpot.app/blog/content/images/size/w2000/2024/02/PenpotUI-flexlayout.png", "https://penpot.app/blog/content/images/size/w1000/2024/02/Penpot_workspace.png"]'
-        kubero.dev/template.source: "https://github.com/penpot/penpot/"
+        kubero.dev/template.source: "https://github.com/penpot/penpot"
         kubero.dev/template.categories: '["work","collaboration"]'
         kubero.dev/template.title: "Penpot (Backend)"
         kubero.dev/template.website: "https://penpot.app/"
