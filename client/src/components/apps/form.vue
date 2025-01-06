@@ -717,10 +717,12 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <!-- SERVICEACCOUNT ANNOTATIONS --> 
+      <!-- KUBERNETES --> 
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">ServiceAcccount Annotations</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Kubernetes</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
+
+          <h4 class="mb-5">Serviceaccount Annotation</h4>
           <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
             <v-col
               cols="12"
