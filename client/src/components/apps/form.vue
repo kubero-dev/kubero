@@ -4,7 +4,7 @@
       <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h2 v-if="app=='new'">
+            <h2 v-if="app=='new'" style="font-size: xxx-large">
                 Create a new App in {{ pipeline }}
             </h2>
             <h2 v-if="app!='new'">
