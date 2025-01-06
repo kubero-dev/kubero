@@ -68,7 +68,7 @@
                         <v-row>
                             <v-col cols="12" sm="12" md="5"  style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                                     <v-card-title>
-                                        <v-icon start size="small" :class=" (item.git.repository.admin == true) ? 'connected' : 'disconnected' "></v-icon>
+                                        <v-icon start size="small" :title="(item.git.repository.admin == true) ? 'Connected to a git repository' : 'Pipeline not connected to a git repository'">{{ (item.git.repository.admin == true) ? 'mdi-link' : 'mdi-link-off' }}</v-icon>
                                         <span class="text-h5">{{ item.name }}</span>
                                     </v-card-title>
                                     <v-card-text>
@@ -91,8 +91,8 @@
 
                             <v-col cols="12" sm="12" md="2">
                                 <v-btn
-                                elevation="2"
-                                fab
+                                elevation="0"
+                                vartiant="tonal"
                                 small
                                 class="ma-2"
                                 color="secondary"
@@ -103,8 +103,8 @@
                                     </v-icon>
                                 </v-btn>
                                 <v-btn
-                                elevation="2"
-                                fab
+                                vartiant="tonal"
+                                elevation="0"
                                 small
                                 class="ma-2"
                                 color="secondary"
