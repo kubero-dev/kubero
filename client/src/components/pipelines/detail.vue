@@ -4,11 +4,19 @@
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
     </v-container>
     <v-container :fluid="true">
-        <h1>{{ pipeline }}</h1>
+        <!--<h1>{{ pipeline }}</h1>-->
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
-                        <p><span class="text-uppercase">{{phase.name}}</span><br /><span class="caption">[{{phase.context}}]</span></p>
+                        <h4 class="text-uppercase ml-1">{{phase.name}}</h4>
+                        <v-chip
+                            class="ma-1"
+                            label
+                            size="small"
+                            >
+                            <v-icon icon="mdi-kubernetes" start></v-icon>
+                            {{phase.context}}
+                        </v-chip>
 
 
                         <Appcard v-for="app in phase.apps" :key="app.name"
@@ -28,6 +36,7 @@
                         :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
                         class="mt-5 navBG"
                         color="secondary"
+                        size="small"
                         style="margin-bottom: 5px;"
                         >
                         </v-btn>

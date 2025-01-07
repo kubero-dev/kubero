@@ -91,7 +91,7 @@
                     <v-btn
                     elevation="0"
                     vartiant="tonal"
-                    small
+                    size="small"
                     class="ma-2"
                     color="secondary"
                     @click="deletePipeline(item.name)"
@@ -103,7 +103,7 @@
                     <v-btn
                     elevation="0"
                     vartiant="tonal"
-                    small
+                    size="small"
                     class="ma-2"
                     color="secondary"
                     :to="{ name: 'Pipeline Form', params: { pipeline: item.name }}"
