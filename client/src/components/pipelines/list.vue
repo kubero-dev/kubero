@@ -58,67 +58,65 @@
             </v-alert>
         </v-row>
 
-        <v-row v-for="item in pipelines" :key="item.name" :id="item.name">
-            <v-col cols="12">
-                <v-card elevation="2" outlined color="cardBackground">
-                    <v-card-text>
-                        <v-row>
-                            <v-col cols="12" sm="12" md="5"  style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
-                                    <v-card-title>
-                                        <v-icon start size="small" :title="(item.git.repository.admin == true) ? 'Connected to a git repository' : 'Pipeline not connected to a git repository'">{{ (item.git.repository.admin == true) ? 'mdi-link' : 'mdi-link-off' }}</v-icon>
-                                        <span class="text-h5">{{ item.name }}</span>
-                                    </v-card-title>
-                                    <v-card-text>
-                                        <span>{{ item.git.repository.description }}</span>
-                                    </v-card-text>
-                            </v-col>
-                            <v-col cols="12" sm="12" md="5" style="padding: 26px; cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
-                                    <v-chip
-                                        v-for="phase in item.phases" :key="phase.name"
-                                        small
-                                        label
-                                        class="ma-1"
-                                        :color="phase.enabled ? 'green' : ''"
-                                        :text-color="phase.enabled  ? 'white' : ''"
-                                        >
-                                        <v-icon start v-if="phase.name.includes('review')" icon="mdi-eye-refresh-outline"></v-icon>
-                                        {{ phase.name }}
-                                    </v-chip>
-                            </v-col>
+        <div class="mt-5"></div>
+        <div v-for="item in pipelines" :key="item.name" :id="item.name">
+            <v-row class="my-0 row">
+                <v-col cols="12" sm="0" md="1"  style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
+                    <img :src="(item.git.repository.admin == true) ? '/img/icons/hexagon3.svg' : '/img/icons/hexagon3-empty-bold-tp.svg'" alt="Pipeline" width="40" height="40">
+                </v-col>
+                <v-col cols="12" sm="11" md="4"  style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
+                        <h3>
+                            <span class="text-h5">{{ item.name }}</span>
+                        </h3>
+                        <p v-if="item.git.repository.admin">
+                            <v-icon start size="small" >mdi-link</v-icon>
+                            <span>{{ item.git.repository.description }}</span>
+                        </p>
+                </v-col>
+                <v-col cols="12" sm="12" md="5" style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
+                        <v-chip
+                            v-for="phase in item.phases" :key="phase.name"
+                            small
+                            label
+                            class="ma-1"
+                            :color="phase.enabled ? 'green' : ''"
+                            :text-color="phase.enabled  ? 'white' : ''"
+                            >
+                            <v-icon start v-if="phase.name.includes('review')" icon="mdi-eye-refresh-outline"></v-icon>
+                            {{ phase.name }}
+                        </v-chip>
+                </v-col>
 
-                            <v-col cols="12" sm="12" md="2">
-                                <v-btn
-                                elevation="0"
-                                vartiant="tonal"
-                                small
-                                class="ma-2"
-                                color="secondary"
-                                @click="deletePipeline(item.name)"
-                                >
-                                    <v-icon color="primary">
-                                        mdi-delete
-                                    </v-icon>
-                                </v-btn>
-                                <v-btn
-                                vartiant="tonal"
-                                elevation="0"
-                                small
-                                class="ma-2"
-                                color="secondary"
-                                :to="{ name: 'Pipeline Form', params: { pipeline: item.name }}"
-                                >
-                                    <v-icon color="primary">
-                                        mdi-pencil
-                                    </v-icon>
-                                </v-btn>
-                            </v-col>
+                <v-col cols="12" sm="12" md="2">
+                    <v-btn
+                    elevation="0"
+                    vartiant="tonal"
+                    small
+                    class="ma-2"
+                    color="secondary"
+                    @click="deletePipeline(item.name)"
+                    >
+                        <v-icon color="primary">
+                            mdi-delete
+                        </v-icon>
+                    </v-btn>
+                    <v-btn
+                    elevation="0"
+                    vartiant="tonal"
+                    small
+                    class="ma-2"
+                    color="secondary"
+                    :to="{ name: 'Pipeline Form', params: { pipeline: item.name }}"
+                    >
+                        <v-icon color="primary">
+                            mdi-pencil
+                        </v-icon>
+                    </v-btn>
+                </v-col>
 
-                        </v-row>
-                    </v-card-text>
-
-                </v-card>
-            </v-col>
-        </v-row>
+            </v-row>
+            <v-divider></v-divider>
+        </div>
     </v-container>
 </template>
 
@@ -136,6 +134,8 @@ type Pipeline = {
         repository: {
             admin: boolean,
             description: string,
+            clone_url: string,
+            ssh_url: string,
         }
     },
     phases: {
@@ -181,7 +181,7 @@ export default defineComponent({
 
         breadcrumbItems: [
             {
-                title: 'Dashboard.-',
+                title: 'Dashboard.Pipelines',
                 disabled: true,
                 href: '/',
             }
@@ -271,6 +271,10 @@ export default defineComponent({
     width: 23px;
     visibility: hidden;
     content: "";
+}
+
+.row:hover {
+    background-color: rgb(var(--v-theme-cardBackground));
 }
 
 .disconnected{

@@ -447,7 +447,7 @@ export default defineComponent({
     return {
       breadcrumbItems: [
           {
-              title: 'dashboard.-',
+              title: 'Dashboard.Pipelines',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
