@@ -29,17 +29,18 @@
                                 :pipeline="pipeline"
                                 :pullrequest="pr" />
                         </span>
-
-                        <v-btn
-                        elevation="2"
-                        icon="mdi-plus"
-                        :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
-                        class="mt-5 navBG"
-                        color="secondary"
-                        size="small"
-                        style="margin-bottom: 5px;"
-                        >
-                        </v-btn>
+                        <div>
+                            <v-btn
+                            elevation="2"
+                            icon="mdi-plus"
+                            :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
+                            class="mt-5 navBG"
+                            color="secondary"
+                            size="small"
+                            style="margin-bottom: 5px;"
+                            >
+                            </v-btn>
+                        </div>
                     </v-col>
 
                 </v-row>
