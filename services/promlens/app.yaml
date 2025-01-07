@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: promlens
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64/v8", "linux/arm/v7"]'
+        kubero.dev/template.description: "The query builder, analyzer, and explainer for Prometheus PromQL"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/3380462"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/prometheus/promlens"
+        kubero.dev/template.categories: '["admin", "development"]'
+        kubero.dev/template.title: "PromLens"
+        kubero.dev/template.website: "https://promlens.com/"
+    labels:
+        manager: kubero
+spec:
+    name: promlens
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: prom/promlens
+        tag: main
