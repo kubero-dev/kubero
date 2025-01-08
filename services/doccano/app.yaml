@@ -9,7 +9,7 @@ metadata:
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: "[]"
-        kubero.dev/template.source: "https://doccano.github.io/doccano/"
+        kubero.dev/template.source: "https://doccano.github.io/doccano"
         kubero.dev/template.categories: '["ai"]'
         kubero.dev/template.title: "Doccano"
         kubero.dev/template.website: "https://doccano.github.io/doccano/"
