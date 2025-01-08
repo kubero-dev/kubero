@@ -4,12 +4,12 @@
       <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
         <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h2 v-if="app=='new'">
+            <h1 v-if="app=='new'" style="font-size: xxx-large">
                 Create a new App in {{ pipeline }}
-            </h2>
-            <h2 v-if="app!='new'">
+            </h1>
+            <h1 v-if="app!='new'" style="font-size: xxx-large">
                 Edit {{ app }} in {{ pipeline }}
-            </h2>
+            </h1>
             <p class="text-justify">
                 in phase {{ phase }}
             </p>
@@ -717,10 +717,12 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <!-- SERVICEACCOUNT ANNOTATIONS --> 
+      <!-- KUBERNETES --> 
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">ServiceAcccount Annotations</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Kubernetes</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
+
+          <h4 class="mb-5">Serviceaccount Annotation</h4>
           <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
             <v-col
               cols="12"

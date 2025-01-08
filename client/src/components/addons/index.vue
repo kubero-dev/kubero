@@ -49,6 +49,7 @@
                     style="top: -50px;"
                     color="primary"
                     dark
+                    elevation="0"
                     @click="openInstallDialog(addon)"
                     >
                     Installation

@@ -17,7 +17,12 @@
       ></v-progress-linear>
     </template>
 
-    <v-card-title>
+    <v-card-title class="d-flex align-center">
+      <img
+        :src="(app.deploymentstrategy != 'docker') ? '/img/icons/hexagon1.svg' : '/img/icons/hexagon1-empty-bold-tp.svg'"
+        alt="app icon"
+        style="width: 35px; height: 35px; margin-right: 10px;"
+      >
       <router-link :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}">{{ app.name }}</router-link>
     </v-card-title>
 

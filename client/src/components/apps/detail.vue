@@ -108,7 +108,7 @@ export default defineComponent({
             tab: null,
             breadcrumbItems: [
                 {
-                    title: 'dashboard.-',
+                    title: 'Dashboard.Pipelines',
                     disabled: false,
                     to: { name: 'Pipelines', params: {}}
                 },
