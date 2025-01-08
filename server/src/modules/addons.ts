@@ -17,6 +17,7 @@ import { KuberoKafka } from '../addons/kuberoKafka';
 import { KuberoMail } from '../addons/kuberoMail';
 import { KuberoRabbitMQ } from '../addons/kuberoRabbitMQ';
 import { Cockroachdb } from '../addons/cockroachDB';
+import { ClickHouseInstallation } from '../addons/clickhouse';
 import { MongoDB } from '../addons/mongoDB';
 import { Tenant } from '../addons/minio';
 import { Tunnel } from '../addons/cloudflare';
@@ -133,6 +134,9 @@ export class Addons {
 
         const minio = new Tenant(this.CRDList)
         this.addonsList.push(minio)
+
+        const clickhouse = new ClickHouseInstallation(this.CRDList)
+        this.addonsList.push(clickhouse)
     }
 
     public async getAddonsList(): Promise<IPlugin[]> {
