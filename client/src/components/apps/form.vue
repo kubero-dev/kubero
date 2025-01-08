@@ -173,12 +173,12 @@
               label="Strategy"
             >
               <v-radio
-                label="GitOps"
-                value="git"
-              ></v-radio>
-              <v-radio
                 label="Container Image"
                 value="docker"
+              ></v-radio>
+              <v-radio
+                label="From Source"
+                value="git"
               ></v-radio>
               <!--
               <v-radio
@@ -783,58 +783,58 @@
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
             <v-row v-for="(envvar, index) in envvars" :key="index">
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <v-text-field
-                v-model="envvar.name"
-                label="name"
-                :counter="60"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-text-field
-                v-model="envvar.value"
-                label="value"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="1"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-              @click="removeEnvLine(envvar.name)"
+              <v-col
+                cols="12"
+                md="5"
               >
-                  <v-icon dark >
-                      mdi-minus
-                  </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+                <v-text-field
+                  v-model="envvar.name"
+                  label="name"
+                  :counter="60"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="envvar.value"
+                  label="value"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="removeEnvLine(envvar.name)"
+                >
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
 
-          <v-row>
-            <v-col
-              cols="12"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-              @click="addEnvLine()"
+            <v-row>
+              <v-col
+                cols="12"
               >
-                  <v-icon dark >
-                      mdi-plus
-                  </v-icon>
-              </v-btn>
-           </v-col>
-          </v-row>
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="addEnvLine()"
+                >
+                    <v-icon dark >
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
 
           <v-row>
             <v-file-input prepend-icon="mdi-file" label="Drop or select .env file" show-size v-model="envFile" @change="handleFileInput"></v-file-input>
@@ -1291,7 +1291,7 @@ type GitRepo = {
   visibility: string,
 }
 
-type EnvVar = {
+export type EnvVar = {
   name: string,
   value: string,
 }
@@ -1420,7 +1420,7 @@ export default defineComponent({
         },
       } as Buildpack,
       imageTag: '',
-      deploymentstrategy: "git",
+      deploymentstrategy: "docker",
       buildstrategy: "plain",
       pipelineData: {
         domain: '',
@@ -1431,7 +1431,7 @@ export default defineComponent({
           repository: {} as GitRepo,
         },
         buildstrategy: 'plain',
-        deploymentstrategy: 'git',
+        deploymentstrategy: 'docker',
       },
       appname: '',
       resourceVersion: '',
