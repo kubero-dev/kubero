@@ -243,7 +243,9 @@ export interface IPipelinePhase {
     name: string;
     enabled: boolean;
     context: string;
-    apps: IApp[];
+    defaultEnvvars: {}[];
+    domain: string;
+    //apps: IApp[];
 }
 
 // TODO replace with default kubeclt Interface

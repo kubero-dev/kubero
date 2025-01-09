@@ -705,7 +705,7 @@ export class Kubero {
                 let appOptions:IApp = {
                     name: websaveTitle,
                     pipeline: pipelaneName,
-                    sleep: '600s', //TODO use config value
+                    sleep: 'disabled', //TODO use config value. This is BETA and should be disabled by default
                     gitrepo: pipeline.git.repository,
                     buildpack: pipeline.buildpack.name,
                     deploymentstrategy: pipeline.deploymentstrategy,
@@ -715,7 +715,7 @@ export class Kubero {
                     autodeploy: true,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
-                    envVars: [], //TODO use custom env vars,
+                    envVars: pipeline.phases.find(p => p.name == phaseName)?.defaultEnvvars || [],
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
                     serviceAccount: {
                         annotations: {},
@@ -767,7 +767,7 @@ export class Kubero {
                         enabled: true,
                         hosts: [
                             {
-                                host: websaveTitle+"."+pipeline.domain,
+                                host: websaveTitle+"."+pipeline.phases.find(p => p.name == phaseName)?.domain,
                                 paths: [
                                     {
                                         path: "/",
