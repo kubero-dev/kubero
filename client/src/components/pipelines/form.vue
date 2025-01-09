@@ -7,13 +7,12 @@
           cols="12"
           md="1"
         >
-        <v-img
-          srcg="./../../../public/img/icons/hexagon3.svg"
-          :src="(gitops == true) ? '/img/icons/hexagon3.svg' : '/img/icons/hexagon3-empty-bold-tp.svg'"
-          max-width="50"
-          max-height="50"
-          class="mr-2"
-        ></v-img>
+          <v-img
+            :src="(gitops == true) ? '/img/icons/hexagon3.svg' : '/img/icons/hexagon3-empty-bold-tp.svg'"
+            max-width="50"
+            max-height="50"
+            class="mr-2"
+          ></v-img>
         </v-col>
         <v-col cols="12" sm="11" md="11" lg="11" xl="11">
 
@@ -31,7 +30,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="6"
+          md="5"
         >
           <v-text-field
             v-model="pipelineName"
@@ -66,12 +65,11 @@
               md="8"
             >
             <v-tabs v-model="repotab" stacked centered @click="loadRepository">
-                <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
-                <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
-                <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
-                <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
-                <v-tab value="gogs" :disabled="repositoriesList.gogs == false || !newPipeline"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
-                <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
+                <v-tab value="github" :disabled="repositoriesList.github == false"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
+                <v-tab value="gitea" :disabled="repositoriesList.gitea == false"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
+                <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
+                <v-tab value="gogs" :disabled="repositoriesList.gogs == false"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
+                <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
             </v-tabs>
             </v-col>
           </v-row>
@@ -79,21 +77,21 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-combobox
                 v-model="gitrepo"
                 :rules="repositoryRules"
                 :items="gitrepoItems"
                 label="Repository *"
-                :disabled="repository_status.connected || !newPipeline"
+                :disabled="repository_status.connected"
                 required
               ></v-combobox>
             </v-col>
 
             <v-col
               cols="12"
-              md="6"
+              md="7"
             >
             
               <v-alert variant="tonal" color="#8560a9" border="start">
@@ -192,7 +190,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-radio-group v-model="buildstrategy">
                 <v-radio
@@ -224,7 +222,7 @@
             </v-col>
             <v-col
               cols="12"
-              md="6"
+              md="7"
             >
             
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
@@ -273,7 +271,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
               v-if="buildstrategy == 'plain'"
             >
               <v-select
@@ -292,7 +290,7 @@
             v-if="buildstrategy == 'dockerfile'">
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-text-field
                 v-model="dockerfilepath"
@@ -395,8 +393,9 @@
                   <v-text-field
                     v-model="phase.domain"
                     :rules="domainRules"
-                    label="FQDN domain"
+                    label="Base domain"
                     density="compact"
+                    hint="This Wildcard Domain should point to the IP of your cluster defined in 'Cluster Context'"
                   ></v-text-field>
                 </v-col>
               </v-row>

@@ -3,11 +3,23 @@
     <v-container>
       <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
-        <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h1 v-if="app=='new'" style="font-size: xxx-large">
+        <v-col
+          cols="12"
+          md="1"
+          class="hidden-xs-and-down"
+        >
+          <v-img
+            :src="(deploymentstrategy == 'git') ? '/img/icons/hexagon1.svg' : '/img/icons/hexagon1-empty-bold-tp.svg'"
+            max-width="50"
+            max-height="50"
+            class="mr-2"
+          ></v-img>
+        </v-col>
+        <v-col cols="12" sm="11" md="11" lg="11" xl="11">
+            <h1 v-if="app=='new'">
                 Create a new App in {{ pipeline }}
             </h1>
-            <h1 v-if="app!='new'" style="font-size: xxx-large">
+            <h1 v-if="app!='new'">
                 Edit {{ app }} in {{ pipeline }}
             </h1>
             <p class="text-justify">
@@ -70,7 +82,7 @@
       <v-row v-for="(host, index) in ingress.hosts" :key="index" :style="index > 0 ? 'margin-top: -20px;' : ''">
         <v-col
           cols="9"
-          md="5"
+          md="6"
         >
           <v-text-field
             v-model="host.host"
@@ -81,7 +93,7 @@
           ></v-text-field>
         </v-col>
         <v-col
-          cols="3"
+          cols="2"
           md="2"
           pullright
         >
@@ -93,7 +105,7 @@
           ></v-switch>
         </v-col>
         <v-col
-          cols="12"
+          cols="1"
           md="1"
         >
           <v-btn
@@ -130,7 +142,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="8"
+          md="6"
         >
             <v-text-field
               v-model="containerPort"
@@ -1301,6 +1313,15 @@ type SAAnnotations = {
   value: string,
 }
 
+type Phase = {
+  name: string;
+  enabled: boolean;
+  context: string;
+  domain: string;
+  defaultTTL?: number;
+  defaultEnvvars: EnvVar[];
+}
+
 export default defineComponent({
     props: {
       pipeline: {
@@ -1432,6 +1453,7 @@ export default defineComponent({
         },
         buildstrategy: 'plain',
         deploymentstrategy: 'docker',
+        phases: [] as Phase[],
       },
       appname: '',
       resourceVersion: '',
@@ -1778,7 +1800,27 @@ export default defineComponent({
           this.deploymentstrategy = this.pipelineData.deploymentstrategy;
 
           if (this.app == 'new') {
-            this.ingress.hosts[0].host = this.pipelineData.domain;
+
+            // extract domain from pipeline phase
+            for (let i = 0; i < this.pipelineData.phases.length; i++) {
+              if (this.pipelineData.phases[i].name == this.phase) {
+                this.pipelineData.domain = this.pipelineData.phases[i].domain;
+                this.ingress.hosts[0].host = this.pipelineData.domain;
+              }
+            }
+
+            // extract defaultEnvvars from pipeline phase
+            for (let i = 0; i < this.pipelineData.phases.length; i++) {
+              if (this.pipelineData.phases[i].name == this.phase) {
+                this.envvars = this.pipelineData.phases[i].defaultEnvvars;
+              }
+            }
+
+            // Open Panel if there is some data to show
+            if (this.envvars.length > 0) {
+              this.panel.push(5)
+            }
+
 
             if (this.pipelineData.git.repository.admin == true) {
               this.gitrepo = this.pipelineData.git.repository;
