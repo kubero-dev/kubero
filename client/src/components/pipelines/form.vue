@@ -342,7 +342,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="5"
+              md="3"
               class="py-0"
             >
               <v-switch
@@ -354,8 +354,21 @@
                 color="primary"
               ></v-switch>
             </v-col>
+            <v-col
+              cols="12"
+              md="4"
+              class="py-0"
+            >
+              <v-select
+                v-model="phase.context"
+                :items="contextList"
+                label="Cluster"
+                v-if="phase.enabled && phase.name != 'review'"
+                dense
+              ></v-select>
+            </v-col>
           </v-row>
-            <div v-if="phase.enabled">
+            <div v-if="phase.enabled && phase.name == 'review'">
               <v-row>
                 <v-col
                   cols="12"
@@ -459,7 +472,7 @@
                   </v-btn>
                 </v-col>
               </v-row>
-              <hr class="mb-5" v-if="phase.name != 'production'">
+              <hr class="mb-5">
             </div>
           </div>
         </v-card-text>
