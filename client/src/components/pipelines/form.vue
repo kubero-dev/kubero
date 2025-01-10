@@ -48,8 +48,10 @@
           cols="12"
           md="8"
         >
+          <!-- disabled when editing due to failing to change the deployment secrets -->
           <v-switch
             v-model="gitops"
+            v-if="pipeline=='new'"
             label="Enable Pipeline to build from Source"
             color="primary"
           ></v-switch>
