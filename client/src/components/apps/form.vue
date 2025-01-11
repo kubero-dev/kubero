@@ -1846,16 +1846,16 @@ export default defineComponent({
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(5)
+            this.panel.push(6)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(7)
+            this.panel.push(8)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(8)
+            this.panel.push(9)
           }
 
           // Backward compatibility older v1.11.1
