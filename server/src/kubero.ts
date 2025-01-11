@@ -715,6 +715,10 @@ export class Kubero {
                     autodeploy: true,
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
+                    basicAuth: {
+                        realm: '',
+                        accounts: []
+                    },
                     envVars: pipeline.phases.find(p => p.name == phaseName)?.defaultEnvvars || [],
                     extraVolumes: [], //TODO Not sure how to handlle extra Volumes on PR Apps
                     serviceAccount: {

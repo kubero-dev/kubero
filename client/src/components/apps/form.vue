@@ -440,6 +440,83 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
+      <!-- AUTHENTICATION -->
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Authentication</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
+
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+                <v-text-field
+                  v-model="basicAuth.realm"
+                  label="name"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+          </v-row>
+
+
+          <v-row v-for="(account, index) in basicAuth.accounts" :key="index">
+              <v-col
+                cols="12"
+                md="5"
+              >
+                <v-text-field
+                  v-model="account.user"
+                  label="Username"
+                  :counter="60"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="account.pass"
+                  label="Password"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="removeAuthLine(account.user)"
+                >
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="addAuthLine()"
+                >
+                    <v-icon dark >
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
       <!-- SECURITY -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
@@ -1370,6 +1447,10 @@ export default defineComponent({
       sleepEnabled: false,
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
+      basicAuth: {
+        realm: 'Authentication required',
+        accounts: [] as { user: string, pass: string }[],
+      },
       buildpack: {
         run: {
           readOnlyAppStorage: true,
@@ -1969,6 +2050,7 @@ export default defineComponent({
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
             this.appname = response.data.spec.name;
             this.sleep = response.data.spec.sleep;
+            this.basicAuth = response.data.spec.basicAuth || { realm: 'Authentication required', accounts: [] };
             this.buildpack = {
               run: response.data.spec.image.run,
               build: response.data.spec.image.build,
@@ -2091,6 +2173,7 @@ export default defineComponent({
           buildpack: this.buildpack,
           appname: this.appname,
           sleep: this.sleep,
+          basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
@@ -2190,6 +2273,7 @@ export default defineComponent({
           phase: this.phase,
           appname: this.appname.toLowerCase(),
           sleep: this.sleep,
+          basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
@@ -2269,6 +2353,19 @@ export default defineComponent({
         .catch(error => {
           console.log(error);
         });
+      },
+      addAuthLine() {
+        this.basicAuth.accounts.push({
+          user: '',
+          pass: '',
+        });
+      },
+      removeAuthLine(index: string) {
+        for (let i = 0; i < this.basicAuth.accounts.length; i++) {
+          if (this.basicAuth.accounts[i].user === index) {
+            this.basicAuth.accounts.splice(i, 1);
+          }
+        }
       },
       addEnvLine() {
         this.envvars.push({
