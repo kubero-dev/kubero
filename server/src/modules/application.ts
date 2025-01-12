@@ -35,6 +35,7 @@ export class App implements IApp{
     public podsize: IPodSize
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
+    public basicAuth: { realm: string; accounts: { user: string; password: string; }[]; };
     public envVars: {}[] = []
     public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
@@ -151,6 +152,8 @@ export class App implements IApp{
         this.autodeploy = app.autodeploy
         this.podsize = app.podsize
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
+
+        this.basicAuth = app.basicAuth
 
         this.envVars =  app.envVars
 

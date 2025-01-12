@@ -12,6 +12,13 @@ export interface IApp {
     autodeploy: boolean,
     podsize: IPodSize,
     autoscale: boolean,
+    basicAuth: {
+        realm: string,
+        accounts: {
+            user: string,
+            password: string,
+        }[]
+    },
     envVars: {}[],
     image : {
         repository: string,
@@ -243,7 +250,9 @@ export interface IPipelinePhase {
     name: string;
     enabled: boolean;
     context: string;
-    apps: IApp[];
+    defaultEnvvars: {}[];
+    domain: string;
+    //apps: IApp[];
 }
 
 // TODO replace with default kubeclt Interface

@@ -3,11 +3,23 @@
     <v-container>
       <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
-        <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <h1 v-if="app=='new'" style="font-size: xxx-large">
+        <v-col
+          cols="12"
+          md="1"
+          class="hidden-xs-and-down"
+        >
+          <v-img
+            :src="(deploymentstrategy == 'git') ? '/img/icons/hexagon1.svg' : '/img/icons/hexagon1-empty-bold-tp.svg'"
+            max-width="50"
+            max-height="50"
+            class="mr-2"
+          ></v-img>
+        </v-col>
+        <v-col cols="12" sm="11" md="11" lg="11" xl="11">
+            <h1 v-if="app=='new'">
                 Create a new App in {{ pipeline }}
             </h1>
-            <h1 v-if="app!='new'" style="font-size: xxx-large">
+            <h1 v-if="app!='new'">
                 Edit {{ app }} in {{ pipeline }}
             </h1>
             <p class="text-justify">
@@ -70,7 +82,7 @@
       <v-row v-for="(host, index) in ingress.hosts" :key="index" :style="index > 0 ? 'margin-top: -20px;' : ''">
         <v-col
           cols="9"
-          md="5"
+          md="6"
         >
           <v-text-field
             v-model="host.host"
@@ -81,7 +93,7 @@
           ></v-text-field>
         </v-col>
         <v-col
-          cols="3"
+          cols="2"
           md="2"
           pullright
         >
@@ -93,7 +105,7 @@
           ></v-switch>
         </v-col>
         <v-col
-          cols="12"
+          cols="1"
           md="1"
         >
           <v-btn
@@ -130,7 +142,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="8"
+          md="6"
         >
             <v-text-field
               v-model="containerPort"
@@ -173,12 +185,12 @@
               label="Strategy"
             >
               <v-radio
-                label="GitOps"
-                value="git"
-              ></v-radio>
-              <v-radio
                 label="Container Image"
                 value="docker"
+              ></v-radio>
+              <v-radio
+                label="From Source"
+                value="git"
               ></v-radio>
               <!--
               <v-radio
@@ -425,6 +437,83 @@
             </v-col>
           </v-row>
         </div> <!-- end of deploymentstrategy == docker -->
+        </v-expansion-panel-text>
+      </v-expansion-panel>
+
+      <!-- AUTHENTICATION -->
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Authentication</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
+
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="6"
+            >
+                <v-text-field
+                  v-model="basicAuth.realm"
+                  label="name"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+          </v-row>
+
+
+          <v-row v-for="(account, index) in basicAuth.accounts" :key="index">
+              <v-col
+                cols="12"
+                md="5"
+              >
+                <v-text-field
+                  v-model="account.user"
+                  label="Username"
+                  :counter="60"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="account.pass"
+                  label="Password"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="removeAuthLine(account.user)"
+                >
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
+            <v-row>
+              <v-col
+                cols="12"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="addAuthLine()"
+                >
+                    <v-icon dark >
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
+
         </v-expansion-panel-text>
       </v-expansion-panel>
 
@@ -783,58 +872,58 @@
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
             <v-row v-for="(envvar, index) in envvars" :key="index">
-            <v-col
-              cols="12"
-              md="5"
-            >
-              <v-text-field
-                v-model="envvar.name"
-                label="name"
-                :counter="60"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="6"
-            >
-              <v-text-field
-                v-model="envvar.value"
-                label="value"
-              ></v-text-field>
-            </v-col>
-            <v-col
-              cols="12"
-              md="1"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-              @click="removeEnvLine(envvar.name)"
+              <v-col
+                cols="12"
+                md="5"
               >
-                  <v-icon dark >
-                      mdi-minus
-                  </v-icon>
-              </v-btn>
-            </v-col>
-          </v-row>
+                <v-text-field
+                  v-model="envvar.name"
+                  label="name"
+                  :counter="60"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="6"
+              >
+                <v-text-field
+                  v-model="envvar.value"
+                  label="value"
+                ></v-text-field>
+              </v-col>
+              <v-col
+                cols="12"
+                md="1"
+              >
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="removeEnvLine(envvar.name)"
+                >
+                    <v-icon dark >
+                        mdi-minus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
 
-          <v-row>
-            <v-col
-              cols="12"
-            >
-              <v-btn
-              elevation="2"
-              icon
-              small
-              @click="addEnvLine()"
+            <v-row>
+              <v-col
+                cols="12"
               >
-                  <v-icon dark >
-                      mdi-plus
-                  </v-icon>
-              </v-btn>
-           </v-col>
-          </v-row>
+                <v-btn
+                elevation="2"
+                icon
+                small
+                @click="addEnvLine()"
+                >
+                    <v-icon dark >
+                        mdi-plus
+                    </v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
 
           <v-row>
             <v-file-input prepend-icon="mdi-file" label="Drop or select .env file" show-size v-model="envFile" @change="handleFileInput"></v-file-input>
@@ -1291,7 +1380,7 @@ type GitRepo = {
   visibility: string,
 }
 
-type EnvVar = {
+export type EnvVar = {
   name: string,
   value: string,
 }
@@ -1299,6 +1388,15 @@ type EnvVar = {
 type SAAnnotations = {
   annotation: string,
   value: string,
+}
+
+type Phase = {
+  name: string;
+  enabled: boolean;
+  context: string;
+  domain: string;
+  defaultTTL?: number;
+  defaultEnvvars: EnvVar[];
 }
 
 export default defineComponent({
@@ -1349,6 +1447,10 @@ export default defineComponent({
       sleepEnabled: false,
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
+      basicAuth: {
+        realm: 'Authentication required',
+        accounts: [] as { user: string, pass: string }[],
+      },
       buildpack: {
         run: {
           readOnlyAppStorage: true,
@@ -1420,7 +1522,7 @@ export default defineComponent({
         },
       } as Buildpack,
       imageTag: '',
-      deploymentstrategy: "git",
+      deploymentstrategy: "docker",
       buildstrategy: "plain",
       pipelineData: {
         domain: '',
@@ -1431,7 +1533,8 @@ export default defineComponent({
           repository: {} as GitRepo,
         },
         buildstrategy: 'plain',
-        deploymentstrategy: 'git',
+        deploymentstrategy: 'docker',
+        phases: [] as Phase[],
       },
       appname: '',
       resourceVersion: '',
@@ -1743,16 +1846,16 @@ export default defineComponent({
 
           // Open Panel if there is some data to show
           if (this.envvars.length > 0) {
-            this.panel.push(5)
+            this.panel.push(6)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
-            this.panel.push(4)
+            this.panel.push(5)
           }
           if (this.extraVolumes.length > 0) {
-            this.panel.push(7)
+            this.panel.push(8)
           }
           if (this.cronjobs.length > 0) {
-            this.panel.push(8)
+            this.panel.push(9)
           }
 
           // Backward compatibility older v1.11.1
@@ -1778,7 +1881,27 @@ export default defineComponent({
           this.deploymentstrategy = this.pipelineData.deploymentstrategy;
 
           if (this.app == 'new') {
-            this.ingress.hosts[0].host = this.pipelineData.domain;
+
+            // extract domain from pipeline phase
+            for (let i = 0; i < this.pipelineData.phases.length; i++) {
+              if (this.pipelineData.phases[i].name == this.phase) {
+                this.pipelineData.domain = this.pipelineData.phases[i].domain;
+                this.ingress.hosts[0].host = this.pipelineData.domain;
+              }
+            }
+
+            // extract defaultEnvvars from pipeline phase
+            for (let i = 0; i < this.pipelineData.phases.length; i++) {
+              if (this.pipelineData.phases[i].name == this.phase) {
+                this.envvars = this.pipelineData.phases[i].defaultEnvvars;
+              }
+            }
+
+            // Open Panel if there is some data to show
+            if (this.envvars.length > 0) {
+              this.panel.push(5)
+            }
+
 
             if (this.pipelineData.git.repository.admin == true) {
               this.gitrepo = this.pipelineData.git.repository;
@@ -1927,6 +2050,7 @@ export default defineComponent({
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
             this.appname = response.data.spec.name;
             this.sleep = response.data.spec.sleep;
+            this.basicAuth = response.data.spec.basicAuth || { realm: 'Authentication required', accounts: [] };
             this.buildpack = {
               run: response.data.spec.image.run,
               build: response.data.spec.image.build,
@@ -2049,6 +2173,7 @@ export default defineComponent({
           buildpack: this.buildpack,
           appname: this.appname,
           sleep: this.sleep,
+          basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
@@ -2148,6 +2273,7 @@ export default defineComponent({
           phase: this.phase,
           appname: this.appname.toLowerCase(),
           sleep: this.sleep,
+          basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
           branch: this.branch,
           deploymentstrategy: this.deploymentstrategy,
@@ -2227,6 +2353,19 @@ export default defineComponent({
         .catch(error => {
           console.log(error);
         });
+      },
+      addAuthLine() {
+        this.basicAuth.accounts.push({
+          user: '',
+          pass: '',
+        });
+      },
+      removeAuthLine(index: string) {
+        for (let i = 0; i < this.basicAuth.accounts.length; i++) {
+          if (this.basicAuth.accounts[i].user === index) {
+            this.basicAuth.accounts.splice(i, 1);
+          }
+        }
       },
       addEnvLine() {
         this.envvars.push({

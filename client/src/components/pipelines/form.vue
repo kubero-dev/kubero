@@ -3,9 +3,20 @@
     <v-container>
       <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
       <v-row>
-        <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+        <v-col
+          cols="12"
+          md="1"
+        >
+          <v-img
+            :src="(gitops == true) ? '/img/icons/hexagon3.svg' : '/img/icons/hexagon3-empty-bold-tp.svg'"
+            max-width="50"
+            max-height="50"
+            class="mr-2"
+          ></v-img>
+        </v-col>
+        <v-col cols="12" sm="11" md="11" lg="11" xl="11">
 
-            <h2 v-if="pipeline=='new'" style="font-size: xxx-large">
+            <h2 v-if="pipeline=='new'">
                 Create a new Pipeline
             </h2>
             <h2 v-if="pipeline!='new'">
@@ -19,7 +30,7 @@
       <v-row>
         <v-col
           cols="12"
-          md="6"
+          md="5"
         >
           <v-text-field
             v-model="pipelineName"
@@ -31,27 +42,17 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-row>
-        <v-col
-          cols="12"
-          md="6"
-        >
-          <v-text-field
-            v-model="domain"
-            :rules="domainRules"
-            label="FQDN domain"
-          ></v-text-field>
-        </v-col>
-      </v-row>
 
       <v-row>
         <v-col
           cols="12"
           md="8"
         >
+          <!-- disabled when editing due to failing to change the deployment secrets -->
           <v-switch
             v-model="gitops"
-            label="Enable Pipeline for GitOps"
+            v-if="pipeline=='new'"
+            label="Enable Pipeline to build from Source"
             color="primary"
           ></v-switch>
         </v-col>
@@ -66,12 +67,11 @@
               md="8"
             >
             <v-tabs v-model="repotab" stacked centered @click="loadRepository">
-                <v-tab value="github" :disabled="repositoriesList.github == false || !newPipeline"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
-                <v-tab value="gitea" :disabled="repositoriesList.gitea == false || !newPipeline"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
-                <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false || !newPipeline"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
-                <!--<v-tab value="onedev" disabled>oneDev <v-icon class="mb-2 onedev"></v-icon></v-tab>-->
-                <v-tab value="gogs" :disabled="repositoriesList.gogs == false || !newPipeline"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
-                <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false || !newPipeline"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
+                <v-tab value="github" :disabled="repositoriesList.github == false"><v-icon class="mb-2 kubero">mdi-github</v-icon>Github</v-tab>
+                <v-tab value="gitea" :disabled="repositoriesList.gitea == false"><v-icon class="mb-2 gitea"></v-icon>Gitea</v-tab>
+                <v-tab value="gitlab" :disabled="repositoriesList.gitlab == false"><v-icon class="mb-2">mdi-gitlab</v-icon>Gitlab</v-tab>
+                <v-tab value="gogs" :disabled="repositoriesList.gogs == false"><v-icon class="mb-2 gogs"></v-icon>Gogs</v-tab>
+                <v-tab value="bitbucket" :disabled="repositoriesList.bitbucket == false"><v-icon class="mb-2">mdi-bitbucket</v-icon>Bitbucket</v-tab>
             </v-tabs>
             </v-col>
           </v-row>
@@ -79,21 +79,21 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-combobox
                 v-model="gitrepo"
                 :rules="repositoryRules"
                 :items="gitrepoItems"
                 label="Repository *"
-                :disabled="repository_status.connected || !newPipeline"
+                :disabled="repository_status.connected"
                 required
               ></v-combobox>
             </v-col>
 
             <v-col
               cols="12"
-              md="6"
+              md="7"
             >
             
               <v-alert variant="tonal" color="#8560a9" border="start">
@@ -192,7 +192,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-radio-group v-model="buildstrategy">
                 <v-radio
@@ -224,7 +224,7 @@
             </v-col>
             <v-col
               cols="12"
-              md="6"
+              md="7"
             >
             
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
@@ -263,7 +263,7 @@
                 <h3>
                   External CI/CD
                 </h3>
-                <div>You are building your image on a external CI/CD and deploy it by changing the image tag thrue the API</div>
+                <div>You are building your image on a external CI/CD and deploy it by changing the image tag via the API</div>
               </v-alert>
 
             </v-col>
@@ -273,7 +273,7 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="5"
               v-if="buildstrategy == 'plain'"
             >
               <v-select
@@ -292,7 +292,7 @@
             v-if="buildstrategy == 'dockerfile'">
             <v-col
               cols="12"
-              md="6"
+              md="5"
             >
               <v-text-field
                 v-model="dockerfilepath"
@@ -338,9 +338,10 @@
 
 
       <v-card elevation="2" color="cardBackground">
-        <v-card-title>Phases</v-card-title>
+        <v-card-title>Environments</v-card-title>
         <v-card-text>
-          <v-row v-for="phase in phases" :key="phase.name" class="my-0">
+          <div v-for="phase in phases" :key="phase.name" class="my-0">
+          <v-row>
             <v-col
               cols="12"
               md="3"
@@ -351,6 +352,7 @@
                 :label="phase.name"
                 :disabled="phase.name == 'review' && (repository_status.connected === false || gitops === false)"
                 dense
+                class="text-overline"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -363,11 +365,118 @@
                 v-model="phase.context"
                 :items="contextList"
                 label="Cluster"
-                v-if="phase.enabled"
+                v-if="phase.enabled && phase.name != 'review'"
                 dense
               ></v-select>
             </v-col>
           </v-row>
+            <div v-if="phase.enabled && phase.name == 'review'">
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="5"
+                  class="py-0"
+                >
+                  <v-select
+                    v-model="phase.context"
+                    :items="contextList"
+                    label="Cluster Context *"
+                    v-if="phase.enabled"
+                    dense
+                  ></v-select>
+                </v-col>
+              </v-row>
+              <v-row v-if="phase.name == 'review'">
+                <v-col
+                  cols="12"
+                  md="2"
+                  class="py-0"
+                  density="compact"
+                >
+                  <v-combobox
+                    clearable
+                    label="TTL"
+                    :items="['8h', '1d', '1w', '1m']"
+                  ></v-combobox>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col
+                  cols="12"
+                  md="5"
+                >
+                  <v-text-field
+                    v-model="phase.domain"
+                    :rules="domainRules"
+                    label="Base domain"
+                    density="compact"
+                    hint="This Wildcard Domain should point to the IP of your cluster defined in 'Cluster Context'"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <div class="font-weight-bold v-label pa-2 mb-1">Default Environment Variables</div>
+              <v-row v-for="(envvar, index) in phase.defaultEnvvars" :key="index">
+                <v-col
+                  cols="12"
+                  md="5"
+                  class="py-0"
+                >
+                  <v-text-field
+                    v-model="envvar.name"
+                    label="Name"
+                    density="compact"
+                    :counter="60"
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="6"
+                  class="py-0"
+                >
+                  <v-text-field
+                    v-model="envvar.value"
+                    label="Value"
+                    density="compact"
+                  ></v-text-field>
+                </v-col>
+                <v-col
+                  cols="12"
+                  md="1"
+                  class="py-0"
+                >
+                  <v-btn
+                  elevation="2"
+                  icon
+                  size="small"
+                  @click="removeEnvLine(phase, envvar.name)"
+                  >
+                      <v-icon dark >
+                          mdi-minus
+                      </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+
+              <v-row class="mt-0">
+                <v-col
+                  cols="12"
+                  class="pt-0 mb-8"
+                >
+                  <v-btn
+                  elevation="2"
+                  icon
+                  size="small"
+                  @click="addEnvLine(phase)"
+                  >
+                      <v-icon dark >
+                          mdi-plus
+                      </v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+              <hr class="mb-5">
+            </div>
+          </div>
         </v-card-text>
       </v-card>
 
@@ -410,6 +519,7 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
+import { EnvVar } from '../apps/form.vue'
 
 type Buildpack = {
   name?: string,
@@ -513,21 +623,33 @@ export default defineComponent({
           name: 'review',
           enabled: false,
           context: '',
+          domain: '',
+          defaultTTL: undefined as number | undefined,
+          defaultEnvvars: [] as EnvVar[],
         },
         {
           name: 'test',
           enabled: false,
           context: '',
+          domain: '',
+          defaultTTL: undefined as number | undefined,
+          defaultEnvvars: [] as EnvVar[],
         },
         {
           name: 'stage',
           enabled: false,
           context: '',
+          domain: '',
+          defaultTTL: undefined as number | undefined,
+          defaultEnvvars: [] as EnvVar[],
         },
         {
           name: 'production',
           enabled: true,
           context: '',
+          domain: '',
+          defaultTTL: undefined as number | undefined,
+          defaultEnvvars: [] as EnvVar[],
         },
       ],
       imageRules: [
@@ -766,6 +888,13 @@ export default defineComponent({
             this.dockerimage = p.dockerimage;
             this.deploymentstrategy = p.deploymentstrategy;
             this.buildpack = p.buildpack;
+
+            // Backward compatibility for < v2.4.6
+            for (let i = 0; i < this.phases.length; i++) {
+              if (this.phases[i].defaultEnvvars === undefined) {
+                this.phases[i].defaultEnvvars = [] as EnvVar[];
+              }
+            }
           }).catch(error => {
             console.log(error);
           });
@@ -838,6 +967,19 @@ export default defineComponent({
         .catch(error => {
           console.log(error);
         });
+      },
+      addEnvLine(phase: any) {
+        phase.defaultEnvvars.push({
+          name: '',
+          value: '',
+        });
+      },
+      removeEnvLine(phase: any, index: string) {
+        for (let i = 0; i < phase.defaultEnvvars.length; i++) {
+          if (phase.defaultEnvvars[i].name === index) {
+            phase.defaultEnvvars.splice(i, 1);
+          }
+        }
       },
     },
 })
