@@ -440,9 +440,9 @@
         </v-expansion-panel-text>
       </v-expansion-panel>
 
-      <!-- AUTHENTICATION -->
+      <!-- BASIC AUTH -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Authentication</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Basic Auth</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
 
