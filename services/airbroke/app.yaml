@@ -1,0 +1,77 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: airbroke
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A lightweight, Airbrake-compatible, PostgreSQL-based Open Source Error Catcher"
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/icoretech/airbroke/refs/heads/main/public/logo.png"
+        kubero.dev/template.installation: "After installation you need to login into the pod and run the following command: `npx prisma migrate deploy`"
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://github.com/icoretech/airbroke/raw/main/public/aidemo.gif"]'
+        kubero.dev/template.source: "https://github.com/icoretech/airbroke"
+        kubero.dev/template.categories: '["development", "monitoring", "ai"]'
+        kubero.dev/template.title: "Airbroke"
+        kubero.dev/template.website: "https://airbroke.icorete.ch/"
+    labels:
+        manager: kubero
+spec:
+    name: airbroke
+    deploymentstrategy: docker
+    envVars:
+        - name: DATABASE_URL
+          value: postgresql://airbroke:airbroke@airbroke-postgresql:5432/airbroke?schema=public
+        - name: DIRECT_URL
+          value: postgresql://airbroke:airbroke@airbroke-postgresql:5432/airbroke?schema=public
+        - name: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY
+          value: random64
+        - name: AUTH_SECRET
+          value: random64
+        - name: AIRBROKE_GITHUB_ID
+          value: createAGithubApp
+        - name: AIRBROKE_GITHUB_SECRET
+          value: createAGithubApp
+        - name: AUTH_DEBUG
+          value: "true"
+        - name: AUTH_URL
+          value: https://airbroke.localhost/
+        - name: AIRBROKE_CORS_ORIGINS
+          value: https://airbroke.localhost/
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: airbroke-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: airbroke
+                                      password: airbroke
+                                      postgresPassword: airbroke
+                                      username: airbroke
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.6
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/icoretech/airbroke
+        tag: latest
