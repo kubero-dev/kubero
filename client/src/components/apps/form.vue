@@ -449,7 +449,17 @@
           <v-row>
             <v-col
               cols="12"
-              md="6"
+              md="3"
+            >
+              <v-switch
+                v-model="basicAuth.enabled"
+                label="Basic Auth Enabled"
+                color="primary"
+              ></v-switch>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
             >
                 <v-text-field
                   v-model="basicAuth.realm"
@@ -1448,6 +1458,7 @@ export default defineComponent({
       envFile: [],
       buildpacks: [] as { text: string, value: Buildpack }[],
       basicAuth: {
+        enabled: false,
         realm: 'Authentication required',
         accounts: [] as { user: string, pass: string }[],
       },

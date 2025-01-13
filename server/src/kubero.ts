@@ -716,6 +716,7 @@ export class Kubero {
                     podsize: this.config.podSizeList[0], //TODO select from podsizelist
                     autoscale: false,
                     basicAuth: {
+                        enabled: false,
                         realm: '',
                         accounts: []
                     },
