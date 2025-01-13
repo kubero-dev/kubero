@@ -42,6 +42,19 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+          <v-text-field
+            v-model="domain"
+            :rules="domainRules"
+            label="FQDN domain"
+            hint="This Wildcard Domain should point to the IP of your clusters IP defined in 'Cluster Context'. It will be used as a base domain when creating a new app."
+          ></v-text-field>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col
@@ -386,6 +399,7 @@
                   ></v-select>
                 </v-col>
               </v-row>
+              <!-- TTL Feature is not ready yet
               <v-row v-if="phase.name == 'review'">
                 <v-col
                   cols="12"
@@ -400,6 +414,7 @@
                   ></v-combobox>
                 </v-col>
               </v-row>
+              -->
               <v-row>
                 <v-col
                   cols="12"
@@ -410,7 +425,7 @@
                     :rules="domainRules"
                     label="Base domain"
                     density="compact"
-                    hint="This Wildcard Domain should point to the IP of your cluster defined in 'Cluster Context'"
+                    hint="This Wildcard Domain should point to the IP of your cluster defined in 'Cluster Context'. It will be used to create a subdomain for each PR."
                   ></v-text-field>
                 </v-col>
               </v-row>

@@ -1896,8 +1896,11 @@ export default defineComponent({
             // extract domain from pipeline phase
             for (let i = 0; i < this.pipelineData.phases.length; i++) {
               if (this.pipelineData.phases[i].name == this.phase) {
-                this.pipelineData.domain = this.pipelineData.phases[i].domain;
-                this.ingress.hosts[0].host = this.pipelineData.domain;
+                if (this.pipelineData.phases[i].domain && this.pipelineData.phases[i].domain != '') {
+                  this.ingress.hosts[0].host = this.pipelineData.phases[i].domain;
+                } else {
+                  this.ingress.hosts[0].host = this.pipelineData.domain;
+                }
               }
             }
 
