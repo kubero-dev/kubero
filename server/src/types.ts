@@ -13,10 +13,12 @@ export interface IApp {
     podsize: IPodSize,
     autoscale: boolean,
     basicAuth: {
+        enabled: boolean,
         realm: string,
         accounts: {
             user: string,
-            password: string,
+            pass: string,
+            hash?: string,
         }[]
     },
     envVars: {}[],
