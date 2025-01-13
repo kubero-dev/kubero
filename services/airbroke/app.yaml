@@ -5,7 +5,7 @@ metadata:
     annotations:
         kubero.dev/template.architecture: "[]"
         kubero.dev/template.description: "A lightweight, Airbrake-compatible, PostgreSQL-based Open Source Error Catcher"
-        kubero.dev/template.icon: "https://raw.githubusercontent.com/icoretech/airbroke/refs/heads/main/public/logo.png"
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/icoretech/airbroke/refs/heads/main/public/logo.svg"
         kubero.dev/template.installation: "After installation you need to login into the pod and run the following command: `npx prisma migrate deploy`"
         kubero.dev/template.links: "[]"
         kubero.dev/template.screenshots: '["https://github.com/icoretech/airbroke/raw/main/public/aidemo.gif"]'
@@ -32,7 +32,7 @@ spec:
         - name: AIRBROKE_GITHUB_SECRET
           value: createAGithubApp
         - name: AUTH_DEBUG
-          value: "true"
+          value: "false"
         - name: AUTH_URL
           value: https://airbroke.localhost/
         - name: AIRBROKE_CORS_ORIGINS
