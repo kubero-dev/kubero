@@ -174,12 +174,14 @@
                 <v-btn
                     color="primary"
                     elevation="2"
+                    :disabled="gitrepo == ''"
                     v-if="!repository_status.connected"
                     @click="connectRepo()"
                     >Connect</v-btn>
                 <v-btn
                     color="secondary"
                     elevation="2"
+                    :disabled="gitrepo == ''"
                     v-if="repository_status.connected"
                     @click="reconnectRepo()"
                     >Reconnect</v-btn>

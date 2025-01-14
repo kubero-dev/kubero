@@ -2,6 +2,14 @@
     <div>
     <v-container>
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
+        <v-spacer />
+        <v-col class="text-right pt-0 pr-0">
+            <v-btn
+            elevation="2"
+            color="primary"
+            :to="{ name: 'Pipeline Form', params: { pipeline: pipeline }}"
+            >Edit Pipeline</v-btn>
+        </v-col>
     </v-container>
     <v-container :fluid="true">
         <!--<h1>{{ pipeline }}</h1>-->

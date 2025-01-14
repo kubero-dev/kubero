@@ -2,7 +2,7 @@
     <v-container>
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
 
-        <v-container class="d-flex justify-space-between align-center mb-2">
+        <v-container class="d-flex justify-space-between align-center mb-2 pt-0">
             <v-tabs v-model="tab"  class="background">
                 <v-tab class="background">Overview</v-tab>
                 <v-tab class="background" :disabled="!hasBuilds">Builds</v-tab>
