@@ -188,6 +188,7 @@ export default defineComponent({
 
         // empty the phases array
         phases.value = [] as Array<Phase>;
+        pullrequests.value = [] as Array<Pullrequest>;
     },
     props: {
       pipeline: {

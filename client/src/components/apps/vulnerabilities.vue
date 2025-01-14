@@ -28,7 +28,7 @@
         <v-layout class="flex-column">
 
                 <v-row v-if="renderVulnerabilities">
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="renderVulnerabilities" >
+                    <v-col cols="6" sm="6" md="6" lg="9" xl="9" v-if="renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Metadata</h3>
@@ -97,7 +97,7 @@
                             </v-card-text>
                         </v-card>
                     </v-col>
-                    <v-col cols="6" sm="6" md="6" lg="6" xl="6" v-if="renderVulnerabilities" >
+                    <v-col cols="6" sm="6" md="6" lg="3" xl="3" v-if="renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
                                 <h3 class="headline mb-0">Summary</h3>
