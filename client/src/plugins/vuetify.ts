@@ -30,6 +30,8 @@ export default createVuetify({
           
           accent: '#8c9eff',
           error: '#b71c1c',
+
+          focusbg: '#393939',
         },
       },
       light: {
@@ -47,6 +49,8 @@ export default createVuetify({
           info: '#2196F3',
           success: '#4CAF50',
           warning: '#FFC107',
+
+          focusbg: '#d3d3d3',
         },
       },
     },
