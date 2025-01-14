@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: neko
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64"]'
+        kubero.dev/template.description: "A self hosted virtual browser that runs in docker and uses WebRTC."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/m1k1o/neko/master/docs/_media/logo.png"
+        kubero.dev/template.installation: "This app requires specials ports to be open on your cluster: 52000-52100/udp"
+        kubero.dev/template.links: '["https://github.com/m1k1o/neko/blob/master/docker-compose.yaml"]'
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/m1k1o/neko/master/docs/_media/intro.gif"]'
+        kubero.dev/template.source: "https://github.com/m1k1o/neko"
+        kubero.dev/template.categories: '["collaboration"]'
+        kubero.dev/template.title: "Neko"
+        kubero.dev/template.website: "https://neko.m1k1o.net/"
+    labels:
+        manager: kubero
+spec:
+    name: neko
+    deploymentstrategy: docker
+    envVars:
+        - name: NEKO_SCREEN
+          value: 1920x1080@30
+        - name: NEKO_PASSWORD
+          value: admin
+        - name: NEKO_PASSWORD_ADMIN
+          value: neko
+        - name: NEKO_EPR
+          value: 52000-52100
+        - name: NEKO_IPFETCH
+          value: https://checkip.amazonaws.com/
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: m1k1o/neko
+        tag: firefox
