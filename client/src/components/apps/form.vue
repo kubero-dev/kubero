@@ -1224,7 +1224,6 @@
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Health check</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
-          <h4 class="mb-5">Serviceaccount Annotation</h4>
           <v-row>
             <v-col
               cols="12"
@@ -1232,7 +1231,7 @@
             >
               <v-switch
                 v-model="healthcheck.enabled"
-                label="Basic Auth Enabled"
+                label="Health Check Enabled"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -1244,7 +1243,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.path"
-                  label="name"
+                  label="Path"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1254,7 +1253,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.startupSeconds"
-                  label="name"
+                  label="Startup Seconds"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1264,7 +1263,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.timeoutSeconds"
-                  label="name"
+                  label="Timeout Seconds"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1274,7 +1273,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.periodSeconds"
-                  label="name"
+                  label="Interval Seconds"
                   :counter="60"
                 ></v-text-field>
             </v-col>
