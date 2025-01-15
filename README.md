@@ -17,7 +17,7 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 
 ## Features ([DEMO](https://demo.kubero.dev))
 - Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
-- Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
+- Automatically build, start, and cleanup **review-apps** after opening/closing a pull request (GitOps)
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
 - Deploy well known apps with **templates** [(WordPress, Grafana, ...)](https://www.kubero.dev/templates)
@@ -29,7 +29,9 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 - Comes with an **API and CLI** to integrate with your existing tools and CI/CD
 - Built-in **container web console**
 - Build and deployment **Notifications** to Discord/Slack/Webhooks
-- Integrated **metrics and monitoring**
+- Integrated application **metrics and monitoring**
+- **Multi-tenancy** support
+- Simple configuration of **Basic Auth** for your application
 - **SSO** with GitHub and Oauth2
 
 

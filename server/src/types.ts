@@ -132,6 +132,13 @@ export interface IApp {
         name: string,
     },
     //tolerations: [],
+    healthcheck: {
+        enabled: boolean,
+        path: string,
+        startupSeconds: number,
+        timeoutSeconds: number,
+        periodSeconds: number,
+    },
 }
 
 
