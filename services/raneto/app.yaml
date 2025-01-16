@@ -1,0 +1,42 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: raneto
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Raneto - is an open source Knowledgebase platform that uses static Markdown files to power your Knowledgebase."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/gilbitron/Raneto/master/logo/logo_readme.png"
+        kubero.dev/template.installation: "Raneto has not possibility to modify the content of the displayed pages.
+            You will need sometheing like a git repository to manage the content in the mounted volume."
+        kubero.dev/template.links: '["https://docs.raneto.com/"]'
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/ryanlelek/Raneto"
+        kubero.dev/template.categories: '["knowledgebase", "cms"]'
+        kubero.dev/template.title: "Raneto"
+        kubero.dev/template.website: "http://raneto.com/"
+    labels:
+        manager: kubero
+spec:
+    name: raneto
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /config
+          name: raneto-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: lscr.io/linuxserver/raneto
+        tag: latest
