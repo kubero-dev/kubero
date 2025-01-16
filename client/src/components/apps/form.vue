@@ -1793,7 +1793,7 @@ export default defineComponent({
         enabled: true,
         path: '/',
         startupSeconds: 90,
-        timeoutSeconds: 30,
+        timeoutSeconds: 3,
         periodSeconds: 10,
       },
       nameRules: [

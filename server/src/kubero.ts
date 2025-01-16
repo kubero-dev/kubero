@@ -782,9 +782,14 @@ export class Kubero {
                             }
                         ],
                         tls: []
-                    }
-
-
+                    },
+                    healthcheck: {
+                        enabled: false,
+                        path: "/",
+                        startupSeconds: 90,
+                        timeoutSeconds: 3,
+                        periodSeconds: 10
+                    },
                 }
                 let app = new App(appOptions);
 
