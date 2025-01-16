@@ -158,7 +158,7 @@ export abstract class Plugin {
 
     private loadOperatorData(availableOperators: any): any {
         for (const operatorCRD of availableOperators) {
-            console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
+            // console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
             if (operatorCRD.spec.names.kind === this.constructor.name) {
                 this.enabled = true;
                 this.version.installed = operatorCRD.spec.version

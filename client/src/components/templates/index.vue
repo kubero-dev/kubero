@@ -3,7 +3,7 @@
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="12" md="12" lg="6" xl="6">
-                <h1>Templates</h1>
+                <!--<h1>Templates</h1>-->
             </v-col>
             <v-col cols="3" sm="6" md="3">
                 <v-text-field 
