@@ -234,6 +234,7 @@ function createApp(req: Request) : IApp {
         addons: req.body.addons,
         resources: req.body.podsize.resources,
         vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
+        healthcheck: req.body.healthcheck,
     };
     normalizeAddonName(appconfig);
 
@@ -296,6 +297,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         addons: req.body.addons,
         resources: req.body.podsize.resources,
         vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
+        healthcheck: req.body.healthcheck,
     };
     // WARNING: renaming the addon will cause dataloss !!!
     //normalizeAddonName(appconfig);

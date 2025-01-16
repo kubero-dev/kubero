@@ -149,6 +149,14 @@ export class App implements IApp{
     };
     private tolerations: [];
 
+    public healthcheck: {
+        enabled: boolean,
+        path: string,
+        startupSeconds: number,
+        timeoutSeconds: number,
+        periodSeconds: number,
+    };
+
     constructor(
         app: IApp
     ) {
@@ -236,6 +244,8 @@ export class App implements IApp{
             type: 'ClusterIP'
         },
         this.tolerations= []
+
+        this.healthcheck = app.healthcheck
     }
 }
 

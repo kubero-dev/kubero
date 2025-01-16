@@ -1218,6 +1218,68 @@
           </v-row>
         </v-expansion-panel-text>
       </v-expansion-panel>
+
+      <!-- HEALTHCHECK --> 
+      <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Health check</v-expansion-panel-title>
+        <v-expansion-panel-text color="secondary">
+
+          <v-row>
+            <v-col
+              cols="12"
+              md="3"
+            >
+              <v-switch
+                v-model="healthcheck.enabled"
+                label="Health Check Enabled"
+                color="primary"
+              ></v-switch>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col
+              cols="12"
+              md="3"
+            >
+                <v-text-field
+                  v-model="healthcheck.path"
+                  label="Path"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+                <v-text-field
+                  v-model="healthcheck.startupSeconds"
+                  label="Startup Seconds"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+                <v-text-field
+                  v-model="healthcheck.timeoutSeconds"
+                  label="Timeout Seconds"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+            <v-col
+              cols="12"
+              md="3"
+            >
+                <v-text-field
+                  v-model="healthcheck.periodSeconds"
+                  label="Interval Seconds"
+                  :counter="60"
+                ></v-text-field>
+            </v-col>
+          </v-row>
+        </v-expansion-panel-text>
+      </v-expansion-panel>
     </v-expansion-panels>
 
       <!-- ADDONS -->
@@ -1727,6 +1789,13 @@ export default defineComponent({
         'SYSLOG',
         'WAKE_ALARM',
       ],
+      healthcheck: {
+        enabled: true,
+        path: '/',
+        startupSeconds: 90,
+        timeoutSeconds: 30,
+        periodSeconds: 10,
+      },
       nameRules: [
         (v: any) => !!v || 'Name is required',
         (v: any) => v.length <= 60 || 'Name must be less than 60 characters',
@@ -1845,6 +1914,10 @@ export default defineComponent({
           this.extraVolumes = response.data.extraVolumes;
           this.cronjobs = response.data.cronjobs;
           this.addons = response.data.addons;
+
+          if (this.healthcheck) {
+            this.healthcheck = response.data.healthcheck;
+          }
 
           if (response.data.image.build) {
             //console.log("buildpack build", response.data.image.build);
@@ -2094,6 +2167,7 @@ export default defineComponent({
             this.addons= response.data.spec.addons || [];
             this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
             this.ingress = response.data.spec.ingress || {};
+            this.healthcheck = response.data.spec.healthcheck || { enabled: true, path: '/', startupSeconds: 90, timeoutSeconds: 30, periodSeconds: 10 };
 
             // iterate over ingress hosts and fill sslIndex
             for (let i = 0; i < this.ingress.hosts.length; i++) {
@@ -2235,6 +2309,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          healthcheck: this.healthcheck,
         }
 
         if (typeof postdata.image.run.securityContext.runAsUser === 'string') {
@@ -2333,6 +2408,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          healthcheck: this.healthcheck,
         }
 
         if (postdata.image.run == undefined) {
