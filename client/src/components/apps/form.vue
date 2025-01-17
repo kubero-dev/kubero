@@ -2137,7 +2137,7 @@ export default defineComponent({
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
             this.appname = response.data.spec.name;
             this.sleep = response.data.spec.sleep;
-            this.basicAuth = response.data.spec.basicAuth || { realm: 'Authentication required', accounts: [] };
+            this.basicAuth = response.data.spec.basicAuth || { enabled: false, realm: 'Authentication required', accounts: [] };
             this.buildpack = {
               run: response.data.spec.image.run,
               build: response.data.spec.image.build,

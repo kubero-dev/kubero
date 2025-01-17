@@ -174,19 +174,27 @@ export class App implements IApp{
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
 
         const salt = genSaltSync(10);
-        this.basicAuth = {
-            realm: app.basicAuth.realm,
-            enabled: app.basicAuth.enabled,
-            accounts: app.basicAuth.accounts.map(account => {
-                return {
-                    user: account.user,
-                    pass: account.pass,
-                    // generate hash with bcrypt from user and pass
-                    //hash: account.user+':$5$'+crypto.createHash('sha256').update(account.user+account.pass).digest('base64')
-                    //hash: account.user+':{SHA}'+crypto.createHash('sha1').update(account.pass).digest('base64') // works
-                    hash: account.user+':'+hashSync(account.pass, salt)
-                }
-            })
+        if (app.basicAuth !== undefined) {
+            this.basicAuth = {
+                realm: app.basicAuth.realm,
+                enabled: app.basicAuth.enabled,
+                accounts: app.basicAuth.accounts.map(account => {
+                    return {
+                        user: account.user,
+                        pass: account.pass,
+                        // generate hash with bcrypt from user and pass
+                        //hash: account.user+':$5$'+crypto.createHash('sha256').update(account.user+account.pass).digest('base64')
+                        //hash: account.user+':{SHA}'+crypto.createHash('sha1').update(account.pass).digest('base64') // works
+                        hash: account.user+':'+hashSync(account.pass, salt)
+                    }
+                })
+            }
+        } else {
+            this.basicAuth = {
+                realm: 'Authenticate',
+                enabled: false,
+                accounts: []
+            }
         }
 
         this.envVars =  app.envVars
