@@ -17,7 +17,7 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 
 ## Features ([DEMO](https://demo.kubero.dev))
 - Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
-- Automatically build, start, and cleanup **review-apps** after opening/closing a pull request
+- Automatically build, start, and cleanup **review-apps** after opening/closing a pull request (GitOps)
 - Automatic **redeployment** of the app based on a push to a branch or tag
 - Create scheduled tasks as **cronjobs**
 - Deploy well known apps with **templates** [(WordPress, Grafana, ...)](https://www.kubero.dev/templates)
@@ -29,7 +29,9 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 - Comes with an **API and CLI** to integrate with your existing tools and CI/CD
 - Built-in **container web console**
 - Build and deployment **Notifications** to Discord/Slack/Webhooks
-- Integrated **metrics and monitoring**
+- Integrated application **metrics and monitoring**
+- **Multi-tenancy** support
+- Simple configuration of **Basic Auth** for your application
 - **SSO** with GitHub and Oauth2
 
 
@@ -59,6 +61,8 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 | <img src="client/public/img/addons/pgsql.svg" width="30px" style="vertical-align: middle; margin: 10px">          | Crunchy Postgres Cluster  | [Crunchy Data](https://artifacthub.io/packages/olm/community-operators/postgresql)    |    |
 | <img src="client/public/img/addons/redis.svg" width="30px" style="vertical-align: middle; margin: 10px">          | Redis Cluster             | [Opstree](https://artifacthub.io/packages/olm/community-operators/redis-operator)     |    |
 | <img src="client/public/img/addons/CockroachDB.svg" width="30px" style="vertical-align: middle; margin: 10px">    | CockroachDB               | [CockroachDB](https://artifacthub.io/packages/olm/community-operators/cockroachdb)    |    |
+| <img src="client/public/img/addons/clickhouse.svg" width="30px" style="vertical-align: middle; margin: 10px">     | Clickhouse               | [Altinity ](https://artifacthub.io/packages/olm/community-operators/clickhouse)    |    |
+
 
 
 \* Ships with the Kubero Operator

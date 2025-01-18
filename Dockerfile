@@ -3,17 +3,20 @@ ENV NODE_ENV=development
 
 WORKDIR /build
 
+## Server
 COPY server ./server
-RUN cd server && \
-    yarn install && \
+RUN cd /build/server && \
+    yarn install
+RUN cd /build/server && \
     yarn build && \
-    yarn swaggergen && \
-    cd ..
+    yarn swaggergen
+
+## Client
 COPY client ./client
-RUN cd client && \
-    yarn install && \
-    yarn build && \
-    cd ..
+RUN cd /build/client && \
+    yarn install
+RUN cd /build/client && \
+    yarn build 
 
 FROM build AS release
 ARG VERSION=unknown

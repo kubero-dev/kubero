@@ -1,6 +1,10 @@
 import { IApp, IKubectlMetadata, IKubectlApp, IKubectlTemplate, IGithubRepository, ICronjob, IPodSize, IExtraVolume, ISecurityContext, ITemplate} from '../types';
 import { IAddon } from './addons';
 import { Buildpack } from './config';
+import * as crypto from "crypto"
+//import { hashSync, genSaltSync } from 'bcrypt-ts';
+//import bcrypt from "bcrypt";
+import { hashSync, genSaltSync } from 'bcrypt';
 
 export class KubectlApp implements IKubectlApp{
     apiVersion: string;
@@ -35,6 +39,15 @@ export class App implements IApp{
     public podsize: IPodSize
     public autoscale: boolean
     //public envVars: {[key: string]: string} = {}
+    public basicAuth: {
+        enabled: boolean;
+        realm: string;
+        accounts: {
+            user: string;
+            pass: string;
+            hash?: string;
+        }[];
+    };
     public envVars: {}[] = []
     public extraVolumes: IExtraVolume[] = []
     public cronjobs: ICronjob[] = []
@@ -136,6 +149,14 @@ export class App implements IApp{
     };
     private tolerations: [];
 
+    public healthcheck: {
+        enabled: boolean,
+        path: string,
+        startupSeconds: number,
+        timeoutSeconds: number,
+        periodSeconds: number,
+    };
+
     constructor(
         app: IApp
     ) {
@@ -151,6 +172,30 @@ export class App implements IApp{
         this.autodeploy = app.autodeploy
         this.podsize = app.podsize
         this.autoscale = app.autoscale // TODO: may be redundant with autoscaling.enabled
+
+        const salt = genSaltSync(10);
+        if (app.basicAuth !== undefined) {
+            this.basicAuth = {
+                realm: app.basicAuth.realm,
+                enabled: app.basicAuth.enabled,
+                accounts: app.basicAuth.accounts.map(account => {
+                    return {
+                        user: account.user,
+                        pass: account.pass,
+                        // generate hash with bcrypt from user and pass
+                        //hash: account.user+':$5$'+crypto.createHash('sha256').update(account.user+account.pass).digest('base64')
+                        //hash: account.user+':{SHA}'+crypto.createHash('sha1').update(account.pass).digest('base64') // works
+                        hash: account.user+':'+hashSync(account.pass, salt)
+                    }
+                })
+            }
+        } else {
+            this.basicAuth = {
+                realm: 'Authenticate',
+                enabled: false,
+                accounts: []
+            }
+        }
 
         this.envVars =  app.envVars
 
@@ -207,6 +252,8 @@ export class App implements IApp{
             type: 'ClusterIP'
         },
         this.tolerations= []
+
+        this.healthcheck = app.healthcheck
     }
 }
 

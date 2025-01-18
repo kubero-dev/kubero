@@ -9,7 +9,7 @@
         <v-list-item 
             link to="/"
             prepend-icon="mdi-server"
-            title="Dashboard">
+            title="Projects">
         </v-list-item>
         <v-list-item 
             link to="/templates" 

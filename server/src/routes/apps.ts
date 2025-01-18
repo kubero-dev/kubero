@@ -213,6 +213,7 @@ function createApp(req: Request) : IApp {
         autodeploy: req.body.autodeploy,
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
+        basicAuth: req.body.basicAuth,
         envVars: req.body.envvars,
         extraVolumes: req.body.extraVolumes,
         serviceAccount: req.body.serviceAccount,
@@ -233,6 +234,7 @@ function createApp(req: Request) : IApp {
         addons: req.body.addons,
         resources: req.body.podsize.resources,
         vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
+        healthcheck: req.body.healthcheck,
     };
     normalizeAddonName(appconfig);
 
@@ -275,6 +277,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         podsize: req.body.podsize,
         autoscale: req.body.autoscale,
         extraVolumes: req.body.extraVolumes,
+        basicAuth: req.body.basicAuth,
         envVars: req.body.envvars,
         serviceAccount: req.body.serviceAccount,
         image: {
@@ -294,6 +297,7 @@ Router.put('/pipelines/:pipeline/:phase/:app', authMiddleware, async function (r
         addons: req.body.addons,
         resources: req.body.podsize.resources,
         vulnerabilityscan: getVulnerabilityScan(req.body.security.vulnerabilityScans),
+        healthcheck: req.body.healthcheck,
     };
     // WARNING: renaming the addon will cause dataloss !!!
     //normalizeAddonName(appconfig);

@@ -2,13 +2,29 @@
     <div>
     <v-container>
         <Breadcrumbs :items="breadcrumbItems"></Breadcrumbs>
+        <v-spacer />
+        <v-col class="text-right pt-0 pr-0">
+            <v-btn
+            elevation="2"
+            color="primary"
+            :to="{ name: 'Pipeline Form', params: { pipeline: pipeline }}"
+            >Edit Pipeline</v-btn>
+        </v-col>
     </v-container>
     <v-container :fluid="true">
-        <h1>{{ pipeline }}</h1>
+        <!--<h1>{{ pipeline }}</h1>-->
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
-                        <p><span class="text-uppercase">{{phase.name}}</span><br /><span class="caption">[{{phase.context}}]</span></p>
+                        <h4 class="text-uppercase ml-1">{{phase.name}}</h4>
+                        <v-chip
+                            class="ma-1"
+                            label
+                            size="small"
+                            >
+                            <v-icon icon="mdi-kubernetes" start></v-icon>
+                            {{phase.context}}
+                        </v-chip>
 
 
                         <Appcard v-for="app in phase.apps" :key="app.name"
@@ -21,16 +37,18 @@
                                 :pipeline="pipeline"
                                 :pullrequest="pr" />
                         </span>
-
-                        <v-btn
-                        elevation="2"
-                        icon="mdi-plus"
-                        :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
-                        class="mt-5 navBG"
-                        color="secondary"
-                        style="margin-bottom: 5px;"
-                        >
-                        </v-btn>
+                        <div>
+                            <v-btn
+                            elevation="2"
+                            icon="mdi-plus"
+                            :to="{ name: 'App Form', params: { phase: phase.name, pipeline: pipeline, app: 'new'}}"
+                            class="mt-5 navBG"
+                            color="secondary"
+                            size="small"
+                            style="margin-bottom: 5px;"
+                            >
+                            </v-btn>
+                        </div>
                     </v-col>
 
                 </v-row>
@@ -170,6 +188,7 @@ export default defineComponent({
 
         // empty the phases array
         phases.value = [] as Array<Phase>;
+        pullrequests.value = [] as Array<Pullrequest>;
     },
     props: {
       pipeline: {
@@ -180,7 +199,7 @@ export default defineComponent({
     data () {return {
         breadcrumbItems: [
             {
-                title: 'Dashboard.-',
+                title: 'Dashboard.Pipelines',
                 disabled: false,
                 to: { name: 'Pipelines', params: {}}
             },

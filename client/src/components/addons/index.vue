@@ -3,7 +3,7 @@
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                <h1>Add-ons</h1>
+                <!--<h1>Add-ons</h1>-->
             </v-col>
         </v-row>
         <v-row>
@@ -49,6 +49,7 @@
                     style="top: -50px;"
                     color="primary"
                     dark
+                    elevation="0"
                     @click="openInstallDialog(addon)"
                     >
                     Installation

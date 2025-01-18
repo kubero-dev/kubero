@@ -8,8 +8,15 @@
         elevation="10"
         width="400px"
         class="ma-10"
+        style="margin-top: 300px !important;"
         >
         <v-card-text>
+        <v-img
+            src="/img/icons/hexagon3.svg"
+            max-height="100"
+            max-width="100"
+            class="mx-auto"
+        ></v-img>
         <div v-if="authMethods.local" class="py-5">
             <v-alert
                 v-show="error"

@@ -13,9 +13,12 @@
                         <tr>
                             <th>Domains</th>
                             <td>
-                                <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
-                                    <a :href="'https://' + host.host" target="_blank">{{ host.host }}</a>
-                                </li>
+                                <ul style="list-style-type: none; padding: 0;">
+                                    <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
+                                        <a :href="'https://' + host.host" target="_blank">{{ host.host }}</a> 
+                                        <v-icon size="x-small" style="color: rgba(var(--v-theme-kubero), var(--v-high-emphasis-opacity));">mdi-open-in-new</v-icon>
+                                    </li>
+                                </ul>
                             </td>
                         </tr>
                         <tr>
@@ -86,10 +89,10 @@
                         <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Uptime</v-col>
                     </v-row>
                     <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
-                        <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>
-                        <v-col cols="1" class="py-0 text-left">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
-                        <v-col cols="1" class="py-0 text-right">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
-                        <v-col cols="2" class="py-0 text-right">{{metric.uptime.formatted}}</v-col>
+                        <v-col cols="8" class="py-0 text-left text-body-2 overflow-x-hidden"><nobr>{{metric.name}}</nobr></v-col>
+                        <v-col cols="1" class="py-0 text-left text-body-2">{{metric.cpu.usage}}{{metric.cpu.unit}}</v-col>
+                        <v-col cols="1" class="py-0 text-right text-body-2">{{metric.memory.usage}}{{metric.memory.unit}}</v-col>
+                        <v-col cols="2" class="py-0 text-right text-body-2">{{metric.uptime.formatted}}</v-col>
                     </v-row>
                 </div>
                 <div class="mb-5 mt-10">

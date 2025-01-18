@@ -3,7 +3,7 @@
 
         <v-row class="justify-space-between">
             <v-col cols="6" sm="12" md="12" lg="6" xl="6">
-                <h1>Templates</h1>
+                <!--<h1>Templates</h1>-->
             </v-col>
             <v-col cols="3" sm="6" md="3">
                 <v-text-field 
@@ -40,100 +40,110 @@
             <v-col cols="12" sm="12" md="3"
             v-for="template in showedTemplates.services" :key="template.name">
                 <v-card
-                    style="padding-bottom: 40px;"
-                    height="320px"
                     color="cardBackground">
-                    <v-list-item>
+                    <div  class="d-flex justify-center">
+                        <v-avatar
+                            size="57"
+                            rounded
+                            style="margin-top: 20px;"
+                            >
+                            <v-img
+                                :src="template.icon"
+                                :alt="template.name"
+                            ></v-img>
+                        </v-avatar>
+                    </div>
+                    <v-card-title>
+                        <a :href="template.website" target="_blank">{{ template.name }}</a>
+                    </v-card-title>
+                    <v-card-subtitle>
+                        <v-chip
+                            label
+                            size="small"
+                            class="mr-2"
+                            prepend-icon="mdi-star"
+                        >{{ template.stars }}</v-chip>
+                        <v-chip
+                            label
+                            size="small"
+                            prepend-icon="mdi-file-certificate"
+                            v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"
+                        >{{ template.spdx_id }}</v-chip>
+                    </v-card-subtitle>
+                    <v-card-text style="height: 150px">
+                        {{ template.description }}
+                        <!--Operator: <a :href="template.url">{{ template.id }}</a>-->
+                    </v-card-text>
 
-                        <div  class="d-flex justify-center">
-                            <v-avatar
-                                size="57"
-                                rounded
-                                style="margin-top: 20px;"
-                                >
-                                <v-img
-                                    :src="template.icon"
-                                    :alt="template.name"
-                                ></v-img>
-                            </v-avatar>
-                        </div>
-                        <v-card-title>
-                            <a :href="template.website" target="_blank">{{ template.name }}</a>
-                        </v-card-title>
-
-                        <v-card-subtitle>
-                            <v-chip
-                                label
-                                size="small"
-                                class="mr-2"
-                                prepend-icon="mdi-star"
-                            >{{ template.stars }}</v-chip>
-                            <v-chip
-                                label
-                                size="small"
-                                prepend-icon="mdi-file-certificate"
-                                v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"
-                            >{{ template.spdx_id }}</v-chip>
-                        </v-card-subtitle>
-
-                        <v-card-text>
-                            {{ template.description }}
-                            <!--Operator: <a :href="template.url">{{ template.id }}</a>-->
-                        </v-card-text>
-                    </v-list-item>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-btn
+                            color="primary"
+                            dark
+                            block
+                            append-icon="mdi-chevron-right"
+                            :disabled="template.enabled"
+                            @click="openInstallDialog(template)"
+                            >
+                            install
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
-                <div class="text-center" style="height:0px" v-if="!template.enabled">
-                <v-btn
-                    style="top: -50px;"
-                    color="primary"
-                    dark
-                    @click="openInstallDialog(template)"
-                    >
-                    details
-                </v-btn>
-                </div>
             </v-col>
         </v-row>
         <v-dialog
             v-model="dialog"
             max-width="890"
             >
-            <v-card :title="clickedTemplate.name">
-                <v-card-item>
-                    <v-card-text>
-                        {{clickedTemplate.description}}
-                    </v-card-text>
-                    <v-card-text v-if="clickedTemplate.screenshots && clickedTemplate.screenshots.length > 0">
-                        <v-carousel>
-                            <v-carousel-item
-                            v-for="(screenshot, i) in clickedTemplate.screenshots"
-                            :key="i"
-                            :src="screenshot"
-                            >
-                            </v-carousel-item>
-                        </v-carousel>
-                    </v-card-text>
-                    <v-card-text>
-                        <v-select
-                            :items="pipelines"
-                            label="Pipeline"
-                            v-model="pipeline"
-                        ></v-select>
-                        <v-select
-                            :items="phases[pipeline]"
-                            label="Phase"
-                            v-model="phase"
-                        ></v-select>
-                        <v-btn
-                            color="primary"
-                            dark
-                            :disabled="!pipeline || !phase"
-                            @click="openInstall(clickedTemplate.template, pipeline, phase)"
-                            >
-                            Load template
-                        </v-btn>
-                    </v-card-text>
-                </v-card-item>
+            <v-card>
+                <v-card-title class="text-h4">
+                    <span>{{clickedTemplate.name}}</span>
+                </v-card-title>
+                <v-card-text>
+                    {{clickedTemplate.description}}
+                </v-card-text>
+                <v-card-text v-if="clickedTemplate.screenshots && clickedTemplate.screenshots.length > 0">
+                    <v-carousel>
+                        <v-carousel-item
+                        v-for="(screenshot, i) in clickedTemplate.screenshots"
+                        :key="i"
+                        :src="screenshot"
+                        >
+                        </v-carousel-item>
+                    </v-carousel>
+                </v-card-text>
+                <v-card-text>
+                    <v-select
+                        :items="pipelines"
+                        label="Pipeline"
+                        v-model="pipeline"
+                    ></v-select>
+                    <v-select
+                        :items="phases[pipeline]"
+                        label="Phase"
+                        v-model="phase"
+                    ></v-select>
+                </v-card-text>
+                <v-card-actions class="d-flex justify-space-around mb-6 mr-5">
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="primary"
+                        variant="plain"
+                        dark
+                        @click="dialog = false"
+                        >
+                        close
+                    </v-btn>
+                    <v-btn
+                        color="primary"
+                        variant="tonal"
+                        dark
+                        :disabled="!pipeline || !phase"
+                        @click="openInstall(clickedTemplate.template, pipeline, phase)"
+                        >
+                        Load template
+                    </v-btn>
+                </v-card-actions>
             </v-card>
         </v-dialog>
 
