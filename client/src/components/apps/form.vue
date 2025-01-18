@@ -1962,9 +1962,15 @@ export default defineComponent({
           this.loadBranches();
           this.buildpack = this.pipelineData.buildpack;
           this.buildstrategy = this.pipelineData.buildstrategy;
-          this.deploymentstrategy = this.pipelineData.deploymentstrategy;
+          //this.deploymentstrategy = this.pipelineData.deploymentstrategy;
 
           if (this.app == 'new') {
+
+            if (this.pipelineData.git.repository.clone_url == '') {
+              this.deploymentstrategy = 'docker';
+            } else {
+              this.deploymentstrategy = 'git';
+            }
 
             // extract domain from pipeline phase
             for (let i = 0; i < this.pipelineData.phases.length; i++) {
