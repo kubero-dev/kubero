@@ -1,0 +1,126 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: outline
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: ""
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1765001"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/outline/outline"
+        kubero.dev/template.categories: "[]"
+        kubero.dev/template.title: "Outline"
+        kubero.dev/template.website: "https://www.getoutline.com/"
+    labels:
+        manager: kubero
+spec:
+    name: outline
+    deploymentstrategy: docker
+    envVars:
+        - name: NODE_ENV
+          value: production
+        - name: SECRET_KEY
+          value: 4b8767e288424f2f47630e005e1109ddfec63ee561fa86657f1ab41c401465ce
+        - name: DATABASE_URL
+          value: postgres://outline:outline@outline-postgresql:5432/outline
+        - name: PGSSLMODE
+          value: disable
+        - name: REDIS_URL
+          value: redis://:outline@outline-redis-master:6379
+        - name: FILE_STORAGE
+          value: local
+        - name: FILE_STORAGE_LOCAL_ROOT_DIR
+          value: /var/lib/outline/data
+        - name: FILE_STORAGE_UPLOAD_MAX_SIZE
+          value: "262144000"
+        - name: LOG_LEVEL
+          value: info
+        - name: DEFAULT_LANGUAGE
+          value: en_US
+        - name: UTILS_SECRET
+          value: 74e934cd60281e460db22128382511ffe49031363db1a7e85d4812772e5207e9
+        - name: URL
+          value: https://outline.localhost
+        - name: CDN_URL
+          value: https://outline.localhost
+        - name: FORCE_HTTPS
+          value: "false"
+        - name: SLACK_CLIENT_ID
+          value: ""
+        - name: SLACK_CLIENT_SECRET
+          value: 
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/lib/outline/data
+          name: outline-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons:
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: outline-redis
+                  spec:
+                      redis:
+                          architecture: replication
+                          global:
+                              redis:
+                                  password: outline
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+                          replica:
+                              persistence:
+                                  size: 1Gi
+                              replicaCount: 1
+          version:
+              latest: 0.1.8
+        - displayName: Postgresql
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: outline-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: outline
+                                      password: outline
+                                      postgresPassword: outline
+                                      username: outline
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.8
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: docker.getoutline.com/outlinewiki/outline
+        tag: latest
