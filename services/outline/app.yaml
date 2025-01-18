@@ -3,14 +3,14 @@ kind: KuberoApp
 metadata:
     name: outline
     annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: ""
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64", "linux/arm/v7"]'
+        kubero.dev/template.description: "The fastest knowledge base for growing teams. Beautiful, realtime collaborative, feature packed, and markdown compatible."
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/1765001"
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.screenshots: '["https://user-images.githubusercontent.com/380914/110356468-26374600-7fef-11eb-9f6a-f2cc2c8c6590.png"]'
         kubero.dev/template.source: "https://github.com/outline/outline"
-        kubero.dev/template.categories: "[]"
+        kubero.dev/template.categories: '["work", "utility"]'
         kubero.dev/template.title: "Outline"
         kubero.dev/template.website: "https://www.getoutline.com/"
     labels:
@@ -50,7 +50,7 @@ spec:
         - name: SLACK_CLIENT_ID
           value: ""
         - name: SLACK_CLIENT_SECRET
-          value: 
+          value: ""
     extraVolumes:
         - accessMode: ReadWriteOnce
           accessModes:
