@@ -1986,7 +1986,7 @@ export default defineComponent({
 
             // Open Panel if there is some data to show
             if (this.envvars.length > 0) {
-              this.panel.push(5)
+              this.panel.push(6)
             }
 
 
@@ -2114,16 +2114,16 @@ export default defineComponent({
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
-              this.panel.push(5)
+              this.panel.push(6)
             }
             if (response.data.spec.serviceAccount && Object.entries(response.data.spec.serviceAccount?.annotations).length > 0) {
-              this.panel.push(4)
+              this.panel.push(5)
             }
             if (response.data.spec.extraVolumes.length > 0) {
-              this.panel.push(7)
+              this.panel.push(8)
             }
             if (response.data.spec.cronjobs.length > 0) {
-              this.panel.push(8)
+              this.panel.push(9)
             }
 
             let command = '';
