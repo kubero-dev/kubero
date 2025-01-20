@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: silverbullet
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "SilverBullet is a note-taking application optimized for people with a hacker mindset."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/108344757"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/silverbulletmd/silverbullet"
+        kubero.dev/template.categories: '["productivity"]'
+        kubero.dev/template.title: "Silverbullet"
+        kubero.dev/template.website: "https://silverbullet.md/"
+    labels:
+        manager: kubero
+spec:
+    name: silverbullet
+    deploymentstrategy: docker
+    envVars:
+        - name: SB_USER
+          value: admin:admin
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /space
+          name: silverbullet-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: zefhemel/silverbullet
+        tag: latest
