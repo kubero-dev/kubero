@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: guitos
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A personal budgeting app that helps you figure out where your money went, plan your budget ahead of time and analyze past expenditures."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/5001560"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/rare-magma/guitos"
+        kubero.dev/template.categories: '["personal"]'
+        kubero.dev/template.title: "guitos"
+        kubero.dev/template.website: "https://guitos.app/"
+    labels:
+        manager: kubero
+spec:
+    name: guitos
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/rare-magma/guitos
+        tag: latest
