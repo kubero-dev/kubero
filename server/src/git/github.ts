@@ -12,10 +12,16 @@ import { RequestError } from '@octokit/types';
 export class GithubApi extends Repo {
     private octokit: any;
 
-    constructor(token: string) {
+    constructor(baseUrl: string, token: string) {
         super("github");
+
+        if (baseUrl === '') {
+            baseUrl = 'https://api.github.com';
+        }
+
         this.octokit = new Octokit({
-            auth: token
+            auth: token,
+            baseUrl: baseUrl,
         });
     }
 
