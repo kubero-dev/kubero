@@ -1,0 +1,21 @@
+name: 'Mail on Star'
+on:
+  workflow_dispatch:
+  watch:
+    types: [started]
+jobs:
+  stargazer:
+    name: 'stargazers'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💌 Send email, you star
+        uses: dawidd6/action-send-mail@v1.3.0
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.GMAIL_USER }}
+          password: ${{ secrets.GMAIL_PASS }}
+          subject: Your a star ✨
+          body: ${{ github.actor }} just starred your mail-on-star repo!!! ${{ github.repository }}
+          to: ${{ secrets.GMAIL_ADDRESS }}
+          from: ${{ secrets.GMAIL_ADDRESS }}
