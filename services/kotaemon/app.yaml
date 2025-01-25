@@ -8,7 +8,7 @@ metadata:
         kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/3265185"
         kubero.dev/template.installation: ""
         kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview-graph.png". "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"]'
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview-graph.png", "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"]'
         kubero.dev/template.source: "https://github.com/Cinnamon/kotaemon"
         kubero.dev/template.categories: '["ai"]'
         kubero.dev/template.title: "Kotaemon"
