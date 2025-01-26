@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: caddygen
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "CaddyGen is a user-friendly web interface for generating Caddy server configurations. "
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/12955528"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/DeanWard/CaddyGen"
+        kubero.dev/template.categories: '["utility"]'
+        kubero.dev/template.title: "CaddyGen"
+        kubero.dev/template.website: "https://caddygen.site/"
+    labels:
+        manager: kubero
+spec:
+    name: caddygen
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: wardy784/caddygen
+        tag: latest
