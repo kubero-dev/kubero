@@ -1,0 +1,47 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: workout-tracker
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "A workout tracking web application for personal use (or family, friends), geared towards running and other GPX-based activities"
+        kubero.dev/template.icon: "https://github.com/cristianmarint/MotionGym/raw/master/docs/imgs/logo.png"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/jovandeginste/workout-tracker"
+        kubero.dev/template.categories: "[]"
+        kubero.dev/template.title: "Workout Tracker"
+        kubero.dev/template.website: "https://github.com/jovandeginste/workout-tracker"
+    labels:
+        manager: kubero
+spec:
+    name: workout-tracker
+    deploymentstrategy: docker
+    envVars:
+        - name: WT_JWT_ENCRYPTION_KEY
+          value: random32
+        - name: WT_REGISTRATION_DISABLED
+          value: "false"
+        - name: WT_SOCIALS_DISABLED
+          value: "false"
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /data
+          name: workout-tracker-volume
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ghcr.io/jovandeginste/workout-tracker
+        tag: latest

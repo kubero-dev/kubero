@@ -1,0 +1,37 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: kotaemon
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "An open-source clean & customizable RAG UI for chatting with your documents."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/3265185"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview-graph.png", "https://raw.githubusercontent.com/Cinnamon/kotaemon/main/docs/images/preview.png"]'
+        kubero.dev/template.source: "https://github.com/Cinnamon/kotaemon"
+        kubero.dev/template.categories: '["ai"]'
+        kubero.dev/template.title: "Kotaemon"
+        kubero.dev/template.website: "https://cinnamon.github.io/kotaemon/"
+    labels:
+        manager: kubero
+spec:
+    name: kotaemon
+    deploymentstrategy: docker
+    envVars:
+        - name: GRADIO_SERVER_PORT
+          value: "8080"
+        - name: GRADIO_SERVER_NAME
+          value: 0.0.0.0
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 8080
+        pullPolicy: Always
+        repository: ghcr.io/cinnamon/kotaemon
+        tag: main-full
