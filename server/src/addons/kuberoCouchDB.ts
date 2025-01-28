@@ -24,6 +24,15 @@ export class KuberoCouchDB extends Plugin implements IPlugin {
             default: 'couchdb',
             description: 'The name of the Couchdb instance'
         },
+        'KuberoCouchDB.spec.couchdb.image.tag':{
+            type: 'combobox',
+            label: 'Version/Tag',
+            options: ['3.2.1', '3.3', '3.4.2', 'latest'], // TODO - load this dynamically
+            name: 'spec.couchdb.image.tag',
+            required: true,
+            default: '3.2.1'
+            description: 'Version of the PostgreSQL image to use'
+        },
         'KuberoCouchDB.spec.couchdb.clusterSize':{
             type: 'number',
             label: 'Cluster Size*',
