@@ -81,7 +81,12 @@ spec:
           command:
           - sh
           - -c
-          - nixpacks build . -o .
+          - |-
+            cd $BUILD_BASE_DIR
+            nixpacks build . -o .
+          env:
+          - name: BUILD_BASE_DIR
+            value: /app
           image: "ghcr.io/kubero-dev/build:latest"
           imagePullPolicy: Always
           resources: {}
@@ -98,6 +103,7 @@ spec:
           - sh
           - -c
           - |-
+            cd $BUILD_BASE_DIR
             buildah build -f $BUILDAH_DOCKERFILE_PATH --isolation chroot -t $BUILD_IMAGE .
             buildah push --tls-verify=false $BUILD_IMAGE
           env:
@@ -106,7 +112,9 @@ spec:
           - name: BUILD_IMAGE
             value: registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app:123456
           - name: BUILDAH_DOCKERFILE_PATH
-            value: /app/Dockerfile
+            value: Dockerfile
+          - name: BUILD_BASE_DIR
+            value: /app
           image: "quay.io/containers/buildah:v1.35"
           imagePullPolicy: IfNotPresent
           resources: {}
