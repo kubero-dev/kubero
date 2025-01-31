@@ -30,7 +30,7 @@ export class KuberoPostgresql extends Plugin implements IPlugin {
             options: ['13', '14', '15', '16.6.0', '17.2.0', 'latest'], // TODO - load this dynamically
             name: 'spec.postgresql.image.tag',
             required: true,
-            default: '16'
+            default: '16',
             description: 'Version of the PostgreSQL image to use'
         },
         'KuberoPostgresql.spec.postgresql.global.postgresql.auth.postgresPassword':{

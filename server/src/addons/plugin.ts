@@ -2,7 +2,7 @@ import axios from 'axios';
 import { KubernetesListObject, KubernetesObject } from '@kubernetes/client-node'
 
 export interface IPluginFormFields {
-    type: 'text' | 'number' |'switch' | 'select' | 'select-storageclass',
+    type: 'text' | 'number' |'switch' | 'select' | 'select-storageclass' | 'combobox',
     label: string,
     name: string,
     required: boolean,

@@ -30,7 +30,7 @@ export class KuberoMongoDB extends Plugin implements IPlugin {
             options: ['6.0.6-debian-11-r3', '7.0.15', '8.0', '8.0.4', 'latest'], // TODO - load this dynamically
             name: 'spec.mongodb.image.tag',
             required: true,
-            default: '8.0'
+            default: '8.0',
             description: 'Version of the PostgreSQL image to use'
         },
         'KuberoMongoDB.spec.mongodb.global.storageClass':{

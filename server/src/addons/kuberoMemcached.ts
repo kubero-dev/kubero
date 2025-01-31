@@ -30,7 +30,7 @@ export class KuberoMemcached extends Plugin implements IPlugin {
             options: ['1.6.22-debian-11-r1', '1', '1.6.34', 'latest'], // TODO - load this dynamically
             name: 'spec.memcached.image.tag',
             required: true,
-            default: '1.6.22-debian-11-r1'
+            default: '1.6.22-debian-11-r1',
             description: 'Version of the PostgreSQL image to use'
         },
         'KuberoMemcached.spec.memcached.architecture':{

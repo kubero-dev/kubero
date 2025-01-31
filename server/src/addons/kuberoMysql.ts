@@ -30,7 +30,7 @@ export class KuberoMysql extends Plugin implements IPlugin {
             options: ['8.0.33-debian-11-r12', '8.1', '8.2-debian-11', '8.4.4', '9.0', 'latest'], // TODO - load this dynamically
             name: 'spec.mysql.image.tag',
             required: true,
-            default: '8.4.4'
+            default: '8.4.4',
             description: 'Version of the PostgreSQL image to use'
         },
         'KuberoMysql.spec.mysql.global.storageClass':{
