@@ -1,0 +1,33 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: trailbase
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64"]'
+        kubero.dev/template.description: "A fast, open-source application server with type-safe APIs, including an admin interface."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/176172021"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/trailbaseio/trailbase"
+        kubero.dev/template.categories: '["devtool", "utility"]'
+        kubero.dev/template.title: "Trailbase"
+        kubero.dev/template.website: "https://www.trailbase.io/"
+    labels:
+        manager: kubero
+spec:
+    name: trailbase
+    deploymentstrategy: docker
+    envVars: []
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "4000"
+        pullPolicy: Always
+        repository: trailbase/trailbase
+        tag: latest
