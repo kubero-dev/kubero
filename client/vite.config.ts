@@ -54,7 +54,7 @@ export default defineConfig({
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
   },
   build: {
-    outDir: '../server/dist/public',
+    outDir: '../server-refactored-v3/dist/public',
     emptyOutDir: true,
   },
   server: {
