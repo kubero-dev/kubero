@@ -9,6 +9,13 @@ async function bootstrap() {
     .setTitle('Kubero')
     .setDescription('Kubero is a web-based tool deploy applications on a Kubernetes clusters. It provides a simple and intuitive interface to manage your clusters, applications, and pipelines.')
     .setVersion('3.0')
+    .addServer('http://localhost:2000/api', 'Local Development')
+    .addServer('/api', 'Production')
+    .addSecurity('bearerAuth', {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+    })
     .addTag('Apps')
     .addTag('Addons')
     .addTag('Config')
