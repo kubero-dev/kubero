@@ -4,8 +4,10 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
-import { join } from 'path';
+import { CommonModule } from './common/common.module';
 
+
+import { join } from 'path';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -13,6 +15,7 @@ import { join } from 'path';
     }),
     EventsModule,
     AuthModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
