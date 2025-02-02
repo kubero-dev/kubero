@@ -12,7 +12,6 @@ import { VulnerabilitiesModule } from './vulnerabilities/vulnerabilities.module'
 import { ConfigModule } from './config/config.module';
 import { RepoModule } from './repo/repo.module';
 import { SettingsModule } from './settings/settings.module';
-import { BannerModule } from './banner/banner.module';
 import { TemplatesModule } from './templates/templates.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
@@ -33,7 +32,6 @@ import { DeploymentsModule } from './deployments/deployments.module';
     ConfigModule,
     RepoModule,
     SettingsModule,
-    BannerModule,
     TemplatesModule,
     MetricsModule,
     LogsModule,

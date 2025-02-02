@@ -357,16 +357,19 @@ export interface IBuildpack {
     tag: string;
 }
 
+//Migrated to settings
 export interface INotificationSlack {
     url: string;
     channel: string;
 }
 
+//Migrated to settings
 export interface INotificationWebhook {
     url: string;
     secret: string;
 }
 
+//Migrated to settings
 export interface INotificationDiscord {
     url: string;
 }
@@ -383,6 +386,7 @@ export interface INotification {
     message: string;
 }
 
+//Migrated to settings
 export interface INotificationConfig{
     enabled: boolean;
     name: string;
@@ -392,6 +396,7 @@ export interface INotificationConfig{
     config: INotificationSlack | INotificationWebhook | INotificationDiscord;
 }
 
+//Migrated to settings
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
