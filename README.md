@@ -16,23 +16,23 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 [YouTube](https://www.youtube.com/watch?v=kmqhddc6UlI)
 
 ## Features ([DEMO](https://demo.kubero.dev))
-- Create unlimited CI/CD pipelines with up to 4 separate **staging environments** for all your applications
-- Automatically build, start, and cleanup **review-apps** after opening/closing a pull request (GitOps)
-- Automatic **redeployment** of the app based on a push to a branch or tag
-- Create scheduled tasks as **cronjobs**
-- Deploy well known apps with **templates** [(WordPress, Grafana, ...)](https://www.kubero.dev/templates)
-- Easy deployment of your docker containers on Kubernetes **without writing helm charts**
-- Deploy **add-ons** along your application (PostgreSQL, Redis, [and more ...](https://github.com/kubero-dev/kubero#preconfigured-add-ons))
-- Easy access of **application logs** in the web-UI
-- Easy and safe **restart** of the application in the web-UI
-- Triggered or periodic **vulnerability scans** of your running apps
-- Comes with an **API and CLI** to integrate with your existing tools and CI/CD
-- Built-in **container web console**
-- Build and deployment **Notifications** to Discord/Slack/Webhooks
-- Integrated application **metrics and monitoring**
-- **Multi-tenancy** support
-- Simple configuration of **Basic Auth** for your application
-- **SSO** with GitHub and Oauth2
+- **CI/CD Pipelines:** Create unlimited pipelines with up to 4 separate staging environments for all your applications.  
+- **GitOps Review Apps:** Automatically build, start, and clean up review apps when opening or closing pull requests.  
+- **Automatic Redeployments:** Trigger app redeployments on pushes to branches or tags.  
+- **Docker Deployments:** Deploy Docker containers on Kubernetes without needing Helm charts.  
+- **App Templates:** Deploy popular applications like WordPress and Grafana with ready-to-use templates.  
+- **Add-ons Integration:** Seamlessly deploy add-ons such as PostgreSQL and Redis alongside your applications.  
+- **API & CLI:** Integrate seamlessly with existing tools and CI/CD workflows.  
+- **Metrics & Monitoring:** Access integrated metrics to monitor application health.  
+- **Notifications:** Get build and deployment updates via Discord, Slack, or Webhooks.  
+- **Vulnerability Scans:** Perform scheduled or triggered scans for running applications.  
+- **Application Logs:** View logs directly from the web UI for easy monitoring.  
+- **Safe Restarts:** Restart applications safely and easily through the web UI.  
+- **Web Console:** Use the built-in container web console for direct access.  
+- **Scheduled Tasks:** Easily create and manage cronjobs.  
+- **Multi-Tenancy:** Support for managing multiple tenants.  
+- **Single Sign-On (SSO):** Authenticate securely with GitHub and OAuth2.  
+- **Basic Auth:** Configure Basic Auth for your applications with ease. 
 
 
 ## Basic Concept 
@@ -67,7 +67,7 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 
 \* Ships with the Kubero Operator
 
-## 139+ Application templates (similar to Heroku Buttons)
+## 164+ Application templates (similar to Heroku Buttons)
 - WordPress
 - Grafana
 - Bitwarden
