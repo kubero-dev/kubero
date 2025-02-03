@@ -56,7 +56,7 @@ interface INotificationDiscord {
     url: string;
 }
 
-interface IPodSize {
+export interface IPodSize {
     name: string;
     description: string,
     default?: boolean,
@@ -73,7 +73,7 @@ interface IPodSize {
     }
 }
 
-interface IBuildpack {
+export interface IBuildpack {
     name: string;
     language: string;
     fetch: {
@@ -97,7 +97,7 @@ interface IBuildpack {
     tag: string;
 }
 
-interface ISecurityContext {
+export interface ISecurityContext {
     readOnlyRootFilesystem: boolean;
     allowPrivilegeEscalation: boolean;
     runAsUser: number;

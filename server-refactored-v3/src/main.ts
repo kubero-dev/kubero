@@ -1,9 +1,15 @@
 import { NestFactory } from '@nestjs/core';
+import { Logger, ConsoleLogger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new ConsoleLogger({
+      prefix: 'Kubero',
+      //logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
+    }),
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Kubero')
@@ -42,6 +48,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 2000); // Use port 2000 for compatibility with kubero v2
 
-  console.log(`⚡️[server]: Server is running at: ${await app.getUrl()}`);
+  Logger.warn(`⚡️[server]: Server is running at: ${await app.getUrl()}`, 'Bootstrap');
 }
 bootstrap();
