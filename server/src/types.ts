@@ -179,6 +179,7 @@ export interface ITemplate {
     addons: IAddon[]
 }
 
+//Migrated to settings
 export interface ISecurityContext {
     readOnlyRootFilesystem: boolean;
     allowPrivilegeEscalation: boolean;
