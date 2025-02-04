@@ -21,7 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@kubernetes/client-node": "^1.0.0",
+    "@kubernetes/client-node": "^0.20.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/core": "^11.0.1",
     "@nestjs/passport": "^11.0.5",
@@ -30,7 +30,8 @@
     "@nestjs/serve-static": "^5.0.1",
     "@nestjs/swagger": "^11.0.3",
     "@nestjs/websockets": "^11.0.7",
-    "@otwld/nestjs-kubernetes": "^1.0.3",
+    "@types/bcrypt": "^5.0.2",
+    "bcrypt": "^5.1.1",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
