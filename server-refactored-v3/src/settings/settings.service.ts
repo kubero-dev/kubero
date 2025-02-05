@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IKuberoConfig } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
-import { Kubectl } from 'src/kubectl/kubectl';
+import { Kubectl } from '../kubectl/kubectl';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
@@ -9,33 +9,69 @@ import { join } from 'path';
 @Injectable()
 export class SettingsService {
     private readonly logger = new Logger(SettingsService.name);
+    private runningConfig: IKuberoConfig
 
-    constructor() {
-        console.log('SettingsService constructor')
-        
+    constructor(private readonly kubectl: Kubectl) {
+        this.reloadRunningConfig()
     }
 
     // Load settings from a file or from kubernetes
     async getSettings(): Promise<KuberoConfig> {
 
-        // TODO: Check if Kubero Administation is disabled
-
-        let configMap: KuberoConfig
-        if (process.env.NODE_ENV === "production") {
-            configMap = new KuberoConfig(this.loadConfigFromKubernetes())
-        } else {
-            configMap = new KuberoConfig(this.readConfig())
+        
+        if (this.checkAdminDisabled()) {
+            return new KuberoConfig(new Object() as IKuberoConfig)
         }
+        
+        const configMap = new KuberoConfig(await this.readConfig())
+        let config: any = {}
+        config.settings = configMap
 
-        return configMap;
-    }
-
-    private loadConfigFromKubernetes(): IKuberoConfig {
-        // TODO: Load config from kubernetes
-        return new Object() as IKuberoConfig
+        config["secrets"] = {
+            GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
+            GITEA_PERSONAL_ACCESS_TOKEN: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
+            GITEA_BASEURL: process.env.GITEA_BASEURL || '',
+            GITLAB_PERSONAL_ACCESS_TOKEN: process.env.GITLAB_PERSONAL_ACCESS_TOKEN || '',
+            GITLAB_BASEURL: process.env.GITLAB_BASEURL || '',
+            BITBUCKET_APP_PASSWORD: process.env.BITBUCKET_APP_PASSWORD || '',
+            BITBUCKET_USERNAME: process.env.BITBUCKET_USERNAME || '',
+            GOGS_PERSONAL_ACCESS_TOKEN: process.env.GOGS_PERSONAL_ACCESS_TOKEN || '',
+            GOGS_BASEURL: process.env.GOGS_BASEURL || '',
+            KUBERO_WEBHOOK_SECRET: process.env.KUBERO_WEBHOOK_SECRET || '',
+            GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET || '',
+            OAUTH2_CLIENT_SECRET: process.env.OAUTH2_CLIENT_SECRET || '',
+        }
+        return config
     }
     
-    private readConfig(): IKuberoConfig {
+    private reloadRunningConfig(): void {
+       
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        this.kubectl.getKuberoConfig(namespace).then((kuberoes) => {
+            this.runningConfig = kuberoes.spec
+        }).catch((error) => {
+            this.logger.error('Error reading kuberoes config')
+            this.logger.error(error)
+        })
+    }
+
+    private async readConfig(): Promise<IKuberoConfig> {
+
+        if (process.env.NODE_ENV === "production") {
+            return await this.readConfigFromKubernetes()
+        } else {
+            return this.readConfigFromFS()
+        }
+    }
+
+
+    private async readConfigFromKubernetes(): Promise<any> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        return kuberoes.spec.kubero.config
+    }
+
+    private readConfigFromFS(): IKuberoConfig {
         // read config from local filesystem (dev mode)
         //const path = join(__dirname, 'config.yaml')
         const path = process.env.KUBERO_CONFIG_PATH || join(__dirname, 'config.yaml')
@@ -59,4 +95,118 @@ export class SettingsService {
         });
     }
 
+    public async getDefaultRegistry(): Promise<any> {
+        
+        let registry = process.env.KUBERO_REGISTRY || {
+            account:{
+              hash: '$2y$05$czQZpvtDYc5OzM/1r1pH0eAplT/okohh/mXoWl/Y65ZP/8/jnSWZq',
+              password: 'kubero',
+              username: 'kubero',
+
+            },
+            create: false,
+            enabled: false,
+            host: 'registry.demo.kubero.dev',
+            port: 443,
+            storage: '1Gi',
+            storageClassName: null,
+            subpath: "",
+
+        }
+        try {
+            const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+            const kuberoes = await this.kubectl.getKuberoConfig(namespace)
+            registry = kuberoes.spec.registry
+        } catch (error) {
+            console.log("Error getting kuberoes config")
+        }
+        return registry
+    }
+
+    public async getDomains(): Promise<any> {
+        let allIngress = await this.kubectl.getAllIngress()
+        let domains: string[] = []
+        allIngress.forEach((ingress: any) => {
+            ingress.spec.rules.forEach((rule: any) => {
+                domains.push(rule.host)
+            })
+        })
+        return domains
+    }
+
+    private checkAdminDisabled(): boolean {
+        return this.runningConfig.kubero.admin?.disabled || false
+    }
+
+    public async validateKubeconfig(kubeConfig: string, kubeContext: string): Promise<any> {
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+        return this.kubectl.validateKubeconfig(kubeConfig, kubeContext)
+    }
+
+    public updateRunningConfig(kubeConfig: string, kubeContext: string, kuberoNamespace: string, KuberoSessionKey: string, kuberoWebhookSecret: string): {error: string, status: string} {
+
+        if (process.env.KUBERO_SETUP != "enabled") {
+            return {
+                error: "Setup is disabled. Set env KUBERO_SETUP=enabled and retry",
+                status: "error"
+            }
+        }
+       
+        process.env.KUBERO_CONTEXT = kubeContext
+        process.env.KUBERO_NAMESPACE = kuberoNamespace
+        process.env.KUBERO_SESSION_KEY = KuberoSessionKey
+        process.env.KUBECONFIG_BASE64 = kubeConfig
+        process.env.KUBERO_SETUP = "disabled"
+
+        this.kubectl.updateKubectlConfig(kubeConfig, kubeContext)
+
+        this.kubectl.createNamespace(kuberoNamespace)
+        return {
+            error: "",
+            status: "ok"
+        }
+    }
+
+    public async checkComponent(component: string): Promise<any> {
+        let ret = {
+            //reason : "Component not found",
+            status: "error"
+        }
+
+        if (component === "operator") {
+            //let operator = await this.kubectl.checkCustomResourceDefinition("kuberoes.application.kubero.dev")
+            let operator = await this.kubectl.checkNamespace("kubero-operator-system")
+            if (operator) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "metrics") {
+            let metrics = await this.kubectl.checkDeployment("kube-system", "metrics-server")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "debug") {
+            let metrics = await this.kubectl.checkNamespace("default")
+            if (metrics) {
+                ret.status = "ok"
+            }
+        }
+
+        if (component === "ingress") {
+            let ingress = await this.kubectl.checkNamespace("ingress-nginx")
+            if (ingress) {
+                ret.status = "ok"
+            }
+        }
+
+        return ret
+    }
 }
