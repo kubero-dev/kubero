@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger, ConsoleLogger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { CustomConsoleLogger } from './logger/logger';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-    logger: new ConsoleLogger({
+    logger: new CustomConsoleLogger({
       prefix: 'Kubero',
       //logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
     }),
@@ -48,6 +51,6 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 2000); // Use port 2000 for compatibility with kubero v2
 
-  Logger.warn(`⚡️[server]: Server is running at: ${await app.getUrl()}`, 'Bootstrap');
+  Logger.log(`⚡️[server]: Server is running at: ${await app.getUrl()}`, 'Bootstrap');
 }
 bootstrap();

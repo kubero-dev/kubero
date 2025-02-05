@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IKuberoConfig } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
+import { Kubectl } from 'src/kubectl/kubectl';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
@@ -8,6 +9,11 @@ import { join } from 'path';
 @Injectable()
 export class SettingsService {
     private readonly logger = new Logger(SettingsService.name);
+
+    constructor() {
+        console.log('SettingsService constructor')
+        
+    }
 
     // Load settings from a file or from kubernetes
     async getSettings(): Promise<KuberoConfig> {

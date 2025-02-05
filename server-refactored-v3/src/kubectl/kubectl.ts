@@ -79,7 +79,7 @@ export class Kubectl {
                 this.kc.loadFromCluster();
                 this.logger.debug("ℹ️  Kubeconfig loaded from cluster");
             } catch (error) {
-                this.logger.debug("❌ Error loading from cluster");
+                this.logger.error("❌ Error loading from cluster");
                 //this.logger.debug(error);
             }
         }
@@ -97,7 +97,7 @@ export class Kubectl {
             this.exec = new Exec(this.kc)
             this.customObjectsApi = this.kc.makeApiClient(CustomObjectsApi);
         } catch (error) {
-            console.log("❌ Error creating api clients. Check kubeconfig, cluster connectivity and context");
+            this.logger.error("❌ Error creating api clients. Check kubeconfig, cluster connectivity and context");
             //this.logger.debug(error);
             this.kubeVersion = void 0;
             return;
@@ -106,15 +106,15 @@ export class Kubectl {
         this.getKubeVersion()
         .then(v => {
             if (v && v.gitVersion) {
-                console.log("ℹ️  Kube version: " + v.gitVersion);
+                this.logger.debug("ℹ️  Kube version: " + v.gitVersion);
             } else {
-                console.log("❌ Failed to get Kubernetes version");
+                this.logger.error("❌ Failed to get Kubernetes version");
                 process.env.KUBERO_SETUP = 'enabled';
             }
             this.kubeVersion = v;
         })
         .catch(error => {
-            console.log("❌ Failed to get Kubernetes version");
+            this.logger.error("❌ Failed to get Kubernetes version");
             //this.logger.debug(error);
         });
 
@@ -721,8 +721,8 @@ export class Kubectl {
                 ret.push(storageClass);
             }
         } catch (error) {
-            console.log(error);
-            console.log('ERROR fetching storageclasses');
+            this.logger.error(error);
+            this.logger.error('ERROR fetching storageclasses');
         }
         return ret;
     }
@@ -742,8 +742,8 @@ export class Kubectl {
                 ret.push(ingressClass);
             }
         } catch (error) {
-            console.log(error);
-            console.log('ERROR fetching ingressclasses');
+            this.logger.error(error);
+            this.logger.error('ERROR fetching ingressclasses');
         }
         return ret;
     }
@@ -755,7 +755,7 @@ export class Kubectl {
             await new Promise(resolve => setTimeout(resolve, 1000));
         } catch (error) {
             //console.log(error);
-            console.log('ERROR deleting job: '+name+' ' +namespace);
+            this.logger.error('ERROR deleting job: '+name+' ' +namespace);
         }
     }
 
@@ -811,8 +811,8 @@ export class Kubectl {
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
         } catch (error) {
-            console.log(error);
-            console.log('ERROR creating Repo scan job: '+app+' ' +namespace);
+            this.logger.error(error);
+            this.logger.error('ERROR creating Repo scan job: '+app+' ' +namespace);
         }
     }
 
@@ -894,8 +894,8 @@ export class Kubectl {
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
         } catch (error) {
-            console.log(error);
-            console.log('ERROR creating Image scan job');
+            this.logger.error(error);
+            this.logger.error('ERROR creating Image scan job');
         }
     }
 
@@ -905,8 +905,8 @@ export class Kubectl {
             const logs = await this.coreV1Api.readNamespacedPodLog(logPod, namespace, undefined, false);
             return logs.body;
         } catch (error) {
-            console.log(error);
-            console.log('ERROR fetching scan logs');
+            this.logger.error(error);
+            this.logger.error('ERROR fetching scan logs');
         }
     }
 
@@ -938,15 +938,15 @@ export class Kubectl {
 
             //return latestPod?.metadata?.name
         } catch (error) {
-            console.log(error);
-            console.log('ERROR fetching pod by label');
+            this.logger.error(error);
+            this.logger.error('ERROR fetching pod by label');
         }
     }
 
     public async deployApp(namespace: string, appName: string, tag: string) {
 
         let deploymentName = appName+'-kuberoapp-web';
-        console.log("deploy app: " + appName, ",namespace: " + namespace, ",tag: " + tag, ",deploymentName: " + deploymentName);
+        this.logger.error("deploy app: " + appName, ",namespace: " + namespace, ",tag: " + tag, ",deploymentName: " + deploymentName);
 
         // format : https://jsonpatch.com/
         const patch = [
@@ -1134,13 +1134,13 @@ export class Kubectl {
             job.spec.template.spec.initContainers[2].env[2].value = dockerfilePath;
         }
 
-        console.log("create build job: " + job);
+        this.logger.log("create build job: " + job);
 
         try {
             return await this.batchV1Api.createNamespacedJob(namespace, job);
         } catch (error) {
-            console.log(error);
-            console.log('ERROR creating build job');
+            this.logger.error(error);
+            this.logger.error('ERROR creating build job');
         }
     }
 
@@ -1186,11 +1186,11 @@ export class Kubectl {
         try {
             const versionApi = kc.makeApiClient(VersionApi);
             let versionInfo = await versionApi.getCode()
-            console.log(JSON.stringify(versionInfo.body));
+            this.logger.debug(JSON.stringify(versionInfo.body));
             return { error: null, valid: true };
         } catch (error: any) {
-            console.log("Error validating kubeconfig: " + error);
-            console.log(error);
+            this.logger.error("Error validating kubeconfig: " + error);
+            this.logger.error(error);
             return {error: error.message, valid: false};
         }
     }
@@ -1202,9 +1202,9 @@ export class Kubectl {
         this.kc.setCurrentContext(kubeContext);
         */
         this.initKubeConfig();
-        console.log(kubeContext, this.kc.getCurrentContext());
+        this.logger.debug(kubeContext, this.kc.getCurrentContext());
 
-        console.log("Kubeconfig updated");
+        this.logger.log("Kubeconfig updated");
     }
 
     public async checkNamespace(namespace: string): Promise<boolean> {
@@ -1243,7 +1243,7 @@ export class Kubectl {
             );
             return true;
         } catch (error) {
-            console.log(error);
+            this.logger.error(error);
             return false;
         }
     }
@@ -1260,7 +1260,7 @@ export class Kubectl {
             return await this.coreV1Api.createNamespace(ns);
         } catch (error) {
             //console.log(error);
-            console.log('ERROR creating namespace');
+            this.logger.error('ERROR creating namespace');
         }
     }
 
