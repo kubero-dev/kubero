@@ -1,6 +1,6 @@
 import { IGithubRepository } from "src/apps/apps.interface";
 import { IBuildpack } from "src/settings/settings.interface";
-import { IKubectlMetadata } from "../kubectl/kubectl.interface";
+import { IKubectlMetadata } from "../kubernetes/kubernetes.interface";
 
 export interface IPipeline {
   name: string;

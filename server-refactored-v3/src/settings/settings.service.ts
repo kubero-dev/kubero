@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IKuberoConfig } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
-import { Kubectl } from '../kubectl/kubectl';
+import { Kubectl } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
@@ -10,6 +10,21 @@ import { join } from 'path';
 export class SettingsService {
     private readonly logger = new Logger(SettingsService.name);
     private runningConfig: IKuberoConfig
+    private features: {[key: string]: boolean} = {
+        sleep: false,
+        metrics: false,
+        /* suggested features
+        console: false,
+        logs: false,
+        audit: false,
+        notifications: false,
+        templates: false,
+        addons: false,
+        deployments: false,
+        security: false,
+        settings: false,
+        */
+    }
 
     constructor(private readonly kubectl: Kubectl) {
         this.reloadRunningConfig()
@@ -134,7 +149,19 @@ export class SettingsService {
         return domains
     }
 
-    private checkAdminDisabled(): boolean {
+    public async getBanner(): Promise<any> {
+        let defaultbanner = {
+            show: false,
+            text: "",
+            bgcolor: "white",
+            fontcolor: "white"
+        }
+
+        let banner = await this.runningConfig.kubero?.banner || defaultbanner;
+        return banner
+    }
+
+    public checkAdminDisabled(): boolean {
         return this.runningConfig.kubero.admin?.disabled || false
     }
 
@@ -208,5 +235,56 @@ export class SettingsService {
         }
 
         return ret
+    }
+
+    getBuildpipelineEnabled(){
+        return process.env.KUBERO_BUILD_REGISTRY ? process.env.KUBERO_BUILD_REGISTRY != undefined : false
+    }
+
+    getTemplateEnabled(){
+        return this.runningConfig.templates?.enabled || false
+    }
+
+    getConsoleEnabled(){
+        if (this.runningConfig.kubero?.console?.enabled == undefined) {
+            return false;
+        }
+        return this.runningConfig.kubero?.console?.enabled;
+    }
+
+    setMetricsStatus(status: boolean) {
+        this.features.metrics = status
+    }
+
+    getMetricsEnabled(): boolean{
+        return this.features.metrics
+    }
+
+    private async checkForZeropod(): Promise<boolean> {
+        // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present. 
+        // But it does not check if the Zeropod controller is complete and running.
+        let enabled = false
+        try {
+            const nsList = await this.kubectl.getNamespaces()
+            for (const ns of nsList) {
+                if (ns.metadata?.name == 'zeropod-system') {
+                    enabled = true
+                }
+            }
+        } catch (error) {
+            this.logger.error('❌ getSleepEnabled: could not check for Zeropod')
+            return false
+        }
+        
+        return enabled
+    }
+
+    private async runFeatureCheck() {
+        //this.features.sleep = this.config.sleep.enabled;
+        this.features.sleep = await this.checkForZeropod()
+    }
+
+    public getSleepEnabled(): boolean {
+        return this.features.sleep
     }
 }

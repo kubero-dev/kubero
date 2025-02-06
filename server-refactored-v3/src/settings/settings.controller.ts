@@ -3,12 +3,21 @@ import { Controller, Get } from '@nestjs/common';
 import { SettingsService } from './settings.service';
 
 @Controller({ path: 'api/settings', version: '1' })
-@Controller('settings')
 export class SettingsController {
     constructor(private readonly settingsService: SettingsService) {}
 
     @Get('/')
     async getSettings() {
         return this.settingsService.getSettings();
+    }
+
+    @Get('/banner')
+    async getBanner() {
+        return this.settingsService.getBanner();
+    }
+
+    @Get('/domains')
+    async getDomains() {
+        return this.settingsService.getDomains();
     }
 }

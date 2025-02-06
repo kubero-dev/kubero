@@ -5,7 +5,6 @@ import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
-import { CommonModule } from './common/common.module';
 import { AppsModule } from './apps/apps.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
 import { VulnerabilitiesModule } from './vulnerabilities/vulnerabilities.module';
@@ -16,6 +15,7 @@ import { TemplatesModule } from './templates/templates.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
+import { CoreModule } from './core/core.module';
 
 
 @Module({
@@ -23,9 +23,9 @@ import { DeploymentsModule } from './deployments/deployments.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'dist', 'public'),
     }),
+    CoreModule,
     EventsModule,
     AuthModule,
-    CommonModule,
     AppsModule,
     PipelinesModule,
     VulnerabilitiesModule,

@@ -7,7 +7,7 @@ import {
 } from '../pipelines.interface';
 
 import { IBuildpack } from '../../settings/settings.interface';
-import { IKubectlMetadata } from '../../kubectl/kubectl.interface';
+import { IKubectlMetadata } from '../../kubernetes/kubernetes.interface';
 
 
 export class Pipeline implements IPipeline {

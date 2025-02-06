@@ -1,4 +1,4 @@
-import { Kubectl } from './kubectl';
+import { Kubectl } from './kubernetes.service';
 
 describe('Kubectl', () => {
   it('should be defined', () => {

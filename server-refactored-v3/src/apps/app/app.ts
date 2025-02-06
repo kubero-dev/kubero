@@ -5,7 +5,7 @@ import {
   IExtraVolume,
 } from '../apps.interface';
 
-import { IKubectlMetadata, IKubectlApp } from "../../kubectl/kubectl.interface";
+import { IKubectlMetadata, IKubectlApp } from "../../kubernetes/kubernetes.interface";
 import { IAddon } from '../../addons/addons.interface';
 import { ISecurityContext, IPodSize } from "../../settings/settings.interface"
 import { hashSync, genSaltSync } from 'bcrypt';

@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList} from './kubectl.interface';
+import { Global, Injectable, Logger } from '@nestjs/common';
+import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList} from './kubernetes.interface';
 import { IPipeline, } from '../pipelines/pipelines.interface';
 import { KubectlPipeline } from '../pipelines/pipeline/pipeline';
 import { KubectlApp, App } from '../apps/app/app';
@@ -103,7 +103,7 @@ export class Kubectl {
             return;
         }
 
-        this.getKubeVersion()
+        this.loadKubeVersion()
         .then(v => {
             if (v && v.gitVersion) {
                 this.logger.debug("ℹ️  Kube version: " + v.gitVersion);
@@ -118,14 +118,18 @@ export class Kubectl {
             //this.logger.debug(error);
         });
 
-        this.getOperatorVersion()
+        this.loadOperatorVersion()
         .then(v => {
             this.logger.debug("ℹ️  Operator version: " + v);
             this.kuberoOperatorVersion = v || 'unknown';
         })
     }
 
-    public async getKubeVersion(): Promise<VersionInfo | void>{
+    public getKubeVersion(): VersionInfo | void {
+        return this.kubeVersion;
+    }
+
+    public async loadKubeVersion(): Promise<VersionInfo | void>{
         // TODO and WARNING: This does not respect the context set by the user!
         try {
             let versionInfo = await this.versionApi.getCode()
@@ -137,7 +141,11 @@ export class Kubectl {
         }
     }
 
-    private async getOperatorVersion(): Promise<string | void> {
+    public getOperatorVersion(): string | undefined {
+        return this.kuberoOperatorVersion
+    }
+
+    private async loadOperatorVersion(): Promise<string | void> {
         const contextName = this.getCurrentContext();
         const namespace = "kubero-operator-system";
 

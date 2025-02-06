@@ -899,6 +899,7 @@ export class Kubero {
         return this.config.podSizeList;
     }
 
+    //Migrated to settings
     public getConsoleEnabled(){
         if (this.config.kubero?.console?.enabled == undefined) {
             return false;
@@ -906,10 +907,12 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    //Migrated to settings
     public setMetricsStatus(status: boolean) {
         this.features.metrics = status
     }
 
+    //Migrated to settings
     public getMetricsEnabled(): boolean{
         return this.features.metrics
     }
@@ -938,10 +941,12 @@ export class Kubero {
         });
     }
 */
+    //Migrated to settings
     public getBuildpipelineEnabled(){
         return process.env.KUBERO_BUILD_REGISTRY ? process.env.KUBERO_BUILD_REGISTRY != undefined : false
     }
 
+    //Migrated to settings
     private async checkForZeropod(): Promise<boolean> {
         // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present. 
         // But it does not check if the Zeropod controller is complete and running.
@@ -962,10 +967,12 @@ export class Kubero {
         return enabled
     }
 
+    //Migrated to settings
     public getSleepEnabled(): boolean {
         return this.features.sleep
     }
     
+    //migrated to settings
     public getAdminDisabled(){
         if (this.config.kubero?.admin?.disabled == undefined) {
             return false;
@@ -1468,6 +1475,7 @@ export class Kubero {
         return this.config.templates;
     }
 
+    //Migrated to settings
     public getTemplateEnabled() {
         return this.config.templates.enabled;
     }

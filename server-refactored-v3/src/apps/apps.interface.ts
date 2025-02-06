@@ -1,6 +1,6 @@
 import { IAddon } from "../addons/addons.interface"
 import { IPodSize, ISecurityContext } from "../settings/settings.interface"
-import { IKubectlMetadata } from "../kubectl/kubectl.interface"
+import { IKubectlMetadata } from "../kubernetes/kubernetes.interface"
 
 export interface IApp {
   name: string,
