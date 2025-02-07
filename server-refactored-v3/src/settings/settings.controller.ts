@@ -25,4 +25,10 @@ export class SettingsController {
     async getDomains() {
         return this.settingsService.getDomains();
     }
+
+    @ApiOperation({ summary: 'Get the templates settings' })
+    @Get('/templates')
+    async getTemplates() {
+        return this.settingsService.getTemplateConfig();
+    }
 }

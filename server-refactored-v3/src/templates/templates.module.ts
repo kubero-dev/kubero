@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { TemplatesController } from './templates.controller';
 
-@Module({})
+@Module({
+  controllers: [TemplatesController]
+})
 export class TemplatesModule {}

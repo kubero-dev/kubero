@@ -246,8 +246,11 @@ export class SettingsService {
     }
 
     getTemplateEnabled(){
-        console.log("runningConfig", this.runningConfig)
         return this.runningConfig.templates?.enabled || false
+    }
+
+    public async getTemplateConfig() {
+        return this.runningConfig.templates
     }
 
     getConsoleEnabled(){
