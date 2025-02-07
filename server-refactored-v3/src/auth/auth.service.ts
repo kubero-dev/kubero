@@ -1,13 +1,13 @@
 import { Injectable, Request } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { Kubectl } from '../kubernetes/kubernetes.service';
+import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { SettingsService } from '../settings/settings.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private kubectl: Kubectl,
+    private kubectl: KubernetesService,
     private settingsService: SettingsService
   ) {}
 

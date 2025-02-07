@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IKuberoConfig } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
-import { Kubectl } from '../kubernetes/kubernetes.service';
+import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
@@ -26,8 +26,11 @@ export class SettingsService {
         */
     }
 
-    constructor(private readonly kubectl: Kubectl) {
+    constructor(
+        private readonly kubectl: KubernetesService,
+    ) {
         this.reloadRunningConfig()
+        this.runFeatureCheck()
     }
 
     // Load settings from a file or from kubernetes

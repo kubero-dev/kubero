@@ -36,7 +36,7 @@ import stream from 'stream';
 import internal from 'stream';
 
 @Injectable()
-export class Kubectl {
+export class KubernetesService {
     private kc: KubeConfig;
     private versionApi: VersionApi = {} as VersionApi;
     private coreV1Api: CoreV1Api = {} as CoreV1Api;
@@ -52,7 +52,7 @@ export class Kubectl {
     public log: KubeLog;
     //public config: IKuberoConfig;
     private exec: Exec = {} as Exec;
-    private readonly logger = new Logger(Kubectl.name);
+    private readonly logger = new Logger(KubernetesService.name);
 
     constructor() {
         this.kc = new KubeConfig();

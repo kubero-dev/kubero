@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
-import { Kubectl } from '../kubernetes/kubernetes.service';
+import { KubernetesModule  } from '../kubernetes/kubernetes.module';
 
 @Module({
   controllers: [SettingsController],
-  providers: [SettingsService, Kubectl]
+  providers: [SettingsService, KubernetesModule],
 })
 export class SettingsModule {}

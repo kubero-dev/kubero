@@ -16,6 +16,7 @@ import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
 import { CoreModule } from './core/core.module';
+import { KubernetesModule } from './kubernetes/kubernetes.module';
 
 
 @Module({
@@ -36,6 +37,7 @@ import { CoreModule } from './core/core.module';
     MetricsModule,
     LogsModule,
     DeploymentsModule,
+    KubernetesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
