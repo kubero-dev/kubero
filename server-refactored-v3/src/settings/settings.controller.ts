@@ -31,4 +31,33 @@ export class SettingsController {
     async getTemplates() {
         return this.settingsService.getTemplateConfig();
     }
+
+    // TODO: Move to kubernetes module
+    @ApiOperation({ summary: 'Get available contexts' })
+    @Get('/contexts')
+    async getContexts() {
+        return this.settingsService.getContexts();
+    }
+
+    @ApiOperation({ summary: 'Get the registry settings' })
+    @Get('/registry')
+    async getRegistry() {
+        return this.settingsService.getRegistry();
+    }
+
+    @ApiOperation({ summary: 'List runpacks' })
+    @Get('/runpacks')
+    async getRunpacks() {
+        return this.settingsService.getRunpacks();
+    }
+/*
+    @Get('/clusterissuer')
+    async getClusterIssuer() {
+        return this.settingsService.getClusterIssuer();
+    }
+    @Get('/buildpacks')
+    async getBuildpacks() {
+        return this.settingsService.getBuildpacks();
+    }
+*/
 }

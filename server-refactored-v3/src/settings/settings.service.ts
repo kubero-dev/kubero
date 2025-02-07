@@ -1,10 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKuberoCRD, IKuberoConfig } from './settings.interface';
+import { IKuberoCRD, IKuberoConfig, IRegistry } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
+import { Context } from '@kubernetes/client-node';
 
 @Injectable()
 export class SettingsService {
@@ -36,15 +37,20 @@ export class SettingsService {
     // Load settings from a file or from kubernetes
     async getSettings(): Promise<KuberoConfig> {
 
-        
         if (this.checkAdminDisabled()) {
             return new KuberoConfig(new Object() as IKuberoConfig)
         }
         
-        const oo = await this.readConfig()
-        const configMap = new KuberoConfig(oo)
+        // TODO: This might fail with a local filesystem config
         let config: any = {}
-        config.settings = configMap
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        config.settings = kuberoes.spec
+        /*
+        const kuberoconfig = await this.readConfig()
+        config.settings = new KuberoConfig(kuberoconfig)
+        */
+
 
         config["secrets"] = {
             GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
@@ -288,11 +294,31 @@ export class SettingsService {
     }
 
     private async runFeatureCheck() {
-        //this.features.sleep = this.config.sleep.enabled;
         this.features.sleep = await this.checkForZeropod()
     }
 
     public getSleepEnabled(): boolean {
         return this.features.sleep
     }
+
+    public getContexts(): Context[] {
+        return this.kubectl.getContexts()
+    }
+
+    public async getRegistry(): Promise<IRegistry> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        return kuberoes.spec.registry
+    }
+
+    public getRunpacks(): any[] {
+        return this.runningConfig.buildpacks || []
+    }
+/*
+    public async getClusterIssuer(): Promise<string> {
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        const kuberoes = await this.kubectl.getClusterIssuer(namespace)
+        return kuberoes.kubero.config.clusterissuer
+    }
+*/
 }

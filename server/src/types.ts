@@ -443,6 +443,7 @@ export interface IKuberoConfig {
     }
 }
 
+//Migrated to repo
 export interface IDeployKeyPair {
     fingerprint: string;
     pubKey: string;

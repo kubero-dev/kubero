@@ -1194,6 +1194,7 @@ export class Kubero {
         return loglines;
     }
 
+    //Migration to repo
     public getRepositories() {
         let repositories = {
             github: false,

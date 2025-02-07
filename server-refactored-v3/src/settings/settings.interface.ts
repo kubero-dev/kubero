@@ -144,3 +144,19 @@ export interface ISecurityContext {
         add: string[];
     }
 }
+
+export type IRegistry = {
+    account: {
+      hash: string
+      password: string
+      username: string
+    }
+    create: boolean
+    enabled: boolean
+    host: string
+    port: number
+    storage: string
+    storageClassName: any
+    subpath: string
+}
+  
