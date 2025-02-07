@@ -22,7 +22,6 @@ export class AuditService {
         Logger.log('⏸️ Audit logging not enabled', 'Feature');
         return;
     }
-
     this.init()
   }
 
@@ -44,6 +43,21 @@ export class AuditService {
           }
           Logger.log('✅ Audit logging enabled', 'Feature');
           this.createTables();
+
+          const auditEntry: AuditEntry = {
+              user: 'kubero',
+              severity: 'normal',
+              action: 'start',
+              namespace: '',
+              phase: '',
+              app: '',
+              pipeline: '',
+              resource: 'system',
+              message: 'server started',
+          }
+
+          this.log(auditEntry);
+
       });
   }
 
@@ -105,10 +119,10 @@ export class AuditService {
       this.limit(this.logmaxbackups);
   }
 
-  public get(limit: number = 100): Promise<AuditEntry[]> {
+  public get(limit: number = 100): Promise<{audit: AuditEntry[], count: number, limit: number}> {
       if (!this.enabled) {
           return new Promise((resolve) => {
-              resolve([]);
+              resolve({audit: [], count: 0, limit: limit});
           });
       }
       return new Promise((resolve, reject) => {
@@ -116,7 +130,7 @@ export class AuditService {
               if (err) {
                   reject(err);
               }
-              resolve(rows as AuditEntry[]);
+              resolve({audit: rows as AuditEntry[], count: rows.length, limit: limit});
           });
       });
   }

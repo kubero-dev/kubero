@@ -18,7 +18,7 @@ export class AuditController {
   }
 
   @ApiOperation({ summary: 'Get all audit entries' })
-  @Get('/all')
+  @Get('/')
   async getAuditAll(
     @Query('limit', new DefaultValuePipe('100'), new ParseIntPipe({ optional: true })) limit: number,
   ) {
