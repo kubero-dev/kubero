@@ -1,4 +1,4 @@
-import { Global, Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList} from './kubernetes.interface';
 import { IPipeline, } from '../pipelines/pipelines.interface';
 import { KubectlPipeline } from '../pipelines/pipeline/pipeline';
@@ -127,6 +127,10 @@ export class KubernetesService {
 
     public getKubeVersion(): VersionInfo | void {
         return this.kubeVersion;
+    }
+
+    public getKubernetesVersion(): string {
+        return this.kubeVersion?.gitVersion || 'unknown';
     }
 
     public async loadKubeVersion(): Promise<VersionInfo | void>{

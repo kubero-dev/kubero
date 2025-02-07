@@ -257,7 +257,7 @@ export class Kubero {
         this.notification.send(m, this._io);
     }
 
-
+    //Migrated to pipelines
     public async listPipelines(): Promise<IPipelineList> {
         debug.debug('listPipelines');
         let pipelines = await this.kubectl.getPipelinesList();

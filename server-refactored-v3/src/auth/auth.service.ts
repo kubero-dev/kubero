@@ -2,13 +2,15 @@ import { Injectable, Request } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { SettingsService } from '../settings/settings.service';
+import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private kubectl: KubernetesService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private auditService: AuditService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -36,11 +38,11 @@ export class AuthService {
     let message = {
         "isAuthenticated": isAuthenticated,
         "version": process.env.npm_package_version,
-        "kubernetesVersion": this.kubectl.getKubeVersion(),
+        "kubernetesVersion": this.kubectl.getKubernetesVersion(),
         "operatorVersion": this.kubectl.getOperatorVersion(),
         "buildPipeline": this.settingsService.getBuildpipelineEnabled(),
         "templatesEnabled": this.settingsService.getTemplateEnabled(),
-        //"auditEnabled": req.app.locals.audit.getAuditEnabled(),
+        "auditEnabled": this.auditService.getAuditEnabled(),
         "adminDisabled": this.settingsService.checkAdminDisabled(),
         "consoleEnabled": this.settingsService.getConsoleEnabled(),
         "metricsEnabled": this.settingsService.getMetricsEnabled(),

@@ -1,10 +1,10 @@
 {
-
   "name": "kubero",
   "description": "Heroku clone on Kubernetes",
   "main": "index.js",
   "author": "Gianni Carafa",
   "license": "GPL-3.0",
+  "version": "dev",
   "private": true,
   "scripts": {
     "build": "nest build",
@@ -32,6 +32,7 @@
     "@nestjs/swagger": "^11.0.3",
     "@nestjs/websockets": "^11.0.7",
     "@types/bcrypt": "^5.0.2",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "passport": "^0.7.0",

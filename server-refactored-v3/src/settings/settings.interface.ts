@@ -33,6 +33,42 @@ export interface IKuberoConfig {
     }
 }
 
+export type IKuberoCRD = {
+    kubero: {
+      debug: string
+      namespace: string
+      context: string
+      webhook_url: string
+      auth: {
+        github: {
+          enabled: boolean
+          id: string
+          callbackUrl: string
+          org: string
+        }
+        oauth2: {
+          enabled: boolean
+          name: string
+          id: string
+          authUrl: string
+          tokenUrl: string
+          secret: string
+          callbackUrl: string
+          scope: string
+        }
+      }
+      auditLogs: {
+        enabled: boolean
+        storageClassName: any
+        accessModes: Array<string>
+        size: string
+        limit: number
+      }
+      config: IKuberoConfig
+    }
+  }
+ 
+
 interface INotificationConfig{
     enabled: boolean;
     name: string;

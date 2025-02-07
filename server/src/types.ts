@@ -241,6 +241,7 @@ export interface IgitLink {
     webhook: object;
 }
 
+//Migrated to pipelines
 export interface IPipelineList {
     items: IPipeline[],
 }

@@ -13,9 +13,9 @@ export class CustomConsoleLogger extends ConsoleLogger {
     'InstanceLoader',
     'RoutesResolver',
     'RouterExplorer',
-    //'NestFactory', // I prefer not including this one
-    //'NestApplication',
-    //'WebSocketsController',
+    'NestFactory',
+    'NestApplication',
+    'WebSocketsController',
   ]
 
   log(_: any, context?: string): void {

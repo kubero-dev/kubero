@@ -17,6 +17,8 @@ import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
 import { CoreModule } from './core/core.module';
 import { KubernetesModule } from './kubernetes/kubernetes.module';
+import { AuditModule } from './audit/audit.module';
+import { AddonsModule } from './addons/addons.module';
 
 
 @Module({
@@ -38,6 +40,8 @@ import { KubernetesModule } from './kubernetes/kubernetes.module';
     LogsModule,
     DeploymentsModule,
     KubernetesModule,
+    AuditModule,
+    AddonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

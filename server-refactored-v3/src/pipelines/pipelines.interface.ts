@@ -15,6 +15,11 @@ export interface IPipeline {
   buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks',
   resourceVersion?: string; // required to update resource, not part of spec
 }
+
+export interface IPipelineList {
+  items: IPipeline[],
+}
+
 export interface IgitLink {
   keys: {
       priv?: string,

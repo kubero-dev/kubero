@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKuberoConfig } from './settings.interface';
+import { IKuberoCRD, IKuberoConfig } from './settings.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
@@ -41,7 +41,8 @@ export class SettingsService {
             return new KuberoConfig(new Object() as IKuberoConfig)
         }
         
-        const configMap = new KuberoConfig(await this.readConfig())
+        const oo = await this.readConfig()
+        const configMap = new KuberoConfig(oo)
         let config: any = {}
         config.settings = configMap
 
@@ -63,10 +64,9 @@ export class SettingsService {
     }
     
     private reloadRunningConfig(): void {
-       
-        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        this.kubectl.getKuberoConfig(namespace).then((kuberoes) => {
-            this.runningConfig = kuberoes.spec
+        this.readConfig().then((config) => {
+            this.logger.debug('Kubero config loaded')
+            this.runningConfig = config
         }).catch((error) => {
             this.logger.error('Error reading kuberoes config')
             this.logger.error(error)
@@ -74,19 +74,20 @@ export class SettingsService {
     }
 
     private async readConfig(): Promise<IKuberoConfig> {
-
         if (process.env.NODE_ENV === "production") {
-            return await this.readConfigFromKubernetes()
+            const kuberoCRD = await this.readConfigFromKubernetes()
+            return kuberoCRD.kubero.config
         } else {
+            console.log("aaaa", this.readConfigFromFS())
             return this.readConfigFromFS()
         }
     }
 
 
-    private async readConfigFromKubernetes(): Promise<any> {
+    private async readConfigFromKubernetes(): Promise<IKuberoCRD> {
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)
-        return kuberoes.spec.kubero.config
+        return kuberoes.spec
     }
 
     private readConfigFromFS(): IKuberoConfig {
@@ -136,7 +137,7 @@ export class SettingsService {
             const kuberoes = await this.kubectl.getKuberoConfig(namespace)
             registry = kuberoes.spec.registry
         } catch (error) {
-            console.log("Error getting kuberoes config")
+            this.logger.error("Error getting kuberoes config")
         }
         return registry
     }
@@ -245,6 +246,7 @@ export class SettingsService {
     }
 
     getTemplateEnabled(){
+        console.log("runningConfig", this.runningConfig)
         return this.runningConfig.templates?.enabled || false
     }
 

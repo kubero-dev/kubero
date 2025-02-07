@@ -35,7 +35,7 @@ export default defineComponent({
         checkSession() {
             if (this.$route.name != 'Login') {
                 axios
-                    .get("/api/session")
+                    .get("/api/auth/session")
                     .then((result) => {
                         console.log("isAuthenticated: " + result.data.isAuthenticated);
 
