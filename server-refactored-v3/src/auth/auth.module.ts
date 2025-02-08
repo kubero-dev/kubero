@@ -6,11 +6,11 @@ import { SettingsService } from '../settings/settings.service';
 import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
-import { AuditService } from 'src/audit/audit.service';
+import { AuditModule } from 'src/audit/audit.module';
 
 @Module({
   imports: [UsersModule, PassportModule ],
-  providers: [AuthService, LocalStrategy, KubernetesModule, AuditService, SettingsService],
+  providers: [AuthService, LocalStrategy, KubernetesModule, AuditModule, SettingsService],
   controllers: [AuthController],
 })
 export class AuthModule {}

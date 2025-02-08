@@ -8,6 +8,7 @@ debug('app:kubero:bitbucket:api')
 //const { Octokit } = require("@octokit/core");
 import { Bitbucket, APIClient } from "bitbucket"
 import { RequestError } from '@octokit/types';
+import { Logger } from '@nestjs/common';
 
 export class BitbucketApi extends Repo {
     private bitbucket: APIClient;
@@ -22,10 +23,11 @@ export class BitbucketApi extends Repo {
         }
 
         if (process.env.BITBUCKET_USERNAME && process.env.BITBUCKET_APP_PASSWORD) {
+            Logger.log('✅  BitBucket enabled', 'Feature');
             this.bitbucket = new Bitbucket(clientOptions)
         } else {
             this.bitbucket = new Bitbucket()
-            console.log("☑️  Feature: BitBucket disabled: No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set")
+            Logger.log("☑️ BitBucket disabled: No BITBUCKET_USERNAME or BITBUCKET_APP_PASSWORD set", 'Feature');
         }
     }
 

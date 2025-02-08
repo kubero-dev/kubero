@@ -24,4 +24,8 @@ export class EventsGateway {
   findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
       return from([1, 2, 3]).pipe(map(item => ({ event: 'events', data: item })));
   }
+
+  sendEvent(event: string, data: any) {
+    this.server.emit(event, data);
+  }
 }

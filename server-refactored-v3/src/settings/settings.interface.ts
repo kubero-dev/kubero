@@ -1,3 +1,4 @@
+import { INotificationConfig } from '../notifications/notifications.interface';
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
@@ -68,30 +69,6 @@ export type IKuberoCRD = {
     }
   }
  
-
-interface INotificationConfig{
-    enabled: boolean;
-    name: string;
-    type: 'slack' | 'webhook' | 'discord',
-    pipelines: string[],
-    events: string[],
-    config: INotificationSlack | INotificationWebhook | INotificationDiscord;
-}
-
-interface INotificationSlack {
-    url: string;
-    channel: string;
-}
-
-interface INotificationWebhook {
-    url: string;
-    secret: string;
-}
-
-interface INotificationDiscord {
-    url: string;
-}
-
 export interface IPodSize {
     name: string;
     description: string,

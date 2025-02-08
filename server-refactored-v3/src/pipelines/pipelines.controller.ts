@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post, Put } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
@@ -19,10 +19,12 @@ export class PipelinesController {
     return 'Pipeline updated';
   }
 
-  @ApiOperation({ summary: 'Get a pipeline' })
+  @ApiOperation({ summary: 'Get a soecific pipeline' })
   @Get('/:pipeline')
-  async getPipeline() {
-    return 'Pipeline';
+  async getPipeline(
+    @Param('pipeline') pipeline: string,
+  ) {
+    return this.pipelinesService.getPipeline(pipeline);
   }
 
   @ApiOperation({ summary: 'Update a pipeline' })
@@ -39,7 +41,9 @@ export class PipelinesController {
 
   @ApiOperation({ summary: 'Get all apps for a pipeline' })
   @Get('/:pipeline/apps')
-  async getPipelineApps() {
-    return 'Pipeline apps';
+  async getPipelineApps(
+    @Param('pipeline') pipeline: string,
+  ) {
+    return this.pipelinesService.getPipelineWithApps(pipeline);
   }
 }

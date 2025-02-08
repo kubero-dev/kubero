@@ -5,6 +5,7 @@ import { AuditController } from './audit.controller';
 @Global()
 @Module({
   providers: [AuditService],
-  controllers: [AuditController]
+  controllers: [AuditController],
+  exports: [AuditService],
 })
 export class AuditModule {}

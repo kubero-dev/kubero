@@ -366,23 +366,24 @@ export interface IBuildpack {
     tag: string;
 }
 
-//Migrated to settings
+//Migrated to notifications
 export interface INotificationSlack {
     url: string;
     channel: string;
 }
 
-//Migrated to settings
+//Migrated to notifications
 export interface INotificationWebhook {
     url: string;
     secret: string;
 }
 
-//Migrated to settings
+//Migrated to notifications
 export interface INotificationDiscord {
     url: string;
 }
 
+//Not used!!
 export interface INotification {
     action: string;
     user: string;
@@ -395,7 +396,7 @@ export interface INotification {
     message: string;
 }
 
-//Migrated to settings
+//Migrated to notifications
 export interface INotificationConfig{
     enabled: boolean;
     name: string;

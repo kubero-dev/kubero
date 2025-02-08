@@ -297,6 +297,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to pipelines
     // delete a pipeline and all its namespaces/phases
     public deletePipeline(pipelineName: string, user: User) {
         debug.debug('deletePipeline: '+pipelineName);

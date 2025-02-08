@@ -19,6 +19,7 @@ import { CoreModule } from './core/core.module';
 import { KubernetesModule } from './kubernetes/kubernetes.module';
 import { AuditModule } from './audit/audit.module';
 import { AddonsModule } from './addons/addons.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 
 @Module({
@@ -42,6 +43,7 @@ import { AddonsModule } from './addons/addons.module';
     KubernetesModule,
     AuditModule,
     AddonsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -6,6 +6,7 @@ import { Repo } from './repo';
 import {Client as GitlabClient} from '@nerdvision/gitlab-js';
 import {Options} from 'got';
 import gitUrlParse = require("git-url-parse");
+import { Logger } from '@nestjs/common';
 
 
 export class GitlabApi extends Repo {
@@ -21,9 +22,9 @@ export class GitlabApi extends Repo {
         const host = baseURL || 'https://gitlab.com';
         
         if (token == undefined) {
-            console.log('☑️  Feature: Gitlab not configured (no token)');
+            Logger.log('☑️  Feature: Gitlab not configured (no token)', 'Feature');
         } else {
-            console.log('✅ Feature: Gitlab configured: '+host);
+            Logger.log('✅ Feature: Gitlab configured: '+host, 'Feature');
         }
 
         this.gitlab = new GitlabClient({
