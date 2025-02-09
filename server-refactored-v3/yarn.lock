@@ -2274,7 +2274,7 @@ aws4@^1.8.0:
   resolved "https://registry.yarnpkg.com/aws4/-/aws4-1.13.2.tgz#0aa167216965ac9474ccfa83892cfb6b3e1e52ef"
   integrity sha512-lHe62zvbTB5eEABUVi/AwVh0ZKY9rMMDhmm+eeyuuUQbQ3+J+fONVQOZyj+DdrvD4BY33uYniyRJ4UJIaSKAfw==
 
-axios@^1.7.9:
+axios@^1.6.0, axios@^1.7.9:
   version "1.7.9"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.9.tgz#d7d071380c132a24accda1b2cfc1535b79ec650a"
   integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
@@ -5608,6 +5608,13 @@ process-nextick-args@~2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
+
+prometheus-query@^3.4.1:
+  version "3.4.1"
+  resolved "https://registry.yarnpkg.com/prometheus-query/-/prometheus-query-3.4.1.tgz#1846b7dc26702d5e5fa53d862482b4ddbffa2345"
+  integrity sha512-OwktfrdZ4m35j7SJXmWq/Dwl9K63g+rNjCy9oUJo5CVsaiTh+hOOryWaSSzthPkgUmFn580/tdM9DUd9KsxjFg==
+  dependencies:
+    axios "^1.6.0"
 
 prompts@^2.0.1:
   version "2.4.2"

@@ -1313,6 +1313,7 @@ export class Kubero {
         };
     }
 
+    //Migration to security
     public async getScanResult(pipeline: string, phase: string, appName: string, logdetails: boolean) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;
@@ -1371,6 +1372,7 @@ export class Kubero {
         return scanResult;
     }
 
+    //Migration to security
     private getVulnSummary(logs: any) {
         let summary = {
             total: 0,

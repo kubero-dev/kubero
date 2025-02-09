@@ -12,13 +12,11 @@ export class PipelinesService {
   constructor(private kubectl: KubernetesService) {}
 
   public async listPipelines(): Promise<IPipelineList> {
-    this.logger.debug('listPipelines');
     let pipelines = await this.kubectl.getPipelinesList();
     const ret: IPipelineList = {
       items: new Array()
     }
     for (const pipeline of pipelines.items) {
-      this.logger.debug('listed pipeline: '+pipeline.spec.name);
       ret.items.push(pipeline.spec);
     }
     return ret;

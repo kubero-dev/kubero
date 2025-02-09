@@ -115,7 +115,7 @@ export class RepoService {
       }
   }
 
-  public async listRepoBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
+  public async listBranches(repoProvider: string, repoB64: string ): Promise<string[]> {
       //return this.git.listRepoBranches(repo, repoProvider);
       let branches: Promise<string[]> = new Promise((resolve, reject) => {
           resolve([]);
@@ -147,7 +147,7 @@ export class RepoService {
       return branches
   }
 
-  public async listRepoPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
+  public async listPullrequests(repoProvider: string, repoB64: string ): Promise<IPullrequest[]> {
       //return this.git.listRepoBranches(repo, repoProvider);
       let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
           resolve([]);

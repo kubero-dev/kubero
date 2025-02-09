@@ -21,4 +21,31 @@ export class RepoController {
   ) {
     return this.repoService.listRepositoriesByProvider(provider);
   }
+
+  @ApiOperation({ summary: 'Get a list of available branches' })
+  @Get('/:provider/:gitrepob64/branches')
+  async listBranches(
+    @Param('provider') provider: string,
+    @Param('gitrepob64') gitrepob64: string,
+  ) {
+    return this.repoService.listBranches(provider, gitrepob64);
+  }
+
+  @ApiOperation({ summary: 'Get a list of available Pull requests' })
+  @Get('/:provider/:gitrepob64/pullrequests')
+  async listPullRequests(
+    @Param('provider') provider: string,
+    @Param('gitrepob64') gitrepob64: string,
+  ) {
+    return this.repoService.listPullrequests(provider, gitrepob64);
+  }
+
+  @ApiOperation({ summary: 'Get a list of all available references' })
+  @Get('/:provider/:gitrepob64/references')
+  async listReferences(
+    @Param('provider') provider: string,
+    @Param('gitrepob64') gitrepob64: string,
+  ) {
+    return this.repoService.listReferences(provider, gitrepob64);
+  }
 }

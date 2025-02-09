@@ -5,7 +5,6 @@ import { Repo } from './repo';
 import gitUrlParse = require("git-url-parse");
 debug('app:kubero:bitbucket:api')
 
-//const { Octokit } = require("@octokit/core");
 import { Bitbucket, APIClient } from "bitbucket"
 import { RequestError } from '@octokit/types';
 import { Logger } from '@nestjs/common';
@@ -15,7 +14,8 @@ export class BitbucketApi extends Repo {
 
     constructor(username: string, appPassword: string) {
         super("bitbucket");
-        const clientOptions = {
+        let clientOptions = {
+            notice: false,
             auth: {
                 username: username,
                 password: appPassword

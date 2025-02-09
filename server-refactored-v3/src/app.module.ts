@@ -7,7 +7,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
 import { AppsModule } from './apps/apps.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
-import { VulnerabilitiesModule } from './vulnerabilities/vulnerabilities.module';
 import { ConfigModule } from './config/config.module';
 import { RepoModule } from './repo/repo.module';
 import { SettingsModule } from './settings/settings.module';
@@ -20,6 +19,7 @@ import { KubernetesModule } from './kubernetes/kubernetes.module';
 import { AuditModule } from './audit/audit.module';
 import { AddonsModule } from './addons/addons.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { SecurityModule } from './security/security.module';
 
 
 @Module({
@@ -32,7 +32,6 @@ import { NotificationsModule } from './notifications/notifications.module';
     AuthModule,
     AppsModule,
     PipelinesModule,
-    VulnerabilitiesModule,
     ConfigModule,
     RepoModule,
     SettingsModule,
@@ -44,6 +43,7 @@ import { NotificationsModule } from './notifications/notifications.module';
     AuditModule,
     AddonsModule,
     NotificationsModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [AppService],
