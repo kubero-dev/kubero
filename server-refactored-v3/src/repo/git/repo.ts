@@ -119,8 +119,8 @@ export abstract class Repo {
     }
 
     protected parseRepo(gitrepo: string): {owner: string, repo: string} {
-        let owner = gitrepo.match(/^git@.*:(.*)\/.*$/)?.[1] as string;
-        let repo = gitrepo.match(/^git@.*:.*\/(.*).git$/)?.[1] as string;
+        let owner = gitrepo.match(/^git@.{0,100}:(.{0,100})\/.{0,100}$/)?.[1] as string;
+        let repo = gitrepo.match(/^git@.{0,100}:.{0,100}\/(.{0,100}).git$/)?.[1] as string;
         return { owner: owner, repo: repo };
     }
 
