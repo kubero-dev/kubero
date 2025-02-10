@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { KubernetesService } from './kubernetes.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
+import { StorageClassDTO } from './kubernetes.dto';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {
@@ -8,21 +9,32 @@ export class KubernetesController {
     private readonly kubernetesService: KubernetesService
   ) {}
 
+  @ApiResponse({ status: 200, description: 'List of available contexts' })
   @ApiOperation({ summary: 'Get the Kubernetes events in a specific namespace' })
   @Get('events')
   async getEvents(@Query('namespace') namespace: string) {
     return this.kubernetesService.getEvents(namespace);
   }
 
+  @ApiOkResponse({
+    description: 'A List of available contexts',
+    type: StorageClassDTO,
+    isArray: true
+  })
   @ApiOperation({ summary: 'Get the available storage classes' })
   @Get('storageclasses')
-  async getStorageClasses() {
+  async getStorageClasses(): Promise<StorageClassDTO[]> {
     return this.kubernetesService.getStorageClasses();
   }
 
+  @ApiOkResponse({
+      description: 'Already taken domains',
+      type: [String],
+      isArray: true
+  })
   @ApiOperation({ summary: 'Get a list of allredy taken domains on this Kubernets cluster' })
   @Get('domains')
-  async getDomains() {
+  async getDomains(): Promise<string[]> {
     return this.kubernetesService.getDomains();
   }
 

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList, IKubectlApp} from './kubernetes.interface';
+import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList, IKubectlApp, IStorageClass} from './kubernetes.interface';
 import { IPipeline, } from '../pipelines/pipelines.interface';
 import { KubectlPipeline } from '../pipelines/pipeline/pipeline';
 import { KubectlApp, App } from '../apps/app/app';
@@ -721,8 +721,8 @@ export class KubernetesService {
         
     }
     
-    public async getStorageClasses(): Promise<Object[]> {
-        let ret: { name: string | undefined; provisioner: string; reclaimPolicy: string | undefined; volumeBindingMode: string | undefined; }[] = [];
+    public async getStorageClasses(): Promise<IStorageClass[]> {
+        let ret: IStorageClass[] = [];
         try {
             const storageClasses = await this.storageV1Api.listStorageClass();
             for (let i = 0; i < storageClasses.body.items.length; i++) {
@@ -734,7 +734,7 @@ export class KubernetesService {
                     volumeBindingMode: sc.volumeBindingMode,
                     //allowVolumeExpansion: sc.allowVolumeExpansion,
                     //parameters: sc.parameters
-                }
+                } as IStorageClass;
                 ret.push(storageClass);
             }
         } catch (error) {

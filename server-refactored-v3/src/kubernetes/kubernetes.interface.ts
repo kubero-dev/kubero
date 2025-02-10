@@ -48,3 +48,11 @@ export interface IKubectlApp
   spec: IApp ;
 }
 
+export interface IStorageClass {
+  name: string;
+  provisioner: string;
+  reclaimPolicy: string;
+  volumeBindingMode: string;
+  //allowVolumeExpansion: boolean;
+  //mountOptions: string[];
+}
