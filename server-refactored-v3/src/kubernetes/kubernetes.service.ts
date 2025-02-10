@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList} from './kubernetes.interface';
+import { IKubectlPipelineList, IKubectlPipeline, IKubectlAppList, IKubectlApp} from './kubernetes.interface';
 import { IPipeline, } from '../pipelines/pipelines.interface';
 import { KubectlPipeline } from '../pipelines/pipeline/pipeline';
 import { KubectlApp, App } from '../apps/app/app';
@@ -34,6 +34,7 @@ import {
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
+import { IKuberoConfig, IKuberoCRD } from 'src/settings/settings.interface';
 
 @Injectable()
 export class KubernetesService {
@@ -341,7 +342,7 @@ export class KubernetesService {
         })
     }
 
-    public async getApp(pipelineName: string, phaseName: string, appName: string, context: string) {
+    public async getApp(pipelineName: string, phaseName: string, appName: string, context: string): Promise<IKubectlApp> {
 
         let namespace = pipelineName+'-'+phaseName;
         this.kc.setCurrentContext(context);
@@ -356,7 +357,11 @@ export class KubernetesService {
             this.logger.debug(error);
         })
 
-        return app;
+        if (app) {
+            return app.body as IKubectlApp;
+        } else {
+            return {} as IKubectlApp;
+        }
     }
 
     public async getAppsList(namespace: string, context: string): Promise<IKubectlAppList> {
@@ -716,7 +721,7 @@ export class KubernetesService {
         
     }
     
-    public async getStorageglasses(): Promise<Object[]> {
+    public async getStorageClasses(): Promise<Object[]> {
         let ret: { name: string | undefined; provisioner: string; reclaimPolicy: string | undefined; volumeBindingMode: string | undefined; }[] = [];
         try {
             const storageClasses = await this.storageV1Api.listStorageClass();
@@ -1000,6 +1005,17 @@ export class KubernetesService {
         return ingresses.body.items;
     }
 
+    public async getDomains(): Promise<any> {
+        let allIngress = await this.getAllIngress()
+        let domains: string[] = []
+        allIngress.forEach((ingress: any) => {
+            ingress.spec.rules.forEach((rule: any) => {
+                domains.push(rule.host)
+            })
+        })
+        return domains
+    }
+
     public async execInContainer(namespace: string, podName: string, containerName: string, command: string, stdin: internal.PassThrough): Promise<WebSocket> {
         //const command = ['ls', '-al', '.']
         //const command = ['bash']
@@ -1017,7 +1033,7 @@ export class KubernetesService {
         return ws
     }
 
-    public async getKuberoConfig(namespace: string): Promise<any> {
+    public async getKuberoConfig(namespace: string): Promise<any | void> {
         try {
             const config = await this.customObjectsApi.getNamespacedCustomObject(
                 'application.kubero.dev',
@@ -1027,7 +1043,7 @@ export class KubernetesService {
                 'kubero'
             )
             //console.log(config.body);
-            return config.body;
+            return config.body as any;
         } catch (error) {
             //this.logger.debug(error);
             this.logger.debug("getKuberoConfig: error getting config");

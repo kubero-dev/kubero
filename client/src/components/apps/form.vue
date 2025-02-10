@@ -1874,7 +1874,7 @@ export default defineComponent({
         return domainsList;
       },
       getDomains() {
-        axios.get('/api/domains').then(response => {
+        axios.get('/api/kubernetes/domains').then(response => {
           this.takenDomains = this.whiteListDomains(response.data);
         });
       },
@@ -1893,8 +1893,8 @@ export default defineComponent({
         }
       },
       loadClusterIssuers(){
-        axios.get('/api/config/clusterissuers').then(response => {
-          this.letsecryptClusterIssuer = response.data.id;
+        axios.get('/api/settings/clusterissuer').then(response => {
+          this.letsecryptClusterIssuer = response.data.clusterissuer;
         });
       },
       loadTemplate(template: string) {
@@ -2029,7 +2029,7 @@ export default defineComponent({
         });
       },
       loadStorageClasses() {
-        axios.get('/api/config/storageclasses').then(response => {
+        axios.get('/api/kubernetes/storageclasses').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.storageclasses.push(response.data[i].name);
           }
@@ -2046,7 +2046,7 @@ export default defineComponent({
         const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
         const gitprovider = this.pipelineData.git.provider;
 
-        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches").then(response => {
           if (response.data.length === 0) {
             return;
           }
@@ -2067,7 +2067,7 @@ export default defineComponent({
 
 
       loadPodsizeList() {
-        axios.get('/api/config/podsize').then(response => {
+        axios.get('/api/settings/podsizes').then(response => {
           if (response.data.length > 0 && this.app == 'new') {
             this.podsize = response.data[0];
           }
@@ -2086,7 +2086,7 @@ export default defineComponent({
       },
 
       loadBuildpacks() {
-        axios.get('/api/config/buildpacks').then(response => {
+        axios.get('/api/settings/buildpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpacks.push({
               text: response.data[i].name,
@@ -2101,7 +2101,7 @@ export default defineComponent({
       },
 
       deleteApp() {
-        axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
+        axios.delete(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`)
           .then(() => {
             // wait for 1 second and redirect to apps page
             // this avoids a race condition with the backend
@@ -2115,7 +2115,7 @@ export default defineComponent({
       },
       loadApp() {
         if (this.app !== 'new') {
-          axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
+          axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
             this.resourceVersion = response.data.resourceVersion;
 
             // Open Panel if there is some data to show
@@ -2325,7 +2325,7 @@ export default defineComponent({
           postdata.image.run.securityContext.runAsGroup = parseInt(postdata.image.run.securityContext.runAsGroup);
         }
 
-        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        axios.put(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);

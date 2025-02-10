@@ -20,12 +20,6 @@ export class SettingsController {
         return this.settingsService.getBanner();
     }
 
-    @ApiOperation({ summary: 'Get a list of allredy taken domains on this Kubernets cluster' })
-    @Get('/domains')
-    async getDomains() {
-        return this.settingsService.getDomains();
-    }
-
     @ApiOperation({ summary: 'Get the templates settings' })
     @Get('/templates')
     async getTemplates() {
@@ -50,14 +44,23 @@ export class SettingsController {
     async getRunpacks() {
         return this.settingsService.getRunpacks();
     }
-/*
+
+    @ApiOperation({ summary: 'Get the configured cluster issuer' })
     @Get('/clusterissuer')
     async getClusterIssuer() {
         return this.settingsService.getClusterIssuer();
     }
+
+    @ApiOperation({ summary: 'List buildpacks' })
     @Get('/buildpacks')
     async getBuildpacks() {
         return this.settingsService.getBuildpacks();
     }
-*/
+
+    @ApiOperation({ summary: 'List available pod sizes' })
+    @Get('/podsizes')
+    async getPodSizes() {
+        return this.settingsService.getPodSizes();
+    }
+
 }

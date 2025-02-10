@@ -6,6 +6,8 @@ import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml'
 import { join } from 'path';
 import { Context } from '@kubernetes/client-node';
+import { Buildpack } from './buildpack/buildpack';
+import { PodSize } from './podsize/podsize';
 
 @Injectable()
 export class SettingsService {
@@ -84,7 +86,6 @@ export class SettingsService {
             const kuberoCRD = await this.readConfigFromKubernetes()
             return kuberoCRD.kubero.config
         } else {
-            console.log("aaaa", this.readConfigFromFS())
             return this.readConfigFromFS()
         }
     }
@@ -146,17 +147,6 @@ export class SettingsService {
             this.logger.error("Error getting kuberoes config")
         }
         return registry
-    }
-
-    public async getDomains(): Promise<any> {
-        let allIngress = await this.kubectl.getAllIngress()
-        let domains: string[] = []
-        allIngress.forEach((ingress: any) => {
-            ingress.spec.rules.forEach((rule: any) => {
-                domains.push(rule.host)
-            })
-        })
-        return domains
     }
 
     public async getBanner(): Promise<any> {
@@ -314,11 +304,44 @@ export class SettingsService {
     public getRunpacks(): any[] {
         return this.runningConfig.buildpacks || []
     }
-/*
-    public async getClusterIssuer(): Promise<string> {
+
+    public async getClusterIssuer(): Promise<{clusterissuer: string}> {
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-        const kuberoes = await this.kubectl.getClusterIssuer(namespace)
-        return kuberoes.kubero.config.clusterissuer
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+        if (kuberoes == undefined) {
+            return { clusterissuer: "not-configured" }
+        }
+        return {
+            clusterissuer: kuberoes.spec.kubero.config.clusterissuer || "not-configured"
+        }
     }
-*/
+
+    public async getBuildpacks() {
+        let buildpackList: Buildpack[] = [];
+
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+
+        for (const buildpack of kuberoes.spec.kubero.config.buildpacks) {
+            const b = new Buildpack(buildpack);
+            buildpackList.push(b);
+        }
+
+        return buildpackList;
+    }
+
+    public async getPodSizes() {
+        let podSizeList: PodSize[] = [];
+
+        const namespace = process.env.KUBERO_NAMESPACE || "kubero"
+        let kuberoes = await this.kubectl.getKuberoConfig(namespace)
+
+        for (const podSize of kuberoes.spec.kubero.config.podSizeList) {
+            const p = new PodSize(podSize);
+            podSizeList.push(p);
+        }
+
+        return podSizeList;
+    }
+
 }

@@ -28,4 +28,8 @@ export class EventsGateway {
   sendEvent(event: string, data: any) {
     this.server.emit(event, data);
   }
+
+  sendLogline(room: string, logline: any) { //TODO define logline type
+    this.server.to(room).emit('log', logline);
+  }
 }

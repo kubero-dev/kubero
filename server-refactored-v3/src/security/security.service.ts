@@ -39,7 +39,7 @@ export class SecurityService {
 
     const appresult = await this.appsService.getApp(pipeline, phase, appName)
 
-    const app = appresult?.body as IKubectlApp;
+    const app = appresult as IKubectlApp;
 
     const logPod = await this.kubectl.getLatestPodByLabel(namespace, `vulnerabilityscan=${appName}`);
 

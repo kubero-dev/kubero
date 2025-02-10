@@ -10,7 +10,6 @@ import { PipelinesModule } from './pipelines/pipelines.module';
 import { ConfigModule } from './config/config.module';
 import { RepoModule } from './repo/repo.module';
 import { SettingsModule } from './settings/settings.module';
-import { TemplatesModule } from './templates/templates.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
@@ -35,7 +34,6 @@ import { SecurityModule } from './security/security.module';
     ConfigModule,
     RepoModule,
     SettingsModule,
-    TemplatesModule,
     MetricsModule,
     LogsModule,
     DeploymentsModule,

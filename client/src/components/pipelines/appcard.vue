@@ -283,7 +283,7 @@ export default defineComponent({
             this.loadingState = false;
         },
         loadMetrics() {
-            axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
+            axios.get(`/api/metrics/resources/${this.pipeline}/${this.phase}/${this.app.name}`)
             .then(response => {
                 for (var i = 0; i < response.data.length; i++) {
                     if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {

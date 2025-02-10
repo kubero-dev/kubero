@@ -160,7 +160,7 @@ export default defineComponent({
             });
         },
         loadApp() {
-            axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
+            axios.get('/api/apps/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
                 this.appData = response.data;
                 //console.log(this.appData);
             });

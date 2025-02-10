@@ -12,7 +12,7 @@ export class MetricsService {
       //options: MetricsOptions
       private kubectl: KubernetesService
   ) {
-      //TODO: Load options from settings
+      //TODO: Migration -> Load options from settings or config
       const options = {
           enabled: true,
           endpoint: 'http://prometheus.localhost'
@@ -357,5 +357,10 @@ export class MetricsService {
   public getPodMetrics(pipelineName: string, phaseName: string, appName: string) {
     const namespace = pipelineName+'-'+phaseName;
     return this.kubectl.getPodMetrics(namespace, appName);
+  }
+
+  public getUptimes(pipelineName: string, phaseName: string) {
+    const namespace = pipelineName+'-'+phaseName;
+    return this.kubectl.getPodUptimes(namespace);
   }
 }

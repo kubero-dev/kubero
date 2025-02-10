@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppsService } from './apps.service';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
+import { IKubectlApp } from 'src/kubernetes/kubernetes.interface';
 
 describe('AppsService', () => {
   let service: AppsService;
@@ -41,7 +42,7 @@ describe('AppsService', () => {
     const phaseName = 'test-phase';
     const appName = 'test-app';
     const contextName = 'test-context';
-    const app = { response: { statusCode: 200 } as any, body: { name: appName } };
+    const app = {} as IKubectlApp;
 
     jest.spyOn(pipelinesService, 'getContext').mockResolvedValue(contextName);
     jest.spyOn(kubernetesService, 'getApp').mockResolvedValue(app);

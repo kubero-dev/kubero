@@ -1037,6 +1037,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     private logcolor(str: string) {
         let hash = 0;
         for (var i = 0; i < str.length; i++) {
@@ -1050,6 +1051,7 @@ export class Kubero {
         return color;
     }
 
+    //Migrated to logs
     public emitLogs(pipelineName: string, phaseName: string, appName: string, podName: string, container: string) {
 
         const logStream = new Stream.PassThrough();
@@ -1094,6 +1096,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     public startLogging(pipelineName: string, phaseName: string, appName: string) {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
@@ -1117,6 +1120,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     public async getLogsHistory(pipelineName: string, phaseName: string, appName: string, container: string) {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
@@ -1148,6 +1152,7 @@ export class Kubero {
         return loglines;
     }
 
+    //Migrated to logs
     public async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
         let loglines: ILoglines[] = [];
 
@@ -1234,6 +1239,7 @@ export class Kubero {
         return repositories;
     }
 
+    //Migration to settings
     public getBuildpacks() {
         let buildpackList: Buildpack[] = [];
         for (const buildpack of this.config.buildpacks) {
@@ -1244,10 +1250,12 @@ export class Kubero {
         return buildpackList;
     }
 
+    //Migration to kubernetes
     public getEvents(namespace: string) {
         return this.kubectl.getEvents(namespace);
     }
 
+    //Migration to metrics
     public getPodUptime(pipelineName: string, phaseName: string) {
         const namespace = pipelineName+'-'+phaseName;
         return this.kubectl.getPodUptimes(namespace);
@@ -1266,6 +1274,7 @@ export class Kubero {
         return this.kubectl.getIngressClasses();
     }
 
+    //Migrated to kubernetes
     public getStorageglasses() {
         return this.kubectl.getStorageglasses();
     }
