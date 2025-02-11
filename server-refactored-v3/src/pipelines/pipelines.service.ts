@@ -2,14 +2,20 @@ import { Injectable, Logger } from '@nestjs/common';
 import { IPipelineList, IPipeline } from './pipelines.interface';
 import { KubernetesService } from 'src/kubernetes/kubernetes.service';
 import { Buildpack } from '../settings/buildpack/buildpack';
-import { IUser } from 'src/auth/auth.interface';
+import { IUser } from '../auth/auth.interface';
+import { NotificationsService } from '../notifications/notifications.service';
+import { INotification } from '../notifications/notifications.interface';
+import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 
 @Injectable()
 export class PipelinesService {
   private readonly logger = new Logger(PipelinesService.name);
   //private pipelineStateList = [] as IPipeline[]; //DEPRECATED: should not be used but reloaded live state
 
-  constructor(private kubectl: KubernetesService) {}
+  constructor(
+    private kubectl: KubernetesService,
+    private notificationsService: NotificationsService,
+) {}
 
   public async listPipelines(): Promise<IPipelineList> {
     let pipelines = await this.kubectl.getPipelinesList();
@@ -116,12 +122,11 @@ export class PipelinesService {
         if (pipeline) {
             await this.kubectl.deletePipeline(pipelineName);
 
-            await new Promise(resolve => setTimeout(resolve, 5000)); // needs some extra time to delete the namespace
+            await new Promise(resolve => setTimeout(resolve, 1000)); // needs some extra time to delete the namespace
             //this.updateState();
             
-            /* Might be moved to a notification middleware
             const m = {
-                'name': 'deletePipeline',
+                'name': 'updatePipeline',
                 'user': user.username,
                 'resource': 'pipeline',
                 'action': 'delete',
@@ -134,46 +139,78 @@ export class PipelinesService {
                     'pipeline': pipeline
                 }
             } as INotification;
-            this.notification.send(m, this._io);
-            */
+            this.notificationsService.send(m);
         }
     })
     .catch(error => {
         this.logger.error(error);
     });
   }
+  public async updatePipeline(pipeline: IPipeline, resourceVersion: string, user: IUser) {
+    this.logger.debug('update Pipeline: '+pipeline.name);
 
-  /*
-  public updateState() {
-    this.pipelineStateList = [];
-    this.appStateList = [];
-    this.listPipelines().then(pl => {
-        for (const pipeline of pl.items as IPipeline[]) {
-            this.pipelineStateList.push(pipeline);
-
-            for (const phase of pipeline.phases) {
-
-                if (phase.enabled == true) {
-                    debug.log("🔁 Loading Namespace: "+pipeline.name+"-"+phase.name);
-                    this.listAppsInNamespace(pipeline.name, phase.name)
-                    .then(appsList => {
-                        if (appsList) {
-                            for (const app of appsList.items) {
-                                debug.log("🔁 Loading App: "+app.spec.name);
-                                this.appStateList.push(app.spec);
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        debug.log(error);
-                    })
-                }
-            }
-        }
+    if ( process.env.KUBERO_READONLY == 'true'){
+        this.logger.log('KUBERO_READONLY is set to true, not updating pipelline ' + pipeline.name);
+        return;
     }
-    ).catch(error => {
-        debug.log(error);
+
+    const currentPL = await this.kubectl.getPipeline(pipeline.name)
+    .catch(error => {
+        this.logger.error(error);
     });
+
+    pipeline.git.keys.priv = currentPL?.spec.git.keys.priv;
+    pipeline.git.keys.pub = currentPL?.spec.git.keys.pub;
+
+    // Create the Pipeline CRD
+    await this.kubectl.updatePipeline(pipeline, resourceVersion);
+    //this.updateState();
+
+    await new Promise(resolve => setTimeout(resolve, 500))
+    const m = {
+        'name': 'updatePipeline',
+        'user': user.username,
+        'resource': 'pipeline',
+        'action': 'update',
+        'severity': 'normal',
+        'message': 'Updated pipeline: '+pipeline.name,
+        'pipelineName':pipeline.name,
+        'phaseName': '',
+        'appName': '',
+        'data': {
+            'pipeline': pipeline
+        }
+    } as INotification;
+    this.notificationsService.send(m);
   }
-  */
+
+  public async createPipeline(pipeline: IPipeline, user: IUser) {
+    this.logger.debug('create Pipeline: '+pipeline.name);
+
+    if ( process.env.KUBERO_READONLY == 'true'){
+        console.log('KUBERO_READONLY is set to true, not creting pipeline '+ pipeline.name);
+        return;
+    }
+
+    // Create the Pipeline CRD
+    await this.kubectl.createPipeline(pipeline);
+    //this.updateState();
+    
+    const m = {
+        'name': 'updatePipeline',
+        'user': user.username,
+        'resource': 'pipeline',
+        'action': 'created',
+        'severity': 'normal',
+        'message': 'Created new pipeline: '+pipeline.name,
+        'pipelineName':pipeline.name,
+        'phaseName': '',
+        'appName': '',
+        'data': {
+            'pipeline': pipeline
+        }
+    } as INotification;
+    this.notificationsService.send(m);
+  }
+
 }

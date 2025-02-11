@@ -189,6 +189,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to Pipelines
     // creates a new pipeline in the same namespace as the kubero app
     public async newPipeline(pipeline: IPipeline, user: User) {
         debug.debug('create Pipeline: '+pipeline.name);
@@ -219,6 +220,7 @@ export class Kubero {
         this.notification.send(m, this._io);
     }
 
+    //Migrated to pipelines
     // updates a new pipeline in the same namespace as the kubero app
     public async updatePipeline(pipeline: IPipeline, resourceVersion: string, user: User) {
         debug.debug('update Pipeline: '+pipeline.name);

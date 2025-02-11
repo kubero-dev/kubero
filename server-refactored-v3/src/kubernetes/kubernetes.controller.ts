@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { KubernetesService } from './kubernetes.service';
 import { ApiOperation, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { StorageClassDTO } from './kubernetes.dto';
+import { StorageClassDTO } from './dto/kubernetes.dto';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {

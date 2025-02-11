@@ -23,7 +23,12 @@ async function bootstrap() {
     cors: true,
   });
 
-  app.use(helmet());
+  app.use(helmet({
+    contentSecurityPolicy: false,
+    strictTransportSecurity: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  }));
 
   const config = new DocumentBuilder()
     .setTitle('Kubero')

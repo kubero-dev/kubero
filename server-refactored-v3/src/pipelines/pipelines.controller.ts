@@ -1,6 +1,9 @@
-import { Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { CreatePipelineDTO } from './dto/replacePipeline.dto';
+import { IUser } from '../auth/auth.interface';
+import { IPipeline } from './pipelines.interface';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {
@@ -14,9 +17,29 @@ export class PipelinesController {
   }
 
   @ApiOperation({ summary: 'Create a new pipeline' })
-  @Post('/:pipeline')
-  async createPipeline() {
-    return 'Pipeline updated';
+  @Post('/')
+  async createPipeline(@Body() pl: CreatePipelineDTO) {
+    //TODO: Migration -> this is a mock user
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890'
+    };
+    
+    const pipeline: IPipeline = {
+        name: pl.pipelineName,
+        domain: pl.domain,
+        phases: pl.phases,
+        buildpack: pl.buildpack,
+        reviewapps: pl.reviewapps,
+        dockerimage: pl.dockerimage,
+        git: pl.git,
+        registry: pl.registry as any,
+        deploymentstrategy: pl.deploymentstrategy,
+        buildstrategy: pl.buildstrategy,
+    };
+    return this.pipelinesService.createPipeline(pipeline, user);
   }
 
   @ApiOperation({ summary: 'Get a soecific pipeline' })
@@ -29,14 +52,43 @@ export class PipelinesController {
 
   @ApiOperation({ summary: 'Update a pipeline' })
   @Put('/:pipeline')
-  async updatePipeline() {
-    return 'Pipeline updated';
+  async updatePipeline(@Body() pl: CreatePipelineDTO) {
+    
+    //TODO: Migration -> this is a mock user
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890'
+    };
+    
+    const pipeline: IPipeline = {
+        name: pl.pipelineName,
+        domain: pl.domain,
+        phases: pl.phases,
+        buildpack: pl.buildpack,
+        reviewapps: pl.reviewapps,
+        dockerimage: pl.dockerimage,
+        git: pl.git,
+        registry: pl.registry as any,
+        deploymentstrategy: pl.deploymentstrategy,
+        buildstrategy: pl.buildstrategy,
+    };
+    return this.pipelinesService.updatePipeline(pipeline, pl.resourceVersion as string, user);
   }
 
   @ApiOperation({ summary: 'Delete a pipeline' })
   @Delete('/:pipeline')
-  async deletePipeline() {
-    return 'Pipeline deleted';
+  async deletePipeline(
+    @Param('pipeline') pipeline: string,
+  ) {
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890'
+    };
+    return this.pipelinesService.deletePipeline(pipeline, user);
   }
 
   @ApiOperation({ summary: 'Get all apps for a pipeline' })
