@@ -1,18 +1,29 @@
 import { NestFactory } from '@nestjs/core';
-import { Logger } from '@nestjs/common';
+import { Logger, } from '@nestjs/common';
 import { CustomConsoleLogger } from './logger/logger';
+import { LogLevel } from '@nestjs/common/services/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+
+import helmet from 'helmet';
+
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
+
+  const logLevels = process.env.LOGLEVELS?.split(',') ?? ['log', 'fatal', 'error', 'warn', 'debug', 'verbose'];
+  Logger.log(`Log levels: ${logLevels}`, 'Bootstrap');
+
   const app = await NestFactory.create(AppModule, {
     logger: new CustomConsoleLogger({
       prefix: 'Kubero',
-      //logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
+      logLevels: logLevels as LogLevel[],
     }),
+    cors: true,
   });
+
+  app.use(helmet());
 
   const config = new DocumentBuilder()
     .setTitle('Kubero')

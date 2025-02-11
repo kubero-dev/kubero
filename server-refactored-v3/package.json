@@ -41,6 +41,7 @@
     "dotenv": "^16.4.7",
     "git-url-parse": "^16.0.0",
     "gitea-js": "^1.23.0",
+    "helmet": "^8.0.0",
     "passport": "^0.7.0",
     "passport-github2": "^0.1.12",
     "passport-local": "^1.0.0",
