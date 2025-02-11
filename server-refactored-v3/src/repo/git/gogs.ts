@@ -39,11 +39,11 @@ export class GogsApi extends Repo {
         let owner = parsed.owner
         
         if ( owner == undefined ){
-            debug.log("git owner extraction failed");
+            this.logger.log("git owner extraction failed");
             throw new Error("git owner extraction failed");
         }
         if ( repo == undefined ){
-            debug.log("git owner extraction failed");
+            this.logger.log("git owner extraction failed");
             throw new Error("git repo extraction failed");
         }
 
@@ -209,9 +209,9 @@ export class GogsApi extends Repo {
             debug.debug('Gogs webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
-            debug.log('ERROR: invalid signature for event: '+delivery);
-            debug.log('Hash:      '+hash);
-            debug.log('Signature: '+signature);
+            this.logger.log('ERROR: invalid signature for event: '+delivery);
+            this.logger.log('Hash:      '+hash);
+            this.logger.log('Signature: '+signature);
             verified = false;
             return false;
         }
@@ -296,7 +296,7 @@ export class GogsApi extends Repo {
                 ret.push(branch.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -305,7 +305,7 @@ export class GogsApi extends Repo {
                 ret.push(tag.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -314,7 +314,7 @@ export class GogsApi extends Repo {
                 ret.push(commit.sha)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;

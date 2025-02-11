@@ -64,7 +64,7 @@ export class GithubApi extends Repo {
             }
         } catch (e) {
             let res = e as RequestError;
-            debug.log("Repository not found: "+ gitrepo);
+            this.logger.log("Repository not found: "+ gitrepo);
             ret = {
                 status: res.status,
                 statusText: 'not found',
@@ -147,7 +147,7 @@ export class GithubApi extends Repo {
                 })
                 for (let webhook of existingWebhooksRes.data) {
                     if (webhook.config.url === url) {
-                        debug.log("Webhook already exists");
+                        this.logger.log("Webhook already exists");
 
                         ret = {
                             status: res.status,
@@ -213,7 +213,7 @@ export class GithubApi extends Repo {
             }
         } catch (e) {
             let res = e as RequestError;
-            debug.log("Error adding deploy key: "+ res);
+            this.logger.log("Error adding deploy key: "+ res);
         }
 
         return ret
@@ -229,9 +229,9 @@ export class GithubApi extends Repo {
             debug.debug('Github webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
-            debug.log('ERROR: invalid signature for event: '+delivery);
-            debug.log('Hash:      '+hash);
-            debug.log('Signature: '+signature);
+            this.logger.log('ERROR: invalid signature for event: '+delivery);
+            this.logger.log('Hash:      '+hash);
+            this.logger.log('Signature: '+signature);
             verified = false;
             return false;
         }
@@ -268,7 +268,7 @@ export class GithubApi extends Repo {
 
             return webhook;
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
             return false;
         }
     }
@@ -285,7 +285,7 @@ export class GithubApi extends Repo {
                 ret.push(repo.ssh_url)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
         return ret;
     }
@@ -305,7 +305,7 @@ export class GithubApi extends Repo {
                 ret.push(branch.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;
@@ -327,7 +327,7 @@ export class GithubApi extends Repo {
                 ret.push(branch.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -339,7 +339,7 @@ export class GithubApi extends Repo {
                 ret.push(tag.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -351,7 +351,7 @@ export class GithubApi extends Repo {
                 ret.push(commit.sha)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;
@@ -393,7 +393,7 @@ export class GithubApi extends Repo {
                 ret.push(p)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;

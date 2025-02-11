@@ -200,9 +200,9 @@ export class GiteaApi extends Repo {
             debug.debug('Gitea webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
-            debug.log('ERROR: invalid signature for event: '+delivery);
-            debug.log('Hash:      '+hash);
-            debug.log('Signature: '+signature);
+            this.logger.log('ERROR: invalid signature for event: '+delivery);
+            this.logger.log('Hash:      '+hash);
+            this.logger.log('Signature: '+signature);
             verified = false;
             return false;
         }
@@ -286,7 +286,7 @@ export class GiteaApi extends Repo {
                 ret.push(branch.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -295,7 +295,7 @@ export class GiteaApi extends Repo {
                 ret.push(tag.name)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -304,7 +304,7 @@ export class GiteaApi extends Repo {
                 ret.push(commit.sha)
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;
@@ -344,7 +344,7 @@ export class GiteaApi extends Repo {
             }
 
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;

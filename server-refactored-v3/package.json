@@ -49,6 +49,8 @@
     "prometheus-query": "^3.4.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
+    "sqlite3": "^5.1.7",
+    "sshpk": "^1.18.0",
     "yaml": "^2.7.0"
   },
   "devDependencies": {
@@ -65,6 +67,7 @@
     "@types/passport-github2": "^1.2.9",
     "@types/passport-local": "^1.0.38",
     "@types/passport-oauth2": "^1.4.17",
+    "@types/sshpk": "^1.17.4",
     "@types/supertest": "^6.0.2",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",

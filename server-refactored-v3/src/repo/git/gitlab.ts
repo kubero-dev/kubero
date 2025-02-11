@@ -223,9 +223,9 @@ export class GitlabApi extends Repo {
             debug.debug('Gitlab webhook signature is valid for event: '+delivery);
             verified = true;
         } else {
-            debug.log('ERROR: invalid token/secret for event: '+delivery);
-            debug.log('Secret:      '+secret);
-            debug.log('Token :      '+token);
+            this.logger.log('ERROR: invalid token/secret for event: '+delivery);
+            this.logger.log('Secret:      '+secret);
+            this.logger.log('Token :      '+token);
             verified = false;
             return false;
         }
@@ -237,7 +237,7 @@ export class GitlabApi extends Repo {
         } else if (event === 'Merge Request Hook') {
             github_event = 'pull_request';
         } else {
-            debug.log('ERROR: unknown event: '+event);
+            this.logger.log('ERROR: unknown event: '+event);
             return false;
         }
 
@@ -274,7 +274,7 @@ export class GitlabApi extends Repo {
 
             return webhook;
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
             return false;
         }
     }

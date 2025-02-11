@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { RepoService } from './repo.service';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -47,5 +47,40 @@ export class RepoController {
     @Param('gitrepob64') gitrepob64: string,
   ) {
     return this.repoService.listReferences(provider, gitrepob64);
+  }
+
+  @Post('/:repoprovider/connect')
+  @ApiOperation({ summary: 'Connect a repository' })
+  async connectRepo(
+    @Param('repoprovider') repoprovider: string,
+    @Body() body: any,
+  ) {
+    return this.repoService.connectRepo(repoprovider, body.gitrepo);
+  }
+
+  @ApiOperation({ summary: 'Disconnect a repository' })
+  @Post('/:repoprovider/disconnect')
+  async disconnectRepo(
+    @Param('repoprovider') repoprovider: string,
+    @Body() body: any,
+  ) {
+    return this.repoService.disconnectRepo(repoprovider, body.gitrepo);
+  }
+
+  @ApiOperation({ summary: 'Start a Pull Request App' })
+  @Post('/pullrequest/start')
+  async startPullRequest(
+    @Body() body: any,
+  ) {
+    return "Not implemented";
+    //return this.repoService.startPullRequest(body);
+  }
+
+  @ApiOperation({ summary: 'Webhooks endpoint for repository providers' })
+  @Post('/repo/webhooks/:repoprovider')
+  async repositoryWebhook(
+    @Body() body: any,
+  ) {
+    return "Not implemented";
   }
 }

@@ -28,6 +28,26 @@ async function bootstrap() {
     strictTransportSecurity: false,
     crossOriginOpenerPolicy: false,
     crossOriginEmbedderPolicy: false,
+    /* suggested settings. Requires further testing.
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "example.com"],
+        styleSrc: ["'self'", "example.com"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        fontSrc: ["'self'", "https:", "data:"],
+        objectSrc: ["'none'"],
+        frameAncestors: ["'self'"],
+        formAction: ["'self'"],
+        upgradeInsecureRequests: [],
+      },
+    },
+    frameguard: { action: 'deny' },
+    strictTransportSecurity: { maxAge: 63072000, includeSubDomains: true },
+    crossOriginOpenerPolicy: { policy: 'same-origin' },
+    crossOriginEmbedderPolicy: { policy: 'require-corp' },
+    */
   }));
 
   const config = new DocumentBuilder()

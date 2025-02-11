@@ -79,7 +79,7 @@ export class BitbucketApi extends Repo {
 
         } catch (e) {
             let res = e as RequestError;
-            debug.log("Repository not found: "+ gitrepo);
+            this.logger.log("Repository not found: "+ gitrepo);
             ret = {
                 status: res.status,
                 statusText: 'not found',
@@ -218,7 +218,7 @@ export class BitbucketApi extends Repo {
             }
         } catch (e) {
             let res = e as RequestError;
-            debug.log("Error adding deploy key: "+ res);
+            this.logger.log("Error adding deploy key: "+ res);
         }
 
         return ret
@@ -233,7 +233,7 @@ export class BitbucketApi extends Repo {
         } else if (event === 'pullrequest:created') {
             github_event = 'pull_request';
         } else {
-            debug.log('ERROR: untranslated Bitbucket event: '+event);
+            this.logger.log('ERROR: untranslated Bitbucket event: '+event);
             return false;
         }
 
@@ -269,7 +269,7 @@ export class BitbucketApi extends Repo {
 
             return webhook;
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
             return false;
         }
     }
@@ -289,7 +289,7 @@ export class BitbucketApi extends Repo {
             }
 
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
         return ret;
     }
@@ -309,7 +309,7 @@ export class BitbucketApi extends Repo {
                 return branches.data.values.map((branch: any) => branch.name);
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return [];
@@ -334,7 +334,7 @@ export class BitbucketApi extends Repo {
                 ret = branches.data.values.map((branch: any) => branch.name);
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -347,7 +347,7 @@ export class BitbucketApi extends Repo {
                 ret = ret.concat(tags.data.values.map((tag: any) => tag.name));
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         try {
@@ -360,7 +360,7 @@ export class BitbucketApi extends Repo {
                 ret = ret.concat(commits.data.values.map((commit: any) => commit.hash));
             }
         } catch (error) {
-            debug.log(error)
+            this.logger.log(error)
         }
 
         return ret;

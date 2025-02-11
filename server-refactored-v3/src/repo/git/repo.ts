@@ -1,20 +1,20 @@
-import debug from 'debug';
+import { Logger } from "@nestjs/common";
 import * as crypto from "crypto"
-import sshpk from 'sshpk';
 import { IWebhook, IRepository, IWebhookR, IDeploykeyR, IPullrequest} from './types';
 import { IDeployKeyPair} from '../repo.interface';
-debug('app:kubero:git:repo')
 
 export abstract class Repo {
 
     protected repoProvider: string;
+    protected logger = new Logger(Repo.name);
+    protected sshpk = require('sshpk');
 
     constructor(repoProvider: string) {
         this.repoProvider = repoProvider;
     }
 
     protected createDeployKeyPair(): IDeployKeyPair{
-        debug.debug('createDeployKeyPair');
+        this.logger.debug('createDeployKeyPair');
 
         const keyPair = crypto.generateKeyPairSync('ed25519', {
             //modulusLength: 4096,
@@ -29,14 +29,15 @@ export abstract class Repo {
                 //passphrase: ''
             }
         });
-        debug.debug(JSON.stringify(keyPair));
+        this.logger.debug(JSON.stringify(keyPair));
 
-        const pubKeySsh = sshpk.parseKey(keyPair.publicKey, 'pem');
+        console.debug(this.sshpk);
+        const pubKeySsh = this.sshpk.parseKey(keyPair.publicKey, 'pem');
         const pubKeySshString = pubKeySsh.toString('ssh');
         const fingerprint = pubKeySsh.fingerprint('sha256').toString('hex');
         console.debug(pubKeySshString);
 
-        const privKeySsh = sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
+        const privKeySsh = this.sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
         const privKeySshString = privKeySsh.toString('ssh');
         console.debug(privKeySshString);
 
@@ -50,14 +51,14 @@ export abstract class Repo {
     }
 
     public async connectRepo(gitrepo: string): Promise<{keys: IDeploykeyR | undefined, repository: IRepository, webhook: IWebhookR | undefined}> {
-        debug.log('connectPipeline: '+gitrepo);
+        this.logger.log('connectPipeline: '+gitrepo);
 
         if (process.env.KUBERO_WEBHOOK_SECRET == undefined) {
-            debug.log("KUBERO_WEBHOOK_SECRET is not defined")
+            this.logger.log("KUBERO_WEBHOOK_SECRET is not defined")
             throw new Error("KUBERO_WEBHOOK_SECRET is not defined");
         }
         if (process.env.KUBERO_WEBHOOK_URL == undefined) {
-            debug.log("KUBERO_WEBHOOK_URL is not defined")
+            this.logger.log("KUBERO_WEBHOOK_URL is not defined")
             throw new Error("KUBERO_WEBHOOK_URL is not defined");
         }
 
@@ -107,7 +108,7 @@ export abstract class Repo {
     }
 
     public async disconnectRepo(gitrepo: string): Promise<boolean> {
-        debug.log('disconnectPipeline: '+gitrepo);
+        this.logger.log('disconnectPipeline: '+gitrepo);
 
         const {owner, repo} = this.parseRepo(gitrepo);
 
