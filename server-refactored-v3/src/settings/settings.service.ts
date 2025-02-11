@@ -291,10 +291,6 @@ export class SettingsService {
         return this.features.sleep
     }
 
-    public getContexts(): Context[] {
-        return this.kubectl.getContexts()
-    }
-
     public async getRegistry(): Promise<IRegistry> {
         const namespace = process.env.KUBERO_NAMESPACE || "kubero"
         let kuberoes = await this.kubectl.getKuberoConfig(namespace)

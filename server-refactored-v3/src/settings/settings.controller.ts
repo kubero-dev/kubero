@@ -26,13 +26,6 @@ export class SettingsController {
         return this.settingsService.getTemplateConfig();
     }
 
-    // TODO: Move to kubernetes module
-    @ApiOperation({ summary: 'Get available contexts' })
-    @Get('/contexts')
-    async getContexts() {
-        return this.settingsService.getContexts();
-    }
-
     @ApiOperation({ summary: 'Get the registry settings' })
     @Get('/registry')
     async getRegistry() {

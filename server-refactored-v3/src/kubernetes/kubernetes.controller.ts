@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { KubernetesService } from './kubernetes.service';
 import { ApiOperation, ApiOkResponse, ApiResponse } from '@nestjs/swagger';
-import { StorageClassDTO } from './dto/kubernetes.dto';
+import { StorageClassDTO, ContextDTO } from './dto/kubernetes.dto';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {
@@ -17,7 +17,7 @@ export class KubernetesController {
   }
 
   @ApiOkResponse({
-    description: 'A List of available contexts',
+    description: 'A List of available storage classes',
     type: StorageClassDTO,
     isArray: true
   })
@@ -38,4 +38,14 @@ export class KubernetesController {
     return this.kubernetesService.getDomains();
   }
 
+  @ApiOkResponse({
+    description: 'A List of available contexts',
+    type: ContextDTO,
+    isArray: true
+  })
+  @ApiOperation({ summary: 'Get available contexts' })
+  @Get('/contexts')
+  async getContexts(): Promise<ContextDTO[]> {
+      return this.kubernetesService.getContexts();
+  }
 }

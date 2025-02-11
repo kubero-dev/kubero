@@ -15,3 +15,18 @@ export class StorageClassDTO {
   //allowVolumeExpansion: boolean;
   //mountOptions: string[];
 }
+
+export class ContextDTO {
+
+  @ApiProperty()
+  cluster: string
+
+  @ApiProperty()
+  name: string
+
+  @ApiProperty()
+  user: string
+
+  @ApiProperty()
+  namespace?: string
+}
