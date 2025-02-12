@@ -7,7 +7,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { AuthModule } from './auth/auth.module';
 import { AppsModule } from './apps/apps.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
-import { ConfigModule } from './config/config.module';
 import { RepoModule } from './repo/repo.module';
 import { SettingsModule } from './settings/settings.module';
 import { MetricsModule } from './metrics/metrics.module';
@@ -31,7 +30,6 @@ import { SecurityModule } from './security/security.module';
     AuthModule,
     AppsModule,
     PipelinesModule,
-    ConfigModule,
     RepoModule,
     SettingsModule,
     MetricsModule,

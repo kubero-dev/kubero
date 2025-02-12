@@ -56,7 +56,7 @@ export class AppsController {
   ) {
     return this.appsService.createPRApp(
       body.branch,
-      body.title,
+      body.branch,
       body.ssh_url,
       body.pipelineName,
     );
