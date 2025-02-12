@@ -299,4 +299,33 @@ export class AppsService {
 
     return template
   }
+
+  public async restartApp(pipelineName: string, phaseName: string, appName: string, user: IUser) {
+
+    if ( process.env.KUBERO_READONLY == 'true'){
+        console.log('KUBERO_READONLY is set to true, not restarting app'+appName+' in '+ pipelineName+' phase: '+phaseName);
+        return;
+    }
+
+    this.logger.debug('restart App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+    const contextName = await this.pipelinesService.getContext(pipelineName, phaseName);
+    if (contextName) {
+        this.kubectl.restartApp(pipelineName, phaseName, appName, 'web', contextName);
+        this.kubectl.restartApp(pipelineName, phaseName, appName, 'worker', contextName);
+
+        const m = {
+            'name': 'restartApp',
+            'user': user.username,
+            'resource': 'app',
+            'action': 'restart',
+            'severity': 'normal',
+            'message': 'Restarted app: '+appName+' in '+ pipelineName+' phase: '+phaseName,
+            'pipelineName': pipelineName,
+            'phaseName': phaseName,
+            'appName': appName,
+            'data': {}
+        } as INotification;
+        this.NotificationsService.send(m);
+    }
+  }
 }

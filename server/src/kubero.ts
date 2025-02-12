@@ -414,6 +414,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to apps
     // delete a app in a pipeline and phase
     public async deleteApp(pipelineName: string, phaseName: string, appName: string, user: User) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
@@ -467,6 +468,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to templates
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
         
@@ -517,6 +519,7 @@ export class Kubero {
         return pipeline;
     }
 
+    //Migrated to apps
     public restartApp(pipelineName: string, phaseName: string, appName: string, user: User) {
 
         if ( process.env.KUBERO_READONLY == 'true'){

@@ -72,4 +72,22 @@ export class AppsController {
     return this.appsService.getTemplate(pipeline, phase, app);
   }
 
+  @ApiOperation({ summary: 'Restart/Reload an app' })
+  @Get('/:pipeline/:phase/:app/restart')
+  async restartApp(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+  ) {
+    //TODO: Migration -> this is a mock user
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890'
+    };
+
+    return this.appsService.restartApp(pipeline, phase, app, user);
+  }
+
 }
