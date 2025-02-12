@@ -38,7 +38,7 @@ export class GiteaApi extends Repo {
 
         let res = await this.gitea.repos.repoGet(owner, repo)
         .catch((error: any) => {
-            console.log(error)
+            this.logger.error(error)
             return ret;
         })
 
@@ -83,7 +83,7 @@ export class GiteaApi extends Repo {
         //https://try.gitea.io/api/swagger#/repository/repoListHooks
         const webhooksList = await this.gitea.repos.repoListHooks(owner, repo)
         .catch((error: any) => {
-            console.log(error)
+            this.logger.error(error)
             return ret;
         })
 
@@ -134,7 +134,7 @@ export class GiteaApi extends Repo {
                 }
             }
         } catch (e) {
-            console.log(e)
+            this.logger.error(e)
         }
         return ret;
     }
@@ -184,7 +184,7 @@ export class GiteaApi extends Repo {
                 }
             }
         } catch (e) {
-            console.log(e)
+            this.logger.error(e)
         }
 
         return ret
@@ -239,7 +239,7 @@ export class GiteaApi extends Repo {
 
             return webhook;
         } catch (error) {
-            console.log(error)
+            this.logger.error(error)
             return false;
         }
     }
@@ -252,7 +252,7 @@ export class GiteaApi extends Repo {
                 ret.push(repo.ssh_url)
             }
         } catch (error) {
-            console.log(error)
+            this.logger.error(error)
         }
         return ret;
     }
@@ -268,7 +268,7 @@ export class GiteaApi extends Repo {
                 ret.push(branch.name)
             }
         } catch (error) {
-            console.log(error)
+            this.logger.error(error)
         }
 
         return ret;

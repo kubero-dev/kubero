@@ -147,7 +147,7 @@ export class GithubApi extends Repo {
                 })
                 for (let webhook of existingWebhooksRes.data) {
                     if (webhook.config.url === url) {
-                        this.logger.log("Webhook already exists");
+                        this.logger.debug("Webhook already exists");
 
                         ret = {
                             status: res.status,

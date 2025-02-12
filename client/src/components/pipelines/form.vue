@@ -713,7 +713,7 @@ export default defineComponent({
         this.buildpack = buildpack;
       },
       getContextList() {
-        axios.get('/api/settings/contexts').then(response => {
+        axios.get('/api/kubernetes/contexts').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.contextList.push(response.data[i].name);
           }

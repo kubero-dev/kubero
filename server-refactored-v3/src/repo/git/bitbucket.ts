@@ -47,14 +47,14 @@ export class BitbucketApi extends Repo {
         let repo = parsed.name
         let owner = parsed.owner
 
-        console.log(owner, repo);
+        //console.log(owner, repo);
         try {
             // https://bitbucketjs.netlify.app/#api-repositories-repositories_get
             let res = await this.bitbucket.repositories.get({
                 repo_slug: repo,
                 workspace: owner
             })
-            console.log(res.data);
+            //console.log(res.data);
 
             ret = {
                 status: res.status,
@@ -147,11 +147,10 @@ export class BitbucketApi extends Repo {
                     }
                 }
             } catch (e) {
-                console.log(e)
+                this.logger.error(e)
             }
         } else {
-            console.log("Webhook already exists")
-            console.log(webhook)
+            this.logger.debug("Webhook already exists")
 
             ret = {
                 status: 422,
@@ -199,7 +198,7 @@ export class BitbucketApi extends Repo {
                 workspace: owner
             });
 
-            console.log(res);
+            //console.log(res);
 
 
             ret = {

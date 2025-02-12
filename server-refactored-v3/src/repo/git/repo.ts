@@ -29,17 +29,16 @@ export abstract class Repo {
                 //passphrase: ''
             }
         });
-        this.logger.debug(JSON.stringify(keyPair));
+        //this.logger.debug(JSON.stringify(keyPair));
 
-        console.debug(this.sshpk);
         const pubKeySsh = this.sshpk.parseKey(keyPair.publicKey, 'pem');
         const pubKeySshString = pubKeySsh.toString('ssh');
         const fingerprint = pubKeySsh.fingerprint('sha256').toString('hex');
-        console.debug(pubKeySshString);
+        this.logger.debug(pubKeySshString);
 
         const privKeySsh = this.sshpk.parsePrivateKey(keyPair.privateKey, 'pem');
         const privKeySshString = privKeySsh.toString('ssh');
-        console.debug(privKeySshString);
+        //this.logger.debug(privKeySshString);
 
         return {
             fingerprint: fingerprint,
@@ -63,7 +62,7 @@ export abstract class Repo {
         }
 
         const repository = await this.getRepository(gitrepo)
-        console.debug(repository);
+        //console.debug(repository);
 
         let keys: IDeploykeyR = {
             status: 500,
