@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { AuditService } from 'src/audit/audit.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { INotificationConfig, INotification, INotificationSlack, INotificationWebhook, INotificationDiscord } from './notifications.interface';
@@ -12,6 +12,7 @@ export class NotificationsService {
   //public kubectl: Kubectl;
   //private audit: Audit;
   private config: IKuberoConfig;
+  private logger = new Logger(NotificationsService.name);
 
   constructor(
     private eventsGateway: EventsGateway,
@@ -19,6 +20,7 @@ export class NotificationsService {
     private kubectl: KubernetesService,
   ) {
     this.config = {} as IKuberoConfig;
+    this.logger.log('NotificationsService initialized');
   }
 
   public setConfig(config: IKuberoConfig) {

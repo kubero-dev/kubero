@@ -3,11 +3,9 @@ import { AppsService } from './apps.service';
 import { KubernetesModule } from '../kubernetes/kubernetes.module';
 import { AppsController } from './apps.controller';
 import { PipelinesService } from '../pipelines/pipelines.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { EventsGateway } from '../events/events.gateway';
 
 @Module({
-  providers: [AppsService, KubernetesModule, PipelinesService, NotificationsService, EventsGateway],
+  providers: [AppsService, KubernetesModule, PipelinesService],
   exports: [AppsService],
   controllers: [AppsController],
 })
