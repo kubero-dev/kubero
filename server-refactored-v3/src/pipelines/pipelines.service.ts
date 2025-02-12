@@ -211,6 +211,8 @@ export class PipelinesService {
         }
     } as INotification;
     this.notificationsService.send(m);
+
+    return { 'status': 'ok', 'message': 'Pipeline created: '+pipeline.name };
   }
 
 }

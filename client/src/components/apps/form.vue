@@ -51,12 +51,12 @@
           md="6"
         >
           <v-text-field
-            v-model="appname"
+            v-model="name"
             :rules="nameRules"
             :counter="60"
             :disabled="app!='new'"
             label="App name"
-            v-on:input="changeName(appname)"
+            v-on:input="changeName(name)"
             required
           ></v-text-field>
         </v-col>
@@ -1284,7 +1284,7 @@
 
       <!-- ADDONS -->
       <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
-      <Addons :addons="addons" :appname="appname"/>
+      <Addons :addons="addons" :appname="name"/>
 
       <!-- SUBMIT -->
       <v-row class="pt-5">
@@ -1609,7 +1609,7 @@ export default defineComponent({
         deploymentstrategy: 'docker',
         phases: [] as Phase[],
       },
-      appname: '',
+      name: '',
       resourceVersion: '',
       /*
       phases: [
@@ -1900,7 +1900,7 @@ export default defineComponent({
       loadTemplate(template: string) {
         axios.get('/api/templates/'+template).then(response => {
 
-          this.appname = response.data.name;
+          this.name = response.data.name;
           this.containerPort = response.data.image.containerPort;
           this.deploymentstrategy = response.data.deploymentstrategy;
 
@@ -2141,7 +2141,7 @@ export default defineComponent({
 
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
-            this.appname = response.data.spec.name;
+            this.name = response.data.spec.name;
             this.sleep = response.data.spec.sleep;
             this.basicAuth = response.data.spec.basicAuth || { enabled: false, realm: 'Authentication required', accounts: [] };
             this.buildpack = {
@@ -2192,10 +2192,10 @@ export default defineComponent({
       },
       setSSL() {
         if (this.ingress.tls?.length == 0) {
-          this.ingress.tls = [{ hosts: [], secretName: this.appname+'-tls' }];
+          this.ingress.tls = [{ hosts: [], secretName: this.name+'-tls' }];
         }
         this.ingress.tls[0].hosts = [];
-        this.ingress.tls[0].secretName = this.appname+'-tls';
+        this.ingress.tls[0].secretName = this.name+'-tls';
         this.ingress.hosts.forEach((host, index) => {
           if (this.sslIndex[index]) {
             this.ingress.tls[0].hosts.push(host.host);
@@ -2265,7 +2265,7 @@ export default defineComponent({
         let postdata = {
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
-          appname: this.appname,
+          name: this.name,
           sleep: this.sleep,
           basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
@@ -2366,7 +2366,7 @@ export default defineComponent({
           pipeline: this.pipeline,
           buildpack: this.buildpack,
           phase: this.phase,
-          appname: this.appname.toLowerCase(),
+          name: this.name.toLowerCase(),
           sleep: this.sleep,
           basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
@@ -2442,7 +2442,7 @@ export default defineComponent({
         axios.post(`/api/apps`, postdata)
         // eslint-disable-next-line no-unused-vars
         .then(response => {
-          this.appname = '';
+          this.name = '';
           //console.log(response);
           this.$router.push({path: '/pipeline/' + this.pipeline + '/apps'});
         })

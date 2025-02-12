@@ -67,15 +67,6 @@ export class RepoController {
     return this.repoService.disconnectRepo(repoprovider, body.gitrepo);
   }
 
-  @ApiOperation({ summary: 'Start a Pull Request App' })
-  @Post('/pullrequest/start')
-  async startPullRequest(
-    @Body() body: any,
-  ) {
-    return "Not implemented";
-    //return this.repoService.startPullRequest(body);
-  }
-
   @ApiOperation({ summary: 'Webhooks endpoint for repository providers' })
   @Post('/repo/webhooks/:repoprovider')
   async repositoryWebhook(

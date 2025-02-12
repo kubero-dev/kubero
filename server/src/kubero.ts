@@ -339,6 +339,7 @@ export class Kubero {
 
     }
 
+    //Migrated tp apps
     // create a new app in a specified pipeline and phase
     public async newApp(app: App, user: User) {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
@@ -677,6 +678,7 @@ export class Kubero {
         return apps;
     }
 
+    // Migrated to Apps
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
 
@@ -1431,6 +1433,7 @@ export class Kubero {
         return summary;
     }
 
+    //Migrated to apps
     public async triggerImageBuild(pipeline: string, phase: string, appName: string) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;
