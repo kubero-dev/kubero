@@ -8,13 +8,16 @@ import { App } from './app/app';
 import { IApp } from './apps.interface';
 import { IPipelineList } from '../pipelines/pipelines.interface';
 import { IUser } from '../auth/auth.interface';
-import { SettingsService } from 'src/settings/settings.service'; 
+import { SettingsService } from 'src/settings/settings.service';
+//import YAML from 'yaml';
+import { KubectlTemplate } from 'src/templates/template';
 
 
 @Injectable()
 export class AppsService {
 
   private logger = new Logger(AppsService.name);
+  private YAML = require('yaml');
 
   constructor(
     private kubectl: KubernetesService,
@@ -283,5 +286,17 @@ export class AppsService {
             return { status: 'ok', message: 'app created '+app.name };
         }
     }
+  }
+
+  public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
+    const app = await this.getApp(pipelineName, phaseName, appName);
+    
+    const a = app as IKubectlApp;
+    let t =  new KubectlTemplate(a.spec as IApp);
+
+    //Convert template to Yaml
+    const template = this.YAML.stringify(t, {indent: 4, resolveKnownTags: true});
+
+    return template
   }
 }

@@ -62,4 +62,14 @@ export class AppsController {
     );
   }
 
+  @ApiOperation({ summary: 'Download the app templates' })
+  @Get('/:pipeline/:phase/:app/download')
+  async downloadAppTemplates(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+  ) {
+    return this.appsService.getTemplate(pipeline, phase, app);
+  }
+
 }
