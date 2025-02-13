@@ -18,6 +18,8 @@ import { AuditModule } from './audit/audit.module';
 import { AddonsModule } from './addons/addons.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SecurityModule } from './security/security.module';
+import { TemplatesController } from './templates/templates.controller';
+import { TemplatesService } from './templates/templates.service';
 
 @Module({
   imports: [
@@ -40,7 +42,7 @@ import { SecurityModule } from './security/security.module';
     NotificationsModule,
     SecurityModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, TemplatesController],
+  providers: [AppService, TemplatesService],
 })
 export class AppModule {}

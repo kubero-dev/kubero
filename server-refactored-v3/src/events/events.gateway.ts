@@ -21,7 +21,7 @@ export class EventsGateway {
   server: Server;
 
   constructor() {
-    Logger.debug('EventsGateway created');
+    //Logger.debug('EventsGateway created');
   }
 
   @SubscribeMessage('join')
@@ -29,7 +29,7 @@ export class EventsGateway {
     @MessageBody() data: { room: string },
     @ConnectedSocket() client: Socket,
   ): void {
-    Logger.debug('joining room ' + data.room);
+    //Logger.debug('joining room ' + data.room);
     client.join(data.room);
   }
 
@@ -38,17 +38,8 @@ export class EventsGateway {
     @MessageBody() data: { room: string },
     @ConnectedSocket() client: Socket,
   ): void {
-    Logger.debug('leaving room ' + data.room);
+    //Logger.debug('leaving room ' + data.room);
     client.leave(data.room);
-  }
-
-  @SubscribeMessage('log')
-  handleEvent(
-    @MessageBody() data: string,
-    @ConnectedSocket() client: Socket,
-  ): string {
-    Logger.debug('received event ' + data);
-    return data;
   }
 
   sendEvent(event: string, data: any) {
