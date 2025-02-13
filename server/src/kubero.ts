@@ -1287,6 +1287,7 @@ export class Kubero {
         return this.kubectl.getStorageglasses();
     }
 
+    //Migrated to security
     public async startScan(pipeline: string, phase: string, appName: string) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;

@@ -8,6 +8,16 @@ export class SecurityController {
     private securityService: SecurityService,
   ) {}
 
+  @ApiOperation({ summary: 'Trigger a scan for a specific app' })
+  @Get(':pipeline/:phase/:app/scan')
+  async triggerScan(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+  ) {
+    return this.securityService.startScan(pipeline, phase, app);
+  }
+
   @ApiOperation({ summary: 'Get the scan result for a specific app' })
   @Get(':pipeline/:phase/:app/scan/result')
   async getScanResult(

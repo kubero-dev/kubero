@@ -6,7 +6,7 @@ import { AppsService } from '../apps/apps.service';
 
 @Injectable()
 export class SecurityService {
-  private Logger = new Logger(SecurityService.name);
+  private logger = new Logger(SecurityService.name);
 
   constructor(
     private kubectl: KubernetesService,
@@ -88,8 +88,8 @@ export class SecurityService {
     }
 
     if (!logs || !logs.Results) {
-        this.Logger.error(logs);
-        this.Logger.error('no logs found or not able to parse results');
+        this.logger.error(logs);
+        this.logger.error('no logs found or not able to parse results');
         return summary;
     }
 
@@ -121,5 +121,48 @@ export class SecurityService {
     });
 
     return summary;
+  }
+
+  public async startScan(pipeline: string, phase: string, appName: string) {
+    const contextName = await this.pipelinesService.getContext(pipeline, phase);
+    const namespace = pipeline+'-'+phase;
+
+
+    const appresult = await this.appsService.getApp(pipeline, phase, appName)
+
+    const app = appresult as IKubectlApp;
+
+
+    if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy === 'plain') {
+    //if (app?.spec?.deploymentstrategy === 'git') {
+
+        if (app?.spec.gitrepo?.clone_url) {
+            if (contextName) {
+                this.kubectl.setCurrentContext(contextName);
+                this.kubectl.createScanRepoJob(namespace, appName, app.spec.gitrepo.clone_url, app.spec.branch);
+            }
+        } else {
+            this.logger.debug('no git repo found to run scan');
+        }
+    } else if (app?.spec?.deploymentstrategy === 'git' && app?.spec?.buildstrategy != 'plain') {
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag, true);
+        }
+    } else {
+        if (contextName) {
+            this.kubectl.setCurrentContext(contextName);
+            this.kubectl.createScanImageJob(namespace, appName, app.spec.image.repository, app.spec.image.tag, false);
+        }
+    }
+
+    return {
+        status: 'ok',
+        message: 'scan started',
+        deploymentstrategy: app?.spec?.deploymentstrategy,
+        pipeline: pipeline,
+        phase: phase,
+        app: appName
+    };
   }
 }
