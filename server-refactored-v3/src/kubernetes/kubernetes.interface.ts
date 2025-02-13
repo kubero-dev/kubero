@@ -5,54 +5,53 @@ import { Template } from '../templates/template';
 export interface IKubectlPipelineList {
   apiVersion: string;
   kind: string;
-  metadata: IKubectlMetadata,
-  items: IKubectlPipeline[]
+  metadata: IKubectlMetadata;
+  items: IKubectlPipeline[];
 }
 
 export interface IKubectlPipeline {
   apiVersion: string;
   kind: string;
-  metadata: IKubectlMetadata,
-  spec: IPipeline
+  metadata: IKubectlMetadata;
+  spec: IPipeline;
 }
 
 export interface IKubectlMetadata {
   creationTimestamp?: Date;
   generation?: number;
   //labels?: [Object];
-  annotations?: Object;
+  annotations?: object;
   labels?: {
-      'kubernetes.io/metadata.name'?: String,
-      manager?: string;
-  }
-  managedFields?: [Array: Object];
-  name?: String;
+    'kubernetes.io/metadata.name'?: string;
+    manager?: string;
+  };
+  managedFields?: [Array: object];
+  name?: string;
   namespace?: string;
   resourceVersion?: string;
   uid?: string;
-  finalizers?: [Array: Object];
+  finalizers?: [Array: object];
 }
 
 export interface IKubectlAppList {
   apiVersion: string;
-  items: IKubectlApp [];
+  items: IKubectlApp[];
   kind: string;
-  metadata: { continue:  string; resourceVersion: string; }
+  metadata: { continue: string; resourceVersion: string };
 }
 
-export interface IKubectlApp
-{
+export interface IKubectlApp {
   apiVersion: string;
   kind: string;
-  metadata: IKubectlMetadata
-  spec: IApp ;
+  metadata: IKubectlMetadata;
+  spec: IApp;
   status: {
-    conditions: [Array: Object];
+    conditions: [Array: object];
     deployedRelease?: {
       name: string;
       manifest: string;
-    }
-  }
+    };
+  };
 }
 
 export interface IStorageClass {

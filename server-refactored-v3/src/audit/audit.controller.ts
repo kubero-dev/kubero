@@ -1,4 +1,11 @@
-import { Controller, DefaultValuePipe, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  Param,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { ApiOperation } from '@nestjs/swagger';
 
@@ -12,7 +19,12 @@ export class AuditController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
-    @Query('limit', new DefaultValuePipe('100'), new ParseIntPipe({ optional: true })) limit: number,
+    @Query(
+      'limit',
+      new DefaultValuePipe('100'),
+      new ParseIntPipe({ optional: true }),
+    )
+    limit: number,
   ) {
     return this.auditService.getAppEntries(pipeline, phase, app, limit);
   }
@@ -20,7 +32,12 @@ export class AuditController {
   @ApiOperation({ summary: 'Get all audit entries' })
   @Get('/')
   async getAuditAll(
-    @Query('limit', new DefaultValuePipe('100'), new ParseIntPipe({ optional: true })) limit: number,
+    @Query(
+      'limit',
+      new DefaultValuePipe('100'),
+      new ParseIntPipe({ optional: true }),
+    )
+    limit: number,
   ) {
     return this.auditService.get(limit);
   }

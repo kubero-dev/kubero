@@ -4,10 +4,7 @@ import { LogsService } from './logs.service';
 
 @Controller({ path: 'api/logs', version: '1' })
 export class LogsController {
-
-  constructor(
-    private readonly logsService: LogsService
-  ) {}
+  constructor(private readonly logsService: LogsService) {}
 
   @ApiOperation({ summary: 'Get the logs for a specific container' })
   @Get('/:pipeline/:phase/:app/:container/history')
@@ -15,7 +12,7 @@ export class LogsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
-    @Param('container') container: string
+    @Param('container') container: string,
   ) {
     return this.logsService.getLogsHistory(pipeline, phase, app, container);
   }
@@ -25,9 +22,8 @@ export class LogsController {
   async getLogsForApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
-    @Param('app') app: string
+    @Param('app') app: string,
   ) {
     return this.logsService.startLogging(pipeline, phase, app);
   }
-
 }

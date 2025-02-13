@@ -4,10 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller({ path: 'api/addons', version: '1' })
 export class AddonsController {
-  constructor(
-    private readonly addonsService: AddonsService
-  ) {}
-  
+  constructor(private readonly addonsService: AddonsService) {}
 
   @ApiOperation({ summary: 'Get a list of all addons' })
   @Get('/')

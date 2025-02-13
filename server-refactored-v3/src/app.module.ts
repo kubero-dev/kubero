@@ -19,7 +19,6 @@ import { AddonsModule } from './addons/addons.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SecurityModule } from './security/security.module';
 
-
 @Module({
   imports: [
     ServeStaticModule.forRoot({

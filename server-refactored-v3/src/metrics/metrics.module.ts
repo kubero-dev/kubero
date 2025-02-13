@@ -5,6 +5,6 @@ import { KubernetesModule } from '../kubernetes/kubernetes.module';
 
 @Module({
   controllers: [MetricsController],
-  providers: [MetricsService, KubernetesModule]
+  providers: [MetricsService, KubernetesModule],
 })
 export class MetricsModule {}

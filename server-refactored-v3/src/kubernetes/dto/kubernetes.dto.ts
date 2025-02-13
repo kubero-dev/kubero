@@ -17,90 +17,88 @@ export class StorageClassDTO {
 }
 
 export class ContextDTO {
+  @ApiProperty()
+  cluster: string;
 
   @ApiProperty()
-  cluster: string
+  name: string;
 
   @ApiProperty()
-  name: string
-
-  @ApiProperty()
-  user: string
+  user: string;
 
   @ApiPropertyOptional()
-  namespace?: string
+  namespace?: string;
 }
 
 export class GetEventsDTO {
+  @ApiProperty()
+  count: number;
 
   @ApiProperty()
-  count: number
+  eventTime: any;
 
   @ApiProperty()
-  eventTime: any
-  
-  @ApiProperty()
-  firstTimestamp: string
-  
+  firstTimestamp: string;
+
   @ApiProperty()
   involvedObject: {
-    apiVersion: string
-    kind: string
-    name: string
-    namespace: string
-    resourceVersion: string
-    uid: string
-  }
-  
+    apiVersion: string;
+    kind: string;
+    name: string;
+    namespace: string;
+    resourceVersion: string;
+    uid: string;
+  };
+
   @ApiProperty()
-  lastTimestamp: string
-  
+  lastTimestamp: string;
+
   @ApiProperty()
-  message: string
-  
+  message: string;
+
   @ApiProperty()
   metadata: {
-    creationTimestamp: string
+    creationTimestamp: string;
     managedFields: Array<{
-      apiVersion: string
-      fieldsType: string
+      apiVersion: string;
+      fieldsType: string;
       fieldsV1: {
-        "f:count": {}
-        "f:firstTimestamp": {}
-        "f:involvedObject": {}
-        "f:lastTimestamp": {}
-        "f:message": {}
-        "f:reason": {}
-        "f:source": {
-          "f:component": {}
-        }
-        "f:type": {}
-        "f:reportingComponent"?: {}
-      }
-      manager: string
-      operation: string
-      time: string
-    }>
-    name: string
-    namespace: string
-    resourceVersion: string
-    uid: string
-  }
-  
+        'f:count': {};
+        'f:firstTimestamp': {};
+        'f:involvedObject': {};
+        'f:lastTimestamp': {};
+        'f:message': {};
+        'f:reason': {};
+        'f:source': {
+          'f:component': {};
+        };
+        'f:type': {};
+        'f:reportingComponent'?: {};
+      };
+      manager: string;
+      operation: string;
+      time: string;
+    }>;
+    name: string;
+    namespace: string;
+    resourceVersion: string;
+    uid: string;
+  };
+
   @ApiProperty()
-  reason: string
-  
+  reason: string;
+
   @ApiProperty()
-  reportingComponent: string
-  
+  reportingComponent: string;
+
   @ApiProperty()
-  reportingInstance: string
-  
+  reportingInstance: string;
+
   @ApiProperty()
   source: {
-    component: string
-  }
-  
+    component: string;
+  };
+
   @ApiProperty()
-  type: string
+  type: string;
 }

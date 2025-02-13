@@ -1,4 +1,17 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Logger, Param, Post, Put, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Param,
+  Post,
+  Put,
+  Res,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
@@ -6,9 +19,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
-  constructor(
-    private readonly appsService: AppsService,
-  ) {}
+  constructor(private readonly appsService: AppsService) {}
 
   @ApiOperation({ summary: 'Get app informations from  a specific app' })
   @Get('/:pipeline/:phase/:app')
@@ -29,7 +40,6 @@ export class AppsController {
     @Param('app') appName: string,
     @Body() app: any,
   ) {
-
     if (appName !== 'new') {
       const msg = 'App name does not match the URL';
       Logger.error(msg);
@@ -51,7 +61,7 @@ export class AppsController {
       id: 1,
       method: 'local',
       username: 'admin',
-      apitoken: '1234567890'
+      apitoken: '1234567890',
     };
     return this.appsService.createApp(app, user);
   }
@@ -65,9 +75,9 @@ export class AppsController {
     @Param('resourceVersion') resourceVersion: string,
     @Body() app: any,
   ) {
-
     if (appName !== app.name) {
-      const msg = 'App name does not match the URL '+appName+' != '+app.name;
+      const msg =
+        'App name does not match the URL ' + appName + ' != ' + app.name;
       Logger.error(msg);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
@@ -77,7 +87,7 @@ export class AppsController {
       id: 1,
       method: 'local',
       username: 'admin',
-      apitoken: '1234567890'
+      apitoken: '1234567890',
     };
     return this.appsService.updateApp(app, resourceVersion, user);
   }
@@ -94,16 +104,14 @@ export class AppsController {
       id: 1,
       method: 'local',
       username: 'admin',
-      apitoken: '1234567890'
+      apitoken: '1234567890',
     };
     return this.appsService.deleteApp(pipeline, phase, app, user);
   }
 
   @ApiOperation({ summary: 'Start a Pull Request App' })
   @Post('/pullrequest')
-  async startPullRequest(
-    @Body() body: any,
-  ) {
+  async startPullRequest(@Body() body: any) {
     return this.appsService.createPRApp(
       body.branch,
       body.branch,
@@ -134,10 +142,9 @@ export class AppsController {
       id: 1,
       method: 'local',
       username: 'admin',
-      apitoken: '1234567890'
+      apitoken: '1234567890',
     };
 
     return this.appsService.restartApp(pipeline, phase, app, user);
   }
-
 }

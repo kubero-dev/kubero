@@ -24,81 +24,77 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 @Injectable()
 export class AddonsService {
   private operatorsAvailable: string[] = [];
-  public addonsList: IPlugin[] = [] // List or possibly installed operators
+  public addonsList: IPlugin[] = []; // List or possibly installed operators
   private CRDList: any; //List of installed CRDs from kubectl
 
   constructor(private kubectl: KubernetesService) {
-    this.loadOperators()
+    this.loadOperators();
   }
 
   public async loadOperators(): Promise<void> {
-
     // Load all Custom Resource Definitions to get the list of installed operators
-    this.CRDList = await this.kubectl.getCustomresources()
+    this.CRDList = await this.kubectl.getCustomresources();
 
-    const kuberoMysql = new KuberoMysql(this.CRDList)
-    this.addonsList.push(kuberoMysql)
+    const kuberoMysql = new KuberoMysql(this.CRDList);
+    this.addonsList.push(kuberoMysql);
 
-    const kuberoRedis = new KuberoRedis(this.CRDList)
-    this.addonsList.push(kuberoRedis)
+    const kuberoRedis = new KuberoRedis(this.CRDList);
+    this.addonsList.push(kuberoRedis);
 
-    const kuberoPostgresql = new KuberoPostgresql(this.CRDList)
-    this.addonsList.push(kuberoPostgresql)
+    const kuberoPostgresql = new KuberoPostgresql(this.CRDList);
+    this.addonsList.push(kuberoPostgresql);
 
-    const kuberoMongoDB = new KuberoMongoDB(this.CRDList)
-    this.addonsList.push(kuberoMongoDB)
+    const kuberoMongoDB = new KuberoMongoDB(this.CRDList);
+    this.addonsList.push(kuberoMongoDB);
 
-    const kuberoMemcached = new KuberoMemcached(this.CRDList)
-    this.addonsList.push(kuberoMemcached)
+    const kuberoMemcached = new KuberoMemcached(this.CRDList);
+    this.addonsList.push(kuberoMemcached);
 
-    const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList)
-    this.addonsList.push(kuberoElasticsearch)
+    const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList);
+    this.addonsList.push(kuberoElasticsearch);
 
-    const kuberoCouchDB = new KuberoCouchDB(this.CRDList)
-    this.addonsList.push(kuberoCouchDB)
+    const kuberoCouchDB = new KuberoCouchDB(this.CRDList);
+    this.addonsList.push(kuberoCouchDB);
 
-    const kuberoKafka = new KuberoKafka(this.CRDList)
-    this.addonsList.push(kuberoKafka)
+    const kuberoKafka = new KuberoKafka(this.CRDList);
+    this.addonsList.push(kuberoKafka);
 
-    const kuberoMail = new KuberoMail(this.CRDList)
-    this.addonsList.push(kuberoMail)
+    const kuberoMail = new KuberoMail(this.CRDList);
+    this.addonsList.push(kuberoMail);
 
-    const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList)
-    this.addonsList.push(kuberoRabbitMQ)
+    const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList);
+    this.addonsList.push(kuberoRabbitMQ);
 
-    const tunnel = new Tunnel(this.CRDList)
-    this.addonsList.push(tunnel)
+    const tunnel = new Tunnel(this.CRDList);
+    this.addonsList.push(tunnel);
 
-    const postgresCluster = new PostgresCluster(this.CRDList)
-    this.addonsList.push(postgresCluster)
+    const postgresCluster = new PostgresCluster(this.CRDList);
+    this.addonsList.push(postgresCluster);
 
-    const redisCluster = new RedisCluster(this.CRDList)
-    this.addonsList.push(redisCluster)
+    const redisCluster = new RedisCluster(this.CRDList);
+    this.addonsList.push(redisCluster);
 
-    const redis = new Redis(this.CRDList)
-    this.addonsList.push(redis)
+    const redis = new Redis(this.CRDList);
+    this.addonsList.push(redis);
 
-    const mongoDB = new MongoDB(this.CRDList)
-    this.addonsList.push(mongoDB)
+    const mongoDB = new MongoDB(this.CRDList);
+    this.addonsList.push(mongoDB);
 
-    const cockroachdb = new Cockroachdb(this.CRDList)
-    this.addonsList.push(cockroachdb)
+    const cockroachdb = new Cockroachdb(this.CRDList);
+    this.addonsList.push(cockroachdb);
 
-    const minio = new Tenant(this.CRDList)
-    this.addonsList.push(minio)
+    const minio = new Tenant(this.CRDList);
+    this.addonsList.push(minio);
 
-    const clickhouse = new ClickHouseInstallation(this.CRDList)
-    this.addonsList.push(clickhouse)
-
+    const clickhouse = new ClickHouseInstallation(this.CRDList);
+    this.addonsList.push(clickhouse);
   }
 
   public async getAddonsList(): Promise<IPlugin[]> {
-      return this.addonsList
+    return this.addonsList;
   }
 
   public getOperatorsList(): string[] {
-      return this.operatorsAvailable
+    return this.operatorsAvailable;
   }
-
-
 }

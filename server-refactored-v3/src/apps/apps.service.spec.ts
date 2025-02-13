@@ -49,8 +49,16 @@ describe('AppsService', () => {
 
     const result = await service.getApp(pipelineName, phaseName, appName);
 
-    expect(pipelinesService.getContext).toHaveBeenCalledWith(pipelineName, phaseName);
-    expect(kubernetesService.getApp).toHaveBeenCalledWith(pipelineName, phaseName, appName, contextName);
+    expect(pipelinesService.getContext).toHaveBeenCalledWith(
+      pipelineName,
+      phaseName,
+    );
+    expect(kubernetesService.getApp).toHaveBeenCalledWith(
+      pipelineName,
+      phaseName,
+      appName,
+      contextName,
+    );
     expect(result).toBe(app);
   });
 
@@ -59,11 +67,16 @@ describe('AppsService', () => {
     const phaseName = 'test-phase';
     const appName = 'test-app';
 
-    jest.spyOn(pipelinesService, 'getContext').mockResolvedValue('example-context');
+    jest
+      .spyOn(pipelinesService, 'getContext')
+      .mockResolvedValue('example-context');
 
     const result = await service.getApp(pipelineName, phaseName, appName);
 
-    expect(pipelinesService.getContext).toHaveBeenCalledWith(pipelineName, phaseName);
+    expect(pipelinesService.getContext).toHaveBeenCalledWith(
+      pipelineName,
+      phaseName,
+    );
     expect(kubernetesService.getApp).not.toHaveBeenCalled();
     expect(result).toBeUndefined();
   });

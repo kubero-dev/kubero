@@ -4,6 +4,6 @@ import { RepoService } from './repo.service';
 
 @Module({
   controllers: [RepoController],
-  providers: [RepoService]
+  providers: [RepoService],
 })
 export class RepoModule {}

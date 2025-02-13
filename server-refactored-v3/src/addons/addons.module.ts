@@ -5,5 +5,4 @@ import { AddonsService } from './addons.service';
   controllers: [AddonsController],
   providers: [AddonsService],
 })
-export class AddonsModule {
-}
+export class AddonsModule {}

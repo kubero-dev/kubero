@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
-import { KubernetesModule  } from '../kubernetes/kubernetes.module';
+import { KubernetesModule } from '../kubernetes/kubernetes.module';
 
 @Global()
 @Module({

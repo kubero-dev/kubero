@@ -1,4 +1,4 @@
-import { ConsoleLogger } from '@nestjs/common'
+import { ConsoleLogger } from '@nestjs/common';
 
 /**
  * A custom logger that disables all logs emitted by calling `log` method if
@@ -16,12 +16,12 @@ export class CustomConsoleLogger extends ConsoleLogger {
     'NestFactory',
     'NestApplication',
     'WebSocketsController',
-  ]
+  ];
 
   log(_: any, context?: string): void {
-    context = context || ''
+    context = context || '';
     if (!CustomConsoleLogger.contextsToIgnore.includes(context)) {
-      super.log.apply(this, arguments)
+      super.log.apply(this, arguments);
     }
   }
 }

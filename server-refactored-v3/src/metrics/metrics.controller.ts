@@ -4,9 +4,7 @@ import { MetricsService } from './metrics.service';
 
 @Controller({ path: 'api/metrics', version: '1' })
 export class MetricsController {
-  constructor(
-    private metricsService: MetricsService,
-  ) {}
+  constructor(private metricsService: MetricsService) {}
 
   @ApiOperation({ summary: 'Get metrics for a specific app' })
   @Get('/resources/:pipeline/:phase/:app')

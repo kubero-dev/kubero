@@ -8,7 +8,7 @@ describe('Pipeline', () => {
     dockerimage: 'test-image',
     reviewapps: true,
     phases: [],
-    buildpack: { 
+    buildpack: {
       name: 'test-buildpack',
       language: 'nodejs',
       fetch: {
@@ -23,9 +23,9 @@ describe('Pipeline', () => {
           allowPrivilegeEscalation: false,
           capabilities: {
             add: [],
-            drop: []
-          }
-        }
+            drop: [],
+          },
+        },
       },
       build: {
         repository: 'https://github.com/test/repo',
@@ -39,9 +39,9 @@ describe('Pipeline', () => {
           allowPrivilegeEscalation: false,
           capabilities: {
             add: [],
-            drop: []
-          }
-        }
+            drop: [],
+          },
+        },
       },
       run: {
         repository: 'https://github.com/test/repo',
@@ -55,11 +55,11 @@ describe('Pipeline', () => {
           allowPrivilegeEscalation: false,
           capabilities: {
             add: [],
-            drop: []
-          }
-        }
+            drop: [],
+          },
+        },
       },
-      tag: 'latest'
+      tag: 'latest',
     },
     deploymentstrategy: 'git',
     buildstrategy: 'plain',
@@ -68,14 +68,13 @@ describe('Pipeline', () => {
       repository: {
         admin: true,
       },
-      webhook: {}
-
+      webhook: {},
     },
-    registry: { 
+    registry: {
       host: 'test-host',
       username: 'test-user',
-      password: 'test-password'
-    }
+      password: 'test-password',
+    },
   };
 
   it('should be defined', () => {

@@ -4,9 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller({ path: 'api/security', version: '1' })
 export class SecurityController {
-  constructor(
-    private securityService: SecurityService,
-  ) {}
+  constructor(private securityService: SecurityService) {}
 
   @ApiOperation({ summary: 'Trigger a scan for a specific app' })
   @Get(':pipeline/:phase/:app/scan')
@@ -26,7 +24,11 @@ export class SecurityController {
     @Param('app') app: string,
     @Query('logdetails') logdetails: string,
   ) {
-    return this.securityService.getScanResult(pipeline, phase, app, logdetails === 'true');
+    return this.securityService.getScanResult(
+      pipeline,
+      phase,
+      app,
+      logdetails === 'true',
+    );
   }
-
 }

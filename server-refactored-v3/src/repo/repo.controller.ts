@@ -4,9 +4,7 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller({ path: 'api/repo', version: '1' })
 export class RepoController {
-  constructor(
-    private readonly repoService: RepoService,
-  ) {}
+  constructor(private readonly repoService: RepoService) {}
 
   @ApiOperation({ summary: 'Get a list of all available repository providers' })
   @Get('/providers')
@@ -16,9 +14,7 @@ export class RepoController {
 
   @ApiOperation({ summary: 'Get a list of all available repositories' })
   @Get('/:provider/repositories')
-  async listRepositoriesByProvider(
-    @Param('provider') provider: string,
-  ) {
+  async listRepositoriesByProvider(@Param('provider') provider: string) {
     return this.repoService.listRepositoriesByProvider(provider);
   }
 
@@ -51,27 +47,19 @@ export class RepoController {
 
   @Post('/:provider/connect')
   @ApiOperation({ summary: 'Connect a repository' })
-  async connectRepo(
-    @Param('provider') provider: string,
-    @Body() body: any,
-  ) {
+  async connectRepo(@Param('provider') provider: string, @Body() body: any) {
     return this.repoService.connectRepo(provider, body.gitrepo);
   }
 
   @ApiOperation({ summary: 'Disconnect a repository' })
   @Post('/:provider/disconnect')
-  async disconnectRepo(
-    @Param('provider') provider: string,
-    @Body() body: any,
-  ) {
+  async disconnectRepo(@Param('provider') provider: string, @Body() body: any) {
     return this.repoService.disconnectRepo(provider, body.gitrepo);
   }
 
   @ApiOperation({ summary: 'Webhooks endpoint for repository providers' })
   @Post('/repo/webhooks/:provider')
-  async repositoryWebhook(
-    @Body() body: any,
-  ) {
-    return "Not implemented";
+  async repositoryWebhook(@Body() body: any) {
+    return 'Not implemented';
   }
 }

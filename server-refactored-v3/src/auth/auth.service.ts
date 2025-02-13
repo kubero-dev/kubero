@@ -22,11 +22,10 @@ export class AuthService {
     return null;
   }
 
-  getSession(req: Request,): { message: any, status: number } {
-
-    let isAuthenticated = false
-    let status = 200
-/*
+  getSession(req: Request): { message: any; status: number } {
+    const isAuthenticated = false;
+    const status = 200;
+    /*
     if (auth.authentication === true) {
         isAuthenticated = req.isAuthenticated()
         if (!isAuthenticated) {
@@ -35,20 +34,20 @@ export class AuthService {
     }
 */
 
-    let message = {
-        "isAuthenticated": isAuthenticated,
-        "version": process.env.npm_package_version,
-        "kubernetesVersion": this.kubectl.getKubernetesVersion(),
-        "operatorVersion": this.kubectl.getOperatorVersion(),
-        "buildPipeline": this.settingsService.getBuildpipelineEnabled(),
-        "templatesEnabled": this.settingsService.getTemplateEnabled(),
-        "auditEnabled": this.auditService.getAuditEnabled(),
-        "adminDisabled": this.settingsService.checkAdminDisabled(),
-        "consoleEnabled": this.settingsService.getConsoleEnabled(),
-        "metricsEnabled": this.settingsService.getMetricsEnabled(),
-        "sleepEnabled": this.settingsService.getSleepEnabled(),
-    }
+    const message = {
+      isAuthenticated: isAuthenticated,
+      version: process.env.npm_package_version,
+      kubernetesVersion: this.kubectl.getKubernetesVersion(),
+      operatorVersion: this.kubectl.getOperatorVersion(),
+      buildPipeline: this.settingsService.getBuildpipelineEnabled(),
+      templatesEnabled: this.settingsService.getTemplateEnabled(),
+      auditEnabled: this.auditService.getAuditEnabled(),
+      adminDisabled: this.settingsService.checkAdminDisabled(),
+      consoleEnabled: this.settingsService.getConsoleEnabled(),
+      metricsEnabled: this.settingsService.getMetricsEnabled(),
+      sleepEnabled: this.settingsService.getSleepEnabled(),
+    };
 
-    return { message: message, status: status }
+    return { message: message, status: status };
   }
 }

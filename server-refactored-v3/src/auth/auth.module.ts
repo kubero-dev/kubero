@@ -8,7 +8,7 @@ import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 
 @Module({
-  imports: [UsersModule, PassportModule ],
+  imports: [UsersModule, PassportModule],
   providers: [AuthService, LocalStrategy, KubernetesModule, AuditModule],
   controllers: [AuthController],
 })
