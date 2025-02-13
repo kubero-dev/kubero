@@ -457,6 +457,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to apps
     // get a app in a pipeline and phase
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);

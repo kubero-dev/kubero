@@ -2127,7 +2127,7 @@ export default defineComponent({
       loadApp() {
         if (this.app !== 'new') {
           axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
-            this.resourceVersion = response.data.resourceVersion;
+            this.resourceVersion = response.data.metadata.resourceVersion;
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
@@ -2274,6 +2274,8 @@ export default defineComponent({
         }
 
         let postdata = {
+          pipeline: this.pipeline,
+          phase: this.phase,
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
           name: this.name,
@@ -2337,7 +2339,7 @@ export default defineComponent({
           postdata.image.run.securityContext.runAsGroup = parseInt(postdata.image.run.securityContext.runAsGroup);
         }
 
-        axios.put(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        axios.put(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/${this.resourceVersion}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);

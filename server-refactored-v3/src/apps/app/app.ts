@@ -16,6 +16,7 @@ export class KubectlApp implements IKubectlApp{
     kind: string;
     metadata: IKubectlMetadata;
     spec: App;
+    status: { conditions: [Array: Object]; deployedRelease?: { name: string; manifest: string; }; };
 
     constructor(app: App) {
         this.apiVersion = "application.kubero.dev/v1alpha1";

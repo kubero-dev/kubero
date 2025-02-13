@@ -335,4 +335,43 @@ export class AppsService {
         this.NotificationsService.send(m);
     }
   }
+
+
+    // update an app in a pipeline and phase
+    public async updateApp(app: App, resourceVersion: string, user: IUser) {
+        this.logger.debug('update App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase);
+        //await this.pipelinesService.setContext(app.pipeline, app.phase);
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, not updating app ' + app.name);
+            return;
+        }
+
+        const contextName = await this.pipelinesService.getContext(app.pipeline, app.phase);
+
+        if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
+            this.triggerImageBuild(app.pipeline, app.phase, app.name);
+        }
+
+        if (contextName) {
+            await this.kubectl.updateApp(app, resourceVersion, contextName);
+            // IMPORTANT TODO : Update this.appStateList !!
+            
+            const m = {
+                'name': 'updateApp',
+                'user': user.username,
+                'resource': 'app',
+                'action': 'update',
+                'severity': 'normal',
+                'message': 'Updated app: '+app.name+' in '+ app.pipeline+' phase: '+app.phase,
+                'pipelineName':app.pipeline,
+                'phaseName': app.phase,
+                'appName': app.name,
+                'data': {
+                    'app': app
+                }
+            } as INotification;
+            this.NotificationsService.send(m);
+        }
+    }
 }

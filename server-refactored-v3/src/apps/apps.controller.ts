@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Logger, Param, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Logger, Param, Post, Put, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
@@ -54,6 +54,32 @@ export class AppsController {
       apitoken: '1234567890'
     };
     return this.appsService.createApp(app, user);
+  }
+
+  @ApiOperation({ summary: 'Update an app' })
+  @Put('/:pipeline/:phase/:app/:resourceVersion')
+  async updateApp(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') appName: string,
+    @Param('resourceVersion') resourceVersion: string,
+    @Body() app: any,
+  ) {
+
+    if (appName !== app.name) {
+      const msg = 'App name does not match the URL '+appName+' != '+app.name;
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+
+    //TODO: Migration -> this is a mock user
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890'
+    };
+    return this.appsService.updateApp(app, resourceVersion, user);
   }
 
   @ApiOperation({ summary: 'Delete an app' })
