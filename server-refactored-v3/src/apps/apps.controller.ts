@@ -147,4 +147,37 @@ export class AppsController {
 
     return this.appsService.restartApp(pipeline, phase, app, user);
   }
+
+  @ApiOperation({ summary: 'Get the app pods' })
+  @Get('/:pipeline/:phase/:app/pods')
+  async getPods(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+  ) {
+    return this.appsService.getPods(pipeline, phase, app);
+  }
+
+  @ApiOperation({ summary: 'Start a container console' })
+  @Post('/:pipeline/:phase/:app/console')
+  async execInContainer(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Body() body: any,
+  ) {
+
+    const user: IUser = {
+      id: 1,
+      method: 'local',
+      username: 'admin',
+      apitoken: '1234567890',
+    };
+
+    const podName = body.podName;
+    const containerName = body.containerName;
+    const command = body.command;
+
+    return this.appsService.execInContainer(pipeline, phase, app, podName, containerName, command, user);
+  }
 }

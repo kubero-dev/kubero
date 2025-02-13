@@ -5,12 +5,13 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { IKubectlApp } from '../kubernetes/kubernetes.interface';
 import { INotification } from '../notifications/notifications.interface';
 import { App } from './app/app';
-import { IApp } from './apps.interface';
+import { IApp, Workload, WorkloadContainer } from './apps.interface';
 import { IPipelineList } from '../pipelines/pipelines.interface';
 import { IUser } from '../auth/auth.interface';
 import { SettingsService } from 'src/settings/settings.service';
-//import YAML from 'yaml';
 import { KubectlTemplate } from 'src/templates/template';
+import { Stream } from 'stream';
+import { EventsGateway } from 'src/events/events.gateway';
 
 @Injectable()
 export class AppsService {
@@ -22,6 +23,7 @@ export class AppsService {
     private pipelinesService: PipelinesService,
     private NotificationsService: NotificationsService,
     private settingsService: SettingsService,
+    private eventsGateway: EventsGateway,
   ) {
     this.logger.log('AppsService initialized');
   }
@@ -520,6 +522,112 @@ export class AppsService {
         },
       } as INotification;
       this.NotificationsService.send(m);
+    }
+  }
+
+  public async getPods(pipelineName: string, phaseName: string, appName: string): Promise<Workload[]> {
+    const contextName = await this.pipelinesService.getContext(pipelineName, phaseName);
+    const namespace = pipelineName+'-'+phaseName;
+
+    let workloads: Workload[] = [];
+
+    if (contextName) {
+        this.kubectl.setCurrentContext(contextName);
+        const workload = await this.kubectl.getPods(namespace, contextName);
+        //return workload
+        for (const pod of workload) {
+            // check if app label name starts with appName
+            if (!pod.metadata?.generateName?.startsWith(appName+'-kuberoapp')) {
+                continue;
+            }
+
+            let workload = {
+                name: pod.metadata?.name,
+                namespace: pod.metadata?.namespace,
+                phase: phaseName,
+                pipeline: pipelineName,
+                status: pod.status?.phase,
+                age: pod.metadata?.creationTimestamp,
+                startTime: pod.status?.startTime,
+                containers: [] as WorkloadContainer[],
+            } as Workload;
+            
+            //for (const container of pod.spec?.containers || []) {
+            const containersCount = pod.spec?.containers?.length || 0;
+            for (let i = 0; i < containersCount; i++) {
+                workload.containers.push({
+                    name: pod.spec?.containers[i].name,
+                    image: pod.spec?.containers[i].image,
+                    restartCount: pod.status?.containerStatuses?.[i]?.restartCount,
+                    ready: pod.status?.containerStatuses?.[i]?.ready,
+                    started: pod.status?.containerStatuses?.[i]?.started,
+                } as WorkloadContainer);
+            }
+
+            workloads.push(workload);
+        }
+    }
+    return workloads;
+  }
+
+  public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: IUser) {
+
+    /*TODO: Fails. Needs to be loaded somewhere
+    const settings = await this.settingsService.getSettings();
+    console.log(settings.kubero?.console?.enabled)
+    if (settings.kubero?.console?.enabled != true) {
+        this.logger.warning('Warning: console is nost set or disabled in config');
+        return;
+    }
+    */
+
+    const contextName = await this.pipelinesService.getContext(pipelineName, phaseName);
+    if (contextName) {
+        const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;
+
+        if ( process.env.KUBERO_READONLY == 'true'){
+            console.log('KUBERO_READONLY is set to true, terminal access not allowed');
+            return;
+        }
+
+        if ( this.eventsGateway.execStreams[streamname] ) {
+            if (this.eventsGateway.execStreams[streamname].websocket.readyState == this.eventsGateway.execStreams[streamname].websocket.OPEN) {
+                console.log('execInContainer: execStream already running');
+                return;
+            } else {
+                console.log('CLOSED', this.eventsGateway.execStreams[streamname].websocket.CLOSED)
+                console.log('execInContainer: execStream already running but not open, deleting :', this.eventsGateway.execStreams[streamname].websocket.readyState);
+                delete this.eventsGateway.execStreams[streamname];
+
+                // wait a bit to make sure the stream is closed
+                await new Promise(resolve => setTimeout(resolve, 3000));
+            }
+        }
+
+        const execStream = new Stream.PassThrough();
+
+        const namespace = pipelineName+'-'+phaseName;
+        const ws =  await this.kubectl.execInContainer(namespace, podName, containerName, command, execStream)
+        .catch(error => {
+            console.log(error);
+            return;
+        });
+
+        if (!ws || ws.readyState != ws.OPEN) {
+            console.log('execInContainer: ws is undefined or not open');
+            return;
+        }
+
+        let stream = {
+            websocket: ws as unknown as WebSocket,
+            stream: execStream
+        };
+        this.eventsGateway.execStreams[streamname] = stream;
+
+        // sending the terminal output to the client
+        ws.on('message', (data: Buffer) => {
+            this.eventsGateway.sendTerminalLine(streamname, data.toString());
+        });
     }
   }
 }

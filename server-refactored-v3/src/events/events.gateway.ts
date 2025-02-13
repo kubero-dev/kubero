@@ -19,6 +19,7 @@ import { Server, Socket } from 'socket.io';
 export class EventsGateway {
   @WebSocketServer()
   server: Server;
+  public execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
 
   constructor() {
     //Logger.debug('EventsGateway created');
@@ -49,5 +50,22 @@ export class EventsGateway {
   sendLogline(room: string, logline: any) {
     //TODO define logline type
     this.server.to(room).emit('log', logline);
+  }
+
+  // sending the terminal input to the server
+  @SubscribeMessage('terminal')
+  handleTerminal(
+    @MessageBody() data: any,
+    @ConnectedSocket() client: Socket,
+  ): void {
+
+    if (this.execStreams[data.room]) {
+      this.execStreams[data.room].stream.write(data.data);
+    }
+  }
+
+  // sending the terminal output to the client
+  sendTerminalLine(room: string, line: string) {
+    this.server.to(room).emit('consoleresponse', line);
   }
 }

@@ -8,7 +8,6 @@ import { KubernetesModule } from '../kubernetes/kubernetes.module';
 @Module({
   providers: [
     NotificationsService,
-    EventsGateway,
     AuditModule,
     KubernetesModule,
   ],

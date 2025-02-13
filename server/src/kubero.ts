@@ -63,6 +63,7 @@ export class Kubero {
         this.kubectl = kubectl;
         this.notification = notifications
 
+        //Migrated to events
         this._io.on('connection', client => {
             client.on('terminal', (data: any) => {
                 //console.log('terminal input', data.data);
@@ -989,6 +990,7 @@ export class Kubero {
         return this.config.kubero?.admin?.disabled;
     }
 
+    //Migrated to apps
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
         console.log(this.config.kubero?.console.enabled)
         if (this.config.kubero?.console.enabled != true) {
@@ -1533,6 +1535,7 @@ export class Kubero {
         }
     }
 
+    // Migrated to apps
     public async getPods(pipelineName: string, phaseName: string, appName: string): Promise<Workload[]> {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;

@@ -5,7 +5,7 @@ import { AppsService } from 'src/apps/apps.service';
 import { LogsController } from './logs.controller';
 
 @Module({
-  providers: [LogsService, EventsGateway, AppsService],
+  providers: [LogsService, AppsService],
   controllers: [LogsController],
 })
 export class LogsModule {}

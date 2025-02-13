@@ -172,3 +172,24 @@ export interface ICronjob {
   image: string;
   imagePullPolicy: string;
 }
+
+export interface Workload {
+  name: string,
+  namespace: string,
+  phase: string,
+  pipeline: string,
+  status: string,
+  restarts: number,
+  age: Date | undefined,
+  startTime: Date | undefined,
+  containers: WorkloadContainer[]
+}
+
+export interface WorkloadContainer {
+  name: string,
+  image: string,
+  restartCount?: number,
+  ready?: boolean,
+  started?: boolean,
+  age: Date | undefined,
+}
