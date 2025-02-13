@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
@@ -29,8 +29,19 @@ export class PipelinesController {
     isArray: false
   })
   @ApiOperation({ summary: 'Create a new pipeline' })
-  @Post('/')
-  async createPipeline(@Body() pl: CreatePipelineDTO): Promise<OKDTO> {
+  @Post('/:pipeline')
+  @HttpCode(HttpStatus.CREATED)
+  async createPipeline(
+    @Param('pipeline') pipelineName: string,
+    @Body() pl: CreatePipelineDTO
+  ): Promise<OKDTO> {
+
+    if (pipelineName !== 'new') {
+      const msg = 'Pipeline name does not match the URL';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+
     //TODO: Migration -> this is a mock user
     const user: IUser = {
       id: 1,

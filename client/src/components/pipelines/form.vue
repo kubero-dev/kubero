@@ -939,7 +939,7 @@ export default defineComponent({
           this.buildpack = this.buildpackList[0].value;
         }
 
-        axios.post(`/api/pipelines`, {
+        axios.post(`/api/pipelines/${this.pipeline}`, {
           pipelineName: this.pipelineName,
           domain: this.domain,
           gitrepo: this.gitrepo,

@@ -31,8 +31,15 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(pipelineName, phaseName);
     
     if (contextName) {
+        try {
         let app = await this.kubectl.getApp(pipelineName, phaseName, appName, contextName);
-        return app;
+            app.metadata.managedFields = [{}];
+            app.status.deployedRelease = undefined;
+            return app;
+        } catch (error) {
+            this.logger.error('getApp error: '+error);
+            return null;
+        }
     }
   }
 

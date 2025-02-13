@@ -49,26 +49,26 @@ export class RepoController {
     return this.repoService.listReferences(provider, gitrepob64);
   }
 
-  @Post('/:repoprovider/connect')
+  @Post('/:provider/connect')
   @ApiOperation({ summary: 'Connect a repository' })
   async connectRepo(
-    @Param('repoprovider') repoprovider: string,
+    @Param('provider') provider: string,
     @Body() body: any,
   ) {
-    return this.repoService.connectRepo(repoprovider, body.gitrepo);
+    return this.repoService.connectRepo(provider, body.gitrepo);
   }
 
   @ApiOperation({ summary: 'Disconnect a repository' })
-  @Post('/:repoprovider/disconnect')
+  @Post('/:provider/disconnect')
   async disconnectRepo(
-    @Param('repoprovider') repoprovider: string,
+    @Param('provider') provider: string,
     @Body() body: any,
   ) {
-    return this.repoService.disconnectRepo(repoprovider, body.gitrepo);
+    return this.repoService.disconnectRepo(provider, body.gitrepo);
   }
 
   @ApiOperation({ summary: 'Webhooks endpoint for repository providers' })
-  @Post('/repo/webhooks/:repoprovider')
+  @Post('/repo/webhooks/:provider')
   async repositoryWebhook(
     @Body() body: any,
   ) {

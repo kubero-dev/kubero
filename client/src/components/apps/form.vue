@@ -64,6 +64,7 @@
           cols="12"
           md="2"
         >
+        <!--
         <v-switch
             v-model="sleep"
             hint="Sleep after 1 Minutes of inactivity"
@@ -76,6 +77,7 @@
             :disabled="!kuberoConfig.sleepEnabled"
             inset
           ></v-switch>
+        -->
         </v-col>
       </v-row>
 
@@ -566,7 +568,7 @@
               md="6"
             >
               <v-switch
-                v-model="security.vulnerabilityScans"
+                v-model="vulnerabilityscan.enabled"
                 label="Enable Trivy vulnerabfility scans"
                 color="primary"
             ></v-switch>
@@ -881,7 +883,7 @@
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-            <v-row v-for="(envvar, index) in envvars" :key="index">
+            <v-row v-for="(envvar, index) in envVars" :key="index">
               <v-col
                 cols="12"
                 md="5"
@@ -1307,6 +1309,7 @@
                 :disabled="!valid"
                 >Update</v-btn>
         </v-col>
+        <!--
         <v-col
           cols="12"
           md="4"
@@ -1318,6 +1321,7 @@
                 @click="deleteApp()"
                 >Delete</v-btn>
         </v-col>
+        -->
       </v-row>
     </v-container>
   </v-form>
@@ -1490,7 +1494,7 @@ export default defineComponent({
     return {
       breadcrumbItems: [
           {
-              title: 'dashboard.-',
+              title: 'dashboard.pipelines',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
@@ -1643,7 +1647,7 @@ export default defineComponent({
       },
       autodeploy: true,
       sslIndex: [] as (boolean|undefined)[],
-      envvars: [
+      envVars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
       sAAnnotations: [
@@ -1711,7 +1715,6 @@ export default defineComponent({
       letsecryptClusterIssuer: 'letsencrypt-prod',
       // deprecated in version 1.11.0
       security: {
-        vulnerabilityScans: false,
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
         readOnlyRootFilesystem: true,
@@ -1789,6 +1792,14 @@ export default defineComponent({
         'SYSLOG',
         'WAKE_ALARM',
       ],
+      vulnerabilityscan: {
+        enabled: false,
+        schedule: "0 0 * * *",
+        image: {
+          repository: 'aquasec/trivy',
+          tag: 'latest',
+        },
+      },
       healthcheck: {
         enabled: true,
         path: '/',
@@ -1907,7 +1918,7 @@ export default defineComponent({
           this.docker.image = response.data.image.repository;
           this.docker.tag = response.data.image.tag;
 
-          this.envvars = response.data.envVars;
+          this.envVars = response.data.envVars;
           if (response.data.serviceAccount && response.data.serviceAccount.annotations) {
             this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
           }
@@ -1929,7 +1940,7 @@ export default defineComponent({
           }
 
           // Open Panel if there is some data to show
-          if (this.envvars.length > 0) {
+          if (this.envVars.length > 0) {
             this.panel.push(6)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
@@ -1986,12 +1997,12 @@ export default defineComponent({
             // extract defaultEnvvars from pipeline phase
             for (let i = 0; i < this.pipelineData.phases.length; i++) {
               if (this.pipelineData.phases[i].name == this.phase) {
-                this.envvars = this.pipelineData.phases[i].defaultEnvvars;
+                this.envVars = this.pipelineData.phases[i].defaultEnvvars;
               }
             }
 
             // Open Panel if there is some data to show
-            if (this.envvars.length > 0) {
+            if (this.envVars.length > 0) {
               this.panel.push(6)
             }
 
@@ -2086,7 +2097,7 @@ export default defineComponent({
       },
 
       loadBuildpacks() {
-        axios.get('/api/settings/buildpacks').then(response => {
+        axios.get('/api/settings/runpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpacks.push({
               text: response.data[i].name,
@@ -2156,7 +2167,7 @@ export default defineComponent({
             this.docker.tag = response.data.spec.image.tag || 'latest';
             this.docker.command = command;
             this.autodeploy = response.data.spec.autodeploy;
-            this.envvars = response.data.spec.envVars;
+            this.envVars = response.data.spec.envVars;
             this.serviceAccount = response.data.spec.serviceAccount;
             if (response.data.spec.serviceAccount && response.data.spec.serviceAccount.annotations) {
               this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
@@ -2171,7 +2182,7 @@ export default defineComponent({
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
             this.addons= response.data.spec.addons || [];
-            this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
+            this.vulnerabilityscan = response.data.spec.vulnerabilityscan;
             this.ingress = response.data.spec.ingress || {};
             this.healthcheck = response.data.spec.healthcheck || { enabled: true, path: '/', startupSeconds: 90, timeoutSeconds: 30, periodSeconds: 10 };
 
@@ -2273,7 +2284,7 @@ export default defineComponent({
           deploymentstrategy: this.deploymentstrategy,
           buildstrategy: this.buildstrategy,
           image : {
-            containerport: this.containerPort,
+            containerPort: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             command: command,
@@ -2282,7 +2293,7 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          envvars: this.envvars,
+          envVars: this.envVars,
           // loop through serviceaccount annotations and convert to object
           serviceAccount: {
             annotations: this.sAAnnotations.reduce((acc, cur) => {
@@ -2315,6 +2326,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          vulnerabilityscan: this.vulnerabilityscan,
           healthcheck: this.healthcheck,
         }
 
@@ -2374,7 +2386,7 @@ export default defineComponent({
           deploymentstrategy: this.deploymentstrategy,
           buildstrategy: this.buildstrategy,
           image : {
-            containerport: this.containerPort,
+            containerPort: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             fetch: this.buildpack?.fetch,
@@ -2382,7 +2394,7 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          envvars: this.envvars,
+          envVars: this.envVars,
           serviceAccount: {
             annotations: this.sAAnnotations.reduce((acc, cur) => {
               acc[cur.annotation] = cur.value;
@@ -2414,6 +2426,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          vulnerabilityscan: this.vulnerabilityscan,
           healthcheck: this.healthcheck,
         }
 
@@ -2439,7 +2452,7 @@ export default defineComponent({
             },
         }
 */
-        axios.post(`/api/apps`, postdata)
+        axios.post(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`, postdata)
         // eslint-disable-next-line no-unused-vars
         .then(response => {
           this.name = '';
@@ -2464,15 +2477,15 @@ export default defineComponent({
         }
       },
       addEnvLine() {
-        this.envvars.push({
+        this.envVars.push({
           name: '',
           value: '',
         });
       },
       removeEnvLine(index: string) {
-        for (let i = 0; i < this.envvars.length; i++) {
-          if (this.envvars[i].name === index) {
-            this.envvars.splice(i, 1);
+        for (let i = 0; i < this.envVars.length; i++) {
+          if (this.envVars[i].name === index) {
+            this.envVars.splice(i, 1);
           }
         }
       },
@@ -2509,8 +2522,8 @@ export default defineComponent({
           const [name, value] = line.split('=');
           // check if name isn't commented out
           if (name && !name.startsWith('#') && value) {
-            if (!this.envvars.some(envvar => envvar.name === name.trim())) {
-              this.envvars.push({ name: name.trim(), value: value.trim() });
+            if (!this.envVars.some(envVars => envVars.name === name.trim())) {
+              this.envVars.push({ name: name.trim(), value: value.trim() });
             }
           }
         }

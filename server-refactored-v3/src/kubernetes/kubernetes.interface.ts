@@ -46,6 +46,13 @@ export interface IKubectlApp
   kind: string;
   metadata: IKubectlMetadata
   spec: IApp ;
+  status: {
+    conditions: [Array: Object];
+    deployedRelease?: {
+      name: string;
+      manifest: string;
+    }
+  }
 }
 
 export interface IStorageClass {

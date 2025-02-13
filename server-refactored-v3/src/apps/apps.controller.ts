@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpException, HttpStatus, Logger, Param, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
 import { ApiOperation } from '@nestjs/swagger';
@@ -9,6 +10,7 @@ export class AppsController {
     private readonly appsService: AppsService,
   ) {}
 
+  @ApiOperation({ summary: 'Get app informations from  a specific app' })
   @Get('/:pipeline/:phase/:app')
   async getApp(
     @Param('pipeline') pipeline: string,
@@ -18,11 +20,32 @@ export class AppsController {
     return this.appsService.getApp(pipeline, phase, app);
   }
 
-  @Post('/')
+  @ApiOperation({ summary: 'Create an app' })
+  @Post('/:pipeline/:phase/:app')
   @HttpCode(HttpStatus.CREATED)
   async createApp(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') appName: string,
     @Body() app: any,
   ) {
+
+    if (appName !== 'new') {
+      const msg = 'App name does not match the URL';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+    if (app.pipeline !== pipeline) {
+      const msg = 'Pipeline name does not match the URL';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+    if (app.phase !== phase) {
+      const msg = 'Phase name does not match the URL';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+
     //TODO: Migration -> this is a mock user
     const user: IUser = {
       id: 1,
@@ -33,6 +56,7 @@ export class AppsController {
     return this.appsService.createApp(app, user);
   }
 
+  @ApiOperation({ summary: 'Delete an app' })
   @Delete('/:pipeline/:phase/:app')
   async deleteApp(
     @Param('pipeline') pipeline: string,
