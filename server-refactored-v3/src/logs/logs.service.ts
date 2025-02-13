@@ -113,10 +113,10 @@ export class LogsService {
               );
             }
             /* TODO needs some improvements since it wont load web anymore
-                    for (const initcontainer of pod.spec.initContainers) {
-                        this.emitLogs(pipelineName, phaseName, appName, pod.metadata.name, initcontainer.name);
-                    }
-                    */
+            for (const initcontainer of pod.spec.initContainers) {
+                this.emitLogs(pipelineName, phaseName, appName, pod.metadata.name, initcontainer.name);
+            }
+            */
           }
         }
       });
