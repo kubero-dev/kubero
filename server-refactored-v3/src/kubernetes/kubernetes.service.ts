@@ -1442,9 +1442,13 @@ export class KubernetesService {
   }
 
   private loadJob(jobname: string): V1Job {
-    const path = join(__dirname, `../../templates/${jobname}.yaml`)
-    this.logger.debug(`loading job from ${path}`)
-    const job = readFileSync( path, 'utf8')
-    return this.YAML.parse(job) as V1Job
+    const allowedJobNames = ['buildpacks', 'dockerfile', 'nixpacks', 'plain'];
+    if (!allowedJobNames.includes(jobname)) {
+      throw new Error(`Invalid job name: ${jobname}`);
+    }
+    const path = join(__dirname, `../../templates/${jobname}.yaml`);
+    this.logger.debug(`loading job from ${path}`);
+    const job = readFileSync(path, 'utf8');
+    return this.YAML.parse(job) as V1Job;
   }
 }
