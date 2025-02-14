@@ -6,16 +6,19 @@ import { NotificationsService } from '../notifications/notifications.service';
 import { INotification } from '../notifications/notifications.interface';
 import { IUser } from '../auth/auth.interface';
 import { AppsService } from '../apps/apps.service';
-import { V1JobList } from '@kubernetes/client-node';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { ILoglines } from '../logs/logs.interface';
 import { LogsService } from '../logs/logs.service';
+import {  V1JobList } from '@kubernetes/client-node';
+
 
 @Injectable()
 export class DeploymentsService {
   //private _io: any;
   //private notification: Notifications;
   //private kubero: Kubero;
+
+  private YAML = require('yaml');
 
   constructor(
     //options: DeploymentOptions
@@ -118,6 +121,9 @@ export class DeploymentsService {
     dockerfilePath: string,
     user: IUser,
   ): Promise<any> {
+
+    //this.logger.debug('triggerBuildjob: ' + pipeline + ' ' + phase + ' ' + app + ' ' + buildstrategy + ' ' + gitrepo + ' ' + reference + ' ' + dockerfilePath + ' ' + user.username);
+
     if (process.env.KUBERO_READONLY == 'true') {
       this.logger.log(
         'KUBERO_READONLY is set to true, not triggering build for app: ' +
@@ -135,7 +141,7 @@ export class DeploymentsService {
       return;
     }
 
-    // Create the Pipeline CRD
+    // Create the Build CRD
     try {
       await this.kubectl.createBuildJob(
         namespace,

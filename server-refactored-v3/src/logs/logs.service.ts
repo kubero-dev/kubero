@@ -80,7 +80,8 @@ export class LogsService {
             this.podLogStreams.push(podName);
           })
           .catch((err) => {
-            this.logger.debug(err);
+            this.logger.error('Failed to start logs for ' + podName + ' ' + container);
+            this.logger.error(err.body.message);
           });
       } else {
         this.logger.debug('logs already running ' + podName + ' ' + container);
@@ -102,7 +103,7 @@ export class LogsService {
     if (contextName) {
       this.kubectl.getPods(namespace, contextName).then((pods: any[]) => {
         for (const pod of pods) {
-          if (pod.metadata.name.startsWith(appName)) {
+          if (pod.metadata.name.startsWith(appName+'-kuberoapp')) {
             for (const container of pod.spec.containers) {
               this.emitLogs(
                 pipelineName,

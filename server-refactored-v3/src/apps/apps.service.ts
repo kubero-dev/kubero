@@ -33,9 +33,7 @@ export class AppsService {
     phaseName: string,
     appName: string,
   ) {
-    this.logger.debug(
-      'get App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName,
-    );
+    this.logger.debug('get App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName);
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,

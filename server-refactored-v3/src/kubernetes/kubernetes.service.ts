@@ -41,6 +41,8 @@ import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
 import { IKuberoConfig, IKuberoCRD } from 'src/settings/settings.interface';
+import { join } from 'path';
+import { readFileSync } from 'fs';
 
 @Injectable()
 export class KubernetesService {
@@ -60,6 +62,7 @@ export class KubernetesService {
   //public config: IKuberoConfig;
   private exec: Exec = {} as Exec;
   private readonly logger = new Logger(KubernetesService.name);
+  private YAML = require('yaml');
 
   constructor() {
     this.kc = new KubeConfig();
@@ -1249,10 +1252,11 @@ export class KubernetesService {
       image: string;
       tag: string;
     },
+    //job: any, //V1Job,
   ): Promise<any> {
     this.logger.error('refactoring: loadJob not implemented');
-    //let job = loadJob(buildstrategy) as any
-    const job = new Object() as any;
+    let job = this.loadJob(buildstrategy) as any
+    //const job = new Object() as any;
 
     const id = new Date()
       .toISOString()
@@ -1435,5 +1439,12 @@ export class KubernetesService {
       //console.log(error);
       this.logger.error('ERROR creating namespace');
     }
+  }
+
+  private loadJob(jobname: string): V1Job {
+    const path = join(__dirname, `../../templates/${jobname}.yaml`)
+    this.logger.debug(`loading job from ${path}`)
+    const job = readFileSync( path, 'utf8')
+    return this.YAML.parse(job) as V1Job
   }
 }
