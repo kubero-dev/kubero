@@ -278,6 +278,10 @@ export class SettingsService {
     return this.features.metrics;
   }
 
+  checkMetricsEnabled(): boolean {
+    return true;
+  }
+
   private async checkForZeropod(): Promise<boolean> {
     // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present.
     // But it does not check if the Zeropod controller is complete and running.
@@ -299,6 +303,7 @@ export class SettingsService {
 
   private async runFeatureCheck() {
     this.features.sleep = await this.checkForZeropod();
+    this.features.metrics = await this.checkMetricsEnabled();
   }
 
   public getSleepEnabled(): boolean {
