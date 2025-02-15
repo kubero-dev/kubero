@@ -6,6 +6,13 @@ import { AuditService } from '../audit/audit.service';
 
 @Injectable()
 export class AuthService {
+
+  private methods = {
+    "local": true,
+    "github": true,
+    "oauth2": true
+  }
+
   constructor(
     private usersService: UsersService,
     private kubectl: KubernetesService,
@@ -50,4 +57,9 @@ export class AuthService {
 
     return { message: message, status: status };
   }
+
+  getMethods() {
+    return this.methods
+  }
+
 }

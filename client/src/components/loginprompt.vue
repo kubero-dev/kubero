@@ -120,7 +120,7 @@ export default defineComponent({
                     username: username,
                     password: password
                 }
-                axios.post("/api/login", data)
+                axios.post("/api/auth/login", data)
                     .then((response) => {
                         //console.log("Logged in"+response)
                         router.push("/")
