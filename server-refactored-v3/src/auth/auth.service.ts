@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { SettingsService } from '../settings/settings.service';
 import { AuditService } from '../audit/audit.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -13,11 +14,14 @@ export class AuthService {
     "oauth2": true
   }
 
+  private JWT_SECRET: string = 'CHANGEME'; 
+
   constructor(
     private usersService: UsersService,
     private kubectl: KubernetesService,
     private settingsService: SettingsService,
     private auditService: AuditService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -27,6 +31,15 @@ export class AuthService {
       return result;
     }
     return null;
+  }
+
+  async login(user: any){ //TODO: use a type for user
+    console.log("user: ", user)
+    const payload = { username: user.username, sub: user.userId };
+    console.log("payload: ", payload)
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 
   getSession(req: Request): { message: any; status: number } {
