@@ -9,7 +9,9 @@ export class UsersService {
     {
       userId: 1,
       username: 'foo',
+      email: 'asdf@asdf.de',
       password: 'bar',
+      token: 'asdfdfdfasdfadfasdf',
     },
   ];
 

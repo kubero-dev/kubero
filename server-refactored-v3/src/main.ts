@@ -4,14 +4,17 @@ import { CustomConsoleLogger } from './logger/logger';
 import { LogLevel } from '@nestjs/common/services/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import * as session from 'express-session';
+import * as passport from 'passport';
 
+import * as crypto from 'crypto';
 import helmet from 'helmet';
-
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
 async function bootstrap() {
-  const logLevels = process.env.LOGLEVELS?.split(',') ?? [
+  const logLevels = process.env.LOGLEVEL?.split(',') ?? [
     'log',
     'fatal',
     'error',
@@ -19,7 +22,7 @@ async function bootstrap() {
     'debug',
     'verbose',
   ];
-  Logger.log(`Log levels: ${logLevels}`, 'Bootstrap');
+  Logger.log(`Log level: ${logLevels}`, 'Bootstrap');
 
   const app = await NestFactory.create(AppModule, {
     logger: new CustomConsoleLogger({
@@ -28,6 +31,19 @@ async function bootstrap() {
     }),
     cors: true,
   });
+
+  //app.use(cookieParser())
+  const KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') 
+  app.use(session({
+    name: 'KuberoSession',
+    secret: KUBERO_SESSION_KEY,
+    resave: false,
+    saveUninitialized: true,
+  }));
+
+  //app.use(bodyParser.json());
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   app.use(
     helmet({
