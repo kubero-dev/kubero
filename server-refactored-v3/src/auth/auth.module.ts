@@ -10,7 +10,7 @@ import { Session } from './session';
 
 @Module({
   imports: [UsersModule, PassportModule.register({ session: true })],
-  providers: [AuthService, LocalStrategy, KubernetesModule, AuditModule, Session],
   controllers: [AuthController],
+  providers: [AuthService, LocalStrategy, KubernetesModule, AuditModule, Session],
 })
 export class AuthModule {}

@@ -20,6 +20,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { SecurityModule } from './security/security.module';
 import { TemplatesController } from './templates/templates.controller';
 import { TemplatesService } from './templates/templates.service';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { TemplatesService } from './templates/templates.service';
     AddonsModule,
     NotificationsModule,
     SecurityModule,
+    PassportModule.register({ session: true }),
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

@@ -18,10 +18,4 @@ export class AppController {
   constructor(
     private readonly appService: AppService) {
   }
-
-  @Get('/test/auth')
-  @UseGuards(AuthGuard(['local']))
-  getHello(@Request() req) {
-    return req.user + ' ' + req.authenticated + ' ' + req.isAuthenticated();  
-  }
 }

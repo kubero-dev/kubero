@@ -6,6 +6,8 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import * as cookieParser from 'cookie-parser';
+import * as bodyParser from 'body-parser';
 
 import * as crypto from 'crypto';
 import helmet from 'helmet';
@@ -32,16 +34,18 @@ async function bootstrap() {
     cors: true,
   });
 
-  //app.use(cookieParser())
-  const KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') 
+  //const KUBERO_SESSION_KEY = crypto.randomBytes(20).toString('hex') 
+  const KUBERO_SESSION_KEY = "test me"
+  app.use(cookieParser())
   app.use(session({
     name: 'KuberoSession',
     secret: KUBERO_SESSION_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { maxAge: 3600000 },
   }));
 
-  //app.use(bodyParser.json());
+  app.use(bodyParser.json());
   app.use(passport.initialize());
   app.use(passport.session());
 
