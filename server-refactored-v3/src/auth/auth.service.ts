@@ -1,4 +1,4 @@
-import { Injectable, Request } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { SettingsService } from '../settings/settings.service';
@@ -44,7 +44,8 @@ export class AuthService {
 
     const user = await this.validateUser(username, password);
     if (!user) {
-      return null;
+      throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      return { message: 'Invalid username or password', status: 401 };
     }
     
     return {

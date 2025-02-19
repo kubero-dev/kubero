@@ -6,6 +6,8 @@ import {
   Get,
   Response,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
@@ -48,7 +50,7 @@ export class AuthController {
       return { message: 'Username and password are required', status: 400 };
     }
 
-    return this.authService.login(username, password);
+    return await this.authService.login(username, password);
   }
 
   @Get('logout')
