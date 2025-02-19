@@ -86,6 +86,9 @@ import router from "../router"
 import axios from "axios"
 import { defineComponent } from 'vue'
 
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+
 export default defineComponent({
     name: "Login",
     data: () => ({
@@ -123,7 +126,12 @@ export default defineComponent({
                 axios.post("/api/auth/login", data)
                     .then((response) => {
                         //console.log("Logged in"+response)
-                        router.push("/")
+
+                        // Save topen token in local storage
+                        //localStorage.setItem("kubero.JWT_TOKEN", response.data.access_token);
+
+                        const token = cookies.set("kubero.JWT_TOKEN", response.data.access_token);
+                        window.location.href = "/"
                     })
                     .catch((errors) => {
                         this.error = true;

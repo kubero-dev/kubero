@@ -215,6 +215,10 @@ type TemplatesList = {
     // }[]
 }
 
+//Axios instance without Auth headers to load templates
+const templates = axios.create();
+templates.defaults.headers.common = {};
+
 export default defineComponent({
     sockets: {
     },
@@ -302,7 +306,8 @@ export default defineComponent({
         },
         async loadTemplates(indexUrl: string) {
             const self = this;
-            axios.get(indexUrl)
+
+            templates.get(indexUrl)
             .then(response => {
                 self.templatesList = response.data;
                 forEach(self.templatesList.categories, (value, key) => {

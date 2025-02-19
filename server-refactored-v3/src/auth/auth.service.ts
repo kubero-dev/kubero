@@ -14,8 +14,6 @@ export class AuthService {
     "oauth2": true
   }
 
-  private JWT_SECRET: string = 'CHANGEME'; 
-
   constructor(
     private usersService: UsersService,
     private kubectl: KubernetesService,
@@ -33,26 +31,36 @@ export class AuthService {
     return null;
   }
 
-  async login(user: any){ //TODO: use a type for user
-    console.log("user: ", user)
-    const payload = { username: user.username, sub: user.userId };
-    console.log("payload: ", payload)
+  async validateToken(token: string): Promise<boolean> {
+    try {
+      const decoded = this.jwtService.verify(token);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async login(username: string, password: string){ //TODO: use a type for user
+
+    const user = await this.validateUser(username, password);
+    if (!user) {
+      return null;
+    }
+    
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(user),
     };
   }
 
-  getSession(req: Request): { message: any; status: number } {
-    const isAuthenticated = false;
-    const status = 200;
-    /*
-    if (auth.authentication === true) {
-        isAuthenticated = req.isAuthenticated()
-        if (!isAuthenticated) {
-            status = 401
-        }
+  async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
+    let status = 200;
+    
+    if (process.env.KUBERO_AUTHENTICATION === 'true') {
+      if (!isAuthenticated) {
+        return { message: 'Invalid token', status: 401 };
+      }
     }
-*/
+
 
     const message = {
       isAuthenticated: isAuthenticated,

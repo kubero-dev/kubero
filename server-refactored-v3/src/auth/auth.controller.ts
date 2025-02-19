@@ -5,39 +5,87 @@ import {
   Post,
   Get,
   Response,
+  Body,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { GetMethodsDTO, LoginOKResponseDTO, LoginDTO, GetSessionDTO } from './auth.dto';
+import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/auth', version: '1' })
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('methods')
-  async getMethods() {
+  @ApiOperation({ 
+    summary: 'Get the available authentication methods', 
+    description: 'Returns a list of available authentication methods'
+  })
+  @ApiOkResponse({
+    description: 'A List of Authentication Methods',
+    type: GetMethodsDTO,
+    isArray: false,
+  })
+  async getMethods(): Promise<GetMethodsDTO> { 
     return this.authService.getMethods();
   }
+
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.body);
+  @ApiOperation({ 
+    summary: 'Login with username and password', 
+    description: 'Returns the login JWT token'
+  })
+  @ApiOkResponse({
+    description: 'A List of Authentication Methods',
+    type: LoginOKResponseDTO,
+    isArray: false,
+  })
+  async login(@Body() auth: LoginDTO) {
+    const { username, password } = auth;
+
+    if (!username || !password) {
+      return { message: 'Username and password are required', status: 400 };
+    }
+
+    return this.authService.login(username, password);
   }
 
   @Get('logout')
-  @UseGuards(AuthGuard('local'))
-  async logout(@Request() req) {
-    req.logout({}, function (err: Error) {
-      if (err) {
-        throw new Error('Logout failed: Function not implemented.');
-      }
-      return { message: 'logged out', status: 200 };
-    } as any);
-    console.log('logged out');
-    return { message: 'logged out', status: 200 };
+  @ApiOperation({
+    summary: 'Logout the current session',
+    description: 'Clears the current JWT Token',
+  })
+  @ApiOkResponse({
+    description: 'Logout OK',
+    type: OKDTO,
+    isArray: false,
+  })
+  async logout(@Response() res: any): Promise<void> {
+    res.clearCookie('kubero.JWT_TOKEN');
+    res.send({ message: 'Logged out', status: '200' } as OKDTO);
   }
 
   @Get('session')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({
+    summary: 'Get the current session',
+    description: 'Returns the current session information',
+  })
+  @ApiOkResponse({
+    description: 'Session Information',
+    type: GetSessionDTO,
+    isArray: false,
+  })
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   async session(@Request() req, @Response() res) {
-    const { message, status } = this.authService.getSession(req);
+    let isAuthenticated = await this.authService.validateToken(req.headers.authorization.split(' ')[1]);
+    const { message, status } = await this.authService.getSession(isAuthenticated);
     res.status(status);
     res.send(message);
   }

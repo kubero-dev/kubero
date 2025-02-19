@@ -3,23 +3,24 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { KubernetesModule } from 'src/kubernetes/kubernetes.module';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
-import { jwtConstants } from './constants';
+import { ENV } from '../settings/env/vars';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.register({
-    secret: jwtConstants.secret,
-    signOptions: { expiresIn: '3600s' },
+    secret: ENV?.KUBERO_JWT_SECRET || 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+    signOptions: { 
+      expiresIn: process.env.KUBERO_JWT_EXPIRESIN || '36000s' 
+    },
   }),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, KubernetesModule, AuditModule],
+  providers: [AuthService, JwtStrategy, KubernetesModule, AuditModule],
   controllers: [AuthController],
   exports: [AuthService],
 })

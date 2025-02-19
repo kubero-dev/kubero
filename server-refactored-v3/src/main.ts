@@ -11,7 +11,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-  const logLevels = process.env.LOGLEVELS?.split(',') ?? [
+  const logLevels = process.env.KUBERO_LOGLEVEL?.split(',') ?? [
     'log',
     'fatal',
     'error',
@@ -71,19 +71,14 @@ async function bootstrap() {
       scheme: 'bearer',
       bearerFormat: 'JWT',
     })
-    .addSecurity('apiKey', {
-      type: 'apiKey',
-      name: 'api_key',
-      in: 'header',
-    })
     .addSecurity('oauth2', {
       type: 'oauth2',
       flows: {
         implicit: {
           authorizationUrl: 'http://example.org/api/oauth/dialog',
           scopes: {
-            'write:pets': 'modify pets in your account',
-            'read:pets': 'read your pets',
+            'write:example': 'modify pets in your example',
+            'read:example': 'read your example',
           },
         },
       },

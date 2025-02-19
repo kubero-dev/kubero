@@ -15,7 +15,7 @@ import { PipelinesService } from './pipelines.service';
 import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
-import { OKDTO } from 'src/dto/ok.dto';
+import { OKDTO } from 'src/shared/dto/ok.dto';
 import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
 

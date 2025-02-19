@@ -10,19 +10,33 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
   Res,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { GetAppDTO  } from './apps.dto';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
-  @ApiOperation({ summary: 'Get app informations from  a specific app' })
   @Get('/:pipeline/:phase/:app')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ 
+    summary: 'Get app informations from  a specific app' ,
+    description: 'Returns the app information from a specific app'
+  })
+  @ApiOkResponse({
+    description: 'A List of App Informations',
+    type: GetAppDTO,
+    isArray: false,
+  })
   async getApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,

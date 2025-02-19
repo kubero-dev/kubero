@@ -5,10 +5,19 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapWritableState } from 'pinia'
+
+
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+
+import axios from 'axios'
+//axios.defaults.headers.common['User-Agent'] = 'Kubero/3.x'
+//axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('kubero.JWT_TOKEN')
+axios.defaults.headers.common['Authorization'] = 'Bearer ' + cookies.get("kubero.JWT_TOKEN")
+//axios.defaults.headers.common['vary'] = 'Accept-Encoding'
 
 export default defineComponent({
     name: 'DefaultView',

@@ -196,10 +196,13 @@ theme.global.name.value = localStorage.getItem("theme") || 'light';
 </script>
 
 <script lang="ts">
-import axios from "axios";
+import { useCookies } from "vue3-cookies";
+import router from "../../router"
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
+
+const { cookies } = useCookies();
 
 export default defineComponent({
   name: "NavDrawer",
@@ -216,14 +219,10 @@ export default defineComponent({
     },
     methods: {
         logout: () => {
-            axios.get("/api/logout")
-            .then((response) => {
-                console.log("Logged out"+response)
-                window.location.reload()
-            })
-            .catch((errors) => {
-                console.log("Cannot logout "+errors)
-            })
+            //localStorage.removeItem("kubero.JWT_TOKEN");
+            // Remove cookie
+            cookies.remove("kubero.JWT_TOKEN");
+            router.push("/login")
         },
     },
     mounted() {
