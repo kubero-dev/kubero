@@ -19,20 +19,6 @@ import { OKDTO } from 'src/shared/dto/ok.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('methods')
-  @ApiOperation({ 
-    summary: 'Get the available authentication methods', 
-    description: 'Returns a list of available authentication methods'
-  })
-  @ApiOkResponse({
-    description: 'A List of Authentication Methods',
-    type: GetMethodsDTO,
-    isArray: false,
-  })
-  async getMethods(): Promise<GetMethodsDTO> { 
-    return this.authService.getMethods();
-  }
-
   @Post('login')
   @ApiOperation({ 
     summary: 'Login with username and password', 
@@ -90,5 +76,36 @@ export class AuthController {
     const { message, status } = await this.authService.getSession(isAuthenticated);
     res.status(status);
     res.send(message);
+  }
+
+  @Get('methods')
+  @ApiOperation({ 
+    summary: 'Get the available authentication methods', 
+    description: 'Returns a list of available authentication methods'
+  })
+  @ApiOkResponse({
+    description: 'A List of Authentication Methods',
+    type: GetMethodsDTO,
+    isArray: false,
+  })
+  async getMethods(): Promise<GetMethodsDTO> { 
+    return this.authService.getMethods();
+  }
+  
+  @Get('github')
+  @UseGuards(AuthGuard('github'))
+  @ApiBearerAuth('OAuth2')
+  async github() {
+    return 'auth';
+  }
+
+  @Get('github/callback')
+  @UseGuards(AuthGuard('github'))
+  @ApiBearerAuth('OAuth2')
+  async githubCallback(@Request() req: any, @Response() res: any) {
+    //console.log(req.user);
+    const token = await this.authService.loginOAuth2(req.user.username)
+    res.cookie('kubero.JWT_TOKEN', token);
+    res.redirect('/');
   }
 }

@@ -139,6 +139,22 @@ export default defineComponent({
                     })
             }
             login()
+        },
+        github() {
+            axios.get("/api/auth/github")
+                .then((response) => {
+                    //console.log("Logged in"+response)
+
+                    // Save topen token in local storage
+                    //localStorage.setItem("kubero.JWT_TOKEN", response.data.access_token);
+
+                    const token = cookies.set("kubero.JWT_TOKEN", response.data.access_token);
+                    window.location.href = "/"
+                })
+                .catch((errors) => {
+                    this.error = true;
+                    console.log("Cannot log in"+errors)
+                })
         }
     }
 });

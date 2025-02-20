@@ -3,9 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
 import { ENV } from '../settings/env/vars';
 
-import * as dotenv from 'dotenv';
-dotenv.config();
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {

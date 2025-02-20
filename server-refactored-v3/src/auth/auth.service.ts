@@ -40,17 +40,31 @@ export class AuthService {
     }
   }
 
-  async login(username: string, password: string){ //TODO: use a type for user
-
+  async login(username: string, password: string){
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
-      return { message: 'Invalid username or password', status: 401 };
+    }
+    const u = {
+      userID: user.userID,
+      username: user.username,
+      strategy: 'local'
     }
     
     return {
-      access_token: this.jwtService.sign(user),
+      access_token: this.jwtService.sign(u),
     };
+  }
+
+  async loginOAuth2(username) {
+    const user = await this.usersService.findOne(username); //find or create
+    const u = {
+      userID: user.userID,
+      username: user.username,
+      strategy: 'github'
+    }
+    return this.jwtService.sign(u);
+    
   }
 
   async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
