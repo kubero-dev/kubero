@@ -1,14 +1,23 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { KubernetesModule } from 'src/kubernetes/kubernetes.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import { GithubStrategy } from './github.strategy';
+import { Oauth2Strategy } from './oauth2.strategy';
 import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ENV } from '../config/env/vars';
+import { ENV, checkOauth2Enabled, checkGithubEnabled } from '../config/env/vars';
+
+const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule];
+if (checkOauth2Enabled()) {
+  providers.push(Oauth2Strategy);
+}
+if (checkGithubEnabled()) {
+  providers.push(GithubStrategy);
+}
 
 @Module({
   imports: [
@@ -21,7 +30,7 @@ import { ENV } from '../config/env/vars';
       },
     }),
   ],
-  providers: [AuthService, JwtStrategy, GithubStrategy, KubernetesModule, AuditModule],
+  providers: providers,
   controllers: [AuthController],
   exports: [AuthService],
 })

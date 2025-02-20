@@ -91,7 +91,7 @@ export class AuthController {
   async getMethods(): Promise<GetMethodsDTO> { 
     return this.authService.getMethods();
   }
-  
+
   @Get('github')
   @UseGuards(AuthGuard('github'))
   @ApiBearerAuth('OAuth2')
@@ -103,6 +103,23 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   @ApiBearerAuth('OAuth2')
   async githubCallback(@Request() req: any, @Response() res: any) {
+    //console.log(req.user);
+    const token = await this.authService.loginOAuth2(req.user.username)
+    res.cookie('kubero.JWT_TOKEN', token);
+    res.redirect('/');
+  }
+  
+  @Get('oauth2')
+  @UseGuards(AuthGuard('oauth2'))
+  @ApiBearerAuth('OAuth2')
+  async oauth2() {
+    return 'auth';
+  }
+
+  @Get('oauth2/callback')
+  @UseGuards(AuthGuard('oauth2'))
+  @ApiBearerAuth('OAuth2')
+  async oauth2Callback(@Request() req: any, @Response() res: any) {
     //console.log(req.user);
     const token = await this.authService.loginOAuth2(req.user.username)
     res.cookie('kubero.JWT_TOKEN', token);

@@ -4,15 +4,10 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
+import { checkGithubEnabled, checkOauth2Enabled, checkLocalauthEnabled } from '../config/env/vars';
 
 @Injectable()
 export class AuthService {
-
-  private methods = {
-    "local": true,
-    "github": true,
-    "oauth2": true
-  }
 
   constructor(
     private usersService: UsersService,
@@ -94,8 +89,13 @@ export class AuthService {
     return { message: message, status: status };
   }
 
-  getMethods() {
-    return this.methods
+  getMethods(): { local: boolean; github: boolean; oauth2: boolean } {
+    const methods = {
+      "local": checkLocalauthEnabled(),
+      "github": checkGithubEnabled(),
+      "oauth2": checkOauth2Enabled()
+    }
+    return methods
   }
 
 }

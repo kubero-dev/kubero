@@ -1,7 +1,7 @@
 import { Strategy, StrategyOptions, Profile } from 'passport-github2';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { ENV } from '../config/env/vars';
+import { ENV, extractScope } from '../config/env/vars';
 import { Request } from 'express';
 import { AuthenticateOptions } from 'passport';
 
@@ -13,6 +13,8 @@ export class GithubStrategy extends PassportStrategy(Strategy) {
         clientID: ENV?.GITHUB_CLIENT_ID,
         clientSecret: ENV?.GITHUB_CLIENT_SECRET,
         callbackURL: ENV?.GITHUB_CLIENT_CALLBACKURL,
+        scope: extractScope(ENV?.GITHUB_CLIENT_SCOPE),
+        userAgent: 'kubero/v3'
       } as StrategyOptions
     );
   }
