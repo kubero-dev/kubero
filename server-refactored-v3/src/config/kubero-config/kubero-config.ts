@@ -1,4 +1,4 @@
-import { IKuberoConfig, IPodSize, IBuildpack } from '../settings.interface';
+import { IKuberoConfig, IPodSize, IBuildpack } from '../config.interface';
 import { Buildpack } from '../buildpack/buildpack';
 import { PodSize } from '../podsize/podsize';
 

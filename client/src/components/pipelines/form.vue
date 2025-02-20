@@ -731,7 +731,7 @@ export default defineComponent({
         });
       },
       listBuildpacks() {
-        axios.get('/api/settings/runpacks').then(response => {
+        axios.get('/api/config/runpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpackList.push({
               text: response.data[i].name,
@@ -815,7 +815,7 @@ export default defineComponent({
 
       loadDefaultregistry() {
         if (this.pipeline === 'new') {
-          axios.get(`/api/settings/registry`)
+          axios.get(`/api/config/registry`)
           .then(response => {
             if (response.data.host && response.data.account.username && response.data.account.password) {
               this.registry ={

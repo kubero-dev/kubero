@@ -1,4 +1,4 @@
-import { IPodSize } from '../settings.interface';
+import { IPodSize } from '../config.interface';
 
 export class PodSize implements IPodSize {
   public name: string;

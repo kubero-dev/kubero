@@ -40,7 +40,7 @@ import {
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
-import { IKuberoConfig, IKuberoCRD } from 'src/settings/settings.interface';
+import { IKuberoConfig, IKuberoCRD } from 'src/config/config.interface';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 

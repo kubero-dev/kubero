@@ -10,9 +10,9 @@ import {
   IKubectlApp,
 } from '../../kubernetes/kubernetes.interface';
 import { IAddon } from '../../addons/addons.interface';
-import { ISecurityContext, IPodSize } from '../../settings/settings.interface';
+import { ISecurityContext, IPodSize } from '../../config/config.interface';
 import { hashSync, genSaltSync } from 'bcrypt';
-import { Buildpack } from '../../settings/buildpack/buildpack';
+import { Buildpack } from '../../config/buildpack/buildpack';
 
 export class KubectlApp implements IKubectlApp {
   apiVersion: string;

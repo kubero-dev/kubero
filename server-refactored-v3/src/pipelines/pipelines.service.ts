@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IPipelineList, IPipeline } from './pipelines.interface';
 import { KubernetesService } from 'src/kubernetes/kubernetes.service';
-import { Buildpack } from '../settings/buildpack/buildpack';
+import { Buildpack } from '../config/buildpack/buildpack';
 import { IUser } from '../auth/auth.interface';
 import { NotificationsService } from '../notifications/notifications.service';
 import { INotification } from '../notifications/notifications.interface';

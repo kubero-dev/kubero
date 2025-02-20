@@ -8,7 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { AppsModule } from './apps/apps.module';
 import { PipelinesModule } from './pipelines/pipelines.module';
 import { RepoModule } from './repo/repo.module';
-import { SettingsModule } from './settings/settings.module';
+import { ConfigModule } from './config/config.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
@@ -32,7 +32,7 @@ import { TemplatesService } from './templates/templates.service';
     AppsModule,
     PipelinesModule,
     RepoModule,
-    SettingsModule,
+    ConfigModule,
     MetricsModule,
     LogsModule,
     DeploymentsModule,

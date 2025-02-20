@@ -6,7 +6,7 @@ import {
   IRegistry,
 } from '../pipelines.interface';
 
-import { IBuildpack } from '../../settings/settings.interface';
+import { IBuildpack } from '../../config/config.interface';
 import { IKubectlMetadata } from '../../kubernetes/kubernetes.interface';
 
 export class Pipeline implements IPipeline {

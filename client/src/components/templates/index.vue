@@ -273,7 +273,7 @@ export default defineComponent({
         },
         loadCatalogs(catalogId: number) {
             const self = this;
-            axios.get(`/api/settings/templates`)
+            axios.get(`/api/config/templates`)
             .then(response => {
                 self.templates = response.data as Templates;
                 if (self.templates.catalogs.length > 0 && self.templates.enabled == true) {

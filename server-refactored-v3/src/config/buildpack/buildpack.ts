@@ -1,4 +1,4 @@
-import { IBuildpack, ISecurityContext } from '../settings.interface';
+import { IBuildpack, ISecurityContext } from '../config.interface';
 
 export class Buildpack implements IBuildpack {
   public name: string;

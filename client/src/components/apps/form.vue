@@ -1904,7 +1904,7 @@ export default defineComponent({
         }
       },
       loadClusterIssuers(){
-        axios.get('/api/settings/clusterissuer').then(response => {
+        axios.get('/api/config/clusterissuer').then(response => {
           this.letsecryptClusterIssuer = response.data.clusterissuer;
         });
       },
@@ -2078,7 +2078,7 @@ export default defineComponent({
 
 
       loadPodsizeList() {
-        axios.get('/api/settings/podsizes').then(response => {
+        axios.get('/api/config/podsizes').then(response => {
           if (response.data.length > 0 && this.app == 'new') {
             this.podsize = response.data[0];
           }
@@ -2097,7 +2097,7 @@ export default defineComponent({
       },
 
       loadBuildpacks() {
-        axios.get('/api/settings/runpacks').then(response => {
+        axios.get('/api/config/runpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpacks.push({
               text: response.data[i].name,

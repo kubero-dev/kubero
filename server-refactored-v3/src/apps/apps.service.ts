@@ -8,7 +8,7 @@ import { App } from './app/app';
 import { IApp, Workload, WorkloadContainer } from './apps.interface';
 import { IPipelineList } from '../pipelines/pipelines.interface';
 import { IUser } from '../auth/auth.interface';
-import { SettingsService } from 'src/settings/settings.service';
+import { ConfigService } from 'src/config/config.service';
 import { KubectlTemplate } from 'src/templates/template';
 import { Stream } from 'stream';
 import { EventsGateway } from 'src/events/events.gateway';
@@ -22,7 +22,7 @@ export class AppsService {
     private kubectl: KubernetesService,
     private pipelinesService: PipelinesService,
     private NotificationsService: NotificationsService,
-    private settingsService: SettingsService,
+    private configService: ConfigService,
     private eventsGateway: EventsGateway,
   ) {
     this.logger.log('AppsService initialized');
@@ -233,7 +233,7 @@ export class AppsService {
     ssh_url: string,
     pipelineName: string | undefined,
   ) {
-    const podSizeList = await this.settingsService.getPodSizes();
+    const podSizeList = await this.configService.getPodSizes();
 
     if (process.env.KUBERO_READONLY == 'true') {
       console.log(

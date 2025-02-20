@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
-import { SettingsService } from '../settings/settings.service';
+import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -17,7 +17,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private kubectl: KubernetesService,
-    private settingsService: SettingsService,
+    private configService: ConfigService,
     private auditService: AuditService,
     private jwtService: JwtService
   ) {}
@@ -82,13 +82,13 @@ export class AuthService {
       version: process.env.npm_package_version,
       kubernetesVersion: this.kubectl.getKubernetesVersion(),
       operatorVersion: this.kubectl.getOperatorVersion(),
-      buildPipeline: this.settingsService.getBuildpipelineEnabled(),
-      templatesEnabled: this.settingsService.getTemplateEnabled(),
+      buildPipeline: this.configService.getBuildpipelineEnabled(),
+      templatesEnabled: this.configService.getTemplateEnabled(),
       auditEnabled: this.auditService.getAuditEnabled(),
-      adminDisabled: this.settingsService.checkAdminDisabled(),
-      consoleEnabled: this.settingsService.getConsoleEnabled(),
-      metricsEnabled: this.settingsService.getMetricsEnabled(),
-      sleepEnabled: this.settingsService.getSleepEnabled(),
+      adminDisabled: this.configService.checkAdminDisabled(),
+      consoleEnabled: this.configService.getConsoleEnabled(),
+      metricsEnabled: this.configService.getMetricsEnabled(),
+      sleepEnabled: this.configService.getSleepEnabled(),
     };
 
     return { message: message, status: status };

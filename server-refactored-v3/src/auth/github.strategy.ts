@@ -1,7 +1,7 @@
 import { Strategy, StrategyOptions, Profile } from 'passport-github2';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable } from '@nestjs/common';
-import { ENV } from '../settings/env/vars';
+import { ENV } from '../config/env/vars';
 import { Request } from 'express';
 import { AuthenticateOptions } from 'passport';
 

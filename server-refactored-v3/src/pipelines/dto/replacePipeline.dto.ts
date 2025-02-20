@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IBuildpack, IRegistry } from '../../settings/settings.interface';
+import { IBuildpack, IRegistry } from '../../config/config.interface';
 import { IPipelinePhase, IgitLink } from '../pipelines.interface';
 
 export class CreatePipelineDTO {

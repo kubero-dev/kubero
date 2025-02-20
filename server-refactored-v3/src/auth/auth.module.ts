@@ -8,7 +8,7 @@ import { GithubStrategy } from './github.strategy';
 import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ENV } from '../settings/env/vars';
+import { ENV } from '../config/env/vars';
 
 @Module({
   imports: [

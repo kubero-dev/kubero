@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKuberoCRD, IKuberoConfig, IRegistry } from './settings.interface';
+import { IKuberoCRD, IKuberoConfig, IRegistry } from './config.interface';
 import { KuberoConfig } from './kubero-config/kubero-config';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
@@ -10,8 +10,8 @@ import { Buildpack } from './buildpack/buildpack';
 import { PodSize } from './podsize/podsize';
 
 @Injectable()
-export class SettingsService {
-  private readonly logger = new Logger(SettingsService.name);
+export class ConfigService {
+  private readonly logger = new Logger(ConfigService.name);
   private runningConfig: IKuberoConfig;
   private features: { [key: string]: boolean } = {
     sleep: false,

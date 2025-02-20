@@ -9,7 +9,7 @@ import {
   INotificationDiscord,
 } from './notifications.interface';
 import { EventsGateway } from '../events/events.gateway';
-import { IKuberoConfig } from '../settings/settings.interface';
+import { IKuberoConfig } from '../config/config.interface';
 import fetch from 'node-fetch';
 
 @Injectable()
