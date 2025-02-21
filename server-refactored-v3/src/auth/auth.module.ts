@@ -3,15 +3,16 @@ import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { KubernetesModule } from 'src/kubernetes/kubernetes.module';
 import { PassportModule } from '@nestjs/passport';
-import { JwtStrategy } from './jwt.strategy';
-import { GithubStrategy } from './github.strategy';
-import { Oauth2Strategy } from './oauth2.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { GithubStrategy } from './strategies/github.strategy';
+import { Oauth2Strategy } from './strategies/oauth2.strategy';
+import { AnonymousStrategy } from './strategies/anonymous.strategy';
 import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ENV, checkOauth2Enabled, checkGithubEnabled } from '../config/env/vars';
 
-const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule];
+const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule, AnonymousStrategy];
 if (checkOauth2Enabled()) {
   providers.push(Oauth2Strategy);
 }

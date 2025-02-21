@@ -55,7 +55,7 @@ export class AuthController {
   }
 
   @Get('session')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({
     summary: 'Get the current session',
