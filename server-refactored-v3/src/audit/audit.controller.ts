@@ -5,9 +5,13 @@ import {
   Param,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { AuditService } from './audit.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
+import { OKDTO } from 'src/shared/dto/ok.dto';
+
 
 @Controller({ path: 'api/audit', version: '1' })
 export class AuditController {
@@ -15,6 +19,13 @@ export class AuditController {
 
   @ApiOperation({ summary: 'Get all audit entries for a specific app' })
   @Get('/:pipeline/:phase/:app')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async getAudit(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -31,6 +42,13 @@ export class AuditController {
 
   @ApiOperation({ summary: 'Get all audit entries' })
   @Get('/')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async getAuditAll(
     @Query(
       'limit',

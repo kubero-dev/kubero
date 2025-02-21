@@ -55,8 +55,6 @@ export class AuthController {
   }
 
   @Get('session')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
-  @ApiBearerAuth('bearerAuth')
   @ApiOperation({
     summary: 'Get the current session',
     description: 'Returns the current session information',
@@ -71,6 +69,8 @@ export class AuthController {
     type: OKDTO,
     isArray: false,
   })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async session(@Request() req, @Response() res) {
     let isAuthenticated = await this.authService.validateToken(req.headers.authorization.split(' ')[1]);
     const { message, status } = await this.authService.getSession(isAuthenticated);

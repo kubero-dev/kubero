@@ -10,37 +10,53 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
-import { ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {
   constructor(private pipelinesService: PipelinesService) {}
 
+  @Get('/')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOkResponse({
     description: 'A List of Pipelines',
     type: GetPipelineDTO,
     isArray: false,
   })
   @ApiOperation({ summary: 'Get all pipelines' })
-  @Get('/')
   async getPipelines() {
     return this.pipelinesService.listPipelines();
   }
 
+  @Post('/:pipeline')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOkResponse({
     description: 'A List of Pipelines',
     type: OKDTO,
     isArray: false,
   })
   @ApiOperation({ summary: 'Create a new pipeline' })
-  @Post('/:pipeline')
   @HttpCode(HttpStatus.CREATED)
   async createPipeline(
     @Param('pipeline') pipelineName: string,
@@ -78,14 +94,28 @@ export class PipelinesController {
     ) as Promise<OKDTO>;
   }
 
-  @ApiOperation({ summary: 'Get a specific pipeline' })
   @Get('/:pipeline')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Get a specific pipeline' })
   async getPipeline(@Param('pipeline') pipeline: string) {
     return this.pipelinesService.getPipeline(pipeline);
   }
 
-  @ApiOperation({ summary: 'Update a pipeline' })
   @Put('/:pipeline')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Update a pipeline' })
   async updatePipeline(@Body() pl: CreatePipelineDTO) {
     //TODO: Migration -> this is a mock user
     const user: IUser = {
@@ -114,8 +144,15 @@ export class PipelinesController {
     );
   }
 
-  @ApiOperation({ summary: 'Delete a pipeline' })
   @Delete('/:pipeline')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Delete a pipeline' })
   async deletePipeline(@Param('pipeline') pipeline: string) {
     const user: IUser = {
       id: 1,
@@ -126,8 +163,15 @@ export class PipelinesController {
     return this.pipelinesService.deletePipeline(pipeline, user);
   }
 
-  @ApiOperation({ summary: 'Get all apps for a pipeline' })
   @Get('/:pipeline/apps')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Get all apps for a pipeline' })
   async getPipelineApps(@Param('pipeline') pipeline: string) {
     return this.pipelinesService.getPipelineWithApps(pipeline);
   }

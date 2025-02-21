@@ -16,10 +16,11 @@ import {
 import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
-import { ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { GetAppDTO  } from './apps.dto';
+import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
@@ -48,6 +49,13 @@ export class AppsController {
   @ApiOperation({ summary: 'Create an app' })
   @Post('/:pipeline/:phase/:app')
   @HttpCode(HttpStatus.CREATED)
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async createApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -82,6 +90,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Update an app' })
   @Put('/:pipeline/:phase/:app/:resourceVersion')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async updateApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -108,6 +123,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Delete an app' })
   @Delete('/:pipeline/:phase/:app')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async deleteApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -125,6 +147,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Start a Pull Request App' })
   @Post('/pullrequest')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async startPullRequest(@Body() body: any) {
     return this.appsService.createPRApp(
       body.branch,
@@ -136,6 +165,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Download the app templates' })
   @Get('/:pipeline/:phase/:app/download')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async downloadAppTemplates(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -146,6 +182,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Restart/Reload an app' })
   @Get('/:pipeline/:phase/:app/restart')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async restartApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -164,6 +207,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Get the app pods' })
   @Get('/:pipeline/:phase/:app/pods')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async getPods(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -174,6 +224,13 @@ export class AppsController {
 
   @ApiOperation({ summary: 'Start a container console' })
   @Post('/:pipeline/:phase/:app/console')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
   async execInContainer(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,

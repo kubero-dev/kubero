@@ -1,16 +1,25 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
-import { ApiOperation, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
+import { AuthGuard } from '@nestjs/passport';
+import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/metrics', version: '1' })
 export class MetricsController {
   constructor(private metricsService: MetricsService) {}
 
+  @Get('/resources/:pipeline/:phase/:app')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOperation({ summary: 'Get metrics for a specific app' })
   @ApiParam({ name: 'pipeline', type: 'string' })
   @ApiParam({ name: 'phase', type: 'string' })
   @ApiParam({ name: 'app', type: 'string' })
-  @Get('/resources/:pipeline/:phase/:app')
   async getMetrics(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -19,10 +28,17 @@ export class MetricsController {
     return this.metricsService.getPodMetrics(pipeline, phase, app);
   }
 
+  @Get('/uptimes/:pipeline/:phase')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOperation({ summary: 'Get uptimes for pods on a Namespace' })
   @ApiParam({ name: 'pipeline', type: 'string' })
   @ApiParam({ name: 'phase', type: 'string' })
-  @Get('/uptimes/:pipeline/:phase')
   async getUptimes(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -30,13 +46,28 @@ export class MetricsController {
     return this.metricsService.getUptimes(pipeline, phase);
   }
 
-  @ApiOperation({ summary: 'Get timeseries' })
   @Get('/timeseries')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Get timeseries' })
   async getWideMetricsList(
   ) {
     return this.metricsService.getLongTermMetrics('up');
   }
 
+  @Get('/timeseries/:type/:pipeline/:phase/:app')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOperation({ summary: 'Get timeseries to draw metrics' })
   @ApiParam({ name: 'type', enum: ['memory', 'load', 'httpstatuscodes', 'responsetime', 'traffic', 'cpu'] })
   @ApiParam({ name: 'pipeline', type: 'string' })
@@ -45,7 +76,6 @@ export class MetricsController {
   @ApiParam({ name: 'scale', enum: ['24h', '2h', '7d'], required: false })
   @ApiParam({ name: 'calc', enum: ['rate', 'increase'], required: false })
   @ApiParam({ name: 'host', type: 'string', required: false })
-  @Get('/timeseries/:type/:pipeline/:phase/:app')
   async getWideMetrics(
     @Param('type') type: "memory" | "load" | "httpstatuscodes" | "responsetime" | "traffic" | "cpu",
     @Param('pipeline') pipeline: string,
@@ -117,11 +147,18 @@ export class MetricsController {
     return ret;
   }
 
+  @Get('/rules/:pipeline/:phase/:app')
+  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
   @ApiOperation({ summary: 'Get alerts Rules and status' })
   @ApiParam({ name: 'pipeline', type: 'string' })
   @ApiParam({ name: 'phase', type: 'string' })
   @ApiParam({ name: 'app', type: 'string' })
-  @Get('/rules/:pipeline/:phase/:app')
   async getRules(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
