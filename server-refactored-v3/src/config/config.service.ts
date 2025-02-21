@@ -9,6 +9,9 @@ import { Context } from '@kubernetes/client-node';
 import { Buildpack } from './buildpack/buildpack';
 import { PodSize } from './podsize/podsize';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);

@@ -1,7 +1,7 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 //import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiParam } from '@nestjs/swagger';
 
 @Controller({ path: 'api/config', version: '1' })
 export class ConfigController {
@@ -53,5 +53,40 @@ export class ConfigController {
   @Get('/podsizes')
   async getPodSizes() {
     return this.configService.getPodSizes();
+  }
+  @Get('/setup/check/:component')
+  @ApiOperation({ summary: 'Check the setup' })
+  @ApiParam({ name: 'component', description: 'Component to check' })
+  async checkComponent(
+    @Param('component') component: string,
+  ) {
+    return this.configService.checkComponent(component);
+  }
+
+  @Post('/setup/kubeconfig/validate')
+  async validateKubeconfig(@Body() body) {
+    const kubeconfig = body.kubeconfig;
+    const kubeContext = body.context;
+    const result = await this.configService.validateKubeconfig(kubeconfig, kubeContext);
+    return result;
+  }
+
+  @Post('/setup/save')
+  async updateRunningConfig(@Body() body) {
+    const kubeconfigBase64 = body.KUBECONFIG_BASE64;
+    const kubeContext = body.KUBERO_CONTEXT;
+    const kuberoNamespace = body.KUBERO_NAMESPACE;
+    const KuberoSessionKey = body.KUBERO_SESSION_KEY;
+    const kuberoWebhookSecret = body.KUBERO_WEBHOOK_SECRET;
+
+    const kubeconfigDecoded = Buffer.from(kubeconfigBase64, 'base64').toString('utf-8');
+    const resultValidation = await this.configService.validateKubeconfig(kubeconfigDecoded, kubeContext);
+    if (resultValidation.valid === false) {
+        return resultValidation;
+    }
+
+    const resultUpdateConfig = await this.configService.updateRunningConfig(kubeconfigBase64, kubeContext, kuberoNamespace, KuberoSessionKey, kuberoWebhookSecret);
+
+    return resultUpdateConfig;
   }
 }

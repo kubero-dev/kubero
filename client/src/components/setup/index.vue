@@ -422,7 +422,7 @@ users:
     save(obj: any) {
       axios.post('/api/config/setup/save', obj)
       .then((response) => {
-        if (response.status === 200 && response.data.status === 'ok') {
+        if (response.status === 201 && response.data.status === 'ok') {
           this.saveSuccess = 'ok'
           this.saveErrorMessage = ''
           this.checkInstalled('operator')
@@ -503,12 +503,14 @@ users:
         return false
       }
 
-      const response = await axios.post('/api/config/k8s/kubeconfig/validate', {
+      const response = await axios.post('/api/config/setup/kubeconfig/validate', {
         kubeconfig: this.kubeConfig,
         context: this.kubeContext
       })
 
-      if (response.status === 200) {
+      console.log(response.data)
+
+      if (response.status === 201) {
         if (response.data.valid) {
           this.kubeconfigError = ''
           this.kubeconfigValid = true
