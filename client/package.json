@@ -3,8 +3,8 @@
   "private": true,
   "license": "GPL-3.0",
   "scripts": {
-    "dev": "vite",
-    "watch": "vue-tsc --noEmit && vite build --watch",
+    "run": "vite",
+    "dev": "vue-tsc --noEmit && vite build --watch",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "lint": "eslint . --fix --ignore-path .gitignore"

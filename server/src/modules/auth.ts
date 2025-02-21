@@ -10,6 +10,7 @@ import { Request, Response, NextFunction } from 'express';
 import * as crypto from "crypto"
 import axios from 'axios';
 
+//Migrated to auth
 export type User =  {
     id: number,
     method: string,

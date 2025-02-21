@@ -713,7 +713,7 @@ export default defineComponent({
         this.buildpack = buildpack;
       },
       getContextList() {
-        axios.get('/api/config/k8s/context').then(response => {
+        axios.get('/api/kubernetes/contexts').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.contextList.push(response.data[i].name);
           }
@@ -726,12 +726,12 @@ export default defineComponent({
         });
       },
       listRepositories() {
-        axios.get('/api/config/repositories').then(response => {
+        axios.get('/api/repo/providers').then(response => {
           this.repositoriesList = response.data
         });
       },
       listBuildpacks() {
-        axios.get('/api/config/buildpacks').then(response => {
+        axios.get('/api/config/runpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpackList.push({
               text: response.data[i].name,
@@ -805,7 +805,7 @@ export default defineComponent({
       },
 
       loadRepository() {
-        axios.get(`/api/repo/${this.repotab}/list`)
+        axios.get(`/api/repo/${this.repotab}/repositories`)
         .then(response => {
           this.gitrepoItems = response.data;
         }).catch(error => {
@@ -939,7 +939,7 @@ export default defineComponent({
           this.buildpack = this.buildpackList[0].value;
         }
 
-        axios.post(`/api/pipelines`, {
+        axios.post(`/api/pipelines/${this.pipeline}`, {
           pipelineName: this.pipelineName,
           domain: this.domain,
           gitrepo: this.gitrepo,
