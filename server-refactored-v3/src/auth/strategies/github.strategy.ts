@@ -20,7 +20,6 @@ export class GithubStrategy extends PassportStrategy(Strategy) {
   }
   async validate(accessToken: string, _refreshToken: string, profile: Profile) {
     //console.log('Github2Strategy.validate', profile, accessToken);
-    //console.log('Github2Strategy.validate', accessToken);
     return profile;
   }
   authenticate(req: Request, options?: AuthenticateOptions): void {
