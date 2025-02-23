@@ -18,16 +18,16 @@ import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
 import { ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { GetAppDTO  } from './apps.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
   @Get('/:pipeline/:phase/:app')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ 
     summary: 'Get app informations from  a specific app' ,
@@ -54,7 +54,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async createApp(
     @Param('pipeline') pipeline: string,
@@ -95,7 +95,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async updateApp(
     @Param('pipeline') pipeline: string,
@@ -128,7 +128,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async deleteApp(
     @Param('pipeline') pipeline: string,
@@ -152,7 +152,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async startPullRequest(@Body() body: any) {
     return this.appsService.createPRApp(
@@ -170,7 +170,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async downloadAppTemplates(
     @Param('pipeline') pipeline: string,
@@ -187,7 +187,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async restartApp(
     @Param('pipeline') pipeline: string,
@@ -212,7 +212,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async getPods(
     @Param('pipeline') pipeline: string,
@@ -229,7 +229,7 @@ export class AppsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async execInContainer(
     @Param('pipeline') pipeline: string,

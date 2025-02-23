@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable, Request } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Request, Type } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 import { checkGithubEnabled, checkOauth2Enabled, checkLocalauthEnabled } from '../config/env/vars';
+import { AuthGuard, IAuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class AuthService {
@@ -41,7 +42,7 @@ export class AuthService {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
     const u = {
-      userID: user.userID,
+      userId: user.userId,
       username: user.username,
       strategy: 'local'
     }
@@ -54,7 +55,7 @@ export class AuthService {
   async loginOAuth2(username) {
     const user = await this.usersService.findOne(username); //find or create
     const u = {
-      userID: user.userID,
+      userId: user.userId,
       username: user.username,
       strategy: 'github'
     }
@@ -64,13 +65,6 @@ export class AuthService {
 
   async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
     let status = 200;
-    
-    if (process.env.KUBERO_AUTHENTICATION === 'true') {
-      if (!isAuthenticated) {
-        return { message: 'Invalid token', status: 401 };
-      }
-    }
-
 
     const message = {
       isAuthenticated: isAuthenticated,

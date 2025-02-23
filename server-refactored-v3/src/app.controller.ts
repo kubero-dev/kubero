@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 //import { Response } from 'express';
 import { AppService } from './app.service';
-import { AuthGuard } from '@nestjs/passport';
 
 @Controller()
 export class AppController {

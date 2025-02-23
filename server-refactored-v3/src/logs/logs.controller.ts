@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { LogsService } from './logs.service';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/logs', version: '1' })
@@ -9,7 +9,7 @@ export class LogsController {
   constructor(private readonly logsService: LogsService) {}
 
   @Get('/:pipeline/:phase/:app/:container/history')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -31,7 +31,7 @@ export class LogsController {
   }
 
   @Get('/:pipeline/:phase/:app/')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

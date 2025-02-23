@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiParam } 
 import { IUser } from 'src/auth/auth.interface';
 import { CreateBuild } from './dto/CreateBuild.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/deployments', version: '1' })
 export class DeploymentsController {
@@ -16,7 +16,7 @@ export class DeploymentsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'List deployments for a specific app' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
@@ -36,7 +36,7 @@ export class DeploymentsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Build a specific app' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
@@ -60,7 +60,7 @@ export class DeploymentsController {
   }
 
   @Delete('/:pipeline/:phase/:app/:buildName')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -89,7 +89,7 @@ export class DeploymentsController {
   }
 
   @Get('/:pipeline/:phase/:app/:build/:container/history')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

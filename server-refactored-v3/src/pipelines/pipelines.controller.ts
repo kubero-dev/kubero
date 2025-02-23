@@ -19,14 +19,14 @@ import { GetPipelineDTO } from './dto/getPipeline.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {
   constructor(private pipelinesService: PipelinesService) {}
 
   @Get('/')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -44,7 +44,7 @@ export class PipelinesController {
   }
 
   @Post('/:pipeline')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -95,7 +95,7 @@ export class PipelinesController {
   }
 
   @Get('/:pipeline')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -108,7 +108,7 @@ export class PipelinesController {
   }
 
   @Put('/:pipeline')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -145,7 +145,7 @@ export class PipelinesController {
   }
 
   @Delete('/:pipeline')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -164,7 +164,7 @@ export class PipelinesController {
   }
 
   @Get('/:pipeline/apps')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

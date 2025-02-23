@@ -7,14 +7,14 @@ import {
   GetEventsDTO,
 } from './dto/kubernetes.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {
   constructor(private readonly kubernetesService: KubernetesService) {}
 
   @Get('events')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -35,7 +35,7 @@ export class KubernetesController {
   }
 
   @Get('storageclasses')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -53,7 +53,7 @@ export class KubernetesController {
   }
 
   @Get('domains')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -78,7 +78,7 @@ export class KubernetesController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOkResponse({
     description: 'A List of available contexts',

@@ -3,14 +3,14 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ConfigService } from './config.service';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { OKDTO } from 'src/shared/dto/ok.dto';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/config', version: '1' })
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('/')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the Kubero settings' })
   @ApiForbiddenResponse({
@@ -23,7 +23,7 @@ export class ConfigController {
   }
 
   @Get('/banner')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the banner informations' })
   @ApiForbiddenResponse({
@@ -36,7 +36,7 @@ export class ConfigController {
   }
 
   @Get('/templates')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the templates settings' })
   @ApiForbiddenResponse({
@@ -49,7 +49,7 @@ export class ConfigController {
   }
 
   @Get('/registry')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the registry settings' })
   @ApiForbiddenResponse({
@@ -62,7 +62,7 @@ export class ConfigController {
   }
 
   @Get('/runpacks')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'List runpacks' })
   @ApiForbiddenResponse({
@@ -75,7 +75,7 @@ export class ConfigController {
   }
 
   @Get('/clusterissuer')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the configured cluster issuer' })
   @ApiForbiddenResponse({
@@ -88,14 +88,14 @@ export class ConfigController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async getClusterIssuer() {
     return this.configService.getClusterIssuer();
   }
 
   @Get('/buildpacks')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'List buildpacks' })
   @ApiForbiddenResponse({
@@ -108,7 +108,7 @@ export class ConfigController {
   }
 
   @Get('/podsizes')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -121,7 +121,7 @@ export class ConfigController {
   }
 
   @Get('/setup/check/:component')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -137,7 +137,7 @@ export class ConfigController {
   }
 
   @Post('/setup/kubeconfig/validate')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -152,7 +152,7 @@ export class ConfigController {
   }
 
   @Post('/setup/save')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

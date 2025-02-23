@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 import { OKDTO } from 'src/shared/dto/ok.dto';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
 
 @Controller({ path: 'api/audit', version: '1' })
@@ -24,7 +24,7 @@ export class AuditController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async getAudit(
     @Param('pipeline') pipeline: string,
@@ -47,7 +47,7 @@ export class AuditController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async getAuditAll(
     @Query(

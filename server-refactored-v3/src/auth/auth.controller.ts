@@ -9,11 +9,12 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 import { GetMethodsDTO, LoginOKResponseDTO, LoginDTO, GetSessionDTO } from './auth.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
+import { JwtAuthGuard } from './strategies/jwt.guard';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller({ path: 'api/auth', version: '1' })
 export class AuthController {
@@ -69,12 +70,16 @@ export class AuthController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async session(@Request() req, @Response() res) {
-    let isAuthenticated = await this.authService.validateToken(req.headers.authorization.split(' ')[1]);
+    
+    let isAuthenticated = false;
+    if (req.headers.authorization) {
+      isAuthenticated = await this.authService.validateToken(req.headers.authorization.split(' ')[1]);
+    }
     const { message, status } = await this.authService.getSession(isAuthenticated);
-    res.status(status);
+    //res.status(status);
     res.send(message);
   }
 

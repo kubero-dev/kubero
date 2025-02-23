@@ -1,7 +1,7 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { SecurityService } from './security.service';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/security', version: '1' })
@@ -9,7 +9,7 @@ export class SecurityController {
   constructor(private securityService: SecurityService) {}
 
   @Get(':pipeline/:phase/:app/scan')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -26,7 +26,7 @@ export class SecurityController {
   }
 
   @Get(':pipeline/:phase/:app/scan/result')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

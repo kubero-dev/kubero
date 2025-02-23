@@ -2,7 +2,7 @@ import { Controller, Get, Logger, Param, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { Response } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 
 @Controller({ path: 'api/templates', version: '1' })
@@ -13,7 +13,7 @@ export class TemplatesController {
   ) {}
 
   @Get('/:templateB64')
-  @UseGuards(AuthGuard(['jwt', 'anonymous']))
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
