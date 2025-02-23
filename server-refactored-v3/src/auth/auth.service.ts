@@ -1,14 +1,16 @@
-import { HttpException, HttpStatus, Injectable, Request, Type } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, Request, Type } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 import { checkGithubEnabled, checkOauth2Enabled, checkLocalauthEnabled } from '../config/env/vars';
-import { AuthGuard, IAuthGuard } from '@nestjs/passport';
+import * as crypto from "crypto"
 
 @Injectable()
 export class AuthService {
+
+  private logger = new Logger(AuthService.name);
 
   constructor(
     private usersService: UsersService,
@@ -20,9 +22,18 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
-    if (user && user.password === pass) {
-      const { password, ...result } = user;
-      return result;
+    
+    if (user) {
+      if ( process.env.KUBERO_SESSION_KEY === undefined) {
+        this.logger.error('KUBERO_SESSION_KEY is not defined');
+        throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+      }
+
+      let password = crypto.createHmac('sha256', process.env.KUBERO_SESSION_KEY).update(pass).digest('hex');
+      if (user.password === password) {
+        const { password, ...result } = user;
+        return result;
+      }
     }
     return null;
   }
@@ -53,7 +64,7 @@ export class AuthService {
   }
 
   async loginOAuth2(username) {
-    const user = await this.usersService.findOne(username); //find or create
+    const user = await this.usersService.findOne(username); //TODO: find or create
     const u = {
       userId: user.userId,
       username: user.username,

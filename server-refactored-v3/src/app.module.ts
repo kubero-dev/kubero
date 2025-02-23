@@ -12,7 +12,6 @@ import { ConfigModule } from './config/config.module';
 import { MetricsModule } from './metrics/metrics.module';
 import { LogsModule } from './logs/logs.module';
 import { DeploymentsModule } from './deployments/deployments.module';
-import { CoreModule } from './core/core.module';
 import { KubernetesModule } from './kubernetes/kubernetes.module';
 import { AuditModule } from './audit/audit.module';
 import { AddonsModule } from './addons/addons.module';
@@ -26,7 +25,6 @@ import { TemplatesService } from './templates/templates.service';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'dist', 'public'),
     }),
-    CoreModule,
     EventsModule,
     AuthModule,
     AppsModule,
