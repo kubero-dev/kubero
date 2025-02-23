@@ -16,7 +16,10 @@ const { cookies } = useCookies();
 import axios from 'axios'
 //axios.defaults.headers.common['User-Agent'] = 'Kubero/3.x'
 //axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('kubero.JWT_TOKEN')
-axios.defaults.headers.common['Authorization'] = 'Bearer ' + cookies.get("kubero.JWT_TOKEN")
+const token = cookies.get("kubero.JWT_TOKEN")
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+}
 //axios.defaults.headers.common['vary'] = 'Accept-Encoding'
 
 export default defineComponent({
