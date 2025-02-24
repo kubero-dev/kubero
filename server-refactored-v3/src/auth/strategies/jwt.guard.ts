@@ -28,8 +28,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     if (err || !user) {
-      this.logger.debug('JwtAuthGuard.handleRequest Error', err, user, info);
-      this.logger.error('Authentication failed: ' + info);
+      //this.logger.debug('JwtAuthGuard.handleRequest Error', err, user, info);
+      this.logger.warn('Authentication failed: ' + info);
       throw err || new UnauthorizedException();
     }
     return user;
