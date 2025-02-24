@@ -13,11 +13,7 @@ import { V1JobList } from '@kubernetes/client-node';
 
 @Injectable()
 export class DeploymentsService {
-  //private _io: any;
-  //private notification: Notifications;
-  //private kubero: Kubero;
-
-  private YAML = require('yaml');
+  //private YAML = require('yaml');
 
   constructor(
     //options: DeploymentOptions

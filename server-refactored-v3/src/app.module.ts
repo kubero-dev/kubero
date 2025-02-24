@@ -23,7 +23,7 @@ import { TemplatesService } from './templates/templates.service';
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'dist', 'public'),
+      rootPath: join(__dirname, 'public'),
     }),
     EventsModule,
     AuthModule,

@@ -65,7 +65,6 @@ async function bootstrap() {
     )
     .setVersion('3.0')
     .addServer('/', 'Local (default)')
-    //.addServer('http://localhost:2000/', 'Local')
     .addSecurity('bearerAuth', {
       type: 'http',
       scheme: 'bearer',
@@ -83,7 +82,6 @@ async function bootstrap() {
         },
       },
     })
-    //.addSecurityRequirements('bearerAuth')
 
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
