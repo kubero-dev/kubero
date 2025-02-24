@@ -1,15 +1,25 @@
-import { HttpException, HttpStatus, Injectable, Logger, Request, Type } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Logger,
+  Request,
+  Type,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
-import { checkGithubEnabled, checkOauth2Enabled, checkLocalauthEnabled } from '../config/env/vars';
-import * as crypto from "crypto"
+import {
+  checkGithubEnabled,
+  checkOauth2Enabled,
+  checkLocalauthEnabled,
+} from '../config/env/vars';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class AuthService {
-
   private logger = new Logger(AuthService.name);
 
   constructor(
@@ -17,19 +27,22 @@ export class AuthService {
     private kubectl: KubernetesService,
     private configService: ConfigService,
     private auditService: AuditService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
-    
+
     if (user) {
-      if ( process.env.KUBERO_SESSION_KEY === undefined) {
+      if (process.env.KUBERO_SESSION_KEY === undefined) {
         this.logger.error('KUBERO_SESSION_KEY is not defined');
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
 
-      let password = crypto.createHmac('sha256', process.env.KUBERO_SESSION_KEY).update(pass).digest('hex');
+      const password = crypto
+        .createHmac('sha256', process.env.KUBERO_SESSION_KEY)
+        .update(pass)
+        .digest('hex');
       if (user.password === password) {
         const { password, ...result } = user;
         return result;
@@ -47,7 +60,7 @@ export class AuthService {
     }
   }
 
-  async login(username: string, password: string){
+  async login(username: string, password: string) {
     const user = await this.validateUser(username, password);
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
@@ -55,9 +68,9 @@ export class AuthService {
     const u = {
       userId: user.userId,
       username: user.username,
-      strategy: 'local'
-    }
-    
+      strategy: 'local',
+    };
+
     return {
       access_token: this.jwtService.sign(u),
     };
@@ -68,14 +81,13 @@ export class AuthService {
     const u = {
       userId: user.userId,
       username: user.username,
-      strategy: 'github'
-    }
+      strategy: 'github',
+    };
     return this.jwtService.sign(u);
-    
   }
 
   async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
-    let status = 200;
+    const status = 200;
 
     const message = {
       isAuthenticated: isAuthenticated,
@@ -96,11 +108,10 @@ export class AuthService {
 
   getMethods(): { local: boolean; github: boolean; oauth2: boolean } {
     const methods = {
-      "local": checkLocalauthEnabled(),
-      "github": checkGithubEnabled(),
-      "oauth2": checkOauth2Enabled()
-    }
-    return methods
+      local: checkLocalauthEnabled(),
+      github: checkGithubEnabled(),
+      oauth2: checkOauth2Enabled(),
+    };
+    return methods;
   }
-
 }

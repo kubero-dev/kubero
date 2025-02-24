@@ -1,5 +1,10 @@
 import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 import { OKDTO } from 'src/shared/dto/ok.dto';
@@ -55,8 +60,7 @@ export class MetricsController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Get timeseries' })
-  async getWideMetricsList(
-  ) {
+  async getWideMetricsList() {
     return this.metricsService.getLongTermMetrics('up');
   }
 
@@ -69,7 +73,17 @@ export class MetricsController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Get timeseries to draw metrics' })
-  @ApiParam({ name: 'type', enum: ['memory', 'load', 'httpstatuscodes', 'responsetime', 'traffic', 'cpu'] })
+  @ApiParam({
+    name: 'type',
+    enum: [
+      'memory',
+      'load',
+      'httpstatuscodes',
+      'responsetime',
+      'traffic',
+      'cpu',
+    ],
+  })
   @ApiParam({ name: 'pipeline', type: 'string' })
   @ApiParam({ name: 'phase', type: 'string' })
   @ApiParam({ name: 'app', type: 'string' })
@@ -77,12 +91,19 @@ export class MetricsController {
   @ApiParam({ name: 'calc', enum: ['rate', 'increase'], required: false })
   @ApiParam({ name: 'host', type: 'string', required: false })
   async getWideMetrics(
-    @Param('type') type: "memory" | "load" | "httpstatuscodes" | "responsetime" | "traffic" | "cpu",
+    @Param('type')
+    type:
+      | 'memory'
+      | 'load'
+      | 'httpstatuscodes'
+      | 'responsetime'
+      | 'traffic'
+      | 'cpu',
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
-    @Query('scale') scale: "24h" | "2h" | "7d",
-    @Query('calc') calc: "rate" | "increase" | undefined,
+    @Query('scale') scale: '24h' | '2h' | '7d',
+    @Query('calc') calc: 'rate' | 'increase' | undefined,
     @Query('host') host: string,
   ) {
     let ret: any;
@@ -93,7 +114,7 @@ export class MetricsController {
           scale: scale || '24h',
           pipeline: pipeline,
           phase: phase,
-          app: app
+          app: app,
         });
         break;
       case 'load':
@@ -101,7 +122,7 @@ export class MetricsController {
           scale: scale || '24h',
           pipeline: pipeline,
           phase: phase,
-          app: app
+          app: app,
         });
         break;
       case 'httpstatuscodes':
@@ -110,7 +131,7 @@ export class MetricsController {
           pipeline: pipeline,
           phase: phase,
           host: host,
-          calc: calc
+          calc: calc,
         });
         break;
       case 'responsetime':
@@ -119,7 +140,7 @@ export class MetricsController {
           pipeline: pipeline,
           phase: phase,
           host: host,
-          calc: calc
+          calc: calc,
         });
         break;
       case 'traffic':
@@ -128,7 +149,7 @@ export class MetricsController {
           pipeline: pipeline,
           phase: phase,
           host: host,
-          calc: calc
+          calc: calc,
         });
         break;
       case 'cpu':
@@ -137,7 +158,7 @@ export class MetricsController {
           pipeline: pipeline,
           phase: phase,
           app: app,
-          calc: calc
+          calc: calc,
         });
         break;
       default:
@@ -167,8 +188,7 @@ export class MetricsController {
     return this.metricsService.getRules({
       pipeline: pipeline,
       phase: phase,
-      app: app
+      app: app,
     });
   }
-
 }

@@ -1,5 +1,10 @@
 import { Controller, Get, Logger, Param, Res, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
@@ -8,9 +13,7 @@ import { OKDTO } from 'src/shared/dto/ok.dto';
 @Controller({ path: 'api/templates', version: '1' })
 export class TemplatesController {
   private readonly logger = new Logger(TemplatesController.name);
-  constructor(
-    private readonly templatesService: TemplatesService,
-  ) {}
+  constructor(private readonly templatesService: TemplatesService) {}
 
   @Get('/:templateB64')
   @UseGuards(JwtAuthGuard)
@@ -21,10 +24,15 @@ export class TemplatesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Load a specific template' })
-  @ApiParam({ name: "templateB64", type: "string", description: "A base64 encoded URL", required: true })
+  @ApiParam({
+    name: 'templateB64',
+    type: 'string',
+    description: 'A base64 encoded URL',
+    required: true,
+  })
   async getTemplate(
     @Param('templateB64') templateB64: string,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     try {
       const template = await this.templatesService.getTemplate(templateB64);

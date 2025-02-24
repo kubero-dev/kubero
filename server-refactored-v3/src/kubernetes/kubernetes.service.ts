@@ -1255,7 +1255,7 @@ export class KubernetesService {
     //job: any, //V1Job,
   ): Promise<any> {
     this.logger.error('refactoring: loadJob not implemented');
-    let job = this.loadJob(buildstrategy) as any
+    const job = this.loadJob(buildstrategy) as any;
     //const job = new Object() as any;
 
     const id = new Date()

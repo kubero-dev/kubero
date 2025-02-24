@@ -13,7 +13,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';

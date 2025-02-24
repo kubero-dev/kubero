@@ -1,7 +1,12 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 //import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
@@ -130,9 +135,7 @@ export class ConfigController {
   })
   @ApiOperation({ summary: 'Check the setup' })
   @ApiParam({ name: 'component', description: 'Component to check' })
-  async checkComponent(
-    @Param('component') component: string,
-  ) {
+  async checkComponent(@Param('component') component: string) {
     return this.configService.checkComponent(component);
   }
 
@@ -147,7 +150,10 @@ export class ConfigController {
   async validateKubeconfig(@Body() body) {
     const kubeconfig = body.kubeconfig;
     const kubeContext = body.context;
-    const result = await this.configService.validateKubeconfig(kubeconfig, kubeContext);
+    const result = await this.configService.validateKubeconfig(
+      kubeconfig,
+      kubeContext,
+    );
     return result;
   }
 
@@ -166,13 +172,24 @@ export class ConfigController {
     const KuberoSessionKey = body.KUBERO_SESSION_KEY;
     const kuberoWebhookSecret = body.KUBERO_WEBHOOK_SECRET;
 
-    const kubeconfigDecoded = Buffer.from(kubeconfigBase64, 'base64').toString('utf-8');
-    const resultValidation = await this.configService.validateKubeconfig(kubeconfigDecoded, kubeContext);
+    const kubeconfigDecoded = Buffer.from(kubeconfigBase64, 'base64').toString(
+      'utf-8',
+    );
+    const resultValidation = await this.configService.validateKubeconfig(
+      kubeconfigDecoded,
+      kubeContext,
+    );
     if (resultValidation.valid === false) {
-        return resultValidation;
+      return resultValidation;
     }
 
-    const resultUpdateConfig = await this.configService.updateRunningConfig(kubeconfigBase64, kubeContext, kuberoNamespace, KuberoSessionKey, kuberoWebhookSecret);
+    const resultUpdateConfig = await this.configService.updateRunningConfig(
+      kubeconfigBase64,
+      kubeContext,
+      kuberoNamespace,
+      KuberoSessionKey,
+      kuberoWebhookSecret,
+    );
 
     return resultUpdateConfig;
   }

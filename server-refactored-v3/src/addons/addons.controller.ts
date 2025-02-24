@@ -1,6 +1,10 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AddonsService } from './addons.service';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 

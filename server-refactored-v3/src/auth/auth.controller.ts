@@ -10,8 +10,18 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
-import { GetMethodsDTO, LoginOKResponseDTO, LoginDTO, GetSessionDTO } from './auth.dto';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
+import {
+  GetMethodsDTO,
+  LoginOKResponseDTO,
+  LoginDTO,
+  GetSessionDTO,
+} from './auth.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { JwtAuthGuard } from './strategies/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -21,9 +31,9 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @ApiOperation({ 
-    summary: 'Login with username and password', 
-    description: 'Returns the login JWT token'
+  @ApiOperation({
+    summary: 'Login with username and password',
+    description: 'Returns the login JWT token',
   })
   @ApiOkResponse({
     description: 'A List of Authentication Methods',
@@ -73,27 +83,29 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async session(@Request() req, @Response() res) {
-    
     let isAuthenticated = false;
     if (req.headers.authorization) {
-      isAuthenticated = await this.authService.validateToken(req.headers.authorization.split(' ')[1]);
+      isAuthenticated = await this.authService.validateToken(
+        req.headers.authorization.split(' ')[1],
+      );
     }
-    const { message, status } = await this.authService.getSession(isAuthenticated);
+    const { message, status } =
+      await this.authService.getSession(isAuthenticated);
     //res.status(status);
     res.send(message);
   }
 
   @Get('methods')
-  @ApiOperation({ 
-    summary: 'Get the available authentication methods', 
-    description: 'Returns a list of available authentication methods'
+  @ApiOperation({
+    summary: 'Get the available authentication methods',
+    description: 'Returns a list of available authentication methods',
   })
   @ApiOkResponse({
     description: 'A List of Authentication Methods',
     type: GetMethodsDTO,
     isArray: false,
   })
-  async getMethods(): Promise<GetMethodsDTO> { 
+  async getMethods(): Promise<GetMethodsDTO> {
     return this.authService.getMethods();
   }
 
@@ -109,11 +121,11 @@ export class AuthController {
   @ApiBearerAuth('OAuth2')
   async githubCallback(@Request() req: any, @Response() res: any) {
     //console.log(req.user);
-    const token = await this.authService.loginOAuth2(req.user.username)
+    const token = await this.authService.loginOAuth2(req.user.username);
     res.cookie('kubero.JWT_TOKEN', token);
     res.redirect('/');
   }
-  
+
   @Get('oauth2')
   @UseGuards(AuthGuard('oauth2'))
   @ApiBearerAuth('OAuth2')
@@ -126,7 +138,7 @@ export class AuthController {
   @ApiBearerAuth('OAuth2')
   async oauth2Callback(@Request() req: any, @Response() res: any) {
     //console.log(req.user);
-    const token = await this.authService.loginOAuth2(req.user.username)
+    const token = await this.authService.loginOAuth2(req.user.username);
     res.cookie('kubero.JWT_TOKEN', token);
     res.redirect('/');
   }

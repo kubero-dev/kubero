@@ -16,9 +16,13 @@ import {
 import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
-import { ApiForbiddenResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiForbiddenResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { GetAppDTO  } from './apps.dto';
+import { GetAppDTO } from './apps.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
 import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
 
@@ -29,9 +33,9 @@ export class AppsController {
   @Get('/:pipeline/:phase/:app')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
-  @ApiOperation({ 
-    summary: 'Get app informations from  a specific app' ,
-    description: 'Returns the app information from a specific app'
+  @ApiOperation({
+    summary: 'Get app informations from  a specific app',
+    description: 'Returns the app information from a specific app',
   })
   @ApiOkResponse({
     description: 'A List of App Informations',
@@ -237,7 +241,6 @@ export class AppsController {
     @Param('app') app: string,
     @Body() body: any,
   ) {
-
     const user: IUser = {
       id: 1,
       method: 'local',
@@ -249,6 +252,14 @@ export class AppsController {
     const containerName = body.containerName;
     const command = body.command;
 
-    return this.appsService.execInContainer(pipeline, phase, app, podName, containerName, command, user);
+    return this.appsService.execInContainer(
+      pipeline,
+      phase,
+      app,
+      podName,
+      containerName,
+      command,
+      user,
+    );
   }
 }

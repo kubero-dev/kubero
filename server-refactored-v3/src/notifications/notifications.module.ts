@@ -6,11 +6,7 @@ import { KubernetesModule } from '../kubernetes/kubernetes.module';
 
 @Global()
 @Module({
-  providers: [
-    NotificationsService,
-    AuditModule,
-    KubernetesModule,
-  ],
+  providers: [NotificationsService, AuditModule, KubernetesModule],
   exports: [NotificationsService],
 })
 export class NotificationsModule {}

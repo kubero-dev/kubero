@@ -9,7 +9,11 @@ import { Oauth2Strategy } from './strategies/oauth2.strategy';
 import { AuthController } from './auth.controller';
 import { AuditModule } from 'src/audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
-import { ENV, checkOauth2Enabled, checkGithubEnabled } from '../config/env/vars';
+import {
+  ENV,
+  checkOauth2Enabled,
+  checkGithubEnabled,
+} from '../config/env/vars';
 
 const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule];
 if (checkOauth2Enabled()) {
@@ -24,9 +28,11 @@ if (checkGithubEnabled()) {
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: ENV?.KUBERO_JWT_SECRET || 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
-      signOptions: { 
-        expiresIn: ENV?.KUBERO_JWT_EXPIRESIN || '36000s' 
+      secret:
+        ENV?.KUBERO_JWT_SECRET ||
+        'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+      signOptions: {
+        expiresIn: ENV?.KUBERO_JWT_EXPIRESIN || '36000s',
       },
     }),
   ],

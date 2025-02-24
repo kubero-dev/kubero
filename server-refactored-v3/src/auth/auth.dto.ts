@@ -1,50 +1,50 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class GetMethodsDTO {
-  @ApiProperty({default: false})
-  local: boolean
+  @ApiProperty({ default: false })
+  local: boolean;
 
-  @ApiProperty({default: false})
-  github: boolean
+  @ApiProperty({ default: false })
+  github: boolean;
 
-  @ApiProperty({default: false})
-  oauth2: boolean
+  @ApiProperty({ default: false })
+  oauth2: boolean;
 }
 
 export class LoginOKResponseDTO {
   @ApiProperty()
-  access_token: string
+  access_token: string;
 }
 
 export class LoginDTO {
   @ApiProperty()
-  username: string
+  username: string;
 
   @ApiProperty()
-  password: string
+  password: string;
 }
 
 export class GetSessionDTO {
   @ApiProperty()
-  isAuthenticated: boolean
+  isAuthenticated: boolean;
   @ApiProperty()
-  version: string
+  version: string;
   @ApiProperty()
-  kubernetesVersion: string
+  kubernetesVersion: string;
   @ApiProperty()
-  operatorVersion: string
+  operatorVersion: string;
   @ApiProperty()
-  buildPipeline: boolean
+  buildPipeline: boolean;
   @ApiProperty()
-  templatesEnabled: boolean
+  templatesEnabled: boolean;
   @ApiProperty()
-  auditEnabled: boolean
+  auditEnabled: boolean;
   @ApiProperty()
-  adminDisabled: boolean
+  adminDisabled: boolean;
   @ApiProperty()
-  consoleEnabled: boolean
+  consoleEnabled: boolean;
   @ApiProperty()
-  metricsEnabled: boolean
+  metricsEnabled: boolean;
   @ApiProperty()
-  sleepEnabled: boolean
+  sleepEnabled: boolean;
 }

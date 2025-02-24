@@ -25,7 +25,9 @@ export class MetricsService {
     //TODO: Migration -> Load options from settings or config
     const options = {
       enabled: true,
-      endpoint: process.env.KUBERO_PROMETHEUS_ENDPOINT || 'http://kubero-prometheus-server',
+      endpoint:
+        process.env.KUBERO_PROMETHEUS_ENDPOINT ||
+        'http://kubero-prometheus-server',
     } as MetricsOptions;
 
     this.prom = new PrometheusDriver({
@@ -50,7 +52,10 @@ export class MetricsService {
         this.status = true;
       })
       .catch((error) => {
-        Logger.log('❌ Feature: Prometheus not accesible on '+options.endpoint, 'Feature');
+        Logger.log(
+          '❌ Feature: Prometheus not accesible on ' + options.endpoint,
+          'Feature',
+        );
         Logger.debug(error);
         this.status = false;
       });

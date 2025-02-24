@@ -19,7 +19,8 @@ import { Server, Socket } from 'socket.io';
 export class EventsGateway {
   @WebSocketServer()
   server: Server;
-  public execStreams: {[key: string]: {websocket: WebSocket, stream: any}} = {};
+  public execStreams: { [key: string]: { websocket: WebSocket; stream: any } } =
+    {};
 
   constructor() {
     //Logger.debug('EventsGateway created');
@@ -58,7 +59,6 @@ export class EventsGateway {
     @MessageBody() data: any,
     @ConnectedSocket() client: Socket,
   ): void {
-
     if (this.execStreams[data.room]) {
       this.execStreams[data.room].stream.write(data.data);
     }

@@ -1,6 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { DeploymentsService } from './deployments.service';
-import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiForbiddenResponse,
+  ApiOperation,
+  ApiParam,
+} from '@nestjs/swagger';
 import { IUser } from 'src/auth/auth.interface';
 import { CreateBuild } from './dto/CreateBuild.dto';
 import { OKDTO } from 'src/shared/dto/ok.dto';
@@ -42,7 +56,11 @@ export class DeploymentsController {
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
   @ApiParam({ name: 'phase', description: 'Phase name' })
   @ApiParam({ name: 'app', description: 'App name' })
-  @ApiBody({ type: CreateBuild, required: true, schema: { $ref: '#/components/schemas/CreateBuild' } })
+  @ApiBody({
+    type: CreateBuild,
+    required: true,
+    schema: { $ref: '#/components/schemas/CreateBuild' },
+  })
   async buildApp(
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
@@ -56,7 +74,16 @@ export class DeploymentsController {
       username: 'admin',
       apitoken: '1234567890',
     };
-    return this.deploymentsService.triggerBuildjob(pipeline, phase, app, body.buildstrategy, body.repository, body.reference, body.dockerfilePath, user);
+    return this.deploymentsService.triggerBuildjob(
+      pipeline,
+      phase,
+      app,
+      body.buildstrategy,
+      body.repository,
+      body.reference,
+      body.dockerfilePath,
+      user,
+    );
   }
 
   @Delete('/:pipeline/:phase/:app/:buildName')
@@ -85,7 +112,13 @@ export class DeploymentsController {
       username: 'admin',
       apitoken: '1234567890',
     };
-    return this.deploymentsService.deleteBuildjob(pipeline, phase, app, buildName, user);
+    return this.deploymentsService.deleteBuildjob(
+      pipeline,
+      phase,
+      app,
+      buildName,
+      user,
+    );
   }
 
   @Get('/:pipeline/:phase/:app/:build/:container/history')
@@ -109,6 +142,12 @@ export class DeploymentsController {
     @Param('build') build: string,
     @Param('container') container: string,
   ) {
-    return this.deploymentsService.getBuildLogs(pipeline, phase, app, build, container);
+    return this.deploymentsService.getBuildLogs(
+      pipeline,
+      phase,
+      app,
+      build,
+      container,
+    );
   }
 }

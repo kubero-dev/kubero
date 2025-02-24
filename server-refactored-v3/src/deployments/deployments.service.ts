@@ -9,8 +9,7 @@ import { AppsService } from '../apps/apps.service';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { ILoglines } from '../logs/logs.interface';
 import { LogsService } from '../logs/logs.service';
-import {  V1JobList } from '@kubernetes/client-node';
-
+import { V1JobList } from '@kubernetes/client-node';
 
 @Injectable()
 export class DeploymentsService {
@@ -121,7 +120,6 @@ export class DeploymentsService {
     dockerfilePath: string,
     user: IUser,
   ): Promise<any> {
-
     //this.logger.debug('triggerBuildjob: ' + pipeline + ' ' + phase + ' ' + app + ' ' + buildstrategy + ' ' + gitrepo + ' ' + reference + ' ' + dockerfilePath + ' ' + user.username);
 
     if (process.env.KUBERO_READONLY == 'true') {
