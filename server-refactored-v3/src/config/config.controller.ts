@@ -3,6 +3,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { ConfigService } from './config.service';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiForbiddenResponse,
   ApiOperation,
   ApiParam,
@@ -25,6 +26,20 @@ export class ConfigController {
   })
   async getSettings() {
     return this.configService.getSettings();
+  }
+
+  @Post('/')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Update the Kubero settings' })
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  //@ApiBody({ type: OKDTO })
+  async updateSettings(@Body() body) {
+    return this.configService.updateSettings(body);
   }
 
   @Get('/banner')
