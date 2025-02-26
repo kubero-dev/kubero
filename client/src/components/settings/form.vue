@@ -525,7 +525,7 @@ export default defineComponent({
           delete buildpack.advanced;
         });
 
-        axios.post(`/api/settings`, self.settings)
+        axios.post(`/api/config`, self.settings)
         .then(response => {
           console.log('saveSettings', response);
         })
@@ -535,7 +535,7 @@ export default defineComponent({
       },
       async loadSettings() {
         const self = this;
-        axios.get(`/api/settings`)
+        axios.get(`/api/config`)
         .then(response => {
             self.settings = response.data;
         })
