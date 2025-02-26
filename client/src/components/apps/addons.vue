@@ -119,6 +119,15 @@
                     dense
                     v-model="field.default"
                 ></v-select>
+                <v-combobox
+                    v-if="field.type === 'combobox' && typeof field.default === 'string'"
+                    :items="field.options"
+                    :label="field.label"
+                    item-title="text"
+                    item-value="value"
+                    dense
+                    v-model="field.default"
+                ></v-combobox>
                 <v-text-field
                     v-if="field.type === 'text'"
                     v-model="field.default"
@@ -309,7 +318,7 @@ export default defineComponent({
 
             // set the formfields to the values from the yaml
             //console.log(this.selectedAddon.formfields);
-            Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+            Object.entries(this.selectedAddon.formfields as FormField[]).forEach(([field, value]) => {
                 const fieldvalue = get(addon.resourceDefinitions, field, value.default)
                 //console.log(field, value, fieldvalue);
                 value.default = fieldvalue;
@@ -338,7 +347,7 @@ export default defineComponent({
             this.dialog = false;
 
             // replace the formfields with the form value
-            Object.entries(this.selectedAddon.formfields).forEach(([field, value]) => {
+            Object.entries(this.selectedAddon.formfields as FormField[]).forEach(([field, value]) => {
 
                 // Cast number fields to int
                 if (value.type === 'number' && typeof value.default === 'string') {
@@ -363,8 +372,6 @@ export default defineComponent({
                 displayName: this.selectedAddon.displayName,
                 resourceDefinitions: this.selectedAddon.resourceDefinitions,
             } as Addon;
-
-            //console.log(addon);
 
             if (this.mode === 'create') {
                 this.addAddon(addon);

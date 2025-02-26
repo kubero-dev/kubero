@@ -64,6 +64,7 @@ export class Settings {
         }
 
         config["secrets"] = {
+            GITHUB_BASEURL: process.env.GITHUB_BASEURL || '',
             GITHUB_PERSONAL_ACCESS_TOKEN: process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
             GITEA_PERSONAL_ACCESS_TOKEN: process.env.GITEA_PERSONAL_ACCESS_TOKEN || '',
             GITEA_BASEURL: process.env.GITEA_BASEURL || '',
@@ -143,6 +144,7 @@ export class Settings {
             process.env[key] = secrets[key]
         }
         */
+        process.env.GITHUB_BASEURL = secrets.GITHUB_BASEURL
         process.env.GITHUB_PERSONAL_ACCESS_TOKEN = secrets.GITHUB_PERSONAL_ACCESS_TOKEN
         process.env.GITEA_PERSONAL_ACCESS_TOKEN = secrets.GITEA_PERSONAL_ACCESS_TOKEN
         process.env.GITEA_BASEURL = secrets.GITEA_BASEURL

@@ -65,6 +65,7 @@ import FormNotifications from './form-notifications.vue'
 
 // types & interfaces
 export interface Secrets {
+  GITHUB_BASEURL: string;
   GITHUB_PERSONAL_ACCESS_TOKEN: string;
   GITEA_PERSONAL_ACCESS_TOKEN: string;
   GITEA_BASEURL: string;
@@ -389,6 +390,7 @@ export default defineComponent({
       show: false,
       settings: {
         secrets: {
+          GITHUB_BASEURL: '',
           GITHUB_PERSONAL_ACCESS_TOKEN: '',
           GITEA_PERSONAL_ACCESS_TOKEN: '',
           GITEA_BASEURL: '',
