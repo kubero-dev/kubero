@@ -20,7 +20,7 @@
     "@nerdvision/gitlab-js": "^1.0.0-alpha.12",
     "@octokit/core": "^3.6.0",
     "@octokit/webhooks": "^9.26.0",
-    "axios": "^0.28.0",
+    "axios": "^1.8.2",
     "bcrypt": "^5.1.1",
     "bitbucket": "^2.9.0",
     "connect-history-api-fallback": "^1.6.0",
