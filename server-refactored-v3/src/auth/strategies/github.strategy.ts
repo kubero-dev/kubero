@@ -14,7 +14,9 @@ export class GithubStrategy extends PassportStrategy(Strategy) {
       clientID: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: process.env.GITHUB_CLIENT_CALLBACKURL,
-      scope: ConfigService.getAuthenticationScope(process.env.GITHUB_CLIENT_SCOPE),
+      scope: ConfigService.getAuthenticationScope(
+        process.env.GITHUB_CLIENT_SCOPE,
+      ),
       userAgent: 'kubero/v3',
     } as StrategyOptions);
   }

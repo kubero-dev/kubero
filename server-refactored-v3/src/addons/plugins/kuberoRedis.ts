@@ -27,6 +27,15 @@ export class KuberoRedis extends Plugin implements IPlugin {
       default: 'redis',
       description: 'The name of the redis instance',
     },
+    'KuberoRedis.spec.redis.image.tag': {
+      type: 'combobox',
+      label: 'Version/Tag',
+      options: ['7.0.7-debian-11-r7', '6.2', '7.4.2', 'latest'], // TODO - load this dynamically
+      name: 'spec.redis.image.tag',
+      required: true,
+      default: '7.0-debian-12',
+      description: 'Version of the PostgreSQL image to use',
+    },
     'KuberoRedis.spec.redis.replica.replicaCount': {
       type: 'number',
       label: 'Replica Count*',

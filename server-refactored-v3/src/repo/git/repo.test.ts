@@ -6,7 +6,7 @@ import { GiteaApi } from './gitea';
 
 describe('GithubApi', () => {
   it('should load config', () => {
-    const github = new GithubApi('token');
+    const github = new GithubApi('', 'token');
     expect(github).toBeTruthy();
   });
 });

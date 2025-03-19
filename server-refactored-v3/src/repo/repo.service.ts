@@ -25,6 +25,7 @@ export class RepoService {
       process.env.GOGS_PERSONAL_ACCESS_TOKEN as string,
     );
     this.githubApi = new GithubApi(
+      process.env.GITHUB_BASEURL as string,
       process.env.GITHUB_PERSONAL_ACCESS_TOKEN as string,
     );
     this.gitlabApi = new GitlabApi(

@@ -59,6 +59,7 @@ export class ConfigService {
         */
 
     config['secrets'] = {
+      GITHUB_BASEURL: process.env.GITHUB_BASEURL || '',
       GITHUB_PERSONAL_ACCESS_TOKEN:
         process.env.GITHUB_PERSONAL_ACCESS_TOKEN || '',
       GITEA_PERSONAL_ACCESS_TOKEN:
@@ -79,40 +80,39 @@ export class ConfigService {
   }
 
   public async updateSettings(config: any): Promise<KuberoConfig> {
-
     if (this.checkAdminDisabled()) {
-        return new KuberoConfig({} as IKuberoConfig)
+      return new KuberoConfig({} as IKuberoConfig);
     }
 
-    const namespace = process.env.KUBERO_NAMESPACE || "kubero"
-    let kuberoes = await this.kubectl.getKuberoConfig(namespace)
-    kuberoes.spec = config.settings
+    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
+    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
+    kuberoes.spec = config.settings;
 
     // Write local config file in dev mode
-    if (process.env.NODE_ENV != "production") {
-        console.log("DEV MODE: write local config")
-        this.writeConfig(kuberoes.spec.kubero.config)
+    if (process.env.NODE_ENV != 'production') {
+      console.log('DEV MODE: write local config');
+      this.writeConfig(kuberoes.spec.kubero.config);
     }
 
-    this.kubectl.updateKuberoConfig(namespace, kuberoes)
-    this.kubectl.updateKuberoSecret(namespace, config.secrets)
-    this.setEnv(config.secrets)
+    this.kubectl.updateKuberoConfig(namespace, kuberoes);
+    this.kubectl.updateKuberoSecret(namespace, config.secrets);
+    this.setEnv(config.secrets);
 
     const m = {
-        'name': 'updateSettings',
-        'user': '',
-        'resource': 'system',
-        'action': 'update',
-        'severity': 'normal',
-        'message': 'Kubero settings updated',
-        'pipelineName': '',
-        'phaseName': '',
-        'appName': '',
-        'data': {}
+      name: 'updateSettings',
+      user: '',
+      resource: 'system',
+      action: 'update',
+      severity: 'normal',
+      message: 'Kubero settings updated',
+      pipelineName: '',
+      phaseName: '',
+      appName: '',
+      data: {},
     } as INotification;
     this.notification.send(m);
 
-    return kuberoes
+    return kuberoes;
   }
 
   private setEnv(secrets: any) {
@@ -121,18 +121,22 @@ export class ConfigService {
         process.env[key] = secrets[key]
     }
     */
-    process.env.GITHUB_PERSONAL_ACCESS_TOKEN = secrets.GITHUB_PERSONAL_ACCESS_TOKEN
-    process.env.GITEA_PERSONAL_ACCESS_TOKEN = secrets.GITEA_PERSONAL_ACCESS_TOKEN
-    process.env.GITEA_BASEURL = secrets.GITEA_BASEURL
-    process.env.GITLAB_PERSONAL_ACCESS_TOKEN = secrets.GITLAB_PERSONAL_ACCESS_TOKEN
-    process.env.GITLAB_BASEURL = secrets.GITLAB_BASEURL
-    process.env.BITBUCKET_APP_PASSWORD = secrets.BITBUCKET_APP_PASSWORD
-    process.env.BITBUCKET_USERNAME = secrets.BITBUCKET_USERNAME
-    process.env.GOGS_PERSONAL_ACCESS_TOKEN = secrets.GOGS_PERSONAL_ACCESS_TOKEN
-    process.env.GOGS_BASEURL = secrets.GOGS_BASEURL
-    process.env.KUBERO_WEBHOOK_SECRET = secrets.KUBERO_WEBHOOK_SECRET
-    process.env.GITHUB_CLIENT_SECRET = secrets.GITHUB_CLIENT_SECRET
-    process.env.OAUTH2_CLIENT_SECRET = secrets.OAUTH2_CLIENT_SECRET
+    process.env.GITHUB_BASEURL = secrets.GITHUB_BASEURL;
+    process.env.GITHUB_PERSONAL_ACCESS_TOKEN =
+      secrets.GITHUB_PERSONAL_ACCESS_TOKEN;
+    process.env.GITEA_PERSONAL_ACCESS_TOKEN =
+      secrets.GITEA_PERSONAL_ACCESS_TOKEN;
+    process.env.GITEA_BASEURL = secrets.GITEA_BASEURL;
+    process.env.GITLAB_PERSONAL_ACCESS_TOKEN =
+      secrets.GITLAB_PERSONAL_ACCESS_TOKEN;
+    process.env.GITLAB_BASEURL = secrets.GITLAB_BASEURL;
+    process.env.BITBUCKET_APP_PASSWORD = secrets.BITBUCKET_APP_PASSWORD;
+    process.env.BITBUCKET_USERNAME = secrets.BITBUCKET_USERNAME;
+    process.env.GOGS_PERSONAL_ACCESS_TOKEN = secrets.GOGS_PERSONAL_ACCESS_TOKEN;
+    process.env.GOGS_BASEURL = secrets.GOGS_BASEURL;
+    process.env.KUBERO_WEBHOOK_SECRET = secrets.KUBERO_WEBHOOK_SECRET;
+    process.env.GITHUB_CLIENT_SECRET = secrets.GITHUB_CLIENT_SECRET;
+    process.env.OAUTH2_CLIENT_SECRET = secrets.OAUTH2_CLIENT_SECRET;
   }
 
   private reloadRunningConfig(): void {
@@ -434,7 +438,7 @@ export class ConfigService {
 
     return enabled;
   }
-  
+
   public static getGithubEnabled(): boolean {
     let enabled = false;
     process.env.GITHUB_CLIENT_SECRET == undefined ||
@@ -443,7 +447,7 @@ export class ConfigService {
     process.env.GITHUB_CLIENT_ORG == undefined
       ? (enabled = false)
       : (enabled = true);
-  
+
     return enabled;
   }
 
@@ -456,7 +460,7 @@ export class ConfigService {
     process.env.OAUTH2_CLIENT_CALLBACKURL == undefined
       ? (enabled = false)
       : (enabled = true);
-  
+
     return enabled;
   }
 
@@ -465,5 +469,5 @@ export class ConfigService {
       return [];
     }
     return scope.split(' ');
-  } 
+  }
 }
