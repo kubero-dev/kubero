@@ -24,6 +24,15 @@ export class KuberoElasticsearch extends Plugin implements IPlugin {
             default: 'elasticsearch',
             description: 'The name of the elasticsearch instance'
         },
+        'KuberoElasticsearch.spec.elasticsearch.image.tag':{
+            type: 'combobox',
+            label: 'Version/Tag',
+            options: ['7', '7.17.26', '8.6.0-debian-11-r0', '8', '8.17.1', 'latest'], // TODO - load this dynamically
+            name: 'spec.couchdb.image.tag',
+            required: true,
+            default: '8.6.0-debian-11-r0',
+            description: 'Version of the PostgreSQL image to use'
+        },
         'KuberoElasticsearch.spec.elasticsearch.global.storageClass':{
             type: 'select-storageclass',
             label: 'Storage Class',
