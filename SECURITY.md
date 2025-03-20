@@ -5,6 +5,7 @@
 | Version | Supported          |
 | ------- | ------------------ |
 | 2.X.X   | :white_check_mark: |
+| 2.X.X   | EOL 31.03.2025     |
 | 1.X.X   | EOL 28.09.2024     |
 | 0.X.X   |                    |
 

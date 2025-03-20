@@ -380,7 +380,7 @@ export default defineComponent({
     },
     methods: {
       loadStorageClasses() {
-        axios.get('/api/config/storageclasses').then(response => {
+        axios.get('/api/kubernetes/storageclasses').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.storageclasses.push(response.data[i].name);
           }

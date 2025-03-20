@@ -129,6 +129,7 @@ Router.get('/cli/pipelines', bearerMiddleware, async function (req: Request, res
     res.send(pipelines);
 });
 
+//Migrated to pipelines
 Router.get('/pipelines', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a list of available pipelines'
@@ -153,6 +154,7 @@ Router.get('/cli/pipelines/:pipeline', bearerMiddleware, async function (req: Re
     res.send(pipeline);
 });
 
+//Migrated to pipelines
 Router.get('/pipelines/:pipeline', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get a pipeline'
@@ -325,6 +327,7 @@ Router.get('/cli/pipelines/:pipeline/apps', bearerMiddleware, async function (re
     }
 });
 
+//Migrated to pipelines
 Router.get('/pipelines/:pipeline/apps', authMiddleware, async function (req: Request, res: Response) {
     // #swagger.tags = ['UI']
     // #swagger.summary = 'Get all apps in a pipeline'
