@@ -24,6 +24,15 @@ export class KuberoPostgresql extends Plugin implements IPlugin {
             default: 'postgresql',
             description: 'The name of the PostgreSQL instance'
         },
+        'KuberoPostgresql.spec.postgresql.image.tag':{
+            type: 'combobox',
+            label: 'Version/Tag',
+            options: ['13', '14', '15', '16.6.0', '17.2.0', 'latest'], // TODO - load this dynamically
+            name: 'spec.postgresql.image.tag',
+            required: true,
+            default: '16',
+            description: 'Version of the PostgreSQL image to use'
+        },
         'KuberoPostgresql.spec.postgresql.global.postgresql.auth.postgresPassword':{
             type: 'text',
             label: 'Postgres admin Password*',

@@ -24,6 +24,15 @@ export class KuberoRabbitMQ extends Plugin implements IPlugin {
             default: 'rabbitmq',
             description: 'The name of the PostgreSQL instance'
         },
+        'KuberoRabbitMQ.spec.rabbitmq.image.tag':{
+            type: 'combobox',
+            label: 'Version/Tag',
+            options: ['3.12.10-debian-11-r1', '3.13.7', '4.0.5', 'latest'], // TODO - load this dynamically
+            name: 'spec.rabbitmq.image.tag',
+            required: true,
+            default: '3.12.10-debian-11-r1',
+            description: 'Version of the PostgreSQL image to use'
+        },
         'KuberoRabbitMQ.spec.rabbitmq.auth.username':{
             type: 'text',
             label: 'User Name*',

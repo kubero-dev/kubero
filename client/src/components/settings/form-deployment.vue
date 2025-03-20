@@ -54,9 +54,19 @@
 
         <h4 class="text-uppercase">Github</h4>
         <v-row>
+            <v-col 
+                cols="12"
+                md="3"
+            >
+                <v-text-field
+                v-model="settings.secrets.GITHUB_BASEURL"
+                label="github Base Url" 
+                required
+                ></v-text-field>  
+            </v-col>
             <v-col
                 cols="12"
-                md="6"
+                md="3"
             >
                 <v-text-field
                 v-model="settings.secrets.GITHUB_PERSONAL_ACCESS_TOKEN"

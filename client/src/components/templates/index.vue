@@ -69,10 +69,38 @@
                             prepend-icon="mdi-file-certificate"
                             v-if="template.spdx_id && template.spdx_id !== 'NOASSERTION'"
                         >{{ template.spdx_id }}</v-chip>
+                        <br>
+                        <v-chip
+                            v-for="category in template.categories"
+                            :key="category"
+                            label
+                            size="x-small"
+                            class="mr-2 mt-2"
+                            prepend-icon="mdi-tag"
+                            @click="filterByCategory(category)"
+                        >{{ category }}</v-chip>
                     </v-card-subtitle>
-                    <v-card-text style="height: 150px">
+                    <v-card-text style="height: 150px" class="overflow-y-auto">
                         {{ template.description }}
                         <!--Operator: <a :href="template.url">{{ template.id }}</a>-->
+                        <!--<v-chip
+                            v-for="addon in template.addons"
+                            :key="addon"
+                            label
+                            size="small"
+                            class="mr-2"
+                            prepend-icon="mdi-plus"
+                        >{{ addon }}</v-chip>-->
+                    </v-card-text>
+                    <v-card-text style="height: 60px" class="d-flex justify-left mb-0">
+                        <v-avatar
+                            v-for="addon in template.addons"
+                            class="pa-2 mr-2"
+                            color="grey-lighten-2"
+                            rounded
+                            :key="addon"
+                            :image="addonImages[addon]">
+                        </v-avatar>
                     </v-card-text>
 
                     <v-divider></v-divider>
@@ -154,6 +182,7 @@
 import axios from "axios";
 import { forEach } from "lodash";
 import { defineComponent } from 'vue'
+import { useRouter } from 'vue-router'
 
 type Pipeline = {
     name: string,
@@ -187,6 +216,7 @@ type Template = {
     last_updated: string,
     last_pushed: string,
     status: string,
+
 }
 
 type Templates = {
@@ -236,6 +266,12 @@ export default defineComponent({
         dialog: false,
         clickedTemplate: {} as Template,
         catalogId: 0,
+        addonImages: {
+            'KuberoPostgresql': '/img/addons/pgsql.svg',
+            'KuberoMysql': '/img/addons/mysql.svg',
+            'KuberoRedis': '/img/addons/redis.svg',
+            'KuberoMongoDB': '/img/addons/mongo.svg',
+        } as { [key: string]: string },
         templates: {
             enabled: true,
             catalogs: [] as Catalog[],
@@ -262,10 +298,10 @@ export default defineComponent({
             this.dialog = false;
         },
         openInstall(templateurl: string, pipeline: string, phase: string) {
+            const router = useRouter();
             // redirect to install page
             const templateurlB64 = btoa(templateurl);
-            this.$router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templateurlB64 }})
-
+            router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templateurlB64 }})
         },
         openInstallDialog(template: Template) {
             this.clickedTemplate = template;
@@ -286,7 +322,7 @@ export default defineComponent({
             });
         },
         filterByCategory(selectedCategory: string) {
-            console.log(selectedCategory);
+            
             if (selectedCategory === 'All') {
                 this.showedTemplates.services = this.templatesList.services;
             } else {

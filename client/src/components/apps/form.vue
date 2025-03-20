@@ -1813,10 +1813,13 @@ export default defineComponent({
         (v: any) => /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) || 'Allowed characters : [a-zA-Z0-9_-]',
       ],
       repositoryRules: [
-        //v => !!v || 'Repository is required',
-        (v: any) => v.length <= 120 || 'Repository must be less than 120 characters',
+        //(v: any) => !!v || 'Repository is required',
+        //(v: any) => v.length <= 120 || 'Repository must be less than 120 characters',
         //    ((git|ssh|http(s)?)|(git@[\w\.]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
-        (v: any) => /((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:/\-~]+)(\.git)(\/)?/.test(v) || 'Format "owner/repository"',
+        //    ((git|ssh|http(s)?)|(git@[\w.]+))(:(\/\/)?)([\w.@:\/\-~]+)(\.git)
+        //    (git@[\w.]+:\/\/)([\w.\/\-~]+)(\.git) // not working
+        //    ((git|ssh|http(s)?)|(git@[\w\.-]+))(:(//)?)([\w\.@\:/\-~]+)(\.git)(/)?
+        (v: any) => /^((git|ssh|http(s)?)|(git@[\w\.-]+))(:(\/\/)?)([\w\.@\:\/\-~]+)(\.git)(\/)?/.test(v) || 'Format "git@github.com:organisation/repository.git"',
       ],
       domainRules: [
         (v: any) => !!v || 'Domain is required',
