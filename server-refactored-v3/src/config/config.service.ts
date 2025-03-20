@@ -5,7 +5,6 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml';
 import { join } from 'path';
-import { Context } from '@kubernetes/client-node';
 import { Buildpack } from './buildpack/buildpack';
 import { PodSize } from './podsize/podsize';
 import { INotification } from '../notifications/notifications.interface';
@@ -45,14 +44,13 @@ export class ConfigService {
 
   private setKuberoUIVersion() {
     if (process.env.npm_package_version == undefined) {
-      // Load the Version from VERSION File
       const fs = require('fs');
       const path = require('path');
-      const filePath = path.resolve(__dirname, 'VERSION');
+      const filePath = path.resolve(__dirname, '../VERSION');
       if (!fs.existsSync(filePath)) {
         process.env.npm_package_version = 'no version';
       } else {
-        process.env.npm_package_version  = fs.readFileSync(path.resolve(__dirname, 'VERSION'), 'utf8');
+        process.env.npm_package_version  = fs.readFileSync(filePath, 'utf8');
       }
     }
 
