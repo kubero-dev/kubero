@@ -40,8 +40,24 @@ export class ConfigService {
   ) {
     this.reloadRunningConfig();
     this.runFeatureCheck();
+    this.setKuberoUIVersion();
   }
 
+  private setKuberoUIVersion() {
+    if (process.env.npm_package_version == undefined) {
+      // Load the Version from VERSION File
+      const fs = require('fs');
+      const path = require('path');
+      const filePath = path.resolve(__dirname, 'VERSION');
+      if (!fs.existsSync(filePath)) {
+        process.env.npm_package_version = 'no version';
+      } else {
+        process.env.npm_package_version  = fs.readFileSync(path.resolve(__dirname, 'VERSION'), 'utf8');
+      }
+    }
+
+    this.logger.debug('Kubero UI Version: ' + process.env.npm_package_version);
+  }
   // Load settings from a file or from kubernetes
   async getSettings(): Promise<KuberoConfig> {
     if (this.checkAdminDisabled()) {
@@ -469,5 +485,12 @@ export class ConfigService {
       return [];
     }
     return scope.split(' ');
+  }
+
+  public getKuberoUIVersion(): string {
+    if ( process.env.npm_package_version == undefined) {
+      return '0.0.0';
+    }
+    return process.env.npm_package_version;
   }
 }

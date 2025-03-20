@@ -86,7 +86,7 @@ export class AuthService {
 
     const message = {
       isAuthenticated: isAuthenticated,
-      version: process.env.npm_package_version,
+      version: this.configService.getKuberoUIVersion(),
       kubernetesVersion: this.kubectl.getKubernetesVersion(),
       operatorVersion: this.kubectl.getOperatorVersion(),
       buildPipeline: this.configService.getBuildpipelineEnabled(),
