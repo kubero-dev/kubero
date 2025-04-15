@@ -85,16 +85,6 @@ export class AppsService {
     if (contextName) {
       await this.kubectl.createApp(app, contextName);
 
-      if (
-        app.deploymentstrategy == 'git' &&
-        (app.buildstrategy == 'dockerfile' ||
-          app.buildstrategy == 'nixpacks' ||
-          app.buildstrategy == 'buildpacks')
-      ) {
-        this.triggerImageBuild(app.pipeline, app.phase, app.name);
-      }
-      //this.appStateList.push(app);
-
       const m = {
         name: 'newApp',
         user: user.username,
@@ -116,6 +106,15 @@ export class AppsService {
         },
       } as INotification;
       this.NotificationsService.send(m);
+
+      if (
+        app.deploymentstrategy == 'git' &&
+        (app.buildstrategy == 'dockerfile' ||
+          app.buildstrategy == 'nixpacks' ||
+          app.buildstrategy == 'buildpacks')
+      ) {
+        this.triggerImageBuild(app.pipeline, app.phase, app.name);
+      }
     }
   }
 
