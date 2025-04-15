@@ -50,7 +50,7 @@ export class ConfigService {
       if (!fs.existsSync(filePath)) {
         process.env.npm_package_version = 'no version';
       } else {
-        process.env.npm_package_version  = fs.readFileSync(filePath, 'utf8');
+        process.env.npm_package_version = fs.readFileSync(filePath, 'utf8');
       }
     }
 
@@ -486,7 +486,7 @@ export class ConfigService {
   }
 
   public getKuberoUIVersion(): string {
-    if ( process.env.npm_package_version == undefined) {
+    if (process.env.npm_package_version == undefined) {
       return '0.0.0';
     }
     return process.env.npm_package_version;

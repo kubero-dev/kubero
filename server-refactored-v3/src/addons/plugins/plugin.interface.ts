@@ -1,5 +1,11 @@
 export interface IPluginFormFields {
-  type: 'text' | 'number' | 'switch' | 'select' | 'select-storageclass' | 'combobox';
+  type:
+    | 'text'
+    | 'number'
+    | 'switch'
+    | 'select'
+    | 'select-storageclass'
+    | 'combobox';
   label: string;
   name: string;
   required: boolean;
