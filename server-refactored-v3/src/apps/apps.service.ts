@@ -113,9 +113,19 @@ export class AppsService {
           app.buildstrategy == 'nixpacks' ||
           app.buildstrategy == 'buildpacks')
       ) {
-        this.triggerImageBuild(app.pipeline, app.phase, app.name);
+        this.triggerImageBuildDelayed(app.pipeline, app.phase, app.name);
       }
     }
+  }
+
+  private async triggerImageBuildDelayed(
+    pipeline: string,
+    phase: string,
+    appName: string,
+  ) {
+    // delay for 2 seconds to trigger the Image build
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    return this.triggerImageBuild(pipeline, phase, appName);
   }
 
   public async triggerImageBuild(
