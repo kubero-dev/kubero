@@ -1163,6 +1163,7 @@ export class KubernetesService {
   }
 
   public async getKuberoConfig(namespace: string): Promise<any | void> {
+    this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
     try {
       const config = await this.customObjectsApi.getNamespacedCustomObject(
         'application.kubero.dev',
