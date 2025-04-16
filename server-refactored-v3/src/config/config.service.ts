@@ -399,8 +399,19 @@ export class ConfigService {
     return kuberoes.spec.registry;
   }
 
-  public getRunpacks(): any[] {
-    return this.runningConfig.buildpacks || [];
+  public async getRunpacks(): Promise<Buildpack[]> {
+    //return this.runningConfig.buildpacks || [];
+    const buildpackList: Buildpack[] = [];
+
+    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
+    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
+
+    for (const buildpack of kuberoes.spec.kubero.config.buildpacks) {
+      const b = new Buildpack(buildpack);
+      buildpackList.push(b);
+    }
+
+    return buildpackList;
   }
 
   public async getClusterIssuer(): Promise<{ clusterissuer: string }> {
@@ -413,20 +424,6 @@ export class ConfigService {
       clusterissuer:
         kuberoes.spec.kubero.config.clusterissuer || 'not-configured',
     };
-  }
-
-  public async getBuildpacks() {
-    const buildpackList: Buildpack[] = [];
-
-    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
-    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
-
-    for (const buildpack of kuberoes.spec.kubero.config.buildpacks) {
-      const b = new Buildpack(buildpack);
-      buildpackList.push(b);
-    }
-
-    return buildpackList;
   }
 
   public async getPodSizes() {

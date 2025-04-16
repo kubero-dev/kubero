@@ -114,19 +114,6 @@ export class ConfigController {
     return this.configService.getClusterIssuer();
   }
 
-  @Get('/buildpacks')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('bearerAuth')
-  @ApiOperation({ summary: 'List buildpacks' })
-  @ApiForbiddenResponse({
-    description: 'Error: Unauthorized',
-    type: OKDTO,
-    isArray: false,
-  })
-  async getBuildpacks() {
-    return this.configService.getBuildpacks();
-  }
-
   @Get('/podsizes')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
