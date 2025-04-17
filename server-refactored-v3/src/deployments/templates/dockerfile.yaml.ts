@@ -1,12 +1,12 @@
+export const dockerfileTemplate = `
 ---
-# Source: kuberobuild/templates/job-nixpack.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
   generation: 1
   labels:
     batch.kubernetes.io/job-name: example-test-20240631-2237
-    buildstrategy: nixpacks
+    buildstrategy: dockerfile
     kuberoapp: example
     kuberopipeline: test
     job-name: example-test-20240631-2237
@@ -25,7 +25,7 @@ spec:
       creationTimestamp: null
       labels:
         batch.kubernetes.io/job-name: example-test-20240631-2237
-        buildstrategy: nixpacks
+        buildstrategy: dockerfile
         kuberoapp: example
         kuberopipeline: test
         job-name: example-test-20240631-2237
@@ -77,22 +77,6 @@ spec:
           - mountPath: /app
             name: app-storage
           workingDir: /app
-        - name: build
-          command:
-          - sh
-          - -c
-          - nixpacks build . -o .
-          image: "ghcr.io/kubero-dev/build:latest"
-          imagePullPolicy: Always
-          resources: {}
-          securityContext:
-            privileged: false
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          volumeMounts:
-          - mountPath: /app
-            name: app-storage
-          workingDir: /app
         - name: push
           command:
           - sh
@@ -138,3 +122,4 @@ spec:
         secret:
           defaultMode: 384
           secretName: kubero-pull-secret
+`;

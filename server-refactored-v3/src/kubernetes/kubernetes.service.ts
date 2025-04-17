@@ -9,6 +9,9 @@ import {
 import { IPipeline } from '../pipelines/pipelines.interface';
 import { KubectlPipeline } from '../pipelines/pipeline/pipeline';
 import { KubectlApp, App } from '../apps/app/app';
+import { dockerfileTemplate } from '../deployments/templates/dockerfile.yaml';
+import { nixpacksTemplate } from '../deployments/templates/nixpacks.yaml';
+import { buildpacksTemplate } from '../deployments/templates/buildpacks.yaml';
 
 import {
   KubeConfig,
@@ -40,7 +43,7 @@ import {
 import { WebSocket } from 'ws';
 import stream from 'stream';
 import internal from 'stream';
-import { IKuberoConfig, IKuberoCRD } from 'src/config/config.interface';
+import { IKuberoConfig, IKuberoCRD } from '../config/config.interface';
 import { join } from 'path';
 import { readFileSync } from 'fs';
 
@@ -1447,9 +1450,21 @@ export class KubernetesService {
     if (!allowedJobNames.includes(jobname)) {
       throw new Error(`Invalid job name: ${jobname}`);
     }
-    const path = join(__dirname, `../../templates/${jobname}.yaml`);
-    this.logger.debug(`loading job from ${path}`);
-    const job = readFileSync(path, 'utf8');
+
+    let job = '';
+    switch (jobname) {
+      case 'buildpacks':
+        job = buildpacksTemplate
+        break;
+      case 'dockerfile':
+        job = dockerfileTemplate
+        break;
+      case 'nixpacks':
+        job = nixpacksTemplate
+        break;
+      default:
+        break;
+    }
     return this.YAML.parse(job) as V1Job;
   }
 }

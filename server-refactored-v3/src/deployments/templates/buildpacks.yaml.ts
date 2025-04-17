@@ -1,12 +1,11 @@
----
-# Source: kuberobuild/templates/job-dockerfile.yaml
+export const buildpacksTemplate = `---
+# Source: kuberobuild/templates/job-buikdpacks.yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
-  generation: 1
   labels:
     batch.kubernetes.io/job-name: example-test-20240631-2237
-    buildstrategy: dockerfile
+    buildstrategy: buildpacks
     kuberoapp: example
     kuberopipeline: test
     job-name: example-test-20240631-2237
@@ -22,10 +21,9 @@ spec:
   suspend: false
   template:
     metadata:
-      creationTimestamp: null
       labels:
         batch.kubernetes.io/job-name: example-test-20240631-2237
-        buildstrategy: dockerfile
+        buildstrategy: buildpacks
         kuberoapp: example
         kuberopipeline: test
         job-name: example-test-20240631-2237
@@ -34,11 +32,12 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-        - env:
+        - name: deploy
+          env:
           - name: REPOSITORY
             value: registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app
           - name: TAG
-            value: 123456
+            value: "123456"
           - name: APP
             value: example
           command:
@@ -48,7 +47,6 @@ spec:
             \"$REPOSITORY\",\"tag\": \"$TAG\"}}}"'
           image: bitnami/kubectl:latest
           imagePullPolicy: Always
-          name: deploy
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
@@ -77,23 +75,34 @@ spec:
           - mountPath: /app
             name: app-storage
           workingDir: /app
-        - name: push
-          command:
+        - command:
           - sh
           - -c
-          - |-
-            buildah build -f $BUILDAH_DOCKERFILE_PATH --isolation chroot -t $BUILD_IMAGE .
-            buildah push --tls-verify=false $BUILD_IMAGE
-          env:
-          - name: REGISTRY_AUTH_FILE
-            value: /etc/buildah/auth/.dockerconfigjson
-          - name: BUILD_IMAGE
-            value: registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app:123456
-          - name: BUILDAH_DOCKERFILE_PATH
-            value: /app/Dockerfile
-          image: "quay.io/containers/buildah:v1.35"
+          - chmod -R g+w /app
+          image: busybox:latest
           imagePullPolicy: IfNotPresent
+          name: permissions
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+          - mountPath: /app
+            name: app-storage
+          workingDir: /app
+        - name: build
+          args:
+          - '-app=.'
+          - registry-kubero.yourdomain.com/optionalrepositoryowner/pipeline/app:mytag-id
+          command: ['/cnb/lifecycle/creator']
+          # https://github.com/buildpacks/pack/issues/564#issuecomment-943345649
+          # https://github.com/buildpacks/spec/blob/platform/v0.13/platform.md#creator
+          #command: ['/cnb/lifecycle/creator', '-app=.', '-buildpacks=/cnb/buildpacks', '-platform=/platform', '-run-image=ghcr.io/kubero-dev/run:v1.4.0', '-uid=1000', '-gid=1000', 'kubero-local-dev-0037732.loca.lt/example/exampled:latest']
+          #command: ['tail', '-f', '/dev/null']
+          image: "paketobuildpacks/builder-jammy-full:latest" #List of Builders : https://paketo.io/docs/reference/builders-reference/
+          imagePullPolicy: Always
           resources: {}
+          env:
+          - name: CNB_PLATFORM_API
+            value: "0.13"
           securityContext:
             privileged: true
           terminationMessagePath: /dev/termination-log
@@ -101,9 +110,9 @@ spec:
           volumeMounts:
           - mountPath: /app
             name: app-storage
-            readOnly: true
-          - mountPath: /etc/buildah/auth
-            name: pull-secret
+            readOnly: false
+          - mountPath: /home/cnb/.docker
+            name: docker-config
             readOnly: true
           workingDir: /app
       restartPolicy: Never
@@ -118,7 +127,14 @@ spec:
           secretName: deployment-keys
       - emptyDir: {}
         name: app-storage
-      - name: pull-secret
+      - name: docker-config
         secret:
-          defaultMode: 384
           secretName: kubero-pull-secret
+          items:
+            - key: .dockerconfigjson
+              path: config.json
+#      - name: pull-secret
+#        secret:
+#          defaultMode: 0384
+#          secretName: kubero-pull-secret
+`
