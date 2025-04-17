@@ -12,6 +12,7 @@ import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -34,11 +35,14 @@ export class AuthService {
         throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
       }
 
+      // DEPRECATED in v3.0.0: sha256 is considered insecure hashing. Kept for backward compatibility
       const password = crypto
         .createHmac('sha256', process.env.KUBERO_SESSION_KEY)
         .update(pass)
         .digest('hex');
-      if (user.password === password) {
+      const passwordMatch = await bcrypt.compare(pass, user.password);
+      //if (passwordMatch) { 
+      if (user.password === password || passwordMatch) {
         const { password, ...result } = user;
         return result;
       }
