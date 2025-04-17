@@ -148,7 +148,7 @@ export class DeploymentsService {
           url: gitrepo,
         },
         {
-          image: process.env.KUBERO_BUILD_REGISTRY + '/' + pipeline + '/' + app,
+          image: process.env.KUBERO_BUILD_REGISTRY + '/' + pipeline + '-' + app,
           tag: reference,
         },
       );

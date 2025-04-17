@@ -169,7 +169,7 @@ export class AppsService {
           ref: app.spec.branch, //git commit reference
         },
         {
-          image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}/${appName}`,
+          image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}-${appName}`,
           tag: app.spec.branch + '-' + timestamp,
         },
       );
