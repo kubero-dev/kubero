@@ -1,0 +1,57 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: textbee
+    annotations:
+        kubero.dev/template.architecture: '["amd64", "arm64"]'
+        kubero.dev/template.description: "textbee.dev is an opensource and free sms-gatway for sending SMS messages through API or dashboard web interface."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/38871878"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/vernu/textbee"
+        kubero.dev/template.categories: '["notification"]'
+        kubero.dev/template.title: "Textbee"
+        kubero.dev/template.website: "https://textbee.dev/"
+    labels:
+        manager: kubero
+spec:
+    name: textbee
+    deploymentstrategy: docker
+    envVars:
+        - name: NEXTAUTH_URL
+          value: https://textbee.localhost
+        - name: AUTH_SECRET
+          value: random32
+        - name: NEXT_PUBLIC_API_BASE_URL
+          value: http://textbee-api/api/v1
+        - name: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+          value: ""
+        - name: NEXT_PUBLIC_TAWKTO_EMBED_URL
+          value: ""
+        - name: ADMIN_EMAIL
+          value: ""
+        - name: DATABASE_URL
+          value: mongodb://textbee:textbee@textbee-api-mongodb:27017/textbee
+        - name: MAIL_HOST
+          value: ""
+        - name: MAIL_PORT
+          value: ""
+        - name: MAIL_USER
+          value: ""
+        - name: MAIL_PASS
+          value: ""
+        - name: MAIL_FROM
+          value: ""
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: ghcr.io/vernu/textbee/web
+        tag: latest

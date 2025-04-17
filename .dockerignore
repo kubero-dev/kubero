@@ -1,4 +1,4 @@
-**/node_modules_AAAA
+**/node_modules
 Dockerfile
 .dockerignore
 .git
@@ -9,4 +9,4 @@ docker-compose.*
 kind.*
 .eslintrc.js
 README.md
-**/dist_AAAAA
+**/dist
