@@ -3,12 +3,12 @@ kind: KuberoApp
 metadata:
     name: neko
     annotations:
-        kubero.dev/template.architecture: '["linux/amd64"]'
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
         kubero.dev/template.description: "A self hosted virtual browser that runs in docker and uses WebRTC."
-        kubero.dev/template.icon: "https://raw.githubusercontent.com/m1k1o/neko/master/docs/_media/logo.png"
+        kubero.dev/template.icon: "https://neko.m1k1o.net/img/logo.png"
         kubero.dev/template.installation: "This app requires specials ports to be open on your cluster: 52000-52100/udp"
         kubero.dev/template.links: '["https://github.com/m1k1o/neko/blob/master/docker-compose.yaml"]'
-        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/m1k1o/neko/master/docs/_media/intro.gif"]'
+        kubero.dev/template.screenshots: '["https://neko.m1k1o.net/img/intro.gif"]'
         kubero.dev/template.source: "https://github.com/m1k1o/neko"
         kubero.dev/template.categories: '["collaboration"]'
         kubero.dev/template.title: "Neko"
@@ -19,15 +19,15 @@ spec:
     name: neko
     deploymentstrategy: docker
     envVars:
-        - name: NEKO_SCREEN
+        - name: NEKO_DESKTOP_SCREEN
           value: 1920x1080@30
-        - name: NEKO_PASSWORD
+        - name: NEKO_MEMBER_MULTIUSER_USER_PASSWORD
           value: admin
-        - name: NEKO_PASSWORD_ADMIN
+        - name: NEKO_MEMBER_MULTIUSER_ADMIN_PASSWORD
           value: neko
-        - name: NEKO_EPR
+        - name: NEKO_WEBRTC_EPR
           value: 52000-52100
-        - name: NEKO_IPFETCH
+        - name: NEKO_WEBRTC_IP_RETRIEVAL_URL
           value: https://checkip.amazonaws.com/
     extraVolumes: []
     cronjobs: []
@@ -39,5 +39,5 @@ spec:
     image:
         containerPort: 8080
         pullPolicy: Always
-        repository: m1k1o/neko
-        tag: firefox
+        repository: ghcr.io/m1k1o/neko/firefox
+        tag: latest
