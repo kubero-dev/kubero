@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { Kubectl } from "./kubectl";
 import { IKuberoConfig, INotificationSlack, INotificationWebhook, INotificationDiscord, INotificationConfig} from "../types";
 
-
+//Migrated to notifications
 export interface INotification {
     name: string,
     user: string,
