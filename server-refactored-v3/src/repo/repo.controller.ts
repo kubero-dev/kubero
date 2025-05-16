@@ -174,13 +174,6 @@ export class RepoController {
   }
 
   @Post('/webhooks/:provider')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('bearerAuth')
-  @ApiForbiddenResponse({
-    description: 'Error: Unauthorized',
-    type: OKDTO,
-    isArray: false,
-  })
   @ApiOperation({ summary: 'Webhooks endpoint for repository providers' })
   @ApiParam({
     name: 'provider',
