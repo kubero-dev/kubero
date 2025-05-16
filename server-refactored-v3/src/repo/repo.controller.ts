@@ -173,7 +173,7 @@ export class RepoController {
     return this.repoService.disconnectRepo(provider, body.gitrepo);
   }
 
-  @Post('/repo/webhooks/:provider')
+  @Post('/webhooks/:provider')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
