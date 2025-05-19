@@ -137,4 +137,4 @@ spec:
 #        secret:
 #          defaultMode: 0384
 #          secretName: kubero-pull-secret
-`
+`;

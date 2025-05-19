@@ -5,6 +5,11 @@ import { GiteaApi } from './git/gitea';
 import { GogsApi } from './git/gogs';
 import { GitlabApi } from './git/gitlab';
 import { IPullrequest } from './git/types';
+import { IWebhook } from './git/types';
+import { INotification } from 'src/notifications/notifications.interface';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { IApp } from 'src/apps/apps.interface';
+import { AppsService } from 'src/apps/apps.service';
 
 @Injectable()
 export class RepoService {
@@ -15,7 +20,10 @@ export class RepoService {
   private gitlabApi: GitlabApi;
   private bitbucketApi: BitbucketApi;
 
-  constructor() {
+  constructor(
+    private notificationsService: NotificationsService,
+    private appsService: AppsService,
+  ) {
     this.giteaApi = new GiteaApi(
       process.env.GITEA_BASEURL as string,
       process.env.GITEA_PERSONAL_ACCESS_TOKEN as string,
@@ -239,5 +247,147 @@ export class RepoService {
     }
 
     return repositories;
+  }
+
+  public async handleWebhook(
+    repoProvider: string,
+    //event: string,
+    //delivery: string,
+    //signature: string,
+    headers: any,
+    body: any,
+  ) {
+    this.logger.debug('handleWebhook: ' + repoProvider);
+
+    let webhook: boolean | IWebhook = false;
+    let event: string;
+    let delivery: string;
+    let signature: string;
+
+    switch (repoProvider) {
+      case 'github':
+        event = headers['x-github-event'];
+        delivery = headers['x-github-delivery'];
+        signature = headers['x-hub-signature-256'];
+        webhook = this.githubApi.getWebhook(event, delivery, signature, body);
+        break;
+      case 'gitea':
+        event = headers['x-gitea-event'];
+        delivery = headers['x-gitea-delivery'];
+        signature = headers['x-hub-signature-256'];
+        webhook = this.giteaApi.getWebhook(event, delivery, signature, body);
+        break;
+      case 'gogs':
+        event = headers['x-gogs-event'];
+        delivery = headers['x-gogs-delivery'];
+        signature = headers['x-gogs-signature'];
+        webhook = this.gogsApi.getWebhook(event, delivery, signature, body);
+        break;
+      case 'gitlab':
+        event = headers['x-gitlab-event'];
+        delivery = headers['x-gitlab-event-uuid'];
+        signature = headers['x-gitlab-token'];
+        break;
+      case 'bitbucket':
+        event = headers['x-event-key'];
+        delivery = headers['x-request-uuid'];
+        webhook = this.bitbucketApi.getWebhook(event, delivery, body);
+        break;
+      default:
+        this.logger.debug('unknown repoprovider: ' + repoProvider);
+        return;
+    }
+
+    if (typeof webhook != 'boolean') {
+      switch (webhook.event) {
+        case 'push':
+          this.handleWebhookPush(webhook);
+          break;
+        case 'pull_request':
+          this.handleWebhookPullRequest(webhook);
+          break;
+        default:
+          this.logger.debug('webhook event not handled: ' + event);
+          break;
+      }
+    }
+  }
+
+  private async handleWebhookPush(webhook: IWebhook) {
+    this.logger.debug('handleWebhookPush');
+    const apps = await this.appsService.getAppsByRepoAndBranch(
+      webhook.repo.ssh_url,
+      webhook.branch,
+    );
+
+    for (const app of apps) {
+      const m = {
+        name: 'handleWebhookPush',
+        user: '',
+        resource: 'app',
+        action: 'push',
+        severity: 'normal',
+        message:
+          'Pushed code to branch: ' +
+          webhook.branch +
+          ' in ' +
+          webhook.repo.ssh_url +
+          ' for app: ' +
+          app.name +
+          ' in pipeline: ' +
+          app.pipeline +
+          ' phase: ' +
+          app.phase,
+        pipelineName: app.pipeline,
+        phaseName: app.phase,
+        appName: app.name,
+        data: {
+          app: app,
+        },
+      } as INotification;
+      this.notificationsService.send(m);
+
+      this.appsService.rebuildApp(app);
+    }
+  }
+/*
+  private async getAppsByRepoAndBranch(repository: string, branch: string) {
+    this.logger.debug('getAppsByBranch: ' + branch);
+    const apps: IApp[] = [];
+    for (const app of this.appStateList) {
+      if (app.branch === branch && repository === app.gitrepo?.ssh_url) {
+        apps.push(app);
+      }
+    }
+    return apps;
+  }
+*/
+
+  private async handleWebhookPullRequest(webhook: IWebhook) {
+    this.logger.debug('handleWebhookPullRequest');
+
+    switch (webhook.action) {
+      case 'opened':
+      case 'reopened':
+        this.appsService.createPRApp(
+          webhook.branch,
+          webhook.branch,
+          webhook.repo.ssh_url,
+          undefined,
+        ); // "undefined" will create the app in all pipelines
+        break;
+      case 'closed':
+        this.appsService.deletePRApp(
+          webhook.branch,
+          webhook.branch,
+          webhook.repo.ssh_url,
+        );
+        break;
+      default:
+        console.log(
+          'webhook pull request action not handled: ' + webhook.action,
+        );
+        break;
+    }
   }
 }

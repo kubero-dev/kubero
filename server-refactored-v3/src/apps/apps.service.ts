@@ -391,6 +391,122 @@ export class AppsService {
     }
   }
 
+  public async getAllAppsList(contextName: string) {
+    this.logger.debug('getAppsList');
+    this.kubectl.setCurrentContext(contextName);
+    const apps = await this.kubectl.getAllAppsList(contextName);
+    const appslist = [] as IApp[];
+    for (const app of apps.items) {
+      appslist.push(app.spec);
+    }
+    return appslist;
+  }
+
+  
+  public async getAppsByRepoAndBranch(repository: string, branch: string) {
+    this.logger.debug('getAppsByBranch: ' + branch);
+
+    const appslist = await this.getAllAppsList(
+      process.env.KUBERO_CONTEXT || 'default',
+    );
+    const apps: IApp[] = [];
+    for (const app of appslist) {
+      if (app.branch === branch && repository === app.gitrepo?.ssh_url) {
+        apps.push(app);
+      }
+    }
+    return apps;
+  }
+  
+
+  // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
+  public async deletePRApp(branch: string, title: string, ssh_url: string) {
+    this.logger.debug('destroyPRApp');
+    const websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
+
+
+    const appslist = await this.getAllAppsList(
+      process.env.KUBERO_CONTEXT || 'default',
+    );
+
+    for (const app of appslist) {
+      if (
+        app.phase === 'review' &&
+        app.gitrepo &&
+        app.gitrepo.ssh_url === ssh_url &&
+        app.branch === branch
+      ) {
+        const user = {
+          username: 'unknown',
+        } as IUser;
+
+        this.deleteApp(app.pipeline, app.phase, websaveTitle, user);
+      }
+    }
+  }
+
+  public async rebuildApp(app: IApp) {
+    this.logger.debug(
+      'rebuild App: ' +
+        app.name +
+        ' in ' +
+        app.pipeline +
+        ' phase: ' +
+        app.phase,
+    );
+
+    const contextName = await this.pipelinesService.getContext(
+      app.pipeline,
+      app.phase,
+    );
+
+    if (contextName) {
+      if (
+        app.deploymentstrategy == 'docker' ||
+        app.buildstrategy == undefined ||
+        app.buildstrategy == 'plain'
+      ) {
+        this.kubectl.restartApp(
+          app.pipeline,
+          app.phase,
+          app.name,
+          'web',
+          contextName,
+        );
+        this.kubectl.restartApp(
+          app.pipeline,
+          app.phase,
+          app.name,
+          'worker',
+          contextName,
+        );
+      } else {
+        // rebuild for buildstrategy git/dockerfile or git/nixpacks
+        this.triggerImageBuild(app.pipeline, app.phase, app.name);
+      }
+
+      const m = {
+        name: 'restartApp',
+        user: '',
+        resource: 'app',
+        action: 'restart',
+        severity: 'normal',
+        message:
+          'Rebuild app: ' +
+          app.name +
+          ' in ' +
+          app.pipeline +
+          ' phase: ' +
+          app.phase,
+        pipelineName: app.pipeline,
+        phaseName: app.phase,
+        appName: app.name,
+        data: {},
+      } as INotification;
+      this.NotificationsService.send(m);
+    }
+  }
+
   public async getTemplate(
     pipelineName: string,
     phaseName: string,

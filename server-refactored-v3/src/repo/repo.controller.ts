@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { RepoService } from './repo.service';
 import {
   ApiBearerAuth,
@@ -182,7 +190,13 @@ export class RepoController {
     required: true,
     enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
   })
-  async repositoryWebhook(@Body() body: any) {
-    return 'Not implemented';
+  async repositoryWebhook(
+    @Param('provider') provider: string,
+    @Body() body: any,
+    @Req() req: Request,
+  ) {
+    const ret: string = 'ok';
+    this.repoService.handleWebhook(provider, req.headers, body);
+    return ret;
   }
 }

@@ -41,7 +41,7 @@ export class AuthService {
         .update(pass)
         .digest('hex');
       const passwordMatch = await bcrypt.compare(pass, user.password);
-      //if (passwordMatch) { 
+      //if (passwordMatch) {
       if (user.password === password || passwordMatch) {
         const { password, ...result } = user;
         return result;

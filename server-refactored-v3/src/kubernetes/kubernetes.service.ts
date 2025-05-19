@@ -429,6 +429,28 @@ export class KubernetesService {
     return appslist;
   }
 
+  public async getAllAppsList(
+    context: string,
+  ): Promise<IKubectlAppList> {
+    this.kc.setCurrentContext(context);
+    try {
+      const appslist = await this.customObjectsApi.listClusterCustomObject(
+        'application.kubero.dev',
+        'v1alpha1',
+        'kuberoapps',
+
+      );
+      return appslist.body as IKubectlAppList;
+    } catch (error) {
+      //this.logger.debug(error);
+      this.logger.debug('getAppsList: error getting apps');
+    }
+    const appslist = {} as IKubectlAppList;
+    appslist.items = [];
+    return appslist;
+  }
+
+
   public async restartApp(
     pipelineName: string,
     phaseName: string,
@@ -1454,13 +1476,13 @@ export class KubernetesService {
     let job = '';
     switch (jobname) {
       case 'buildpacks':
-        job = buildpacksTemplate
+        job = buildpacksTemplate;
         break;
       case 'dockerfile':
-        job = dockerfileTemplate
+        job = dockerfileTemplate;
         break;
       case 'nixpacks':
-        job = nixpacksTemplate
+        job = nixpacksTemplate;
         break;
       default:
         break;
