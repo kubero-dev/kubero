@@ -23,6 +23,7 @@
                 type="warning"
                 border="start"
                 class="mb-5"
+                :class="{ 'shaking': errorshake }"
                 >Wrong username or password!
             </v-alert>
             <form v-on:submit="login">
@@ -93,6 +94,7 @@ export default defineComponent({
     name: "Login",
     data: () => ({
         error: false,
+        errorshake: false,
         authMethods : {
             "local": false,
             "github": false,
@@ -135,6 +137,10 @@ export default defineComponent({
                     })
                     .catch((errors) => {
                         this.error = true;
+                        this.errorshake = true;
+                        setTimeout(() => {
+                            this.errorshake = false;
+                        }, 300);
                         console.log("Cannot log in"+errors)
                     })
             }
@@ -159,3 +165,17 @@ export default defineComponent({
     }
 });
 </script>
+
+<style scoped>
+/* https://unused-css.com/blog/css-shake-animation/ */
+@keyframes horizontal-shaking {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(5px) }
+ 50% { transform: translateX(-5px) }
+ 75% { transform: translateX(5px) }
+ 100% { transform: translateX(0) }
+}
+.shaking {
+    animation: horizontal-shaking 0.3s ease-in-out;
+}
+</style>
