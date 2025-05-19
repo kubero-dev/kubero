@@ -1,5 +1,5 @@
 import { IGithubRepository } from 'src/apps/apps.interface';
-import { IBuildpack } from 'src/config/config.interface';
+import { IBuildpack } from '../config/config.interface';
 import { IKubectlMetadata } from '../kubernetes/kubernetes.interface';
 
 export interface IPipeline {

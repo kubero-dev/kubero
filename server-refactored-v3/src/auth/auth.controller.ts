@@ -22,7 +22,7 @@ import {
   LoginDTO,
   GetSessionDTO,
 } from './auth.dto';
-import { OKDTO } from 'src/shared/dto/ok.dto';
+import { OKDTO } from '../shared/dto/ok.dto';
 import { JwtAuthGuard } from './strategies/jwt.guard';
 import { AuthGuard } from '@nestjs/passport';
 

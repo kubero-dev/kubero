@@ -15,10 +15,10 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { IUser } from 'src/auth/auth.interface';
+import { IUser } from '../auth/auth.interface';
 import { CreateBuild } from './dto/CreateBuild.dto';
-import { OKDTO } from 'src/shared/dto/ok.dto';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
+import { OKDTO } from '../shared/dto/ok.dto';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/deployments', version: '1' })
 export class DeploymentsController {

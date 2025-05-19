@@ -13,7 +13,6 @@ import {
   UseGuards,
   Res,
 } from '@nestjs/common';
-import { Response } from 'express';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
 import {
@@ -23,8 +22,8 @@ import {
 } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { GetAppDTO } from './apps.dto';
-import { OKDTO } from 'src/shared/dto/ok.dto';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
+import { OKDTO } from '../shared/dto/ok.dto';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {

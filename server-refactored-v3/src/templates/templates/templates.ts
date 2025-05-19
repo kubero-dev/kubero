@@ -1,7 +1,7 @@
 import { IApp, ICronjob, IExtraVolume } from '../../apps/apps.interface';
 import { ITemplate, IKubectlTemplate } from '../templates.interface';
 import { IKubectlMetadata } from '../../kubernetes/kubernetes.interface';
-import { IAddon } from 'src/addons/addons.interface';
+import { IAddon } from '../../addons/addons.interface';
 
 export class KubectlTemplate implements IKubectlTemplate {
   apiVersion: string;

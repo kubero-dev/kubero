@@ -12,8 +12,8 @@ import {
   ContextDTO,
   GetEventsDTO,
 } from './dto/kubernetes.dto';
-import { OKDTO } from 'src/shared/dto/ok.dto';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
+import { OKDTO } from '../shared/dto/ok.dto';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {

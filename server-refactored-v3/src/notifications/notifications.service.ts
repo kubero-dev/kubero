@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { AuditService } from 'src/audit/audit.service';
+import { AuditService } from '../audit/audit.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import {
   INotificationConfig,

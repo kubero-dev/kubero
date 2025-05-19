@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ILoglines } from './logs.interface';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { PipelinesService } from '../pipelines/pipelines.service';
-import { EventsGateway } from 'src/events/events.gateway';
+import { EventsGateway } from '../events/events.gateway';
 import { Stream } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
 

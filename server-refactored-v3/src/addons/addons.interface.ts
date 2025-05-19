@@ -1,5 +1,5 @@
 import {
-  KubernetesListObject,
+  //KubernetesListObject,
   KubernetesObject,
 } from '@kubernetes/client-node';
 

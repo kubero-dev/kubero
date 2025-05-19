@@ -1,7 +1,7 @@
-import { Logger } from './logger';
+import { CustomConsoleLogger } from './logger';
 
 describe('Logger', () => {
   it('should be defined', () => {
-    expect(new Logger()).toBeDefined();
+    expect(new CustomConsoleLogger()).toBeDefined();
   });
 });

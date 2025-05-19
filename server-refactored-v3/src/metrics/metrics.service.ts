@@ -8,7 +8,7 @@ import {
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import {
   PrometheusDriver,
-  PrometheusQueryDate,
+  //PrometheusQueryDate,
   QueryResult,
   RuleGroup,
 } from 'prometheus-query';

@@ -1,7 +1,7 @@
-import { Kubectl } from './kubernetes.service';
+import { KubernetesService } from './kubernetes.service';
 
 describe('Kubectl', () => {
   it('should be defined', () => {
-    expect(new Kubectl()).toBeDefined();
+    expect(new KubernetesService()).toBeDefined();
   });
 });

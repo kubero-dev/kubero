@@ -6,12 +6,11 @@ import { IKubectlApp } from '../kubernetes/kubernetes.interface';
 import { INotification } from '../notifications/notifications.interface';
 import { App } from './app/app';
 import { IApp, Workload, WorkloadContainer } from './apps.interface';
-import { IPipelineList } from '../pipelines/pipelines.interface';
 import { IUser } from '../auth/auth.interface';
-import { ConfigService } from 'src/config/config.service';
-import { KubectlTemplate } from 'src/templates/template';
+import { ConfigService } from '../config/config.service';
+import { KubectlTemplate } from '../templates/template';
 import { Stream } from 'stream';
-import { EventsGateway } from 'src/events/events.gateway';
+import { EventsGateway } from '../events/events.gateway';
 
 @Injectable()
 export class AppsService {

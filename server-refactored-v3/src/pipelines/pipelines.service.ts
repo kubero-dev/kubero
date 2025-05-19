@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { IPipelineList, IPipeline } from './pipelines.interface';
-import { KubernetesService } from 'src/kubernetes/kubernetes.service';
+import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { Buildpack } from '../config/buildpack/buildpack';
 import { IUser } from '../auth/auth.interface';
 import { NotificationsService } from '../notifications/notifications.service';
 import { INotification } from '../notifications/notifications.interface';
-import { CreatePipelineDTO } from './dto/replacePipeline.dto';
-import { IApp } from 'src/apps/apps.interface';
+import { IApp } from '../apps/apps.interface';
 
 @Injectable()
 export class PipelinesService {

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import axios from 'axios';
-import YAML from 'yaml';
 
 @Injectable()
 export class TemplatesService {

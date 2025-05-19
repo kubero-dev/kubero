@@ -22,10 +22,10 @@ import {
 } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
-import { OKDTO } from 'src/shared/dto/ok.dto';
+import { OKDTO } from '../shared/dto/ok.dto';
 import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {

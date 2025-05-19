@@ -7,8 +7,8 @@ import {
 } from '@nestjs/swagger';
 import { TemplatesService } from './templates.service';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
-import { OKDTO } from 'src/shared/dto/ok.dto';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { OKDTO } from '../shared/dto/ok.dto';
 
 @Controller({ path: 'api/templates', version: '1' })
 export class TemplatesController {
