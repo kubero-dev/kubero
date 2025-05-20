@@ -6,7 +6,18 @@ describe('AddonsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AddonsService],
+      providers: [
+        {
+          provide: AddonsService,
+          useValue: {
+            getAddons: jest.fn(),
+            getAddonById: jest.fn(),
+            createAddon: jest.fn(),
+            updateAddon: jest.fn(),
+            deleteAddon: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<AddonsService>(AddonsService);

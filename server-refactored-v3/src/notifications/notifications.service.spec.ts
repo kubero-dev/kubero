@@ -6,7 +6,18 @@ describe('NotificationsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [NotificationsService],
+      providers: [
+        {
+          provide: NotificationsService,
+          useValue: {
+            getNotifications: jest.fn(),
+            getNotificationById: jest.fn(),
+            createNotification: jest.fn(),
+            updateNotification: jest.fn(),
+            deleteNotification: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     service = module.get<NotificationsService>(NotificationsService);

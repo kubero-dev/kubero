@@ -6,7 +6,20 @@ describe('SettingsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ConfigService],
+      providers: [
+        {
+          provide: ConfigService,
+          useValue: {
+            get: jest.fn(),
+            getBoolean: jest.fn(),
+            getNumber: jest.fn(),
+            getString: jest.fn(),
+            getObject: jest.fn(),
+            getArray: jest.fn(),
+            validateConfig: jest.fn(),
+          },
+        }
+      ],
     }).compile();
 
     service = module.get<ConfigService>(ConfigService);

@@ -4,6 +4,94 @@ import { AppsService } from './apps.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
+/*
+import { IApp } from './apps.interface';
+import { IPodSize, ISecurityContext } from 'src/config/config.interface';
+
+const podsize: IPodSize = {
+  name: 'small',
+  resources: {},
+  description: ''
+};
+
+const mockSecurityContext: ISecurityContext = {
+  runAsUser: 1000,
+  runAsGroup: 1000,
+  allowPrivilegeEscalation: false,
+  readOnlyRootFilesystem: false,
+  runAsNonRoot: true,
+  capabilities: { add: [], drop: [] },
+};
+
+const mockApp = {
+  name: 'app',
+  pipeline: 'pipeline',
+  phase: 'phase',
+  sleep: 'false',
+  buildpack: 'nodejs',
+  deploymentstrategy: 'git' as const,
+  buildstrategy: 'plain' as const,
+  branch: 'main',
+  autodeploy: true,
+  podsize,
+  autoscale: false,
+  basicAuth: {
+    enabled: true,
+    realm: 'TestRealm',
+    accounts: [
+      { user: 'user1', pass: 'pass1' },
+      { user: 'user2', pass: 'pass2' },
+    ],
+  },
+  envVars: [],
+  extraVolumes: [],
+  cronjobs: [],
+  addons: [],
+  web: {
+    replicaCount: 1,
+    autoscaling: { minReplicas: 1, maxReplicas: 2 },
+  },
+  worker: {
+    replicaCount: 1,
+    autoscaling: { minReplicas: 1, maxReplicas: 2 },
+  },
+  image: {
+    containerPort: 8080,
+    repository: 'repo',
+    tag: 'tag',
+    command: ['npm'],
+    fetch: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    build: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    run: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    pullPolicy: 'Always',
+  },
+  vulnerabilityscan: {
+    enabled: false,
+    schedule: '* * * * *',
+    image: { repository: 'repo', tag: 'tag' },
+  },
+  serviceAccount: { annotations: {}, create: true, name: 'svc' },
+  ingress: {
+    annotations: {},
+    className: '',
+    enabled: false,
+    hosts: [{ host: 'localhost', paths: [{ path: '/', pathType: 'Prefix' }] }],
+    tls: [],
+  },
+  healthcheck: {
+    enabled: true,
+    path: '/health',
+    startupSeconds: 1,
+    timeoutSeconds: 1,
+    periodSeconds: 1,
+  },
+  resources: {
+    limits: { cpu: '100m', memory: '128Mi' },
+    requests: { cpu: '100m', memory: '128Mi' },
+  },
+} as IApp;
+ */
+
 describe('AppsController', () => {
   let controller: AppsController;
   let service: AppsService;
@@ -44,6 +132,7 @@ describe('AppsController', () => {
 
   describe('getApp', () => {
     it('should return app information', async () => {
+      //
       const mockApp = { name: 'test-app' };
       mockAppsService.getApp.mockResolvedValue(mockApp);
 
@@ -61,6 +150,7 @@ describe('AppsController', () => {
     });
 
     it('should create an app', async () => {
+      //
       const mockApp = { pipeline: 'pipeline', phase: 'phase' };
       const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
       mockAppsService.createApp.mockResolvedValue(mockApp);
@@ -79,6 +169,7 @@ describe('AppsController', () => {
     });
 
     it('should update an app', async () => {
+      //
       const mockApp = { name: 'app' };
       const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
       mockAppsService.updateApp.mockResolvedValue(mockApp);

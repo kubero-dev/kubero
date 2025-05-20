@@ -8,7 +8,6 @@ import { IPullrequest } from './git/types';
 import { IWebhook } from './git/types';
 import { INotification } from 'src/notifications/notifications.interface';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { IApp } from 'src/apps/apps.interface';
 import { AppsService } from 'src/apps/apps.service';
 
 @Injectable()

@@ -6,11 +6,20 @@ describe('AppController', () => {
   let appController: AppController;
 
   beforeEach(async () => {
-    const app: TestingModule = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [AppService],
+      providers: [
+        {
+          provide: AppService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = moduleRef.get<AppController>(AppController);
+  });
+
+  it('should be defined', () => {
+    expect(appController).toBeDefined();
   });
 });
