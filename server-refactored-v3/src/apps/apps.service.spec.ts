@@ -12,7 +12,7 @@ import { IPodSize, ISecurityContext } from 'src/config/config.interface';
 const podsize: IPodSize = {
   name: 'small',
   resources: {},
-  description: ''
+  description: '',
 };
 
 const mockSecurityContext: ISecurityContext = {
@@ -61,9 +61,21 @@ const mockApp = {
     repository: 'repo',
     tag: 'tag',
     command: ['npm'],
-    fetch: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    build: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    run: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    fetch: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    build: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    run: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
     pullPolicy: 'Always',
   },
   vulnerabilityscan: {
@@ -104,11 +116,31 @@ describe('AppsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AppsService,
-        { provide: KubernetesService, useValue: { getApp: jest.fn(), createApp: jest.fn(), deleteApp: jest.fn(), setCurrentContext: jest.fn(), createBuildJob: jest.fn(), getAllAppsList: jest.fn(), restartApp: jest.fn(), getPods: jest.fn(), updateApp: jest.fn(), execInContainer: jest.fn() } },
-        { provide: PipelinesService, useValue: { getContext: jest.fn(), listPipelines: jest.fn() } },
+        {
+          provide: KubernetesService,
+          useValue: {
+            getApp: jest.fn(),
+            createApp: jest.fn(),
+            deleteApp: jest.fn(),
+            setCurrentContext: jest.fn(),
+            createBuildJob: jest.fn(),
+            getAllAppsList: jest.fn(),
+            restartApp: jest.fn(),
+            getPods: jest.fn(),
+            updateApp: jest.fn(),
+            execInContainer: jest.fn(),
+          },
+        },
+        {
+          provide: PipelinesService,
+          useValue: { getContext: jest.fn(), listPipelines: jest.fn() },
+        },
         { provide: NotificationsService, useValue: { send: jest.fn() } },
         { provide: ConfigService, useValue: { getPodSizes: jest.fn() } },
-        { provide: EventsGateway, useValue: { execStreams: {}, sendTerminalLine: jest.fn() } },
+        {
+          provide: EventsGateway,
+          useValue: { execStreams: {}, sendTerminalLine: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -127,7 +159,10 @@ describe('AppsService', () => {
   describe('getApp', () => {
     it('should return app if context exists', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
-      (kubectl.getApp as jest.Mock).mockResolvedValue({ metadata: {}, status: {} });
+      (kubectl.getApp as jest.Mock).mockResolvedValue({
+        metadata: {},
+        status: {},
+      });
       const result = await service.getApp('p', 'ph', 'a');
       expect(result).toBeDefined();
       expect(kubectl.getApp).toHaveBeenCalled();
@@ -140,7 +175,9 @@ describe('AppsService', () => {
   });
 
   describe('createApp', () => {
-    beforeEach(() => { process.env.KUBERO_READONLY = 'false'; });
+    beforeEach(() => {
+      process.env.KUBERO_READONLY = 'false';
+    });
     it('should call createApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
       const app = new App(mockApp);
@@ -157,7 +194,9 @@ describe('AppsService', () => {
   });
 
   describe('deleteApp', () => {
-    beforeEach(() => { process.env.KUBERO_READONLY = 'false'; });
+    beforeEach(() => {
+      process.env.KUBERO_READONLY = 'false';
+    });
     it('should call deleteApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
       await service.deleteApp('p', 'ph', 'a', { username: 'u' } as any);
@@ -174,7 +213,13 @@ describe('AppsService', () => {
   describe('triggerImageBuild', () => {
     it('should call createBuildJob', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
-      jest.spyOn(service, 'getApp').mockResolvedValue({ spec: { gitrepo: { admin: true, ssh_url: 'repo' }, buildstrategy: 'dockerfile', branch: 'main' } } as any);
+      jest.spyOn(service, 'getApp').mockResolvedValue({
+        spec: {
+          gitrepo: { admin: true, ssh_url: 'repo' },
+          buildstrategy: 'dockerfile',
+          branch: 'main',
+        },
+      } as any);
       await service.triggerImageBuild('p', 'ph', 'a');
       expect(kubectl.createBuildJob).toHaveBeenCalled();
     });
@@ -182,7 +227,9 @@ describe('AppsService', () => {
 
   describe('getAllAppsList', () => {
     it('should return list of apps', async () => {
-      (kubectl.getAllAppsList as jest.Mock).mockResolvedValue({ items: [{ spec: { name: 'a' } }] });
+      (kubectl.getAllAppsList as jest.Mock).mockResolvedValue({
+        items: [{ spec: { name: 'a' } }],
+      });
       const result = await service.getAllAppsList('ctx');
       expect(result).toEqual([{ name: 'a' }]);
     });
@@ -203,15 +250,29 @@ describe('AppsService', () => {
   describe('rebuildApp', () => {
     it('should call restartApp for docker/plain', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
-      const app = { name: 'a', pipeline: 'p', phase: 'ph', deploymentstrategy: 'docker', buildstrategy: 'plain' } as any;
+      const app = {
+        name: 'a',
+        pipeline: 'p',
+        phase: 'ph',
+        deploymentstrategy: 'docker',
+        buildstrategy: 'plain',
+      } as any;
       await service.rebuildApp(app);
       expect(kubectl.restartApp).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
     it('should call triggerImageBuild for git/dockerfile', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
-      const app = { name: 'a', pipeline: 'p', phase: 'ph', deploymentstrategy: 'git', buildstrategy: 'dockerfile' } as any;
-      const spy = jest.spyOn(service, 'triggerImageBuild').mockResolvedValue({} as any);
+      const app = {
+        name: 'a',
+        pipeline: 'p',
+        phase: 'ph',
+        deploymentstrategy: 'git',
+        buildstrategy: 'dockerfile',
+      } as any;
+      const spy = jest
+        .spyOn(service, 'triggerImageBuild')
+        .mockResolvedValue({} as any);
       await service.rebuildApp(app);
       expect(spy).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
@@ -219,7 +280,9 @@ describe('AppsService', () => {
   });
 
   describe('updateApp', () => {
-    beforeEach(() => { process.env.KUBERO_READONLY = 'false'; });
+    beforeEach(() => {
+      process.env.KUBERO_READONLY = 'false';
+    });
     it('should call updateApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
       const app = new App(mockApp);

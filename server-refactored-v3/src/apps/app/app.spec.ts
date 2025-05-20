@@ -8,11 +8,10 @@ jest.mock('bcrypt', () => ({
   genSaltSync: () => 'salt',
 }));
 
-
 const podsize: IPodSize = {
   name: 'small',
   resources: {},
-  description: ''
+  description: '',
 };
 
 const mockSecurityContext: ISecurityContext = {
@@ -61,9 +60,21 @@ const baseApp = {
     repository: 'repo',
     tag: 'tag',
     command: ['npm'],
-    fetch: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    build: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    run: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    fetch: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    build: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    run: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
     pullPolicy: 'Always',
   },
   vulnerabilityscan: {
@@ -93,7 +104,6 @@ const baseApp = {
 } as IApp;
 
 describe('App', () => {
-
   it('should create an App instance with hashed passwords', () => {
     const app = new App(baseApp);
     expect(app.name).toBe('test-app');
@@ -114,7 +124,10 @@ describe('App', () => {
 
   it('should set ingress.className from env if provided', () => {
     process.env.KUBERNETES_INGRESS_CLASSNAME = 'custom';
-    const app = new App({ ...baseApp, ingress: { ...baseApp.ingress, className: '' } });
+    const app = new App({
+      ...baseApp,
+      ingress: { ...baseApp.ingress, className: '' },
+    });
     expect(app.ingress.className).toBe('custom');
     delete process.env.KUBERNETES_INGRESS_CLASSNAME;
   });

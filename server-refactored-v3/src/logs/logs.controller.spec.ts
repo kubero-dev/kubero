@@ -14,9 +14,7 @@ describe('LogsController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [LogsController],
-      providers: [
-        { provide: LogsService, useValue: mockLogsService },
-      ],
+      providers: [{ provide: LogsService, useValue: mockLogsService }],
     }).compile();
 
     controller = module.get<LogsController>(LogsController);

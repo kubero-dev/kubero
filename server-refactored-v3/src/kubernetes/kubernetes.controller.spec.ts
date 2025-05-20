@@ -17,7 +17,7 @@ describe('KubernetesController', () => {
             updateKubernetesResource: jest.fn(),
             deleteKubernetesResource: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 

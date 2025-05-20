@@ -17,7 +17,7 @@ describe('AddonsController', () => {
             updateAddon: jest.fn(),
             deleteAddon: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 

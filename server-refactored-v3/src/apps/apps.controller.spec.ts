@@ -138,24 +138,41 @@ describe('AppsController', () => {
 
       const result = await controller.getApp('pipeline', 'phase', 'app');
       expect(result).toEqual(mockApp);
-      expect(mockAppsService.getApp).toHaveBeenCalledWith('pipeline', 'phase', 'app');
+      expect(mockAppsService.getApp).toHaveBeenCalledWith(
+        'pipeline',
+        'phase',
+        'app',
+      );
     });
   });
 
   describe('createApp', () => {
     it('should throw an error if appName is not "new"', async () => {
       await expect(
-        controller.createApp('pipeline', 'phase', 'invalid', { pipeline: 'pipeline', phase: 'phase' }),
+        controller.createApp('pipeline', 'phase', 'invalid', {
+          pipeline: 'pipeline',
+          phase: 'phase',
+        }),
       ).rejects.toThrow(HttpException);
     });
 
     it('should create an app', async () => {
       //
       const mockApp = { pipeline: 'pipeline', phase: 'phase' };
-      const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
+      const mockUser = {
+        id: 1,
+        method: 'local',
+        username: 'admin',
+        apitoken: '1234567890',
+      };
       mockAppsService.createApp.mockResolvedValue(mockApp);
 
-      const result = await controller.createApp('pipeline', 'phase', 'new', mockApp);
+      const result = await controller.createApp(
+        'pipeline',
+        'phase',
+        'new',
+        mockApp,
+      );
       expect(result).toEqual(mockApp);
       expect(mockAppsService.createApp).toHaveBeenCalledWith(mockApp, mockUser);
     });
@@ -164,54 +181,109 @@ describe('AppsController', () => {
   describe('updateApp', () => {
     it('should throw an error if appName does not match app.name', async () => {
       await expect(
-        controller.updateApp('pipeline', 'phase', 'wrong-name', 'resourceVersion', { name: 'app' }),
+        controller.updateApp(
+          'pipeline',
+          'phase',
+          'wrong-name',
+          'resourceVersion',
+          { name: 'app' },
+        ),
       ).rejects.toThrow(HttpException);
     });
 
     it('should update an app', async () => {
       //
       const mockApp = { name: 'app' };
-      const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
+      const mockUser = {
+        id: 1,
+        method: 'local',
+        username: 'admin',
+        apitoken: '1234567890',
+      };
       mockAppsService.updateApp.mockResolvedValue(mockApp);
 
-      const result = await controller.updateApp('pipeline', 'phase', 'app', 'resourceVersion', mockApp);
+      const result = await controller.updateApp(
+        'pipeline',
+        'phase',
+        'app',
+        'resourceVersion',
+        mockApp,
+      );
       expect(result).toEqual(mockApp);
-      expect(mockAppsService.updateApp).toHaveBeenCalledWith(mockApp, 'resourceVersion', mockUser);
+      expect(mockAppsService.updateApp).toHaveBeenCalledWith(
+        mockApp,
+        'resourceVersion',
+        mockUser,
+      );
     });
   });
 
   describe('deleteApp', () => {
     it('should delete an app', async () => {
       const mockResult = { success: true };
-      const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
+      const mockUser = {
+        id: 1,
+        method: 'local',
+        username: 'admin',
+        apitoken: '1234567890',
+      };
       mockAppsService.deleteApp.mockResolvedValue(mockResult);
 
       const result = await controller.deleteApp('pipeline', 'phase', 'app');
       expect(result).toEqual(mockResult);
-      expect(mockAppsService.deleteApp).toHaveBeenCalledWith('pipeline', 'phase', 'app', mockUser);
+      expect(mockAppsService.deleteApp).toHaveBeenCalledWith(
+        'pipeline',
+        'phase',
+        'app',
+        mockUser,
+      );
     });
   });
 
   describe('restartApp', () => {
     it('should restart an app', async () => {
       const mockResult = { success: true };
-      const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
+      const mockUser = {
+        id: 1,
+        method: 'local',
+        username: 'admin',
+        apitoken: '1234567890',
+      };
       mockAppsService.restartApp.mockResolvedValue(mockResult);
 
       const result = await controller.restartApp('pipeline', 'phase', 'app');
       expect(result).toEqual(mockResult);
-      expect(mockAppsService.restartApp).toHaveBeenCalledWith('pipeline', 'phase', 'app', mockUser);
+      expect(mockAppsService.restartApp).toHaveBeenCalledWith(
+        'pipeline',
+        'phase',
+        'app',
+        mockUser,
+      );
     });
   });
 
   describe('execInContainer', () => {
     it('should execute a command in a container', async () => {
       const mockResult = { success: true };
-      const mockUser = { id: 1, method: 'local', username: 'admin', apitoken: '1234567890' };
-      const body = { podName: 'pod', containerName: 'container', command: ['ls'] };
+      const mockUser = {
+        id: 1,
+        method: 'local',
+        username: 'admin',
+        apitoken: '1234567890',
+      };
+      const body = {
+        podName: 'pod',
+        containerName: 'container',
+        command: ['ls'],
+      };
       mockAppsService.execInContainer.mockResolvedValue(mockResult);
 
-      const result = await controller.execInContainer('pipeline', 'phase', 'app', body);
+      const result = await controller.execInContainer(
+        'pipeline',
+        'phase',
+        'app',
+        body,
+      );
       expect(result).toEqual(mockResult);
       expect(mockAppsService.execInContainer).toHaveBeenCalledWith(
         'pipeline',

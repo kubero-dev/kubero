@@ -10,7 +10,10 @@ describe('Template', () => {
     cronjobs: [],
     addons: [],
     web: { replicaCount: 2, autoscaling: { minReplicas: 1, maxReplicas: 2 } },
-    worker: { replicaCount: 1, autoscaling: { minReplicas: 1, maxReplicas: 1 } },
+    worker: {
+      replicaCount: 1,
+      autoscaling: { minReplicas: 1, maxReplicas: 1 },
+    },
     image: {
       containerPort: 8080,
       repository: 'repo',
@@ -43,7 +46,10 @@ describe('KubectlTemplate', () => {
     cronjobs: [],
     addons: [],
     web: { replicaCount: 1, autoscaling: { minReplicas: 1, maxReplicas: 1 } },
-    worker: { replicaCount: 0, autoscaling: { minReplicas: 0, maxReplicas: 0 } },
+    worker: {
+      replicaCount: 0,
+      autoscaling: { minReplicas: 0, maxReplicas: 0 },
+    },
     image: {
       containerPort: 80,
       repository: 'repo',

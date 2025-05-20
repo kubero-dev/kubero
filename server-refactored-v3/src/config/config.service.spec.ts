@@ -18,7 +18,7 @@ describe('SettingsService', () => {
             getArray: jest.fn(),
             validateConfig: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 

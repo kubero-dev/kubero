@@ -17,7 +17,7 @@ describe('AuditController', () => {
             updateAuditLog: jest.fn(),
             deleteAuditLog: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 
