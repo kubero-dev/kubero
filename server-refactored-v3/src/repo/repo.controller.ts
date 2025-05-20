@@ -48,7 +48,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   async listRepositoriesByProvider(@Param('provider') provider: string) {
     return this.repoService.listRepositoriesByProvider(provider);
@@ -68,7 +68,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   @ApiParam({
     name: 'gitrepob64',
@@ -97,7 +97,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   @ApiParam({
     name: 'gitrepob64',
@@ -126,7 +126,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   @ApiParam({
     name: 'gitrepob64',
@@ -155,7 +155,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   async connectRepo(@Param('provider') provider: string, @Body() body: any) {
     return this.repoService.connectRepo(provider, body.gitrepo);
@@ -175,7 +175,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   async disconnectRepo(@Param('provider') provider: string, @Body() body: any) {
     return this.repoService.disconnectRepo(provider, body.gitrepo);
@@ -188,7 +188,7 @@ export class RepoController {
     type: 'string',
     description: 'A git provider',
     required: true,
-    enum: ['github', 'gitlab', 'bigbucket', 'gitea', 'gogs'],
+    enum: ['github', 'gitlab', 'bitbucket', 'gitea', 'gogs'],
   })
   async repositoryWebhook(
     @Param('provider') provider: string,
