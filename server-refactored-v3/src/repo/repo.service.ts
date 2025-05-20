@@ -350,18 +350,6 @@ export class RepoService {
       this.appsService.rebuildApp(app);
     }
   }
-/*
-  private async getAppsByRepoAndBranch(repository: string, branch: string) {
-    this.logger.debug('getAppsByBranch: ' + branch);
-    const apps: IApp[] = [];
-    for (const app of this.appStateList) {
-      if (app.branch === branch && repository === app.gitrepo?.ssh_url) {
-        apps.push(app);
-      }
-    }
-    return apps;
-  }
-*/
 
   private async handleWebhookPullRequest(webhook: IWebhook) {
     this.logger.debug('handleWebhookPullRequest');

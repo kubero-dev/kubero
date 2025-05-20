@@ -429,16 +429,13 @@ export class KubernetesService {
     return appslist;
   }
 
-  public async getAllAppsList(
-    context: string,
-  ): Promise<IKubectlAppList> {
+  public async getAllAppsList(context: string): Promise<IKubectlAppList> {
     this.kc.setCurrentContext(context);
     try {
       const appslist = await this.customObjectsApi.listClusterCustomObject(
         'application.kubero.dev',
         'v1alpha1',
         'kuberoapps',
-
       );
       return appslist.body as IKubectlAppList;
     } catch (error) {
@@ -449,7 +446,6 @@ export class KubernetesService {
     appslist.items = [];
     return appslist;
   }
-
 
   public async restartApp(
     pipelineName: string,

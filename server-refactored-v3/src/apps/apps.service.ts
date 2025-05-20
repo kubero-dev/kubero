@@ -402,7 +402,6 @@ export class AppsService {
     return appslist;
   }
 
-  
   public async getAppsByRepoAndBranch(repository: string, branch: string) {
     this.logger.debug('getAppsByBranch: ' + branch);
 
@@ -417,13 +416,11 @@ export class AppsService {
     }
     return apps;
   }
-  
 
   // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
   public async deletePRApp(branch: string, title: string, ssh_url: string) {
     this.logger.debug('destroyPRApp');
     const websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
-
 
     const appslist = await this.getAllAppsList(
       process.env.KUBERO_CONTEXT || 'default',
