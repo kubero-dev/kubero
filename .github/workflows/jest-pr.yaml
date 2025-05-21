@@ -2,20 +2,19 @@ name: 'Jest PR Test'
 on:
   pull_request:
   workflow_dispatch:
+defaults:
+  run:
+    working-directory: ./server-refactored-v3
 jobs:
   build-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4         # checkout the repo
       - name: Install dependencies        # install dependencies
-        working-directory: ./server-refactored-v3
         run: yarn install --frozen-lockfile
       - run: yarn build                   # install packages
-        working-directory: ./server-refactored-v3
       - run: yarn test:ci                 # run tests (configured to use jest-junit reporter)
-        working-directory: ./server-refactored-v3
       - uses: actions/upload-artifact@v4  # upload test results
-        working-directory: ./server-refactored-v3
         if: ${{ !cancelled() }}           # run this step even if previous step failed
         with:
           name: JEST Tests                # Name of the check run which will be created
