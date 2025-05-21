@@ -5,10 +5,11 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server-refactored-v3
     steps:
       - uses: actions/checkout@v4         # checkout the repo
-      - name: cd to server directory      # cd to server directory
-        run: cd server-refactored-v3
       - name: Set up Node.js 18.x        # setup node
         uses: actions/setup-node@v3
         with:
