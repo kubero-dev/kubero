@@ -7,12 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4         # checkout the repo
-      - name: Set up Node.js 18.x        # setup node
-        working-directory: ./server-refactored-v3
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          cache: 'yarn'
       - name: Install dependencies        # install dependencies
         working-directory: ./server-refactored-v3
         run: yarn install --frozen-lockfile
