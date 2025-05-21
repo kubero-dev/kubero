@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4         # checkout the repo
       - name: cd to server directory      # cd to server directory
-        run: cd server-refactoring-v3
+        run: cd server-refactored-v3
       - name: Set up Node.js 18.x        # setup node
         uses: actions/setup-node@v3
         with:
