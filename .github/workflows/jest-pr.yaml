@@ -18,5 +18,5 @@ jobs:
         if: ${{ !cancelled() }}           # run this step even if previous step failed
         with:
           name: JEST Tests                # Name of the check run which will be created
-          path: reports/jest-junit.xml
+          path: server-refactored-v3/reports/jest-junit.xml
           reporter: jest-junit            # Format of test results
