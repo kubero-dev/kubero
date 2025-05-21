@@ -94,6 +94,8 @@
       "json",
       "ts"
     ],
+    "preset": "ts-jest",
+    "testEnvironment": "node",
     "rootDir": "src",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
@@ -103,9 +105,8 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "transformIgnorePatterns": [
-      "/node_modules/(?!(@octokit/core|universal-user-agent)/)"
-    ]
+    "moduleNameMapper": {
+      "^@octokit/core$": "<rootDir>/__mocks__/@octokit/core.js"
+    }
   }
 }

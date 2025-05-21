@@ -14,8 +14,8 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { OKDTO } from 'src/shared/dto/ok.dto';
-import { JwtAuthGuard } from 'src/auth/strategies/jwt.guard';
+import { OKDTO } from '../shared/dto/ok.dto';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/repo', version: '1' })
 export class RepoController {

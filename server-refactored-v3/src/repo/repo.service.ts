@@ -6,9 +6,9 @@ import { GogsApi } from './git/gogs';
 import { GitlabApi } from './git/gitlab';
 import { IPullrequest } from './git/types';
 import { IWebhook } from './git/types';
-import { INotification } from 'src/notifications/notifications.interface';
-import { NotificationsService } from 'src/notifications/notifications.service';
-import { AppsService } from 'src/apps/apps.service';
+import { INotification } from '../notifications/notifications.interface';
+import { NotificationsService } from '../notifications/notifications.service';
+import { AppsService } from '../apps/apps.service';
 
 @Injectable()
 export class RepoService {

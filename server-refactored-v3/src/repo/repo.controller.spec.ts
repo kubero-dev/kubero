@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RepoController } from './repo.controller';
 import { RepoService } from './repo.service';
 import { AppsService } from '../apps/apps.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 describe('RepoController', () => {
   let controller: RepoController;
@@ -23,6 +24,12 @@ describe('RepoController', () => {
           provide: AppsService,
           useValue: {
             getAppById: jest.fn(),
+          },
+        },
+        {
+          provide: NotificationsService,
+          useValue: {
+            sendNotification: jest.fn(),
           },
         },
       ],
