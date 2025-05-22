@@ -111,6 +111,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
+    "coverageProvider": "v8",
+    "coverageReporters": [
+      "text-summary",
+      "json-summary",
+      "html"
+    ],
     "reporters": [
       "default",
       ["jest-junit", {"outputDirectory": "reports", "outputName": "jest-junit.xml"}]
