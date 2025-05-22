@@ -14,14 +14,13 @@ jobs:
         run: yarn install --frozen-lockfile
       - run: yarn build                   # install packages
       - run: yarn test:ci                 # run tests (configured to use jest-junit reporter)
-      - uses: dorny/test-reporter@v2
+      - name: Jest Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
         with:
-          name: JEST Tests                  # Name of the check run which will be created
+          coverage-summary-path: ./coverage/coverage-summary.json
+      - uses: actions/upload-artifact@v4  # upload test results
+        if: ${{ !cancelled() }}           # run this step even if previous step failed
+        with:
+          name: test-results              # Name of the check run which will be created
           path: server-refactored-v3/reports/jest-junit.xml
-          reporter: jest-junit              # Format of test results
-        #- uses: actions/upload-artifact@v4  # upload test results
-      #  if: ${{ !cancelled() }}           # run this step even if previous step failed
-      #  with:
-      #    name: test-results              # Name of the check run which will be created
-      #    path: server-refactored-v3/reports/jest-junit.xml
-      #    reporter: jest-junit            # Format of test results
+          reporter: jest-junit            # Format of test results
