@@ -14,9 +14,14 @@ jobs:
         run: yarn install --frozen-lockfile
       - run: yarn build                   # install packages
       - run: yarn test:ci                 # run tests (configured to use jest-junit reporter)
-      - uses: actions/upload-artifact@v4  # upload test results
-        if: ${{ !cancelled() }}           # run this step even if previous step failed
+      - uses: dorny/test-reporter@v2
         with:
-          name: test-results              # Name of the check run which will be created
+          name: JEST Tests                  # Name of the check run which will be created
           path: server-refactored-v3/reports/jest-junit.xml
-          reporter: jest-junit            # Format of test results
+          reporter: jest-junit              # Format of test results
+        #- uses: actions/upload-artifact@v4  # upload test results
+      #  if: ${{ !cancelled() }}           # run this step even if previous step failed
+      #  with:
+      #    name: test-results              # Name of the check run which will be created
+      #    path: server-refactored-v3/reports/jest-junit.xml
+      #    reporter: jest-junit            # Format of test results
