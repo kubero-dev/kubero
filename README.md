@@ -130,7 +130,7 @@ Basically *everything* that can be packaged in a single container can be deploye
 Kubero starts now building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
 
 ## Documentation
-https://www.kubero.dev/docs/quickstart
+https://www.kubero.dev/docs/
 
 ## Roadmap
 https://github.com/orgs/kubero-dev/projects/1/views/3

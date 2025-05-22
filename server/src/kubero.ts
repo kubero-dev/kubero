@@ -354,9 +354,6 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
-                this.triggerImageBuild(app.pipeline, app.phase, app.name);
-            }
             this.appStateList.push(app);
             
             const m = {
@@ -374,6 +371,13 @@ export class Kubero {
                 }
             } as INotification;
             this.notification.send(m, this._io);
+
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
+
+                // Wait 2 seconds to make sure the app is created
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
         }
 
     }
