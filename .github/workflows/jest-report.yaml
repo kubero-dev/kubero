@@ -1,4 +1,4 @@
-name: 'Test Report'
+name: 'Jest Test Report'
 on:
   workflow_run:
     workflows: ['Jest PR Test']                     # runs after 'Jest PR Test' workflow
