@@ -2,6 +2,8 @@ name: 'Jest PR Test'
 on:
   pull_request:
   workflow_dispatch:
+permissions:
+  pull-requests: write
 defaults:
   run:
     working-directory: ./server-refactored-v3
