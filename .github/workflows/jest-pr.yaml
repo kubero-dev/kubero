@@ -18,6 +18,7 @@ jobs:
         uses: MishaKav/jest-coverage-comment@main
         with:
           coverage-summary-path: server-refactored-v3/coverage/coverage-summary.json
+          junitxml-path: server-refactored-v3/reports/jest-junit.xml
       - uses: actions/upload-artifact@v4  # upload test results
         if: ${{ !cancelled() }}           # run this step even if previous step failed
         with:
