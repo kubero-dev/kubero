@@ -4,9 +4,9 @@ import { AppsService } from './apps.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-/*
 import { IApp } from './apps.interface';
 import { IPodSize, ISecurityContext } from 'src/config/config.interface';
+import { IKubectlApp } from 'src/kubernetes/kubernetes.interface';
 
 const podsize: IPodSize = {
   name: 'small',
@@ -23,7 +23,7 @@ const mockSecurityContext: ISecurityContext = {
   capabilities: { add: [], drop: [] },
 };
 
-const mockApp = {
+export const mockApp = {
   name: 'app',
   pipeline: 'pipeline',
   phase: 'phase',
@@ -90,7 +90,15 @@ const mockApp = {
     requests: { cpu: '100m', memory: '128Mi' },
   },
 } as IApp;
- */
+
+export const mockKubectlApp = {
+  metadata: {
+    name: 'app',
+    namespace: 'pipeline-phase',
+  },
+  spec: mockApp,
+} as IKubectlApp;
+
 
 describe('AppsController', () => {
   let controller: AppsController;

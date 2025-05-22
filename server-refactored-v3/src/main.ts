@@ -93,5 +93,7 @@ async function bootstrap() {
     `⚡️[server]: Server is running at: ${await app.getUrl()}`,
     'Bootstrap',
   );
+  
+  //app.enableShutdownHooks();
 }
 bootstrap();

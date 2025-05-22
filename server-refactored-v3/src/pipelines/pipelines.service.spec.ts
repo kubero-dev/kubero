@@ -10,11 +10,9 @@ describe('PipelinesService', () => {
         {
           provide: PipelinesService,
           useValue: {
-            getPipelines: jest.fn(),
-            getPipelineById: jest.fn(),
-            createPipeline: jest.fn(),
-            updatePipeline: jest.fn(),
-            deletePipeline: jest.fn(),
+            listPipelines: jest.fn(),
+            getPipelineWithApps: jest.fn(),
+            getContext: jest.fn(),
           },
         },
       ],

@@ -106,13 +106,25 @@
     "moduleNameMapper": {
       "^@octokit/core$": "<rootDir>/__mocks__/@octokit/core.js"
     },
+    "setupFilesAfterEnv" : [
+      "<rootDir>/../jest-setup.js"
+    ],
     "collectCoverage": true,
     "collectCoverageFrom": [
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
     "coverageProvider": "v8",
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/node_modules/",
+      "<rootDir>/.*/*.module.ts",
+      "<rootDir>/.*/*.interface.ts",
+      "<rootDir>/auth/strategies/",
+      "<rootDir>/main.ts",
+      "<rootDir>/repo/git/(gitlab|gitea|bitbucket|types).ts"
+    ],
     "coverageReporters": [
+      "text",
       "text-summary",
       "json-summary",
       "html"

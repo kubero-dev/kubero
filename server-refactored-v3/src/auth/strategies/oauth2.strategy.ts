@@ -3,7 +3,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, Logger } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthenticateOptions } from 'passport';
-import { ConfigService } from 'src/config/config.service';
+import { ConfigService } from '../../config/config.service';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
