@@ -127,7 +127,8 @@
       "text",
       "text-summary",
       "json-summary",
-      "html"
+      "html",
+      "lcov"
     ],
     "reporters": [
       "default",
