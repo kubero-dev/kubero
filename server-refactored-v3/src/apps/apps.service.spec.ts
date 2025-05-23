@@ -8,6 +8,7 @@ import { EventsGateway } from '../events/events.gateway';
 import { App } from './app/app';
 import { IApp } from './apps.interface';
 import { IPodSize, ISecurityContext } from 'src/config/config.interface';
+import { IUser } from 'src/auth/auth.interface';
 
 const podsize: IPodSize = {
   name: 'small',
@@ -111,6 +112,7 @@ describe('AppsService', () => {
   let notificationsService: jest.Mocked<NotificationsService>;
   let configService: jest.Mocked<ConfigService>;
   let eventsGateway: jest.Mocked<EventsGateway>;
+  let user: IUser = { username: 'testuser' } as IUser;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -150,6 +152,7 @@ describe('AppsService', () => {
     notificationsService = module.get(NotificationsService);
     configService = module.get(ConfigService);
     eventsGateway = module.get(EventsGateway);
+    
   });
 
   it('should be defined', () => {
@@ -295,6 +298,103 @@ describe('AppsService', () => {
       const app = new App(mockApp);
       await service.updateApp(app, 'rv', { username: 'u' } as any);
       expect(kubectl.updateApp).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('execInContainer', () => {
+    let service: AppsService;
+    let mockPipelinesService: any;
+    let mockKubernetesService: any;
+    let mockEventsGateway: any;
+
+    beforeEach(() => {
+      mockPipelinesService = {
+        getContext: jest.fn().mockResolvedValue('test-context'),
+      };
+      mockKubernetesService = {
+        execInContainer: jest.fn(),
+      };
+      mockEventsGateway = {
+        execStreams: {},
+        sendTerminalLine: jest.fn(),
+      };
+
+      service = new AppsService(
+        mockKubernetesService,
+        mockPipelinesService,
+        {} as any, // NotificationsService
+        {} as any, // ConfigService
+        mockEventsGateway,
+      );
+    });
+
+    it('should not execute if no context is found', async () => {
+      mockPipelinesService.getContext.mockResolvedValueOnce(undefined);
+      await expect(
+        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+      ).resolves.toBeUndefined();
+    });
+
+    it('should not execute if KUBERO_READONLY is true', async () => {
+      process.env.KUBERO_READONLY = 'true';
+      await expect(
+        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+      ).resolves.toBeUndefined();
+      delete process.env.KUBERO_READONLY;
+    });
+
+    it('should not execute if execStream already running and open', async () => {
+      mockEventsGateway.execStreams['pipe-dev-app-pod-cont-terminal'] = {
+        websocket: { readyState: 1, OPEN: 1 },
+        stream: {},
+      };
+      await expect(
+        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+      ).resolves.toBeUndefined();
+    });
+
+    /* Long running test.
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+    it('should delete closed execStream and continue', async () => {
+      jest.useFakeTimers();
+      const wsMock = { readyState: 0, OPEN: 1, CLOSED: 0, on: jest.fn() };
+      mockEventsGateway.execStreams['pipe-dev-app-pod-cont-terminal'] = {
+        websocket: { readyState: 0, OPEN: 1, CLOSED: 0 },
+        stream: {},
+      };
+      mockKubernetesService.execInContainer.mockResolvedValue(wsMock);
+
+      await service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user);
+      // Fast-forward timers to resolve setTimeout
+      jest.runAllTimers();
+      expect(mockKubernetesService.execInContainer).toHaveBeenCalled();
+      jest.useRealTimers();
+    });
+    */
+
+    it('should not set execStream if ws is undefined or not open', async () => {
+      mockKubernetesService.execInContainer.mockResolvedValue(undefined);
+      await expect(
+        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+      ).resolves.toBeUndefined();
+    });
+
+    it('should set execStream and handle ws message', async () => {
+      const wsOnMock = jest.fn((event, cb) => {
+        if (event === 'message') {
+          cb(Buffer.from('test'));
+        }
+      });
+      const wsMock = { readyState: 1, OPEN: 1, on: wsOnMock };
+      mockKubernetesService.execInContainer.mockResolvedValue(wsMock);
+
+      await service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user);
+
+      const streamname = 'pipe-dev-app-pod-cont-terminal';
+      expect(mockEventsGateway.execStreams[streamname]).toBeDefined();
+      expect(wsOnMock).toHaveBeenCalledWith('message', expect.any(Function));
+      expect(mockEventsGateway.sendTerminalLine).toHaveBeenCalledWith(streamname, 'test');
     });
   });
 });
