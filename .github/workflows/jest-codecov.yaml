@@ -12,7 +12,7 @@ jobs:
       - name: Install dependencies        # install dependencies
         run: yarn install --frozen-lockfile
       - run: yarn build                   # install packages
-      - run: yarn test:ci                 # run tests (configured to use jest-junit reporter)
+      - run: yarn test                    # run tests (configured to use jest-junit reporter)
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
