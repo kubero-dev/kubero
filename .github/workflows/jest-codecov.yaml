@@ -5,7 +5,7 @@ defaults:
   run:
     working-directory: ./server-refactored-v3
 jobs:
-  build-test:
+  codecov:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4         # checkout the repo
@@ -16,5 +16,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-          directory: ./coverage
+          directory: server-refactored-v3/coverage
           token: ${{ secrets.CODECOV_TOKEN }}
