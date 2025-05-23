@@ -142,7 +142,7 @@ export interface IApp {
 }
 
 
-
+//Migrated to templates
 export interface ITemplate {
     name: string,
     deploymentstrategy: 'git' | 'docker',
@@ -179,6 +179,7 @@ export interface ITemplate {
     addons: IAddon[]
 }
 
+//Migrated to settings
 export interface ISecurityContext {
     readOnlyRootFilesystem: boolean;
     allowPrivilegeEscalation: boolean;
@@ -190,7 +191,7 @@ export interface ISecurityContext {
         add: string[];
     }
 }
-
+//Migrated to apps
 export interface IExtraVolume {
     name: string,
     mountPath: string,
@@ -200,6 +201,7 @@ export interface IExtraVolume {
     accessModes: string[],
 }
 
+//Migrated to apps
 export interface ICronjob {
     name: string,
     schedule: string,
@@ -239,10 +241,12 @@ export interface IgitLink {
     webhook: object;
 }
 
+//Migrated to pipelines
 export interface IPipelineList {
     items: IPipeline[],
 }
 
+//Migrated to apps
 export interface IGithubRepository {
     admin: boolean,
     description?: string,
@@ -281,12 +285,15 @@ export interface IKubectlMetadata {
     uid?: string;
     finalizers?: [Array: Object];
 }
+
+//Migrated to pipelines
 export interface IKubectlPipeline {
     apiVersion: string;
     kind: string;
     metadata: IKubectlMetadata,
     spec: IPipeline
 }
+//Migrated to pipelines
 export interface IKubectlPipelineList {
     apiVersion: string;
     kind: string;
@@ -301,6 +308,8 @@ export interface IKubectlApp
   metadata: IKubectlMetadata
   spec: IApp ;
 }
+
+//Migrated to templates
 export interface IKubectlTemplate
 {
   apiVersion: string;
@@ -357,20 +366,24 @@ export interface IBuildpack {
     tag: string;
 }
 
+//Migrated to notifications
 export interface INotificationSlack {
     url: string;
     channel: string;
 }
 
+//Migrated to notifications
 export interface INotificationWebhook {
     url: string;
     secret: string;
 }
 
+//Migrated to notifications
 export interface INotificationDiscord {
     url: string;
 }
 
+//Not used!!
 export interface INotification {
     action: string;
     user: string;
@@ -383,6 +396,7 @@ export interface INotification {
     message: string;
 }
 
+//Migrated to notifications
 export interface INotificationConfig{
     enabled: boolean;
     name: string;
@@ -392,6 +406,7 @@ export interface INotificationConfig{
     config: INotificationSlack | INotificationWebhook | INotificationDiscord;
 }
 
+//Migrated to settings
 export interface IKuberoConfig {
     podSizeList: IPodSize[];
     buildpacks: IBuildpack[];
@@ -429,6 +444,7 @@ export interface IKuberoConfig {
     }
 }
 
+//Migrated to repo
 export interface IDeployKeyPair {
     fingerprint: string;
     pubKey: string;

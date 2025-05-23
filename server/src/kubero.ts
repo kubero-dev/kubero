@@ -63,6 +63,7 @@ export class Kubero {
         this.kubectl = kubectl;
         this.notification = notifications
 
+        //Migrated to events
         this._io.on('connection', client => {
             client.on('terminal', (data: any) => {
                 //console.log('terminal input', data.data);
@@ -189,6 +190,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to Pipelines
     // creates a new pipeline in the same namespace as the kubero app
     public async newPipeline(pipeline: IPipeline, user: User) {
         debug.debug('create Pipeline: '+pipeline.name);
@@ -219,6 +221,7 @@ export class Kubero {
         this.notification.send(m, this._io);
     }
 
+    //Migrated to pipelines
     // updates a new pipeline in the same namespace as the kubero app
     public async updatePipeline(pipeline: IPipeline, resourceVersion: string, user: User) {
         debug.debug('update Pipeline: '+pipeline.name);
@@ -257,7 +260,7 @@ export class Kubero {
         this.notification.send(m, this._io);
     }
 
-
+    //Migrated to pipelines
     public async listPipelines(): Promise<IPipelineList> {
         debug.debug('listPipelines');
         let pipelines = await this.kubectl.getPipelinesList();
@@ -297,6 +300,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to pipelines
     // delete a pipeline and all its namespaces/phases
     public deletePipeline(pipelineName: string, user: User) {
         debug.debug('deletePipeline: '+pipelineName);
@@ -336,6 +340,7 @@ export class Kubero {
 
     }
 
+    //Migrated tp apps
     // create a new app in a specified pipeline and phase
     public async newApp(app: App, user: User) {
         debug.log('create App: '+app.name+' in '+ app.pipeline+' phase: '+app.phase + ' deploymentstrategy: '+app.deploymentstrategy);
@@ -349,9 +354,6 @@ export class Kubero {
         if (contextName) {
             await this.kubectl.createApp(app, contextName);
 
-            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
-                this.triggerImageBuild(app.pipeline, app.phase, app.name);
-            }
             this.appStateList.push(app);
             
             const m = {
@@ -369,6 +371,13 @@ export class Kubero {
                 }
             } as INotification;
             this.notification.send(m, this._io);
+
+            if (app.deploymentstrategy == 'git' && (app.buildstrategy == 'dockerfile' || app.buildstrategy == 'nixpacks' || app.buildstrategy == 'buildpacks')){
+
+                // Wait 2 seconds to make sure the app is created
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                this.triggerImageBuild(app.pipeline, app.phase, app.name);
+            }
         }
 
     }
@@ -410,6 +419,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to apps
     // delete a app in a pipeline and phase
     public async deleteApp(pipelineName: string, phaseName: string, appName: string, user: User) {
         debug.debug('delete App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
@@ -452,6 +462,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to apps
     // get a app in a pipeline and phase
     public async getApp(pipelineName: string, phaseName: string, appName: string) {
         debug.debug('get App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
@@ -463,6 +474,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to templates
     public async getTemplate(pipelineName: string, phaseName: string, appName: string ) {
         const app = await this.getApp(pipelineName, phaseName, appName);
         
@@ -513,6 +525,7 @@ export class Kubero {
         return pipeline;
     }
 
+    //Migrated to apps
     public restartApp(pipelineName: string, phaseName: string, appName: string, user: User) {
 
         if ( process.env.KUBERO_READONLY == 'true'){
@@ -674,6 +687,7 @@ export class Kubero {
         return apps;
     }
 
+    // Migrated to Apps
     // creates a PR App in all Pipelines that have review apps enabled and the same ssh_url
     private async createPRApp(branch: string, title: string, ssh_url: string, pipelineName: string | undefined) {
 
@@ -899,6 +913,7 @@ export class Kubero {
         return this.config.podSizeList;
     }
 
+    //Migrated to settings
     public getConsoleEnabled(){
         if (this.config.kubero?.console?.enabled == undefined) {
             return false;
@@ -906,10 +921,12 @@ export class Kubero {
         return this.config.kubero?.console?.enabled;
     }
 
+    //Migrated to settings
     public setMetricsStatus(status: boolean) {
         this.features.metrics = status
     }
 
+    //Migrated to settings
     public getMetricsEnabled(): boolean{
         return this.features.metrics
     }
@@ -938,10 +955,12 @@ export class Kubero {
         });
     }
 */
+    //Migrated to settings
     public getBuildpipelineEnabled(){
         return process.env.KUBERO_BUILD_REGISTRY ? process.env.KUBERO_BUILD_REGISTRY != undefined : false
     }
 
+    //Migrated to settings
     private async checkForZeropod(): Promise<boolean> {
         // This is a very basic check for Zeropod. It requires the namespace zeropod-system to be present. 
         // But it does not check if the Zeropod controller is complete and running.
@@ -962,10 +981,12 @@ export class Kubero {
         return enabled
     }
 
+    //Migrated to settings
     public getSleepEnabled(): boolean {
         return this.features.sleep
     }
     
+    //migrated to settings
     public getAdminDisabled(){
         if (this.config.kubero?.admin?.disabled == undefined) {
             return false;
@@ -973,6 +994,7 @@ export class Kubero {
         return this.config.kubero?.admin?.disabled;
     }
 
+    //Migrated to apps
     public async execInContainer(pipelineName: string, phaseName: string, appName: string, podName: string, containerName: string, command: string, user: User) {
         console.log(this.config.kubero?.console.enabled)
         if (this.config.kubero?.console.enabled != true) {
@@ -1029,6 +1051,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     private logcolor(str: string) {
         let hash = 0;
         for (var i = 0; i < str.length; i++) {
@@ -1042,6 +1065,7 @@ export class Kubero {
         return color;
     }
 
+    //Migrated to logs
     public emitLogs(pipelineName: string, phaseName: string, appName: string, podName: string, container: string) {
 
         const logStream = new Stream.PassThrough();
@@ -1086,6 +1110,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     public startLogging(pipelineName: string, phaseName: string, appName: string) {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
@@ -1109,6 +1134,7 @@ export class Kubero {
         }
     }
 
+    //Migrated to logs
     public async getLogsHistory(pipelineName: string, phaseName: string, appName: string, container: string) {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;
@@ -1140,6 +1166,7 @@ export class Kubero {
         return loglines;
     }
 
+    //Migrated to logs
     public async fetchLogs(namespace: string, podName: string, containerName: string, pipelineName: string, phaseName: string, appName: string): Promise<ILoglines[]> {
         let loglines: ILoglines[] = [];
 
@@ -1187,6 +1214,7 @@ export class Kubero {
         return loglines;
     }
 
+    //Migration to repo
     public getRepositories() {
         let repositories = {
             github: false,
@@ -1225,6 +1253,7 @@ export class Kubero {
         return repositories;
     }
 
+    //Migration to settings
     public getBuildpacks() {
         let buildpackList: Buildpack[] = [];
         for (const buildpack of this.config.buildpacks) {
@@ -1235,10 +1264,12 @@ export class Kubero {
         return buildpackList;
     }
 
+    //Migration to kubernetes
     public getEvents(namespace: string) {
         return this.kubectl.getEvents(namespace);
     }
 
+    //Migration to metrics
     public getPodUptime(pipelineName: string, phaseName: string) {
         const namespace = pipelineName+'-'+phaseName;
         return this.kubectl.getPodUptimes(namespace);
@@ -1257,10 +1288,12 @@ export class Kubero {
         return this.kubectl.getIngressClasses();
     }
 
+    //Migrated to kubernetes
     public getStorageglasses() {
         return this.kubectl.getStorageglasses();
     }
 
+    //Migrated to security
     public async startScan(pipeline: string, phase: string, appName: string) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;
@@ -1304,6 +1337,7 @@ export class Kubero {
         };
     }
 
+    //Migration to security
     public async getScanResult(pipeline: string, phase: string, appName: string, logdetails: boolean) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;
@@ -1362,6 +1396,7 @@ export class Kubero {
         return scanResult;
     }
 
+    //Migration to security
     private getVulnSummary(logs: any) {
         let summary = {
             total: 0,
@@ -1409,6 +1444,7 @@ export class Kubero {
         return summary;
     }
 
+    //Migrated to apps
     public async triggerImageBuild(pipeline: string, phase: string, appName: string) {
         const contextName = this.getContext(pipeline, phase);
         const namespace = pipeline+'-'+phase;
@@ -1468,6 +1504,7 @@ export class Kubero {
         return this.config.templates;
     }
 
+    //Migrated to settings
     public getTemplateEnabled() {
         return this.config.templates.enabled;
     }
@@ -1502,6 +1539,7 @@ export class Kubero {
         }
     }
 
+    // Migrated to apps
     public async getPods(pipelineName: string, phaseName: string, appName: string): Promise<Workload[]> {
         const contextName = this.getContext(pipelineName, phaseName);
         const namespace = pipelineName+'-'+phaseName;

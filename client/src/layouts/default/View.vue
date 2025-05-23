@@ -5,10 +5,22 @@
 </template>
 
 <script lang="ts">
-import axios from "axios";
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
 import { mapWritableState } from 'pinia'
+
+
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+
+import axios from 'axios'
+//axios.defaults.headers.common['User-Agent'] = 'Kubero/3.x'
+//axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('kubero.JWT_TOKEN')
+const token = cookies.get("kubero.JWT_TOKEN")
+if (token) {
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
+}
+//axios.defaults.headers.common['vary'] = 'Accept-Encoding'
 
 export default defineComponent({
     name: 'DefaultView',
@@ -35,7 +47,7 @@ export default defineComponent({
         checkSession() {
             if (this.$route.name != 'Login') {
                 axios
-                    .get("/api/session")
+                    .get("/api/auth/session")
                     .then((result) => {
                         console.log("isAuthenticated: " + result.data.isAuthenticated);
 
