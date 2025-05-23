@@ -43,7 +43,10 @@ describe('NotificationsService', () => {
       appName: 'app',
       data: {},
     };
-    const spy = jest.spyOn<any, any>(service as any, 'sendAllCustomNotification');
+    const spy = jest.spyOn<any, any>(
+      service as any,
+      'sendAllCustomNotification',
+    );
     service.send(message);
     expect(eventsGateway.sendEvent).toHaveBeenCalled();
     expect(kubectl.createEvent).toHaveBeenCalled();
@@ -101,9 +104,18 @@ describe('NotificationsService', () => {
       notifications: [slackConfig, webhookConfig, discordConfig],
     } as any);
 
-    const spySlack = jest.spyOn<any, any>(service as any, 'sendSlackNotification');
-    const spyWebhook = jest.spyOn<any, any>(service as any, 'sendWebhookNotification');
-    const spyDiscord = jest.spyOn<any, any>(service as any, 'sendDiscordNotification');
+    const spySlack = jest.spyOn<any, any>(
+      service as any,
+      'sendSlackNotification',
+    );
+    const spyWebhook = jest.spyOn<any, any>(
+      service as any,
+      'sendWebhookNotification',
+    );
+    const spyDiscord = jest.spyOn<any, any>(
+      service as any,
+      'sendDiscordNotification',
+    );
 
     const message: INotification = {
       name: 'test',
@@ -118,7 +130,10 @@ describe('NotificationsService', () => {
       data: {},
     };
 
-    (service as any).sendAllCustomNotification(service['config'].notifications, message);
+    (service as any).sendAllCustomNotification(
+      service['config'].notifications,
+      message,
+    );
 
     expect(spySlack).toHaveBeenCalled();
     expect(spyWebhook).toHaveBeenCalled();
@@ -134,8 +149,14 @@ describe('NotificationsService', () => {
   it('should call correct notification method in sendCustomNotification', () => {
     const message = {} as INotification;
     const slack = jest.spyOn<any, any>(service as any, 'sendSlackNotification');
-    const webhook = jest.spyOn<any, any>(service as any, 'sendWebhookNotification');
-    const discord = jest.spyOn<any, any>(service as any, 'sendDiscordNotification');
+    const webhook = jest.spyOn<any, any>(
+      service as any,
+      'sendWebhookNotification',
+    );
+    const discord = jest.spyOn<any, any>(
+      service as any,
+      'sendDiscordNotification',
+    );
 
     (service as any).sendCustomNotification('slack', {}, message);
     (service as any).sendCustomNotification('webhook', {}, message);

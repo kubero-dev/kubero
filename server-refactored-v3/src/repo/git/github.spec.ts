@@ -7,10 +7,12 @@ jest.mock('@octokit/core', () => ({
   })),
 }));
 
-jest.mock('git-url-parse', () => jest.fn(() => ({
-  name: 'repo',
-  owner: 'owner',
-})));
+jest.mock('git-url-parse', () =>
+  jest.fn(() => ({
+    name: 'repo',
+    owner: 'owner',
+  })),
+);
 
 describe('GithubApi', () => {
   let github: GithubApi;
@@ -62,19 +64,23 @@ describe('GithubApi', () => {
 
   describe('addWebhook', () => {
     it('should create a webhook', async () => {
-      octokitMock.request
-        .mockResolvedValueOnce({
-          status: 201,
-          data: {
-            id: 1,
-            active: true,
-            created_at: '2020-01-01T00:00:00Z',
-            url: 'http://webhook',
-            config: { insecure_ssl: false },
-            events: ['push'],
-          },
-        });
-      const result = await github['addWebhook']('owner', 'repo', 'http://webhook', 'secret');
+      octokitMock.request.mockResolvedValueOnce({
+        status: 201,
+        data: {
+          id: 1,
+          active: true,
+          created_at: '2020-01-01T00:00:00Z',
+          url: 'http://webhook',
+          config: { insecure_ssl: false },
+          events: ['push'],
+        },
+      });
+      const result = await github['addWebhook'](
+        'owner',
+        'repo',
+        'http://webhook',
+        'secret',
+      );
       expect(result.status).toBe(201);
       expect(result.statusText).toBe('created');
       expect(result.data.url).toBe('http://webhook');
@@ -94,7 +100,12 @@ describe('GithubApi', () => {
             },
           ],
         });
-      const result = await github['addWebhook']('owner', 'repo', 'http://webhook', 'secret');
+      const result = await github['addWebhook'](
+        'owner',
+        'repo',
+        'http://webhook',
+        'secret',
+      );
       expect(result.status).toBe(422);
       expect(result.data.url).toBe('http://webhook');
     });
@@ -131,15 +142,25 @@ describe('GithubApi', () => {
   describe('getWebhook', () => {
     it('should return false if signature is invalid', () => {
       process.env.KUBERO_WEBHOOK_SECRET = 'secret';
-      const result = github.getWebhook('push', 'delivery', 'invalidsig', { foo: 'bar' });
+      const result = github.getWebhook('push', 'delivery', 'invalidsig', {
+        foo: 'bar',
+      });
       expect(result).toBe(false);
     });
 
     it('should return a webhook object if signature is valid', () => {
       process.env.KUBERO_WEBHOOK_SECRET = 'secret';
       const crypto = require('crypto');
-      const body = { repository: { ssh_url: 'ssh://repo' }, ref: 'refs/heads/main' };
-      const hash = 'sha256=' + crypto.createHmac('sha256', 'secret').update(JSON.stringify(body)).digest('hex');
+      const body = {
+        repository: { ssh_url: 'ssh://repo' },
+        ref: 'refs/heads/main',
+      };
+      const hash =
+        'sha256=' +
+        crypto
+          .createHmac('sha256', 'secret')
+          .update(JSON.stringify(body))
+          .digest('hex');
       const result = github.getWebhook('push', 'delivery', hash, body);
       expect(result).toHaveProperty('verified', true);
       expect(result).toHaveProperty('repo');

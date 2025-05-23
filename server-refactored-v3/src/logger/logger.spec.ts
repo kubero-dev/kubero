@@ -22,7 +22,9 @@ describe('CustomConsoleLogger', () => {
     const spy = jest.spyOn(logger, 'log');
     CustomConsoleLogger.contextsToIgnore.forEach((ctx) => {
       logger.log('Should not log', ctx);
-      expect(spy).not.toHaveBeenCalledWith(expect.stringContaining('Should not log'));
+      expect(spy).not.toHaveBeenCalledWith(
+        expect.stringContaining('Should not log'),
+      );
     });
   });
 

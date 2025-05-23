@@ -101,7 +101,10 @@ describe('PipelinesController', () => {
 
   it('should delete a pipeline', async () => {
     const result = await controller.deletePipeline('pipeline1');
-    expect(service.deletePipeline).toHaveBeenCalledWith('pipeline1', expect.any(Object));
+    expect(service.deletePipeline).toHaveBeenCalledWith(
+      'pipeline1',
+      expect.any(Object),
+    );
     expect(result).toEqual({ ok: true });
   });
 

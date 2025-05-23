@@ -6,12 +6,16 @@ import { GitlabApi } from './gitlab';
 import { BitbucketApi } from './bitbucket';
 import { GiteaApi } from './gitea';
 class TestRepo extends Repo {
-  public addDeployKey = jest.fn().mockResolvedValue({ status: 201, statusText: 'created', data: {} });
+  public addDeployKey = jest
+    .fn()
+    .mockResolvedValue({ status: 201, statusText: 'created', data: {} });
   public getRepository = jest.fn().mockResolvedValue({
     status: 200,
     data: { admin: true, owner: 'owner', name: 'repo' },
   });
-  public addWebhook = jest.fn().mockResolvedValue({ status: 201, statusText: 'created', data: {} });
+  public addWebhook = jest
+    .fn()
+    .mockResolvedValue({ status: 201, statusText: 'created', data: {} });
   public getWebhook = jest.fn();
   public getBranches = jest.fn();
   public getReferences = jest.fn();
@@ -48,12 +52,16 @@ describe('Repo', () => {
 
   it('should throw if KUBERO_WEBHOOK_SECRET is not set', async () => {
     delete process.env.KUBERO_WEBHOOK_SECRET;
-    await expect(repo.connectRepo('git@host:owner/repo.git')).rejects.toThrow('KUBERO_WEBHOOK_SECRET is not defined');
+    await expect(repo.connectRepo('git@host:owner/repo.git')).rejects.toThrow(
+      'KUBERO_WEBHOOK_SECRET is not defined',
+    );
   });
 
   it('should throw if KUBERO_WEBHOOK_URL is not set', async () => {
     delete process.env.KUBERO_WEBHOOK_URL;
-    await expect(repo.connectRepo('git@host:owner/repo.git')).rejects.toThrow('KUBERO_WEBHOOK_URL is not defined');
+    await expect(repo.connectRepo('git@host:owner/repo.git')).rejects.toThrow(
+      'KUBERO_WEBHOOK_URL is not defined',
+    );
   });
 
   it('should connectRepo and return keys, repository, webhook', async () => {

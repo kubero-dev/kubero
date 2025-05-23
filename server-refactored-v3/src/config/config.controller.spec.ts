@@ -39,7 +39,9 @@ describe('ConfigController', () => {
   });
 
   it('should update settings', async () => {
-    await expect(controller.updateSettings({ foo: 'bar' })).resolves.toBe('updated');
+    await expect(controller.updateSettings({ foo: 'bar' })).resolves.toBe(
+      'updated',
+    );
     expect(service.updateSettings).toHaveBeenCalledWith({ foo: 'bar' });
   });
 
@@ -80,7 +82,9 @@ describe('ConfigController', () => {
 
   it('should validate kubeconfig', async () => {
     const body = { kubeconfig: 'config', context: 'ctx' };
-    await expect(controller.validateKubeconfig(body)).resolves.toEqual({ valid: true });
+    await expect(controller.validateKubeconfig(body)).resolves.toEqual({
+      valid: true,
+    });
     expect(service.validateKubeconfig).toHaveBeenCalledWith('config', 'ctx');
   });
 
@@ -93,7 +97,9 @@ describe('ConfigController', () => {
       KUBERO_SESSION_KEY: 'key',
       KUBERO_WEBHOOK_SECRET: 'secret',
     };
-    await expect(controller.updateRunningConfig(body)).resolves.toBe('updatedConfig');
+    await expect(controller.updateRunningConfig(body)).resolves.toBe(
+      'updatedConfig',
+    );
     expect(service.updateRunningConfig).toHaveBeenCalled();
   });
 
@@ -106,7 +112,9 @@ describe('ConfigController', () => {
       KUBERO_SESSION_KEY: 'key',
       KUBERO_WEBHOOK_SECRET: 'secret',
     };
-    await expect(controller.updateRunningConfig(body)).resolves.toEqual({ valid: false });
+    await expect(controller.updateRunningConfig(body)).resolves.toEqual({
+      valid: false,
+    });
     expect(service.validateKubeconfig).toHaveBeenCalled();
   });
 });

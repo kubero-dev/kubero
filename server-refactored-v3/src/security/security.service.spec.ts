@@ -32,7 +32,6 @@ describe('SecurityService', () => {
   });
 
   describe('getScanResult', () => {
-
     it('should return error if no vulnerability scan pod found', async () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
       appsService.getApp.mockResolvedValue(app);
@@ -54,11 +53,14 @@ describe('SecurityService', () => {
 
     it('should return ok if logs and summary found', async () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
-      const app1 = { ...app, ...{
-        spec: {
-          deploymentstrategy: 'git',
-        }
-      }} as IKubectlApp;
+      const app1 = {
+        ...app,
+        ...{
+          spec: {
+            deploymentstrategy: 'git',
+          },
+        },
+      } as IKubectlApp;
       appsService.getApp.mockResolvedValue(app1);
       kubectl.getLatestPodByLabel.mockResolvedValue({ name: 'pod1' });
       kubectl.getVulnerabilityScanLogs.mockResolvedValue({ Results: [] });
@@ -104,15 +106,17 @@ describe('SecurityService', () => {
   });
 
   describe('startScan', () => {
-
     it('should call createScanImageJob for git/!plain', async () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
-      let app1 = { ...app, ...{
-        spec: {
-          deploymentstrategy: 'git',
-          buildstrategy: 'dockerfile',
-          image: { repository: 'repo', tag: 'tag' },
-        }}
+      const app1 = {
+        ...app,
+        ...{
+          spec: {
+            deploymentstrategy: 'git',
+            buildstrategy: 'dockerfile',
+            image: { repository: 'repo', tag: 'tag' },
+          },
+        },
       } as IKubectlApp;
       appsService.getApp.mockResolvedValue(app1);
       const result = await service.startScan('pipe', 'phase', 'app');
@@ -121,18 +125,21 @@ describe('SecurityService', () => {
         'app',
         'repo',
         'tag',
-        true
+        true,
       );
       expect(result.status).toBe('ok');
     });
 
     it('should call createScanImageJob for other strategies', async () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
-      let app1 = { ...app, ...{
-        spec: {
-          deploymentstrategy: 'docker',
-          image: { repository: 'repo', tag: 'tag' },
-        }}
+      const app1 = {
+        ...app,
+        ...{
+          spec: {
+            deploymentstrategy: 'docker',
+            image: { repository: 'repo', tag: 'tag' },
+          },
+        },
       } as IKubectlApp;
       appsService.getApp.mockResolvedValue(app1);
       const result = await service.startScan('pipe', 'phase', 'app');
@@ -141,7 +148,7 @@ describe('SecurityService', () => {
         'app',
         'repo',
         'tag',
-        false
+        false,
       );
       expect(result.status).toBe('ok');
     });

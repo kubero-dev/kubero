@@ -11,7 +11,7 @@ import { IKubectlApp } from 'src/kubernetes/kubernetes.interface';
 const podsize: IPodSize = {
   name: 'small',
   resources: {},
-  description: ''
+  description: '',
 };
 
 const mockSecurityContext: ISecurityContext = {
@@ -60,9 +60,21 @@ export const mockApp = {
     repository: 'repo',
     tag: 'tag',
     command: ['npm'],
-    fetch: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    build: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
-    run: { repository: 'repo', tag: 'tag', securityContext: mockSecurityContext },
+    fetch: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    build: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
+    run: {
+      repository: 'repo',
+      tag: 'tag',
+      securityContext: mockSecurityContext,
+    },
     pullPolicy: 'Always',
   },
   vulnerabilityscan: {
@@ -98,7 +110,6 @@ export const mockKubectlApp = {
   },
   spec: mockApp,
 } as IKubectlApp;
-
 
 describe('AppsController', () => {
   let controller: AppsController;

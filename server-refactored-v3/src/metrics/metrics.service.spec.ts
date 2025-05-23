@@ -55,7 +55,9 @@ describe('MetricsService', () => {
   beforeEach(() => {
     kubectl = {
       getPodMetrics: jest.fn().mockResolvedValue([{ pod: 'pod1', value: 1 }]),
-      getPodUptimes: jest.fn().mockResolvedValue([{ pod: 'pod1', uptime: 100 }]),
+      getPodUptimes: jest
+        .fn()
+        .mockResolvedValue([{ pod: 'pod1', uptime: 100 }]),
     };
     service = new MetricsService(kubectl);
   });
@@ -103,21 +105,39 @@ describe('MetricsService', () => {
   });
 
   it('should getHttpStatusCodesMetrics', async () => {
-    const q = { pipeline: 'pipe', phase: 'phase', scale: '24h', calc: 'rate', host: 'host' };
+    const q = {
+      pipeline: 'pipe',
+      phase: 'phase',
+      scale: '24h',
+      calc: 'rate',
+      host: 'host',
+    };
     const result = await service.getHttpStatusCodesMetrics(q as any);
     expect(Array.isArray(result)).toBe(true);
     expect(result[0].name).toBe('200');
   });
 
   it('should getHttpResponseTimeMetrics', async () => {
-    const q = { pipeline: 'pipe', phase: 'phase', scale: '24h', calc: 'rate', host: 'host' };
+    const q = {
+      pipeline: 'pipe',
+      phase: 'phase',
+      scale: '24h',
+      calc: 'rate',
+      host: 'host',
+    };
     const result = await service.getHttpResponseTimeMetrics(q as any);
     expect(Array.isArray(result)).toBe(true);
     expect(result[0].name).toBe('200');
   });
 
   it('should getHttpResponseTrafficMetrics', async () => {
-    const q = { pipeline: 'pipe', phase: 'phase', scale: '24h', calc: 'sum', host: 'host' };
+    const q = {
+      pipeline: 'pipe',
+      phase: 'phase',
+      scale: '24h',
+      calc: 'sum',
+      host: 'host',
+    };
     const result = await service.getHttpResponseTrafficMetrics(q as any);
     expect(Array.isArray(result)).toBe(true);
     expect(result[0].name).toBe('200');

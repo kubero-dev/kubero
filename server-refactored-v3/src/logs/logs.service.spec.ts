@@ -47,7 +47,13 @@ describe('LogsService', () => {
         return Promise.resolve();
       });
 
-      await service.emitLogs('pipe', 'phase', 'app', 'pod-foo-bar-123-456', 'web');
+      await service.emitLogs(
+        'pipe',
+        'phase',
+        'app',
+        'pod-foo-bar-123-456',
+        'web',
+      );
       // Simuliere das Eintreffen von Logdaten
       await new Promise((r) => setTimeout(r, 20));
       expect(eventsGateway.sendLogline).toHaveBeenCalled();
@@ -57,7 +63,13 @@ describe('LogsService', () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
       (service as any).podLogStreams = ['pod-foo-bar-123-456'];
       const spy = jest.spyOn(kubectl.log, 'log');
-      await service.emitLogs('pipe', 'phase', 'app', 'pod-foo-bar-123-456', 'web');
+      await service.emitLogs(
+        'pipe',
+        'phase',
+        'app',
+        'pod-foo-bar-123-456',
+        'web',
+      );
       expect(spy).not.toHaveBeenCalled();
     });
   });
@@ -73,7 +85,13 @@ describe('LogsService', () => {
       ]);
       const spy = jest.spyOn(service, 'emitLogs').mockResolvedValue(undefined);
       await service.startLogging('pipe', 'phase', 'app');
-      expect(spy).toHaveBeenCalledWith('pipe', 'phase', 'app', 'app-kuberoapp-123', 'web');
+      expect(spy).toHaveBeenCalledWith(
+        'pipe',
+        'phase',
+        'app',
+        'app-kuberoapp-123',
+        'web',
+      );
     });
   });
 
@@ -100,7 +118,12 @@ describe('LogsService', () => {
           log: 'logline',
         },
       ]);
-      const result = await service.getLogsHistory('pipe', 'phase', 'app', 'web');
+      const result = await service.getLogsHistory(
+        'pipe',
+        'phase',
+        'app',
+        'web',
+      );
       expect(Array.isArray(result)).toBe(true);
       expect(result[0].container).toBe('web');
     });
@@ -113,7 +136,12 @@ describe('LogsService', () => {
           spec: { containers: [{ name: 'web' }] },
         },
       ]);
-      const result = await service.getLogsHistory('pipe', 'phase', 'app', 'unknown');
+      const result = await service.getLogsHistory(
+        'pipe',
+        'phase',
+        'app',
+        'unknown',
+      );
       expect(result).toEqual([]);
     });
   });
@@ -121,10 +149,22 @@ describe('LogsService', () => {
   describe('fetchLogs', () => {
     it('should return parsed loglines', async () => {
       kubectl.log.log.mockImplementation((_ns, _pod, _container, logStream) => {
-        logStream.emit('data', Buffer.from('2024-05-23T12:00:00Z logline1\n2024-05-23T12:01:00Z logline2\n'));
+        logStream.emit(
+          'data',
+          Buffer.from(
+            '2024-05-23T12:00:00Z logline1\n2024-05-23T12:01:00Z logline2\n',
+          ),
+        );
         return Promise.resolve();
       });
-      const result = await service.fetchLogs('ns', 'pod-foo-bar-123-456', 'web', 'pipe', 'phase', 'app');
+      const result = await service.fetchLogs(
+        'ns',
+        'pod-foo-bar-123-456',
+        'web',
+        'pipe',
+        'phase',
+        'app',
+      );
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
       expect(result[0].log).toBeDefined();
@@ -132,7 +172,14 @@ describe('LogsService', () => {
 
     it('should return empty array on error', async () => {
       kubectl.log.log.mockRejectedValue(new Error('fail'));
-      const result = await service.fetchLogs('ns', 'pod', 'web', 'pipe', 'phase', 'app');
+      const result = await service.fetchLogs(
+        'ns',
+        'pod',
+        'web',
+        'pipe',
+        'phase',
+        'app',
+      );
       expect(result).toEqual([]);
     });
   });

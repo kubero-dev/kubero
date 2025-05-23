@@ -12,14 +12,20 @@ jest.mock('@kubernetes/client-node', () => {
       getCurrentContext: jest.fn().mockReturnValue('default'),
       getContexts: jest.fn().mockReturnValue([{ name: 'default' }]),
       makeApiClient: jest.fn(() => ({
-        getCode: jest.fn().mockResolvedValue({ body: { gitVersion: 'v1.20.0' } }),
+        getCode: jest
+          .fn()
+          .mockResolvedValue({ body: { gitVersion: 'v1.20.0' } }),
         listNamespace: jest.fn().mockResolvedValue({ body: { items: [] } }),
-        listNamespacedCustomObject: jest.fn().mockResolvedValue({ body: { items: [] } }),
+        listNamespacedCustomObject: jest
+          .fn()
+          .mockResolvedValue({ body: { items: [] } }),
         createNamespacedCustomObject: jest.fn().mockResolvedValue({}),
         replaceNamespacedCustomObject: jest.fn().mockResolvedValue({}),
         deleteNamespacedCustomObject: jest.fn().mockResolvedValue({}),
         getNamespacedCustomObject: jest.fn().mockResolvedValue({ body: {} }),
-        listClusterCustomObject: jest.fn().mockResolvedValue({ body: { items: [] } }),
+        listClusterCustomObject: jest
+          .fn()
+          .mockResolvedValue({ body: { items: [] } }),
         listNamespacedPod: jest.fn().mockResolvedValue({ body: { items: [] } }),
         readNamespacedPod: jest.fn().mockResolvedValue({ body: {} }),
         createNamespace: jest.fn().mockResolvedValue({}),
@@ -30,9 +36,13 @@ jest.mock('@kubernetes/client-node', () => {
         readNamespacedJob: jest.fn().mockResolvedValue({ body: {} }),
         listNamespacedJob: jest.fn().mockResolvedValue({ body: { items: [] } }),
         listIngressClass: jest.fn().mockResolvedValue({ body: { items: [] } }),
-        listIngressForAllNamespaces: jest.fn().mockResolvedValue({ body: { items: [] } }),
+        listIngressForAllNamespaces: jest
+          .fn()
+          .mockResolvedValue({ body: { items: [] } }),
         listStorageClass: jest.fn().mockResolvedValue({ body: { items: [] } }),
-        listNamespacedEvent: jest.fn().mockResolvedValue({ body: { items: [] } }),
+        listNamespacedEvent: jest
+          .fn()
+          .mockResolvedValue({ body: { items: [] } }),
         createNamespacedEvent: jest.fn().mockResolvedValue({}),
       })),
     })),
@@ -55,7 +65,9 @@ jest.mock('@kubernetes/client-node', () => {
     V1ConfigMap: jest.fn(),
     V1Namespace: jest.fn(),
     V1Job: jest.fn(),
-    VersionInfo: jest.fn().mockImplementation(() => ({ gitVersion: 'v1.20.0' })),
+    VersionInfo: jest
+      .fn()
+      .mockImplementation(() => ({ gitVersion: 'v1.20.0' })),
   };
 });
 
@@ -101,11 +113,15 @@ describe('KubernetesService', () => {
   });
 
   it('should createPipeline', async () => {
-    await expect(service.createPipeline({ name: 'test' } as any)).resolves.toBeUndefined();
+    await expect(
+      service.createPipeline({ name: 'test' } as any),
+    ).resolves.toBeUndefined();
   });
 
   it('should updatePipeline', async () => {
-    await expect(service.updatePipeline({ name: 'test' } as any, '1')).resolves.toBeUndefined();
+    await expect(
+      service.updatePipeline({ name: 'test' } as any, '1'),
+    ).resolves.toBeUndefined();
   });
 
   it('should deletePipeline', async () => {
@@ -117,31 +133,52 @@ describe('KubernetesService', () => {
   });
 
   it('should createApp', async () => {
-    await expect(service.createApp({ name: 'app', pipeline: 'p', phase: 'ph' } as any, 'ctx')).resolves.toBeUndefined();
+    await expect(
+      service.createApp(
+        { name: 'app', pipeline: 'p', phase: 'ph' } as any,
+        'ctx',
+      ),
+    ).resolves.toBeUndefined();
   });
 
   it('should updateApp', async () => {
-    await expect(service.updateApp({ name: 'app', pipeline: 'p', phase: 'ph' } as any, '1', 'ctx')).resolves.toBeUndefined();
+    await expect(
+      service.updateApp(
+        { name: 'app', pipeline: 'p', phase: 'ph' } as any,
+        '1',
+        'ctx',
+      ),
+    ).resolves.toBeUndefined();
   });
 
   it('should deleteApp', async () => {
-    await expect(service.deleteApp('p', 'ph', 'app', 'ctx')).resolves.toBeUndefined();
+    await expect(
+      service.deleteApp('p', 'ph', 'app', 'ctx'),
+    ).resolves.toBeUndefined();
   });
 
   it('should getApp', async () => {
-    await expect(service.getApp('p', 'ph', 'app', 'ctx')).resolves.toBeDefined();
+    await expect(
+      service.getApp('p', 'ph', 'app', 'ctx'),
+    ).resolves.toBeDefined();
   });
 
   it('should getAppsList', async () => {
-    await expect(service.getAppsList('ns', 'ctx')).resolves.toHaveProperty('items');
+    await expect(service.getAppsList('ns', 'ctx')).resolves.toHaveProperty(
+      'items',
+    );
   });
 
   it('should getAllAppsList', async () => {
-    await expect(service.getAllAppsList('ctx')).resolves.toHaveProperty('items');
+    await expect(service.getAllAppsList('ctx')).resolves.toHaveProperty(
+      'items',
+    );
   });
 
   it('should restartApp', async () => {
-    await expect(service.restartApp('p', 'ph', 'app', 'web', 'ctx')).resolves.toBeUndefined();
+    await expect(
+      service.restartApp('p', 'ph', 'app', 'web', 'ctx'),
+    ).resolves.toBeUndefined();
   });
 
   it('should getOperators', async () => {
@@ -157,7 +194,9 @@ describe('KubernetesService', () => {
   });
 
   it('should createEvent', async () => {
-    await expect(service.createEvent('Normal', 'reason', 'event', 'msg')).resolves.toBeUndefined();
+    await expect(
+      service.createEvent('Normal', 'reason', 'event', 'msg'),
+    ).resolves.toBeUndefined();
   });
 
   it('should getEvents', async () => {
@@ -195,7 +234,13 @@ describe('KubernetesService', () => {
   it('should execInContainer', async () => {
     const ws = { readyState: 1 };
     service['exec'] = { exec: jest.fn().mockResolvedValue(ws) } as any;
-    const result = await service.execInContainer('ns', 'pod', 'container', 'ls', {} as any);
+    const result = await service.execInContainer(
+      'ns',
+      'pod',
+      'container',
+      'ls',
+      {} as any,
+    );
     expect(result).toBe(ws);
   });
 
@@ -204,15 +249,21 @@ describe('KubernetesService', () => {
   });
 
   it('should updateKuberoConfig', async () => {
-    await expect(service.updateKuberoConfig('ns', { spec: {} })).resolves.toBeUndefined();
+    await expect(
+      service.updateKuberoConfig('ns', { spec: {} }),
+    ).resolves.toBeUndefined();
   });
 
   it('should updateKuberoSecret', async () => {
-    await expect(service.updateKuberoSecret('ns', { key: 'value' })).resolves.toBeUndefined();
+    await expect(
+      service.updateKuberoSecret('ns', { key: 'value' }),
+    ).resolves.toBeUndefined();
   });
 
   it('should deleteKuberoBuildJob', async () => {
-    await expect(service.deleteKuberoBuildJob('ns', 'build')).resolves.toBeUndefined();
+    await expect(
+      service.deleteKuberoBuildJob('ns', 'build'),
+    ).resolves.toBeUndefined();
   });
 
   it('should getJob', async () => {
@@ -224,11 +275,15 @@ describe('KubernetesService', () => {
   });
 
   it('should validateKubeconfig', async () => {
-    await expect(service.validateKubeconfig('kubeconfig', 'context')).resolves.toEqual({ error: null, valid: true });
+    await expect(
+      service.validateKubeconfig('kubeconfig', 'context'),
+    ).resolves.toEqual({ error: null, valid: true });
   });
 
   it('should updateKubectlConfig', () => {
-    expect(() => service.updateKubectlConfig('kubeconfig', 'context')).not.toThrow();
+    expect(() =>
+      service.updateKubectlConfig('kubeconfig', 'context'),
+    ).not.toThrow();
   });
 
   it('should checkNamespace', async () => {
@@ -244,7 +299,9 @@ describe('KubernetesService', () => {
   });
 
   it('should checkCustomResourceDefinition', async () => {
-    await expect(service.checkCustomResourceDefinition('crd')).resolves.toBe(true);
+    await expect(service.checkCustomResourceDefinition('crd')).resolves.toBe(
+      true,
+    );
   });
 
   it('should createNamespace', async () => {

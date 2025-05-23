@@ -22,10 +22,12 @@ jest.mock('cross-fetch', () => ({
   fetch: jest.fn(),
 }));
 
-jest.mock('git-url-parse', () => jest.fn(() => ({
-  name: 'repo',
-  owner: 'owner',
-})));
+jest.mock('git-url-parse', () =>
+  jest.fn(() => ({
+    name: 'repo',
+    owner: 'owner',
+  })),
+);
 
 describe('GogsApi', () => {
   let gogs: GogsApi;
@@ -82,13 +84,20 @@ describe('GogsApi', () => {
           },
         ],
       });
-      const result = await gogs['addWebhook']('owner', 'repo', 'http://webhook', 'secret');
+      const result = await gogs['addWebhook'](
+        'owner',
+        'repo',
+        'http://webhook',
+        'secret',
+      );
       expect(result.status).toBe(422);
       expect(result.statusText).toBe('found');
     });
 
     it('should create a webhook if not exists', async () => {
-      gogs['gitea'].repos.repoListHooks = jest.fn().mockResolvedValue({ data: [] });
+      gogs['gitea'].repos.repoListHooks = jest
+        .fn()
+        .mockResolvedValue({ data: [] });
       gogs['gitea'].repos.repoCreateHook = jest.fn().mockResolvedValue({
         status: 201,
         data: {
@@ -100,7 +109,12 @@ describe('GogsApi', () => {
           events: ['push'],
         },
       });
-      const result = await gogs['addWebhook']('owner', 'repo', 'http://webhook', 'secret');
+      const result = await gogs['addWebhook'](
+        'owner',
+        'repo',
+        'http://webhook',
+        'secret',
+      );
       expect(result.status).toBe(201);
       expect(result.statusText).toBe('created');
       expect(result.data.url).toBe('http://webhook');
@@ -138,7 +152,9 @@ describe('GogsApi', () => {
   describe('getWebhook', () => {
     it('should return false if signature is invalid', () => {
       process.env.KUBERO_WEBHOOK_SECRET = 'secret';
-      const result = gogs.getWebhook('push', 'delivery', 'invalidsig', { foo: 'bar' });
+      const result = gogs.getWebhook('push', 'delivery', 'invalidsig', {
+        foo: 'bar',
+      });
       expect(result).toBe(false);
     });
   });

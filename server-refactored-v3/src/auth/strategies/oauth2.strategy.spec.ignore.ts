@@ -49,14 +49,16 @@ describe('Oauth2Strategy', () => {
     const MockedStrategy = require('passport-oauth2').Strategy;
     const strategy = new Oauth2Strategy();
     expect(strategy).toBeInstanceOf(Oauth2Strategy);
-    expect(MockedStrategy).toHaveBeenCalledWith(expect.objectContaining({
-      authorizationURL: 'https://auth.example.com',
-      tokenURL: 'https://token.example.com',
-      clientID: 'clientid',
-      clientSecret: 'secret',
-      callbackURL: 'https://callback.example.com',
-      scope: 'openid profile email'
-    }));
+    expect(MockedStrategy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        authorizationURL: 'https://auth.example.com',
+        tokenURL: 'https://token.example.com',
+        clientID: 'clientid',
+        clientSecret: 'secret',
+        callbackURL: 'https://callback.example.com',
+        scope: 'openid profile email',
+      }),
+    );
   });
 
   it('should log error and not call super if env vars are missing', () => {
@@ -78,7 +80,9 @@ describe('Oauth2Strategy', () => {
   it('should call super.authenticate in authenticate', () => {
     const strategy = new Oauth2Strategy();
     const Strategy = require('passport-oauth2').Strategy;
-    const superAuthenticate = jest.spyOn(Strategy.prototype, 'authenticate').mockImplementation();
+    const superAuthenticate = jest
+      .spyOn(Strategy.prototype, 'authenticate')
+      .mockImplementation();
     const req = {} as any;
     const options = {};
     strategy.authenticate(req, options);
