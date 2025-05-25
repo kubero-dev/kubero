@@ -2,8 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Gauge } from 'prom-client';
 import { Cron } from '@nestjs/schedule';
-import { PipelinesService } from 'src/pipelines/pipelines.service';
-import { parse } from 'path';
+import { PipelinesService } from '../pipelines/pipelines.service';
 
 @Injectable()
 export class StatusService {
