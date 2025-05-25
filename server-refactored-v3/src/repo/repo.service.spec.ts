@@ -10,7 +10,11 @@ jest.mock('./git/github', () => ({
     getPullrequests: jest.fn(() => Promise.resolve([{ id: 1 }])),
     connectRepo: jest.fn(() => Promise.resolve({ connected: true })),
     disconnectRepo: jest.fn(() => Promise.resolve({ disconnected: true })),
-    getWebhook: jest.fn(() => ({ event: 'push', branch: 'main', repo: { ssh_url: 'ssh://repo' } })),
+    getWebhook: jest.fn(() => ({
+      event: 'push',
+      branch: 'main',
+      repo: { ssh_url: 'ssh://repo' },
+    })),
   })),
 }));
 jest.mock('./git/gitea', () => ({
@@ -54,7 +58,11 @@ jest.mock('./git/bitbucket', () => ({
     getPullrequests: jest.fn(() => Promise.resolve([{ id: 5 }])),
     connectRepo: jest.fn(() => Promise.resolve({ connected: true })),
     disconnectRepo: jest.fn(() => Promise.resolve({ disconnected: true })),
-    getWebhook: jest.fn(() => ({ event: 'push', branch: 'main', repo: { ssh_url: 'ssh://repo' } })),
+    getWebhook: jest.fn(() => ({
+      event: 'push',
+      branch: 'main',
+      repo: { ssh_url: 'ssh://repo' },
+    })),
   })),
 }));
 
@@ -66,7 +74,9 @@ describe('RepoService', () => {
   beforeEach(() => {
     notificationsService = { send: jest.fn() };
     appsService = {
-      getAppsByRepoAndBranch: jest.fn(() => Promise.resolve([{ name: 'app1', pipeline: 'pipe1', phase: 'dev' }])),
+      getAppsByRepoAndBranch: jest.fn(() =>
+        Promise.resolve([{ name: 'app1', pipeline: 'pipe1', phase: 'dev' }]),
+      ),
       rebuildApp: jest.fn(),
       createPRApp: jest.fn(),
       deletePRApp: jest.fn(),
@@ -127,7 +137,7 @@ describe('RepoService', () => {
     expect(notificationsService.send).toHaveBeenCalled();
     expect(appsService.rebuildApp).toHaveBeenCalled();
   });
-/*
+  /*
   it('should handle github webhook pull_request', async () => {
     service['githubApi'].getWebhook = jest.fn(() => ({
       event: 'pull_request',

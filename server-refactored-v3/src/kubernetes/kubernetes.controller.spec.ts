@@ -62,9 +62,7 @@ describe('KubernetesController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [KubernetesController],
-      providers: [
-        { provide: KubernetesService, useValue: service },
-      ],
+      providers: [{ provide: KubernetesService, useValue: service }],
     }).compile();
 
     controller = module.get<KubernetesController>(KubernetesController);
@@ -78,45 +76,49 @@ describe('KubernetesController', () => {
     service.getEvents.mockResolvedValue([mockCoreV1Event]);
     const result = await controller.getEvents('default');
     expect(service.getEvents).toHaveBeenCalledWith('default');
-    expect(result).toEqual([{
-      "count": 1,
-      "firstTimestamp": new Date('2024-01-01T00:00:00Z'), 
-      "involvedObject":  {
-        "kind": "Pod",
-        "name": "my-app-123",
-        "namespace": "default",
+    expect(result).toEqual([
+      {
+        count: 1,
+        firstTimestamp: new Date('2024-01-01T00:00:00Z'),
+        involvedObject: {
+          kind: 'Pod',
+          name: 'my-app-123',
+          namespace: 'default',
+        },
+        lastTimestamp: new Date('2024-01-01T00:05:00Z'),
+        message: 'Pod started',
+        metadata: {
+          creationTimestamp: new Date('2024-01-01T00:00:00Z'),
+          name: 'event1',
+          namespace: 'default',
+        },
+        reason: 'Started',
+        source: {
+          component: 'kubelet',
+          host: 'node1',
+        },
+        type: 'Normal',
       },
-      "lastTimestamp": new Date('2024-01-01T00:05:00Z'),
-      "message": "Pod started",
-      "metadata":  {
-        "creationTimestamp": new Date('2024-01-01T00:00:00Z'),
-        "name": "event1",
-        "namespace": "default",
-      },
-      "reason": "Started",
-      "source":  {
-        "component": "kubelet",
-        "host": "node1",
-      },
-      "type": "Normal",
-    }]);
+    ]);
   });
 
   it('should get storage classes', async () => {
     service.getStorageClasses.mockResolvedValue([mockStorageClass]);
     const result = await controller.getStorageClasses();
     expect(service.getStorageClasses).toHaveBeenCalled();
-    expect(result).toEqual([{
-            "allowVolumeExpansion": true,
-            "name": "fast",
-            "parameters":  {
-              "encrypted": "true",
-              "type": "gp2",
-            },
-            "provisioner": "kubernetes.io/aws-ebs",
-            "reclaimPolicy": "Delete",
-            "volumeBindingMode": "Immediate",
-    }]);
+    expect(result).toEqual([
+      {
+        allowVolumeExpansion: true,
+        name: 'fast',
+        parameters: {
+          encrypted: 'true',
+          type: 'gp2',
+        },
+        provisioner: 'kubernetes.io/aws-ebs',
+        reclaimPolicy: 'Delete',
+        volumeBindingMode: 'Immediate',
+      },
+    ]);
   });
 
   it('should get domains', async () => {
@@ -125,7 +127,7 @@ describe('KubernetesController', () => {
     expect(service.getDomains).toHaveBeenCalled();
     expect(result).toEqual(['domain1.com', 'domain2.com']);
   });
-/*
+  /*
   it('should get contexts', async () => {
     service.getContexts.mockResolvedValue([{ name: 'context1' }]);
     const result = await controller.getContexts();

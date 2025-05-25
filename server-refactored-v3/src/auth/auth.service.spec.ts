@@ -102,13 +102,17 @@ describe('AuthService', () => {
         username: 'test',
         password: 'hashed',
       });
-      await expect(service.validateUser('test', 'pass')).rejects.toThrow(HttpException);
+      await expect(service.validateUser('test', 'pass')).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 
   describe('login', () => {
     it('should return access_token if user is valid', async () => {
-      jest.spyOn(service, 'validateUser').mockResolvedValueOnce({ userId: 1, username: 'test' });
+      jest
+        .spyOn(service, 'validateUser')
+        .mockResolvedValueOnce({ userId: 1, username: 'test' });
       const result = await service.login('test', 'pass');
       expect(result).toEqual({ access_token: 'signed-token' });
       expect(jwtService.sign).toHaveBeenCalledWith({
@@ -120,7 +124,9 @@ describe('AuthService', () => {
 
     it('should throw if user is invalid', async () => {
       jest.spyOn(service, 'validateUser').mockResolvedValueOnce(null);
-      await expect(service.login('test', 'wrong')).rejects.toThrow(HttpException);
+      await expect(service.login('test', 'wrong')).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 

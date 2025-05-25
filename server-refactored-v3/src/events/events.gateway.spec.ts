@@ -56,12 +56,23 @@ describe('EventsGateway', () => {
 
   it('should write to execStreams on handleTerminal', () => {
     const writeMock = jest.fn();
-    gateway.execStreams['roomX'] = { websocket: {} as any, stream: { write: writeMock } };
-    gateway.handleTerminal({ room: 'roomX', data: 'input' }, mockSocket as Socket);
+    gateway.execStreams['roomX'] = {
+      websocket: {} as any,
+      stream: { write: writeMock },
+    };
+    gateway.handleTerminal(
+      { room: 'roomX', data: 'input' },
+      mockSocket as Socket,
+    );
     expect(writeMock).toHaveBeenCalledWith('input');
   });
 
   it('should not throw if execStreams entry does not exist on handleTerminal', () => {
-    expect(() => gateway.handleTerminal({ room: 'notfound', data: 'input' }, mockSocket as Socket)).not.toThrow();
+    expect(() =>
+      gateway.handleTerminal(
+        { room: 'notfound', data: 'input' },
+        mockSocket as Socket,
+      ),
+    ).not.toThrow();
   });
 });

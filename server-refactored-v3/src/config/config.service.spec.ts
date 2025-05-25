@@ -7,7 +7,17 @@ jest.mock('fs', () => ({
   constants: { O_CREAT: 0, O_WRONLY: 1, O_TRUNC: 2 },
 }));
 jest.mock('yaml', () => ({
-  parse: jest.fn(() => ({ kubero: { admin: { disabled: false }, banner: { show: true }, config: {}, podSizeList: [], buildpacks: [], clusterissuer: 'issuer' }, templates: { enabled: true } })),
+  parse: jest.fn(() => ({
+    kubero: {
+      admin: { disabled: false },
+      banner: { show: true },
+      config: {},
+      podSizeList: [],
+      buildpacks: [],
+      clusterissuer: 'issuer',
+    },
+    templates: { enabled: true },
+  })),
   stringify: jest.fn(() => 'yaml-content'),
 }));
 jest.mock('path', () => ({
@@ -42,8 +52,21 @@ describe('ConfigService', () => {
         spec: {
           kubero: {
             admin: { disabled: false },
-            banner: { show: true, text: 'Banner', bgcolor: 'blue', fontcolor: 'white', config: {}, podSizeList: [], buildpacks: [], clusterissuer: 'issuer' },
-            config: { buildpacks: [], podSizeList: [], clusterissuer: 'issuer' },
+            banner: {
+              show: true,
+              text: 'Banner',
+              bgcolor: 'blue',
+              fontcolor: 'white',
+              config: {},
+              podSizeList: [],
+              buildpacks: [],
+              clusterissuer: 'issuer',
+            },
+            config: {
+              buildpacks: [],
+              podSizeList: [],
+              clusterissuer: 'issuer',
+            },
             console: { enabled: true },
           },
           registry: { host: 'registry', enabled: true },
@@ -65,27 +88,29 @@ describe('ConfigService', () => {
       buildpacks: [],
       clusterissuer: 'issuer',
       notifications: [],
-      kubero: { 
-        admin: { disabled: false }, 
-        readonly: false, 
+      kubero: {
+        admin: { disabled: false },
+        readonly: false,
         banner: {
           show: true,
           message: '',
           bgcolor: '',
-          fontcolor: ''
-        }, 
-        console: { enabled: true }
+          fontcolor: '',
+        },
+        console: { enabled: true },
       },
       templates: {
         enabled: true,
-        catalogs: [{
-          name: 'default',
-          description: 'Default catalog',
-          index: {
-            url: 'https://example.com',
-            format: 'json'
-          }
-        }]
+        catalogs: [
+          {
+            name: 'default',
+            description: 'Default catalog',
+            index: {
+              url: 'https://example.com',
+              format: 'json',
+            },
+          },
+        ],
       },
     };
   });
@@ -141,7 +166,13 @@ describe('ConfigService', () => {
 
   it('should update running config if setup enabled', () => {
     process.env.KUBERO_SETUP = 'enabled';
-    const result = service.updateRunningConfig('kube', 'ctx', 'ns', 'key', 'secret');
+    const result = service.updateRunningConfig(
+      'kube',
+      'ctx',
+      'ns',
+      'key',
+      'secret',
+    );
     expect(result.status).toBe('ok');
     expect(kubectl.updateKubectlConfig).toHaveBeenCalled();
     expect(kubectl.createNamespace).toHaveBeenCalled();
@@ -149,7 +180,13 @@ describe('ConfigService', () => {
 
   it('should return error if setup is disabled in updateRunningConfig', () => {
     process.env.KUBERO_SETUP = 'disabled';
-    const result = service.updateRunningConfig('kube', 'ctx', 'ns', 'key', 'secret');
+    const result = service.updateRunningConfig(
+      'kube',
+      'ctx',
+      'ns',
+      'key',
+      'secret',
+    );
     expect(result.status).toBe('error');
   });
 
@@ -236,7 +273,7 @@ describe('ConfigService', () => {
     expect(result.clusterissuer).toBe('issuer');
   });
 
-/*
+  /*
   it('should get pod sizes', async () => {
     kubectl.getKuberoConfig.mockResolvedValueOnce({
       spec: {
@@ -281,7 +318,10 @@ describe('ConfigService', () => {
   });
 
   it('should getAuthenticationScope', () => {
-    expect(ConfigService.getAuthenticationScope('openid email')).toEqual(['openid', 'email']);
+    expect(ConfigService.getAuthenticationScope('openid email')).toEqual([
+      'openid',
+      'email',
+    ]);
     expect(ConfigService.getAuthenticationScope(undefined)).toEqual([]);
   });
 

@@ -19,6 +19,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { SecurityModule } from './security/security.module';
 import { TemplatesController } from './templates/templates.controller';
 import { TemplatesService } from './templates/templates.service';
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { TemplatesService } from './templates/templates.service';
     AddonsModule,
     NotificationsModule,
     SecurityModule,
+    StatusModule,
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

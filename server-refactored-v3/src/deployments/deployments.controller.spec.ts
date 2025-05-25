@@ -44,7 +44,12 @@ describe('DeploymentsController', () => {
       reference: 'main',
       dockerfilePath: 'Dockerfile',
     };
-    const result = await controller.buildApp('pipe', 'phase', 'app', body as any);
+    const result = await controller.buildApp(
+      'pipe',
+      'phase',
+      'app',
+      body as any,
+    );
     expect(service.triggerBuildjob).toHaveBeenCalledWith(
       'pipe',
       'phase',
@@ -71,7 +76,13 @@ describe('DeploymentsController', () => {
   });
 
   it('should get logs', async () => {
-    const result = await controller.getLogs('pipe', 'phase', 'app', 'build1', 'web');
+    const result = await controller.getLogs(
+      'pipe',
+      'phase',
+      'app',
+      'build1',
+      'web',
+    );
     expect(service.getBuildLogs).toHaveBeenCalledWith(
       'pipe',
       'phase',

@@ -30,7 +30,9 @@ describe('TemplatesController', () => {
 
   it('should return template on success', async () => {
     const mockTemplate = { name: 'test-template' };
-    const templateB64 = Buffer.from('http://example.com/template.yaml').toString('base64');
+    const templateB64 = Buffer.from(
+      'http://example.com/template.yaml',
+    ).toString('base64');
     (service.getTemplate as jest.Mock).mockResolvedValueOnce(mockTemplate);
 
     const res = {
@@ -46,7 +48,9 @@ describe('TemplatesController', () => {
 
   it('should return 500 on error', async () => {
     const error = new Error('fail');
-    const templateB64 = Buffer.from('http://fail.com/template.yaml').toString('base64');
+    const templateB64 = Buffer.from('http://fail.com/template.yaml').toString(
+      'base64',
+    );
     (service.getTemplate as jest.Mock).mockRejectedValueOnce(error);
 
     const res = {
@@ -54,7 +58,9 @@ describe('TemplatesController', () => {
       status: jest.fn().mockReturnThis(),
     } as any as Response;
 
-    const loggerSpy = jest.spyOn(controller['logger'], 'error').mockImplementation(() => {});
+    const loggerSpy = jest
+      .spyOn(controller['logger'], 'error')
+      .mockImplementation(() => {});
 
     await controller.getTemplate(templateB64, res);
 
