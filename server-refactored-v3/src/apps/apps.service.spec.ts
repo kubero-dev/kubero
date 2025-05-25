@@ -112,7 +112,7 @@ describe('AppsService', () => {
   let notificationsService: jest.Mocked<NotificationsService>;
   let configService: jest.Mocked<ConfigService>;
   let eventsGateway: jest.Mocked<EventsGateway>;
-  let user: IUser = { username: 'testuser' } as IUser;
+  const user: IUser = { username: 'testuser' } as IUser;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -152,7 +152,6 @@ describe('AppsService', () => {
     notificationsService = module.get(NotificationsService);
     configService = module.get(ConfigService);
     eventsGateway = module.get(EventsGateway);
-    
   });
 
   it('should be defined', () => {
@@ -331,14 +330,30 @@ describe('AppsService', () => {
     it('should not execute if no context is found', async () => {
       mockPipelinesService.getContext.mockResolvedValueOnce(undefined);
       await expect(
-        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+        service.execInContainer(
+          'pipe',
+          'dev',
+          'app',
+          'pod',
+          'cont',
+          'ls',
+          user,
+        ),
       ).resolves.toBeUndefined();
     });
 
     it('should not execute if KUBERO_READONLY is true', async () => {
       process.env.KUBERO_READONLY = 'true';
       await expect(
-        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+        service.execInContainer(
+          'pipe',
+          'dev',
+          'app',
+          'pod',
+          'cont',
+          'ls',
+          user,
+        ),
       ).resolves.toBeUndefined();
       delete process.env.KUBERO_READONLY;
     });
@@ -349,7 +364,15 @@ describe('AppsService', () => {
         stream: {},
       };
       await expect(
-        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+        service.execInContainer(
+          'pipe',
+          'dev',
+          'app',
+          'pod',
+          'cont',
+          'ls',
+          user,
+        ),
       ).resolves.toBeUndefined();
     });
 
@@ -376,7 +399,15 @@ describe('AppsService', () => {
     it('should not set execStream if ws is undefined or not open', async () => {
       mockKubernetesService.execInContainer.mockResolvedValue(undefined);
       await expect(
-        service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user)
+        service.execInContainer(
+          'pipe',
+          'dev',
+          'app',
+          'pod',
+          'cont',
+          'ls',
+          user,
+        ),
       ).resolves.toBeUndefined();
     });
 
@@ -389,12 +420,23 @@ describe('AppsService', () => {
       const wsMock = { readyState: 1, OPEN: 1, on: wsOnMock };
       mockKubernetesService.execInContainer.mockResolvedValue(wsMock);
 
-      await service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user);
+      await service.execInContainer(
+        'pipe',
+        'dev',
+        'app',
+        'pod',
+        'cont',
+        'ls',
+        user,
+      );
 
       const streamname = 'pipe-dev-app-pod-cont-terminal';
       expect(mockEventsGateway.execStreams[streamname]).toBeDefined();
       expect(wsOnMock).toHaveBeenCalledWith('message', expect.any(Function));
-      expect(mockEventsGateway.sendTerminalLine).toHaveBeenCalledWith(streamname, 'test');
+      expect(mockEventsGateway.sendTerminalLine).toHaveBeenCalledWith(
+        streamname,
+        'test',
+      );
     });
   });
 });

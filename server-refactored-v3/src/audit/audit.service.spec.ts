@@ -4,7 +4,9 @@ import { AuditEntry } from './audit.interface';
 jest.mock('sqlite3', () => {
   const run = jest.fn((...args) => args[args.length - 1]?.(null));
   const all = jest.fn((...args) => args[args.length - 1]?.(null, []));
-  const get = jest.fn((...args) => args[args.length - 1]?.(null, { entries: 0 }));
+  const get = jest.fn((...args) =>
+    args[args.length - 1]?.(null, { entries: 0 }),
+  );
   const close = jest.fn((cb) => cb && cb(null));
   return {
     Database: jest.fn().mockImplementation(() => ({

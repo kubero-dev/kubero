@@ -243,4 +243,9 @@ export class PipelinesService {
 
     return { status: 'ok', message: 'Pipeline created: ' + pipeline.name };
   }
+
+  public async countPipelines(): Promise<number> {
+    const pipelines = await this.kubectl.getPipelinesList();
+    return pipelines.items.length;
+  }
 }

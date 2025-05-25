@@ -230,13 +230,7 @@ describe('DeploymentsService', () => {
 
     it('should delete build and send notification', async () => {
       const user: IUser = { username: 'test' } as any;
-      await service.deleteBuildjob(
-        'pipe',
-        'phase',
-        'app',
-        'build1',
-        user,
-      );
+      await service.deleteBuildjob('pipe', 'phase', 'app', 'build1', user);
       expect(kubectl.deleteKuberoBuildJob).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });

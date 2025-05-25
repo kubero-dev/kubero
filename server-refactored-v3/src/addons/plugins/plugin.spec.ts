@@ -20,7 +20,9 @@ describe('Plugin (abstract)', () => {
 
   beforeEach(() => {
     plugin = new TestPlugin();
-    loggerSpy = jest.spyOn(Logger.prototype, 'log').mockImplementation(() => {});
+    loggerSpy = jest
+      .spyOn(Logger.prototype, 'log')
+      .mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'debug').mockImplementation(() => {});
     jest.spyOn(Logger.prototype, 'error').mockImplementation(() => {});
   });
@@ -50,7 +52,13 @@ describe('Plugin (abstract)', () => {
     const availableCRDs = [
       {
         spec: { names: { kind: 'TestPlugin' }, version: '1.0.0' },
-        metadata: { annotations: { 'alm-examples': JSON.stringify([{ kind: 'TestPlugin', foo: 'bar' }]) } },
+        metadata: {
+          annotations: {
+            'alm-examples': JSON.stringify([
+              { kind: 'TestPlugin', foo: 'bar' },
+            ]),
+          },
+        },
       },
     ];
 
@@ -61,7 +69,10 @@ describe('Plugin (abstract)', () => {
     expect(plugin.links).toEqual([{ url: 'link' }]);
     expect(plugin.readme).toBe('readme');
     expect(plugin.version.latest).toBe('1.2.3');
-    expect(plugin.resourceDefinitions['TestPlugin']).toEqual({ kind: 'TestPlugin', example: true });
+    expect(plugin.resourceDefinitions['TestPlugin']).toEqual({
+      kind: 'TestPlugin',
+      example: true,
+    });
     expect(plugin.enabled).toBe(true);
     expect(plugin.version.installed).toBe('1.0.0');
   });
@@ -81,13 +92,22 @@ describe('Plugin (abstract)', () => {
     const availableCRDs = [
       {
         spec: { names: { kind: 'TestPlugin' }, version: '1.0.0' },
-        metadata: { annotations: { 'alm-examples': JSON.stringify([{ kind: 'TestPlugin', foo: 'bar' }]) } },
+        metadata: {
+          annotations: {
+            'alm-examples': JSON.stringify([
+              { kind: 'TestPlugin', foo: 'bar' },
+            ]),
+          },
+        },
       },
     ];
 
     await plugin.init(availableCRDs);
 
-    expect(plugin.resourceDefinitions['TestPlugin']).toEqual({ kind: 'TestPlugin', foo: 'bar' });
+    expect(plugin.resourceDefinitions['TestPlugin']).toEqual({
+      kind: 'TestPlugin',
+      foo: 'bar',
+    });
     expect(plugin.enabled).toBe(true);
   });
 
@@ -105,7 +125,13 @@ describe('Plugin (abstract)', () => {
     const availableCRDs = [
       {
         spec: { names: { kind: 'OtherPlugin' }, version: '1.0.0' },
-        metadata: { annotations: { 'alm-examples': JSON.stringify([{ kind: 'OtherPlugin', foo: 'bar' }]) } },
+        metadata: {
+          annotations: {
+            'alm-examples': JSON.stringify([
+              { kind: 'OtherPlugin', foo: 'bar' },
+            ]),
+          },
+        },
       },
     ];
 

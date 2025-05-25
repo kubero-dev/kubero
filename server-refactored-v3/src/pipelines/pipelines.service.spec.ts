@@ -178,7 +178,7 @@ describe('PipelinesService', () => {
       const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
       await service.deletePipeline('pipe1', user);
       expect(spy).toHaveBeenCalledWith(
-        'KUBERO_READONLY is set to true, not deleting pipeline pipe1'
+        'KUBERO_READONLY is set to true, not deleting pipeline pipe1',
       );
       spy.mockRestore();
       delete process.env.KUBERO_READONLY;
@@ -198,7 +198,9 @@ describe('PipelinesService', () => {
     it('should not update if KUBERO_READONLY is true', async () => {
       process.env.KUBERO_READONLY = 'true';
       const user = { username: 'test' } as IUser;
-      const spy = jest.spyOn(service['logger'], 'log').mockImplementation(() => {});
+      const spy = jest
+        .spyOn(service['logger'], 'log')
+        .mockImplementation(() => {});
       await service.updatePipeline(mockPipeline, '1', user);
       expect(spy).toHaveBeenCalled();
       spy.mockRestore();
@@ -208,7 +210,9 @@ describe('PipelinesService', () => {
     it('should update pipeline and send notification', async () => {
       const user = { username: 'test' } as IUser;
       const pipeline = { name: 'pipe1', git: { keys: {} } };
-      kubectl.getPipeline.mockResolvedValue({ spec: { git: { keys: { priv: 'priv', pub: 'pub' } } } });
+      kubectl.getPipeline.mockResolvedValue({
+        spec: { git: { keys: { priv: 'priv', pub: 'pub' } } },
+      });
       kubectl.updatePipeline.mockResolvedValue(undefined);
       await service.updatePipeline(mockPipeline, '1', user);
       expect(kubectl.updatePipeline).toHaveBeenCalled();
@@ -218,7 +222,9 @@ describe('PipelinesService', () => {
     it('should handle error in updatePipeline', async () => {
       const user = { username: 'test' } as IUser;
       kubectl.getPipeline.mockRejectedValue(new Error('fail'));
-      const spy = jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
+      const spy = jest
+        .spyOn(service['logger'], 'error')
+        .mockImplementation(() => {});
       await service.updatePipeline(mockPipeline, '1', user);
       expect(spy).toHaveBeenCalled();
       spy.mockRestore();
@@ -232,7 +238,7 @@ describe('PipelinesService', () => {
       const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
       await service.createPipeline(mockPipeline, user);
       expect(spy).toHaveBeenCalledWith(
-        'KUBERO_READONLY is set to true, not creting pipeline pipe1'
+        'KUBERO_READONLY is set to true, not creting pipeline pipe1',
       );
       spy.mockRestore();
       delete process.env.KUBERO_READONLY;

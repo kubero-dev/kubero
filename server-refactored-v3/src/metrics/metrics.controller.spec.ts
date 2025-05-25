@@ -8,7 +8,7 @@ describe('MetricsController', () => {
   let controller: MetricsController;
   let service: jest.Mocked<MetricsService>;
 
-  let mockIMetric: IMetric = {
+  const mockIMetric: IMetric = {
     name: 'cpu_usage',
     metric: { pod: 'my-app-123', namespace: 'default' },
     data: [
@@ -17,15 +17,12 @@ describe('MetricsController', () => {
     ],
   };
 
-  let mockQueryResult = new QueryResult(
-    ResponseType.VECTOR,
-    [
-      {
-        metric: { __name__: 'up', job: 'test-job', instance: 'localhost:9090' },
-        value: [1620000000, '1'],
-      },
-    ]
-  );
+  const mockQueryResult = new QueryResult(ResponseType.VECTOR, [
+    {
+      metric: { __name__: 'up', job: 'test-job', instance: 'localhost:9090' },
+      value: [1620000000, '1'],
+    },
+  ]);
 
   beforeEach(async () => {
     service = {
@@ -43,9 +40,7 @@ describe('MetricsController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MetricsController],
-      providers: [
-        { provide: MetricsService, useValue: service },
-      ],
+      providers: [{ provide: MetricsService, useValue: service }],
     }).compile();
 
     controller = module.get<MetricsController>(MetricsController);
@@ -73,14 +68,32 @@ describe('MetricsController', () => {
     service.getLongTermMetrics.mockResolvedValue(mockQueryResult);
     const result = await controller.getWideMetricsList();
     expect(service.getLongTermMetrics).toHaveBeenCalledWith('up');
-    expect(result).toEqual({"result": [{"metric": {"__name__": "up", "instance": "localhost:9090", "job": "test-job"}, "value": [1620000000, "1"]}], "resultType": "vector"});
+    expect(result).toEqual({
+      result: [
+        {
+          metric: {
+            __name__: 'up',
+            instance: 'localhost:9090',
+            job: 'test-job',
+          },
+          value: [1620000000, '1'],
+        },
+      ],
+      resultType: 'vector',
+    });
   });
 
   it('should get wide metrics (memory)', async () => {
     mockIMetric.name = 'memory-metrics';
     service.getMemoryMetrics.mockResolvedValue([mockIMetric]);
     const result = await controller.getWideMetrics(
-      'memory', 'pipe', 'dev', 'app1', '24h', 'rate', 'host1'
+      'memory',
+      'pipe',
+      'dev',
+      'app1',
+      '24h',
+      'rate',
+      'host1',
     );
     expect(service.getMemoryMetrics).toHaveBeenCalledWith({
       scale: '24h',
@@ -88,14 +101,29 @@ describe('MetricsController', () => {
       phase: 'dev',
       app: 'app1',
     });
-    expect(result).toEqual([{"data": [{"x": new Date('2024-01-01T00:00:00Z'), "y": 0.5}, {"x": new Date('2024-01-01T01:00:00Z'), "y": 0.7}], "metric": {"namespace": "default", "pod": "my-app-123"}, "name": "memory-metrics"}]);
+    expect(result).toEqual([
+      {
+        data: [
+          { x: new Date('2024-01-01T00:00:00Z'), y: 0.5 },
+          { x: new Date('2024-01-01T01:00:00Z'), y: 0.7 },
+        ],
+        metric: { namespace: 'default', pod: 'my-app-123' },
+        name: 'memory-metrics',
+      },
+    ]);
   });
 
   it('should get wide metrics (cpu)', async () => {
     mockIMetric.name = 'cpu-metrics';
     service.getCPUMetrics.mockResolvedValue([mockIMetric]);
     const result = await controller.getWideMetrics(
-      'cpu', 'pipe', 'dev', 'app1', '2h', 'rate', 'host1'
+      'cpu',
+      'pipe',
+      'dev',
+      'app1',
+      '2h',
+      'rate',
+      'host1',
     );
     expect(service.getCPUMetrics).toHaveBeenCalledWith({
       scale: '2h',
@@ -104,14 +132,29 @@ describe('MetricsController', () => {
       app: 'app1',
       calc: 'rate',
     });
-    expect(result).toEqual([{"data": [{"x": new Date('2024-01-01T00:00:00Z'), "y": 0.5}, {"x": new Date('2024-01-01T01:00:00Z'), "y": 0.7}], "metric": {"namespace": "default", "pod": "my-app-123"}, "name": "cpu-metrics"}]);
+    expect(result).toEqual([
+      {
+        data: [
+          { x: new Date('2024-01-01T00:00:00Z'), y: 0.5 },
+          { x: new Date('2024-01-01T01:00:00Z'), y: 0.7 },
+        ],
+        metric: { namespace: 'default', pod: 'my-app-123' },
+        name: 'cpu-metrics',
+      },
+    ]);
   });
 
   it('should get wide metrics (httpstatuscodes)', async () => {
     mockIMetric.name = 'httpstatus-metrics';
     service.getHttpStatusCodesMetrics.mockResolvedValue([mockIMetric]);
     const result = await controller.getWideMetrics(
-      'httpstatuscodes', 'pipe', 'dev', 'app1', '7d', 'increase', 'host1'
+      'httpstatuscodes',
+      'pipe',
+      'dev',
+      'app1',
+      '7d',
+      'increase',
+      'host1',
     );
     expect(service.getHttpStatusCodesMetrics).toHaveBeenCalledWith({
       scale: '7d',
@@ -120,7 +163,16 @@ describe('MetricsController', () => {
       host: 'host1',
       calc: 'increase',
     });
-    expect(result).toEqual([{"data": [{"x": new Date('2024-01-01T00:00:00Z'), "y": 0.5}, {"x": new Date('2024-01-01T01:00:00Z'), "y": 0.7}], "metric": {"namespace": "default", "pod": "my-app-123"}, "name": "httpstatus-metrics"}]);
+    expect(result).toEqual([
+      {
+        data: [
+          { x: new Date('2024-01-01T00:00:00Z'), y: 0.5 },
+          { x: new Date('2024-01-01T01:00:00Z'), y: 0.7 },
+        ],
+        metric: { namespace: 'default', pod: 'my-app-123' },
+        name: 'httpstatus-metrics',
+      },
+    ]);
   });
 
   it('should get rules', async () => {
@@ -136,7 +188,13 @@ describe('MetricsController', () => {
 
   it('should return "Invalid type" for unknown metric type', async () => {
     const result = await controller.getWideMetrics(
-      'unknown' as any, 'pipe', 'dev', 'app1', '7d', 'increase', 'host1'
+      'unknown' as any,
+      'pipe',
+      'dev',
+      'app1',
+      '7d',
+      'increase',
+      'host1',
     );
     expect(result).toBe('Invalid type');
   });
