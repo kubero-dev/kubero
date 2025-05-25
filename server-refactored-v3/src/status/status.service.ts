@@ -3,28 +3,44 @@ import { InjectMetric } from '@willsoto/nestjs-prometheus';
 import { Gauge } from 'prom-client';
 import { Cron } from '@nestjs/schedule';
 import { PipelinesService } from '../pipelines/pipelines.service';
+import { AppsService } from '../apps/apps.service';
 
 @Injectable()
 export class StatusService {
   private readonly logger = new Logger(StatusService.name);
   constructor(
-    @InjectMetric('kubero_pipelines_total') public counter: Gauge<string>,
+    @InjectMetric('kubero_pipelines_total') public pipelineTotal: Gauge<string>,
+    @InjectMetric('kubero_apps_total') public appsTotal: Gauge<string>,
     private pipelinesService: PipelinesService,
+    private appsService: AppsService,
   ) {}
 
   @Cron('*/15 * * * * *')
-  async updatePipelineCount(): Promise<void> {
-    const pipelineCount = 0;
-    const count = await this.pipelinesService
-      .countPipelines()
-      .catch((error) => {
-        this.logger.error(`Error counting pipelines: ${error.message}`);
-      });
+  async updateKuberoMetrics(): Promise<void> {
+    const pipelineTotal = await this.pipelinesService.countPipelines()
+    this.pipelineTotal.inc({}, pipelineTotal);
 
-    if (count) {
-      this.counter.inc({}, count);
-    } else {
-      this.logger.warn('No pipelines found or error occurred while counting.');
+    const appTotal = await this.appsService.countApps()
+    this.appsTotal.inc({}, appTotal);
+  }
+
+  async getPipelineCount(): Promise<number> {
+    try {
+      const count = await this.pipelinesService.countPipelines();
+      return count || 0;
+    } catch (error) {
+      this.logger.error(`Error getting pipeline count: ${error.message}`);
+      return 0;
+    }
+  }
+
+  async getAppCount(): Promise<number> {
+    try {
+      const count = await this.appsService.countApps();
+      return count || 0;
+    } catch (error) {
+      this.logger.error(`Error getting app count: ${error.message}`);
+      return 0;
     }
   }
 }

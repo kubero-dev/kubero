@@ -252,5 +252,21 @@ describe('PipelinesService', () => {
       expect(notificationsService.send).toHaveBeenCalled();
       expect(result?.status).toBe('ok');
     });
+
+    describe('countPipelines', () => {
+      it('should return the number of pipelines', async () => {
+        kubectl.getPipelinesList.mockResolvedValue({
+          items: [{ spec: {} }, { spec: {} }, { spec: {} }],
+        });
+        const result = await service.countPipelines();
+        expect(result).toBe(3);
+      });
+
+      it('should return 0 when no pipelines exist', async () => {
+        kubectl.getPipelinesList.mockResolvedValue({ items: [] });
+        const result = await service.countPipelines();
+        expect(result).toBe(0);
+      });
+    });
   });
 });

@@ -785,4 +785,10 @@ export class AppsService {
       });
     }
   }
+
+  public async countApps(): Promise<number> {
+    const contextName = this.kubectl.getCurrentContext();
+    const apps = await this.kubectl.getAllAppsList(contextName);
+    return apps.items.length;
+  }
 }

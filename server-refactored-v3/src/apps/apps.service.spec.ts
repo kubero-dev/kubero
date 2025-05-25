@@ -439,4 +439,49 @@ describe('AppsService', () => {
       );
     });
   });
+
+  describe('AppsService - countApps', () => {
+    let service: AppsService;
+    let mockKubectl: any;
+
+    beforeEach(() => {
+      mockKubectl = {
+        getCurrentContext: jest.fn(),
+        getAllAppsList: jest.fn(),
+      };
+
+      service = new AppsService(
+        mockKubectl,
+        {} as any, // PipelinesService
+        {} as any, // NotificationsService
+        {} as any, // ConfigService
+        {} as any  // EventsGateway
+      );
+    });
+
+    it('should return the number of apps', async () => {
+      mockKubectl.getCurrentContext.mockReturnValue('test-context');
+      mockKubectl.getAllAppsList.mockResolvedValue({ items: [{}, {}, {}] });
+
+      const result = await service.countApps();
+      expect(mockKubectl.getCurrentContext).toHaveBeenCalled();
+      expect(mockKubectl.getAllAppsList).toHaveBeenCalledWith('test-context');
+      expect(result).toBe(3);
+    });
+
+    it('should return 0 if no items', async () => {
+      mockKubectl.getCurrentContext.mockReturnValue('test-context');
+      mockKubectl.getAllAppsList.mockResolvedValue({ items: [] });
+
+      const result = await service.countApps();
+      expect(result).toBe(0);
+    });
+
+    it('should throw if getAllAppsList fails', async () => {
+      mockKubectl.getCurrentContext.mockReturnValue('test-context');
+      mockKubectl.getAllAppsList.mockRejectedValue(new Error('fail'));
+
+      await expect(service.countApps()).rejects.toThrow('fail');
+    });
+  });
 });
