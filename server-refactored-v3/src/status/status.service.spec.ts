@@ -5,13 +5,13 @@ import { StatusService } from './status.service';
 
 describe('StatusService', () => {
   let service: StatusService;
-  let mockCounter: any;
+  let mockGauge: any;
   let mockPipelinesService: any;
   let mockAppsService: any;
 
   beforeEach(() => {
-    mockCounter = {
-      inc: jest.fn(),
+    mockGauge = {
+      set: jest.fn(),
     };
     mockPipelinesService = {
       countPipelines: jest.fn(),
@@ -19,7 +19,7 @@ describe('StatusService', () => {
     mockAppsService = {
       countApps: jest.fn(),
     };
-    service = new StatusService(mockCounter, mockCounter, mockPipelinesService, mockAppsService);
+    service = new StatusService(mockGauge, mockGauge, mockPipelinesService, mockAppsService);
     // Mock logger to avoid actual logging in tests
     jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
     jest.spyOn(service['logger'], 'warn').mockImplementation(() => {});
@@ -32,7 +32,7 @@ describe('StatusService', () => {
   it('should increment counter if pipelines are counted', async () => {
     mockPipelinesService.countPipelines.mockResolvedValue(5);
     await service.updateKuberoMetrics();
-    expect(mockCounter.inc).toHaveBeenCalledWith({}, 5);
+    expect(mockGauge.set).toHaveBeenCalledWith({}, 5);
   });
 
   describe('updateKuberoMetrics', () => {
@@ -42,9 +42,9 @@ describe('StatusService', () => {
       
       await service.updateKuberoMetrics();
       
-      expect(mockCounter.inc).toHaveBeenCalledWith({}, 7);
-      expect(mockCounter.inc).toHaveBeenCalledWith({}, 12);
-      expect(mockCounter.inc).toHaveBeenCalledTimes(2);
+      expect(mockGauge.set).toHaveBeenCalledWith({}, 7);
+      expect(mockGauge.set).toHaveBeenCalledWith({}, 12);
+      expect(mockGauge.set).toHaveBeenCalledTimes(2);
     });
   });
 
