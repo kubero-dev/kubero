@@ -1,0 +1,43 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: serpbear
+    annotations:
+        kubero.dev/template.architecture: "['linux/amd64', 'linux/arm64/v8']"
+        kubero.dev/template.description: "SerpBear is a Search Engine Position Tracking App. It allows you to track your website's keyword positions in Google and get notified of their positions."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/towfiqi/serpbear/refs/heads/main/public/icon.png"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "['https://serpbear.b-cdn.net/serpbear_readme_v2.gif']"
+        kubero.dev/template.source: "https://github.com/towfiqi/serpbear"
+        kubero.dev/template.categories: "['utilities']"
+        kubero.dev/template.title: "serpbear"
+        kubero.dev/template.website: "https://docs.serpbear.com/"
+    labels:
+        manager: kubero
+spec:
+    envVars:
+        - name: SECRET
+          value: 4715aed3216f7b0a38e6b534a958362654e96d10fbc04700770d572af3dce43625dd
+        - name: APIKEY
+          value: 5saedXklbslhnapihe2pihp3pih4fdnakhjwq5
+        - name: USER
+          value: admin
+        - name: PASSWORD
+          value: "0123456"
+        - name: NEXT_PUBLIC_APP_URL
+          value: http://localhost
+    extraVolumes: []
+    cronjobs: []
+    addons: []
+    name: serpbear
+    deploymentstrategy: docker
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3000"
+        pullPolicy: Always
+        repository: towfiqi/serpbear
+        tag: latest
