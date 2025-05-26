@@ -9,6 +9,8 @@ import { App } from './app/app';
 import { IApp } from './apps.interface';
 import { IPodSize, ISecurityContext } from 'src/config/config.interface';
 import { IUser } from 'src/auth/auth.interface';
+import { IKubectlApp } from 'src/kubernetes/kubernetes.interface';
+import { mock } from 'node:test';
 
 const podsize: IPodSize = {
   name: 'small',
@@ -104,6 +106,13 @@ const mockApp = {
     requests: { cpu: '100m', memory: '128Mi' },
   },
 } as IApp;
+
+export const mochKubectlApp = {
+  apiVersion: 'kubero.io/v1',
+  kind: 'KuberoApp',
+  spec: mockApp,
+  status: {},
+} as IKubectlApp;
 
 describe('AppsService', () => {
   let service: AppsService;
@@ -482,6 +491,556 @@ describe('AppsService', () => {
       mockKubectl.getAllAppsList.mockRejectedValue(new Error('fail'));
 
       await expect(service.countApps()).rejects.toThrow('fail');
+    });
+  });
+
+  describe('AppsService - triggerImageBuildDelayed', () => {
+    let service: AppsService;
+
+    beforeEach(() => {
+      service = new AppsService(
+        {} as any, // kubectl
+        {} as any, // pipelinesService
+        {} as any, // NotificationsService
+        {} as any, // configService
+        {} as any  // eventsGateway
+      );
+      jest.spyOn(service, 'triggerImageBuild').mockResolvedValue({ 
+        status: 'ok', 
+        message: 'build started', 
+        deploymentstrategy: "git", 
+        pipeline: 'pipe',
+        phase: 'dev',
+        app: 'app1'
+      });
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+      jest.clearAllMocks();
+    });
+
+    it('should wait 2 seconds and then call triggerImageBuild', async () => {
+      const promise = service['triggerImageBuildDelayed']('pipe', 'dev', 'app1');
+      // Fast-forward time by 2 seconds
+      jest.advanceTimersByTime(2000);
+      const result = await promise;
+      expect(service.triggerImageBuild).toHaveBeenCalledWith('pipe', 'dev', 'app1');
+      expect(result).toEqual({"app": "app1", "deploymentstrategy": "git", "message": "build started", "phase": "dev", "pipeline": "pipe", "status": "ok"});
+    });
+  });
+
+  describe('AppsService - deletePRApp', () => {
+    let service: AppsService;
+    let mockGetAllAppsList: jest.Mock;
+    let mockDeleteApp: jest.Mock;
+    let mockLogger: any;
+
+    beforeEach(() => {
+      mockGetAllAppsList = jest.fn();
+      mockDeleteApp = jest.fn();
+      mockLogger = { debug: jest.fn() };
+
+      service = new AppsService(
+        {} as any, // kubectl
+        {} as any, // pipelinesService
+        {} as any, // NotificationsService
+        {} as any, // configService
+        {} as any  // eventsGateway
+      );
+      // Methoden ersetzen
+      service.getAllAppsList = mockGetAllAppsList;
+      service.deleteApp = mockDeleteApp;
+      service['logger'] = mockLogger;
+    });
+
+    it('should call deleteApp for matching PR apps', async () => {
+      mockGetAllAppsList.mockResolvedValue([
+        {
+          phase: 'review',
+          gitrepo: { ssh_url: 'git@github.com:foo/bar.git' },
+          branch: 'feature-1',
+          pipeline: 'pipeline1',
+        },
+        {
+          phase: 'dev',
+          gitrepo: { ssh_url: 'git@github.com:foo/bar.git' },
+          branch: 'feature-1',
+          pipeline: 'pipeline2',
+        },
+        {
+          phase: 'review',
+          gitrepo: { ssh_url: 'git@github.com:foo/bar.git' },
+          branch: 'feature-2',
+          pipeline: 'pipeline3',
+        },
+      ]);
+
+      await service.deletePRApp('feature-1', 'My PR Title', 'git@github.com:foo/bar.git');
+
+      // Erwartet: Nur das erste App-Objekt passt auf alle Kriterien
+      expect(mockDeleteApp).toHaveBeenCalledTimes(1);
+      expect(mockDeleteApp).toHaveBeenCalledWith(
+        'pipeline1',
+        'review',
+        'my-pr-title', // websaveTitle
+        { username: 'unknown' }
+      );
+    });
+
+    it('should not call deleteApp if no app matches', async () => {
+      mockGetAllAppsList.mockResolvedValue([
+        {
+          phase: 'dev',
+          gitrepo: { ssh_url: 'git@github.com:foo/bar.git' },
+          branch: 'feature-1',
+          pipeline: 'pipeline1',
+        },
+      ]);
+      await service.deletePRApp('feature-2', 'Other Title', 'git@github.com:foo/bar.git');
+      expect(mockDeleteApp).not.toHaveBeenCalled();
+    });
+
+    it('should call getAllAppsList with correct context', async () => {
+      mockGetAllAppsList.mockResolvedValue([]);
+      process.env.KUBERO_CONTEXT = 'my-context';
+      await service.deletePRApp('feature-1', 'My PR Title', 'git@github.com:foo/bar.git');
+      expect(mockGetAllAppsList).toHaveBeenCalledWith('my-context');
+      delete process.env.KUBERO_CONTEXT;
+    });
+
+    it('should log debug message', async () => {
+      mockGetAllAppsList.mockResolvedValue([]);
+      await service.deletePRApp('feature-1', 'My PR Title', 'git@github.com:foo/bar.git');
+      expect(mockLogger.debug).toHaveBeenCalledWith('destroyPRApp');
+    });
+  });
+
+  describe('AppsService - createPRApp', () => {
+    let service: AppsService;
+    let mockPipelinesService: any;
+    let mockConfigService: any;
+    let mockKubectl: any;
+    let mockNotificationsService: any;
+    
+    beforeEach(() => {
+      process.env.KUBERO_READONLY = 'false';
+      process.env.INGRESS_CLASSNAME = 'test-nginx';
+      
+      mockPipelinesService = {
+        listPipelines: jest.fn(),
+        getContext: jest.fn(),
+      };
+      
+      mockConfigService = {
+        getPodSizes: jest.fn().mockResolvedValue([podsize]),
+      };
+      
+      mockKubectl = {};
+      
+      mockNotificationsService = {
+        send: jest.fn(),
+      };
+      
+      service = new AppsService(
+        mockKubectl,
+        mockPipelinesService,
+        mockNotificationsService,
+        mockConfigService,
+        {} as any
+      );
+      
+      service.createApp = jest.fn().mockResolvedValue(undefined);
+      service['logger'] = { debug: jest.fn() } as any;
+    });
+    
+    it('should return early if KUBERO_READONLY is true', async () => {
+      process.env.KUBERO_READONLY = 'true';
+      
+      const result = await service.createPRApp('feature-branch', 'PR Title', 'git@github.com:org/repo.git', undefined);
+      
+      expect(result).toBeUndefined();
+      expect(service.createApp).not.toHaveBeenCalled();
+    });
+    
+    it('should create an app in matching pipeline with reviewapps enabled', async () => {
+      const mockPipelines = {
+        items: [
+          {
+            name: 'pipeline1',
+            reviewapps: false,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+          },
+          {
+            name: 'pipeline2',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+            phases: [{ name: 'review', domain: 'example.com', defaultEnvvars: [{ name: 'VAR', value: 'value' }] }],
+            buildpack: { name: 'nodejs', fetch: {}, build: {}, run: {} },
+            deploymentstrategy: 'git',
+            dockerimage: 'node:14',
+          },
+          {
+            name: 'pipeline3',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/different-repo.git' } },
+          },
+        ],
+      };
+      
+      mockPipelinesService.listPipelines.mockResolvedValue(mockPipelines);
+      
+      const result = await service.createPRApp('feature-branch', 'PR Title', 'git@github.com:org/repo.git', undefined);
+      
+      expect(result).toEqual({ status: 'ok', message: 'app created pr-title' });
+      expect(service.createApp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'pr-title',
+          pipeline: 'pipeline2',
+          phase: 'review',
+          branch: 'feature-branch',
+          gitrepo: { ssh_url: 'git@github.com:org/repo.git' },
+          ingress: expect.objectContaining({
+            enabled: true,
+            className: 'test-nginx',
+            hosts: [expect.objectContaining({
+              host: 'pr-title.example.com'
+            })]
+          })
+        }),
+        expect.objectContaining({ username: 'unknown' })
+      );
+    });
+    
+    it('should filter by pipelineName if provided', async () => {
+      const mockPipelines = {
+        items: [
+          {
+            name: 'pipeline1',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+            phases: [{ name: 'review', domain: 'example1.com', defaultEnvvars: [] }],
+            buildpack: { name: 'nodejs', fetch: {}, build: {}, run: {} },
+            deploymentstrategy: 'git',
+            dockerimage: 'node:14',
+          },
+          {
+            name: 'pipeline2',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+            phases: [{ name: 'review', domain: 'example2.com', defaultEnvvars: [] }],
+            buildpack: { name: 'nodejs', fetch: {}, build: {}, run: {} },
+            deploymentstrategy: 'git',
+            dockerimage: 'node:14',
+          },
+        ],
+      };
+      
+      mockPipelinesService.listPipelines.mockResolvedValue(mockPipelines);
+      
+      await service.createPRApp('feature-branch', 'PR Title', 'git@github.com:org/repo.git', 'pipeline2');
+      
+      expect(service.createApp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'pr-title',
+          pipeline: 'pipeline2'
+        }),
+        expect.anything()
+      );
+    });
+    
+    it('should not create an app if no matching pipeline is found', async () => {
+      const mockPipelines = {
+        items: [
+          {
+            name: 'pipeline1',
+            reviewapps: false,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+          },
+          {
+            name: 'pipeline2',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/different-repo.git' } },
+          },
+        ],
+      };
+      
+      mockPipelinesService.listPipelines.mockResolvedValue(mockPipelines);
+      
+      const result = await service.createPRApp('feature-branch', 'PR Title', 'git@github.com:org/repo.git', undefined);
+      
+      expect(result).toBeUndefined();
+      expect(service.createApp).not.toHaveBeenCalled();
+    });
+    
+    it('should create app with sanitized name from title', async () => {
+      const mockPipelines = {
+        items: [
+          {
+            name: 'pipeline1',
+            reviewapps: true,
+            git: { repository: { ssh_url: 'git@github.com:org/repo.git' } },
+            phases: [{ name: 'review', domain: 'example.com', defaultEnvvars: [] }],
+            buildpack: { name: 'nodejs', fetch: {}, build: {}, run: {} },
+            deploymentstrategy: 'git',
+            dockerimage: 'node:14',
+          },
+        ],
+      };
+      
+      mockPipelinesService.listPipelines.mockResolvedValue(mockPipelines);
+      
+      await service.createPRApp('feature-branch', 'Complex PR Title with 123 Special @#$ Characters!', 'git@github.com:org/repo.git', undefined);
+      
+      expect(service.createApp).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'complex-pr-title-with-123-special-----characters-',
+        }),
+        expect.anything()
+      );
+    });
+  });
+
+
+  describe('getTemplate', () => {
+    let service: AppsService;
+    let mockGetApp: jest.Mock;
+    let mockYAML: any;
+
+    beforeEach(() => {
+      mockGetApp = jest.fn();
+      mockYAML = {
+        stringify: jest.fn().mockReturnValue('yaml-output'),
+      };
+
+      service = new AppsService(
+        {} as any, // kubectl
+        {} as any, // pipelinesService
+        {} as any, // NotificationsService
+        {} as any, // ConfigService
+        {} as any  // eventsGateway
+      );
+      
+      // Override the methods and properties
+      service.getApp = mockGetApp;
+      service['YAML'] = mockYAML;
+    });
+
+    it('should return a YAML template for an app', async () => {
+      
+      mockGetApp.mockResolvedValue(mochKubectlApp);
+
+      const result = await service.getTemplate('pipeline1', 'dev', 'test-app');
+      
+      expect(mockGetApp).toHaveBeenCalledWith('pipeline1', 'dev', 'test-app');
+      expect(mockYAML.stringify).toHaveBeenCalledWith(
+        expect.any(Object), 
+        {
+          indent: 4,
+          resolveKnownTags: true
+        }
+      );
+      expect(result).toBe('yaml-output');
+    });
+  });
+
+  describe('AppsService - restartApp', () => {
+    let service: AppsService;
+    let mockKubectl: any;
+    let mockPipelinesService: any;
+    let mockNotificationsService: any;
+    let mockLogger: any;
+
+    beforeEach(() => {
+      mockKubectl = {
+        restartApp: jest.fn(),
+      };
+      mockPipelinesService = {
+        getContext: jest.fn().mockResolvedValue('test-context'),
+      };
+      mockNotificationsService = {
+        send: jest.fn(),
+      };
+      mockLogger = { debug: jest.fn() };
+
+      service = new AppsService(
+        mockKubectl,
+        mockPipelinesService,
+        mockNotificationsService,
+        {} as any, // configService
+        {} as any  // eventsGateway
+      );
+      service['logger'] = mockLogger;
+    });
+
+    afterEach(() => {
+      delete process.env.KUBERO_READONLY;
+      jest.clearAllMocks();
+    });
+
+    it('should not restart app if KUBERO_READONLY is true', async () => {
+      process.env.KUBERO_READONLY = 'true';
+      const user = { username: 'testuser' };
+      const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+      await service.restartApp('pipe', 'dev', 'app1', user as any);
+      expect(mockKubectl.restartApp).not.toHaveBeenCalled();
+      expect(mockNotificationsService.send).not.toHaveBeenCalled();
+      logSpy.mockRestore();
+    });
+
+    it('should call restartApp for web and worker and send notification', async () => {
+      const user = { username: 'testuser' };
+      await service.restartApp('pipe', 'dev', 'app1', user as any);
+
+      expect(mockLogger.debug).toHaveBeenCalledWith(
+        'restart App: app1 in pipe phase: dev'
+      );
+      expect(mockPipelinesService.getContext).toHaveBeenCalledWith('pipe', 'dev');
+      expect(mockKubectl.restartApp).toHaveBeenCalledWith(
+        'pipe', 'dev', 'app1', 'web', 'test-context'
+      );
+      expect(mockKubectl.restartApp).toHaveBeenCalledWith(
+        'pipe', 'dev', 'app1', 'worker', 'test-context'
+      );
+      expect(mockNotificationsService.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'restartApp',
+          user: 'testuser',
+          resource: 'app',
+          action: 'restart',
+          pipelineName: 'pipe',
+          phaseName: 'dev',
+          appName: 'app1',
+        })
+      );
+    });
+
+    it('should do nothing if getContext returns undefined', async () => {
+      mockPipelinesService.getContext.mockResolvedValueOnce(undefined);
+      const user = { username: 'testuser' };
+      await service.restartApp('pipe', 'dev', 'app1', user as any);
+      expect(mockKubectl.restartApp).not.toHaveBeenCalled();
+      expect(mockNotificationsService.send).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('AppsService - getPods', () => {
+    let service: AppsService;
+    let mockKubectl: any;
+    let mockPipelinesService: any;
+
+    beforeEach(() => {
+      mockKubectl = {
+        setCurrentContext: jest.fn(),
+        getPods: jest.fn(),
+      };
+      mockPipelinesService = {
+        getContext: jest.fn(),
+      };
+
+      service = new AppsService(
+        mockKubectl,
+        mockPipelinesService,
+        {} as any, // NotificationsService
+        {} as any, // ConfigService
+        {} as any  // EventsGateway
+      );
+    });
+
+    it('should return empty array if no context is found', async () => {
+      mockPipelinesService.getContext.mockResolvedValue(undefined);
+      const result = await service.getPods('pipe', 'dev', 'app1');
+      expect(result).toEqual([]);
+      expect(mockKubectl.setCurrentContext).not.toHaveBeenCalled();
+      expect(mockKubectl.getPods).not.toHaveBeenCalled();
+    });
+
+    it('should return filtered workloads with containers', async () => {
+      mockPipelinesService.getContext.mockResolvedValue('test-context');
+      mockKubectl.getPods.mockResolvedValue([
+        {
+          metadata: {
+            name: 'pod-1',
+            namespace: 'pipe-dev',
+            generateName: 'app1-kuberoapp-',
+            creationTimestamp: '2024-01-01T00:00:00Z',
+          },
+          status: {
+            phase: 'Running',
+            startTime: '2024-01-01T00:00:00Z',
+            containerStatuses: [
+              { restartCount: 1, ready: true, started: true },
+              { restartCount: 0, ready: false, started: false },
+            ],
+          },
+          spec: {
+            containers: [
+              { name: 'web', image: 'nginx:latest' },
+              { name: 'worker', image: 'node:18' },
+            ],
+          },
+        },
+        {
+          metadata: {
+            name: 'pod-2',
+            namespace: 'pipe-dev',
+            generateName: 'otherapp-kuberoapp-',
+            creationTimestamp: '2024-01-01T01:00:00Z',
+          },
+          status: {
+            phase: 'Pending',
+            startTime: '2024-01-01T01:00:00Z',
+            containerStatuses: [],
+          },
+          spec: {
+            containers: [],
+          },
+        },
+      ]);
+
+      const result = await service.getPods('pipe', 'dev', 'app1');
+      expect(mockPipelinesService.getContext).toHaveBeenCalledWith('pipe', 'dev');
+      expect(mockKubectl.setCurrentContext).toHaveBeenCalledWith('test-context');
+      expect(mockKubectl.getPods).toHaveBeenCalledWith('pipe-dev', 'test-context');
+      expect(result.length).toBe(1);
+      expect(result[0]).toMatchObject({
+        name: 'pod-1',
+        namespace: 'pipe-dev',
+        phase: 'dev',
+        pipeline: 'pipe',
+        status: 'Running',
+        age: '2024-01-01T00:00:00Z',
+        startTime: '2024-01-01T00:00:00Z',
+        containers: [
+          { name: 'web', image: 'nginx:latest', restartCount: 1, ready: true, started: true },
+          { name: 'worker', image: 'node:18', restartCount: 0, ready: false, started: false },
+        ],
+      });
+    });
+
+    it('should skip pods whose generateName does not match', async () => {
+      mockPipelinesService.getContext.mockResolvedValue('test-context');
+      mockKubectl.getPods.mockResolvedValue([
+        {
+          metadata: {
+            name: 'pod-2',
+            namespace: 'pipe-dev',
+            generateName: 'otherapp-kuberoapp-',
+            creationTimestamp: '2024-01-01T01:00:00Z',
+          },
+          status: {
+            phase: 'Pending',
+            startTime: '2024-01-01T01:00:00Z',
+            containerStatuses: [],
+          },
+          spec: {
+            containers: [],
+          },
+        },
+      ]);
+      const result = await service.getPods('pipe', 'dev', 'app1');
+      expect(result).toEqual([]);
     });
   });
 });
