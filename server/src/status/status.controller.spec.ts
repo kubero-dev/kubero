@@ -20,22 +20,23 @@ describe('StatusController', () => {
     // Mock response and request objects
     const mockResponse = {
       req: {
-        headers: {}
+        headers: {},
       },
-      status: jest.fn().mockReturnThis()
+      status: jest.fn().mockReturnThis(),
     } as any;
-    
+
     // Mock super.index
-    const superIndexSpy = jest.spyOn(Object.getPrototypeOf(controller), 'index')
+    const superIndexSpy = jest
+      .spyOn(Object.getPrototypeOf(controller), 'index')
       .mockResolvedValue('metrics data');
-    
+
     const result = await controller.index(mockResponse);
-    
+
     expect(superIndexSpy).toHaveBeenCalledWith(mockResponse);
     expect(result).toBe('metrics data');
     expect(mockResponse.status).not.toHaveBeenCalled();
   });
-/*
+  /*
   it('should block request with 403 when x-forwarded-for header is present', async () => {
     // Mock response and request objects
     const mockResponse = {

@@ -1,9 +1,5 @@
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
-import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
-import { AuditService } from '../audit/audit.service';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
@@ -63,7 +59,7 @@ describe('AuthService', () => {
         username: 'test',
         password: 'hashed',
       });
-      // Simuliere SHA256 Hash
+      // Simulates SHA256 Hash
       const crypto = require('crypto');
       const hash = crypto
         .createHmac('sha256', process.env.KUBERO_SESSION_KEY)

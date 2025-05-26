@@ -17,10 +17,10 @@ export class StatusService {
 
   @Cron('*/15 * * * * *')
   async updateKuberoMetrics(): Promise<void> {
-    const pipelineTotal = await this.pipelinesService.countPipelines()
+    const pipelineTotal = await this.pipelinesService.countPipelines();
     this.pipelineTotal.set({}, pipelineTotal);
 
-    const appTotal = await this.appsService.countApps()
+    const appTotal = await this.appsService.countApps();
     //this.appsTotal.inc({}, appTotal);
     this.appsTotal.set({}, appTotal);
   }

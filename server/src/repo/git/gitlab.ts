@@ -387,7 +387,7 @@ export class GitlabApi extends Repo {
     return ret;
   }
 
-  public async getPullrequests(gitrepo: string): Promise<IPullrequest[]> {
+  public async getPullrequests(_gitrepo: string): Promise<IPullrequest[]> {
     const ret: IPullrequest[] = [];
 
     return ret;

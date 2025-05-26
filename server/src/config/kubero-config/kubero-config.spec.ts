@@ -1,4 +1,3 @@
-import { KuberoConfig } from './kubero-config';
 import { IKuberoConfig } from '../config.interface';
 import { IPodSize, IBuildpack, ISecurityContext } from '../config.interface';
 import { INotificationConfig } from 'src/notifications/notifications.interface';

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { KubernetesController } from './kubernetes.controller';
 import { KubernetesService } from './kubernetes.service';
 import { IStorageClass } from './kubernetes.interface';
-import { CoreV1Event, Context } from '@kubernetes/client-node';
+import { CoreV1Event } from '@kubernetes/client-node';
 
 export const mockStorageClass = {
   name: 'fast',

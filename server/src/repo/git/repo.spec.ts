@@ -1,5 +1,4 @@
 import { Repo } from './repo';
-import { IDeploykeyR, IRepository, IWebhookR } from './types';
 import { GithubApi } from './github';
 import { GogsApi } from './gogs';
 import { GitlabApi } from './gitlab';

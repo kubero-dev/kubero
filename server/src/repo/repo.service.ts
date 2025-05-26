@@ -50,7 +50,7 @@ export class RepoService {
     repoB64: string,
   ): Promise<string[]> {
     //return this.git.listRepoBranches(repo, repoProvider);
-    let ref: Promise<string[]> = new Promise((resolve, reject) => {
+    let ref: Promise<string[]> = new Promise((resolve, _reject) => {
       resolve([]);
     });
 
@@ -145,7 +145,7 @@ export class RepoService {
     repoB64: string,
   ): Promise<string[]> {
     //return this.git.listRepoBranches(repo, repoProvider);
-    let branches: Promise<string[]> = new Promise((resolve, reject) => {
+    let branches: Promise<string[]> = new Promise((resolve, _reject) => {
       resolve([]);
     });
 
@@ -180,7 +180,7 @@ export class RepoService {
     repoB64: string,
   ): Promise<IPullrequest[]> {
     //return this.git.listRepoBranches(repo, repoProvider);
-    let pulls: Promise<IPullrequest[]> = new Promise((resolve, reject) => {
+    let pulls: Promise<IPullrequest[]> = new Promise((resolve, _reject) => {
       resolve([]);
     });
 

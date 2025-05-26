@@ -30,12 +30,18 @@ describe('AuthController', () => {
   describe('login', () => {
     it('should return error if username or password is missing', async () => {
       const result = await controller.login({ username: '', password: '' });
-      expect(result).toEqual({ message: 'Username and password are required', status: 400 });
+      expect(result).toEqual({
+        message: 'Username and password are required',
+        status: 400,
+      });
     });
 
     it('should call authService.login with username and password', async () => {
       service.login.mockResolvedValueOnce({ access_token: 'token' });
-      const result = await controller.login({ username: 'user', password: 'pw' });
+      const result = await controller.login({
+        username: 'user',
+        password: 'pw',
+      });
       expect(service.login).toHaveBeenCalledWith('user', 'pw');
       expect(result).toEqual({ access_token: 'token' });
     });
@@ -49,14 +55,20 @@ describe('AuthController', () => {
       };
       await controller.logout(mockRes as any);
       expect(mockRes.clearCookie).toHaveBeenCalledWith('kubero.JWT_TOKEN');
-      expect(mockRes.send).toHaveBeenCalledWith({ message: 'Logged out', status: '200' });
+      expect(mockRes.send).toHaveBeenCalledWith({
+        message: 'Logged out',
+        status: '200',
+      });
     });
   });
 
   describe('session', () => {
     it('should call getSession with isAuthenticated', async () => {
       service.validateToken.mockResolvedValueOnce(true);
-      service.getSession.mockResolvedValueOnce({ message: { foo: 'bar' }, status: 200 });
+      service.getSession.mockResolvedValueOnce({
+        message: { foo: 'bar' },
+        status: 200,
+      });
       const mockReq = { headers: { authorization: 'Bearer token' } };
       const mockRes = { send: jest.fn() };
       await controller.session(mockReq as any, mockRes as any);
@@ -66,7 +78,10 @@ describe('AuthController', () => {
     });
 
     it('should call getSession with false if no auth header', async () => {
-      service.getSession.mockResolvedValueOnce({ message: { foo: 'bar' }, status: 200 });
+      service.getSession.mockResolvedValueOnce({
+        message: { foo: 'bar' },
+        status: 200,
+      });
       const mockReq = { headers: {} };
       const mockRes = { send: jest.fn() };
       await controller.session(mockReq as any, mockRes as any);
@@ -77,7 +92,11 @@ describe('AuthController', () => {
 
   describe('getMethods', () => {
     it('should return methods from service', async () => {
-      service.getMethods.mockReturnValue({ local: true, github: false, oauth2: true });
+      service.getMethods.mockReturnValue({
+        local: true,
+        github: false,
+        oauth2: true,
+      });
       const result = await controller.getMethods();
       expect(result).toEqual({ local: true, github: false, oauth2: true });
     });

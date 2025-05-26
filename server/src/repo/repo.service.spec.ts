@@ -1,6 +1,4 @@
 import { RepoService } from './repo.service';
-import { NotificationsService } from '../notifications/notifications.service';
-import { AppsService } from '../apps/apps.service';
 
 jest.mock('./git/github', () => ({
   GithubApi: jest.fn().mockImplementation(() => ({

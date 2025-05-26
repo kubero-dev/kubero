@@ -1,5 +1,4 @@
 import { LogsService } from './logs.service';
-import { Stream } from 'stream';
 
 describe('LogsService', () => {
   let service: LogsService;

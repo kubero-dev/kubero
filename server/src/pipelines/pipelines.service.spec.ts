@@ -1,5 +1,4 @@
 import { PipelinesService } from './pipelines.service';
-import { Buildpack } from '../config/buildpack/buildpack';
 import { IUser } from 'src/auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
 
@@ -176,7 +175,7 @@ describe('PipelinesService', () => {
       process.env.KUBERO_READONLY = 'true';
       const user = { username: 'test' } as IUser;
       const spy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      await service.deletePipeline('pipe1', user);
+      service.deletePipeline('pipe1', user);
       expect(spy).toHaveBeenCalledWith(
         'KUBERO_READONLY is set to true, not deleting pipeline pipe1',
       );
@@ -209,7 +208,6 @@ describe('PipelinesService', () => {
 
     it('should update pipeline and send notification', async () => {
       const user = { username: 'test' } as IUser;
-      const pipeline = { name: 'pipe1', git: { keys: {} } };
       kubectl.getPipeline.mockResolvedValue({
         spec: { git: { keys: { priv: 'priv', pub: 'pub' } } },
       });

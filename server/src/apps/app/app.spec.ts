@@ -1,5 +1,4 @@
 import { App, KubectlApp } from './app';
-import { Buildpack } from '../../config/buildpack/buildpack';
 import { IPodSize, ISecurityContext } from '../../config/config.interface';
 import { IApp } from '../apps.interface';
 

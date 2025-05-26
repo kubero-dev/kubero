@@ -18,7 +18,6 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiResponse,
 } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';

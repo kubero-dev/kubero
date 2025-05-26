@@ -12,7 +12,7 @@ import gitUrlParse = require('git-url-parse');
 debug('app:kubero:gogs:api');
 
 //https://www.npmjs.com/package/gitea-js
-import { giteaApi, Api } from 'gitea-js';
+import { giteaApi } from 'gitea-js';
 import { fetch as fetchGitea } from 'cross-fetch';
 
 export class GogsApi extends Repo {
@@ -27,8 +27,6 @@ export class GogsApi extends Repo {
   }
 
   protected async getRepository(gitrepo: string): Promise<IRepository> {
-    const GitUrlParse = require('git-url-parse');
-
     let ret: IRepository = {
       status: 500,
       statusText: 'error',
@@ -336,7 +334,7 @@ export class GogsApi extends Repo {
     return ret;
   }
 
-  public async getPullrequests(gitrepo: string): Promise<IPullrequest[]> {
+  public async getPullrequests(_gitrepo: string): Promise<IPullrequest[]> {
     const ret: IPullrequest[] = [];
 
     return ret;

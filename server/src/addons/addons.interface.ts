@@ -19,16 +19,6 @@ export interface IAddon {
   crd: KubernetesObject;
 }
 
-interface IAddonMinimal {
-  group: string;
-  version: string;
-  namespace: string;
-  pipeline: string;
-  phase: string;
-  plural: string;
-  id: string;
-}
-
 interface IAddonFormFields {
   type: 'text' | 'number' | 'switch';
   label: string;
@@ -53,8 +43,4 @@ export interface IAddon {
   install: string;
   formfields: { [key: string]: IAddonFormFields };
   crd: KubernetesObject;
-}
-
-interface IUniqueAddons {
-  [key: string]: IAddon;
 }

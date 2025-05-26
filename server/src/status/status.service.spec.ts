@@ -2,7 +2,6 @@ import { StatusService } from './status.service';
 //import { PipelinesService } from '../pipelines/pipelines.service';
 //import { AppsService } from '../apps/apps.service';
 
-
 describe('StatusService', () => {
   let service: StatusService;
   let mockGauge: any;
@@ -19,7 +18,12 @@ describe('StatusService', () => {
     mockAppsService = {
       countApps: jest.fn(),
     };
-    service = new StatusService(mockGauge, mockGauge, mockPipelinesService, mockAppsService);
+    service = new StatusService(
+      mockGauge,
+      mockGauge,
+      mockPipelinesService,
+      mockAppsService,
+    );
     // Mock logger to avoid actual logging in tests
     jest.spyOn(service['logger'], 'error').mockImplementation(() => {});
     jest.spyOn(service['logger'], 'warn').mockImplementation(() => {});
@@ -39,9 +43,9 @@ describe('StatusService', () => {
     it('should increment both counters with correct values', async () => {
       mockPipelinesService.countPipelines.mockResolvedValue(7);
       mockAppsService.countApps.mockResolvedValue(12);
-      
+
       await service.updateKuberoMetrics();
-      
+
       expect(mockGauge.set).toHaveBeenCalledWith({}, 7);
       expect(mockGauge.set).toHaveBeenCalledWith({}, 12);
       expect(mockGauge.set).toHaveBeenCalledTimes(2);
@@ -66,12 +70,12 @@ describe('StatusService', () => {
     it('should return 0 and log error when countPipelines throws', async () => {
       const error = new Error('Database error');
       mockPipelinesService.countPipelines.mockRejectedValue(error);
-      
+
       const result = await service.getPipelineCount();
-      
+
       expect(result).toBe(0);
       expect(service['logger'].error).toHaveBeenCalledWith(
-        `Error getting pipeline count: ${error.message}`
+        `Error getting pipeline count: ${error.message}`,
       );
     });
 
@@ -93,12 +97,12 @@ describe('StatusService', () => {
       it('should return 0 and log error when countApps throws', async () => {
         const error = new Error('Database error');
         mockAppsService.countApps.mockRejectedValue(error);
-        
+
         const result = await service.getAppCount();
-        
+
         expect(result).toBe(0);
         expect(service['logger'].error).toHaveBeenCalledWith(
-          `Error getting app count: ${error.message}`
+          `Error getting app count: ${error.message}`,
         );
       });
     });

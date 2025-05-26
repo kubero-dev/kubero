@@ -1,4 +1,4 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBuild {
   @ApiProperty({ enum: ['buildpacks', 'dockerfile', 'nixpacks', 'plain'] })

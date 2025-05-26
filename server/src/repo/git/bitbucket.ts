@@ -1,5 +1,4 @@
 import debug from 'debug';
-import * as crypto from 'crypto';
 import {
   IWebhook,
   IRepository,
@@ -113,7 +112,7 @@ export class BitbucketApi extends Repo {
     owner: string,
     repo: string,
     url: string,
-    secret: string,
+    _secret: string,
   ): Promise<IWebhookR> {
     let ret: IWebhookR = {
       status: 500,
@@ -377,7 +376,7 @@ export class BitbucketApi extends Repo {
     return ret;
   }
 
-  public async getPullrequests(gitrepo: string): Promise<IPullrequest[]> {
+  public async getPullrequests(_gitrepo: string): Promise<IPullrequest[]> {
     const ret: IPullrequest[] = [];
 
     return ret;

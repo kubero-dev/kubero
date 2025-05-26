@@ -19,11 +19,11 @@ export class LogsService {
 
   private logcolor(str: string) {
     let hash = 0;
-    for (var i = 0; i < str.length; i++) {
+    for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
     let color = '#';
-    for (var i = 0; i < 3; i++) {
+    for (let i = 0; i < 3; i++) {
       const value = (hash >> (i * 8)) & 0xff;
       color += ('00' + value.toString(16)).substring(2);
     }
@@ -75,7 +75,7 @@ export class LogsService {
             pretty: false,
             timestamps: false,
           })
-          .then((res) => {
+          .then((_res) => {
             this.logger.debug('logs started for ' + podName + ' ' + container);
             this.podLogStreams.push(podName);
           })
@@ -202,7 +202,7 @@ export class LogsService {
         pretty: false,
         timestamps: true,
       });
-    } catch (error) {
+    } catch (_error) {
       console.log('error getting logs for ' + podName + ' ' + containerName);
       return [];
     }

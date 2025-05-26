@@ -1,4 +1,3 @@
-import { KubernetesObject } from '@kubernetes/client-node';
 import { Plugin, IPlugin, IPluginFormFields } from './plugin';
 
 // Classname must be same as the CRD's Name

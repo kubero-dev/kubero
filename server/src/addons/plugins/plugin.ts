@@ -1,8 +1,4 @@
 import axios from 'axios';
-import {
-  KubernetesListObject,
-  KubernetesObject,
-} from '@kubernetes/client-node';
 import { Logger } from '@nestjs/common';
 
 export interface IPluginFormFields {
@@ -91,7 +87,10 @@ export abstract class Plugin {
   private async loadMetadataFromArtefacthub() {
     const response = await axios.get(this.artifact_url).catch((error) => {
       this.logger.debug(
-        '   failed loading data from artifacthub for ' + this.id,
+        '   failed loading data from artifacthub for ' +
+          this.id +
+          ': ' +
+          error.message,
       );
       //console.log(error);
     });

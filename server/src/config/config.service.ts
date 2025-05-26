@@ -189,7 +189,7 @@ export class ConfigService {
     try {
       settings = readFileSync(path, 'utf8');
       return YAML.parse(settings) as IKuberoConfig;
-    } catch (e) {
+    } catch (_error) {
       this.logger.error('Error reading config file');
 
       return new Object() as IKuberoConfig;
@@ -225,7 +225,7 @@ export class ConfigService {
       const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
       const kuberoes = await this.kubectl.getKuberoConfig(namespace);
       registry = kuberoes.spec.registry;
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('Error getting kuberoes config');
     }
     return registry;
@@ -376,7 +376,7 @@ export class ConfigService {
           enabled = true;
         }
       }
-    } catch (error) {
+    } catch (_error) {
       this.logger.error('❌ getSleepEnabled: could not check for Zeropod');
       return false;
     }

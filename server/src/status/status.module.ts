@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import {
   PrometheusModule,
-  makeCounterProvider,
-  makeGaugeProvider
+  //makeCounterProvider,
+  makeGaugeProvider,
 } from '@willsoto/nestjs-prometheus';
 import { StatusService } from './status.service';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -13,8 +13,8 @@ import { StatusController } from './status.controller';
   imports: [
     PrometheusModule.register({
       controller: StatusController,
-    }), 
-    ScheduleModule.forRoot()
+    }),
+    ScheduleModule.forRoot(),
   ],
   providers: [
     StatusService,

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AppsController } from './apps.controller';
 import { AppsService } from './apps.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException } from '@nestjs/common';
 
 import { IApp } from './apps.interface';
 import { IPodSize, ISecurityContext } from 'src/config/config.interface';

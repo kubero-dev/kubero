@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PipelinesController } from './pipelines.controller';
 import { PipelinesService } from './pipelines.service';
-import { OKDTO } from '../shared/dto/ok.dto';
 
 describe('PipelinesController', () => {
   let controller: PipelinesController;

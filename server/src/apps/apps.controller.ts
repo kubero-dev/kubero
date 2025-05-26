@@ -11,7 +11,6 @@ import {
   Post,
   Put,
   UseGuards,
-  Res,
 } from '@nestjs/common';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';

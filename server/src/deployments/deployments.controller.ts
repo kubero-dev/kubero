@@ -171,15 +171,10 @@ export class DeploymentsController {
     @Param('app') app: string,
     @Param('tag') tag: string,
   ): Promise<OKDTO> {
-    this.deploymentsService.deployApp(
-      pipeline,
-      phase,
-      app,
-      tag
-    );
+    this.deploymentsService.deployApp(pipeline, phase, app, tag);
     return {
       message: `Deployment triggered for ${app} in ${pipeline} phase ${phase} with tag ${tag}`,
       status: 'success',
-    }
+    };
   }
 }

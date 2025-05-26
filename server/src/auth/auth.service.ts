@@ -1,11 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  Logger,
-  Request,
-  Type,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
@@ -54,7 +47,7 @@ export class AuthService {
     try {
       const decoded = this.jwtService.verify(token);
       return true;
-    } catch (e) {
+    } catch (_error) {
       return false;
     }
   }
