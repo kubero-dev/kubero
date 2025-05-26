@@ -17,7 +17,7 @@ RUN cd /build/client && \
 RUN cd /build/client && \
     yarn build 
 
-FROM build AS release
+FROM node:22-alpine AS release
 ARG VERSION=unknown
 
 LABEL maintainer='www.kubero.dev'
