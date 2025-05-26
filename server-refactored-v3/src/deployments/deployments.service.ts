@@ -259,4 +259,34 @@ export class DeploymentsService {
     }
     return loglines;
   }
+
+  public async deployApp(pipelineName: string, phaseName: string, appName: string, tag: string) {
+    this.logger.debug('deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName);
+
+    
+    const contextName = await this.pipelinesService.getContext(
+      pipelineName,
+      phaseName,
+    );
+    const namespace = pipelineName+'-'+phaseName;
+
+    if (contextName) {
+      this.kubectl.setCurrentContext(contextName);
+      this.kubectl.deployApp(namespace, appName, tag);
+
+      const m = {
+        'name': 'deployApp',
+        'user': '',
+        'resource': 'app',
+        'action': 'deploy',
+        'severity': 'normal',
+        'message': 'Deploy App: '+appName+' in '+ pipelineName+' phase: '+phaseName,
+        'pipelineName':pipelineName,
+        'phaseName': phaseName,
+        'appName': appName,
+        'data': {}
+      } as INotification;
+      this.notificationService.send(m);
+    }
+  }
 }

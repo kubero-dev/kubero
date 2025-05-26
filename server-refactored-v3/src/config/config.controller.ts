@@ -149,6 +149,23 @@ export class ConfigController {
     type: OKDTO,
     isArray: false,
   })
+  @ApiOperation({ summary: 'Validate the provided kubeconfig' })
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        kubeconfig: {
+          type: 'string',
+          description: 'Kubeconfig content as a string',
+        },
+        context: {
+          type: 'string',
+          description: 'Kubernetes context to validate',
+        },
+      },
+    },
+  })
   async validateKubeconfig(@Body() body) {
     const kubeconfig = body.kubeconfig;
     const kubeContext = body.context;
@@ -166,6 +183,35 @@ export class ConfigController {
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
+  })
+  @ApiOperation({ summary: 'Save the running configuration' })
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        KUBECONFIG_BASE64: {
+          type: 'string',
+          description: 'Base64 encoded kubeconfig',
+        },
+        KUBERO_CONTEXT: {
+          type: 'string',
+          description: 'Kubernetes context to use',
+        },
+        KUBERO_NAMESPACE: {
+          type: 'string',
+          description: 'Namespace for Kubero',
+        },
+        KUBERO_SESSION_KEY: {
+          type: 'string',
+          description: 'Session key for Kubero',
+        },
+        KUBERO_WEBHOOK_SECRET: {
+          type: 'string',
+          description: 'Webhook secret for Kubero',
+        },
+      },
+    },
   })
   async updateRunningConfig(@Body() body) {
     const kubeconfigBase64 = body.KUBECONFIG_BASE64;

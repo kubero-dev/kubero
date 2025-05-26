@@ -92,4 +92,28 @@ describe('DeploymentsController', () => {
     );
     expect(result).toEqual([{ log: 'line1' }]);
   });
+
+  it('should deploy tag', async () => {
+    // Add deployApp mock to the service
+    service.deployApp = jest.fn();
+    
+    const result = await controller.deployTag(
+      'pipe',
+      'phase',
+      'app',
+      'v1.0.0'
+    );
+    
+    expect(service.deployApp).toHaveBeenCalledWith(
+      'pipe',
+      'phase',
+      'app',
+      'v1.0.0'
+    );
+    
+    expect(result).toEqual({
+      message: 'Deployment triggered for app in pipe phase phase with tag v1.0.0',
+      status: 'success'
+    });
+  });
 });

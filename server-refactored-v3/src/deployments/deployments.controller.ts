@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { DeploymentsService } from './deployments.service';
@@ -149,5 +150,36 @@ export class DeploymentsController {
       build,
       container,
     );
+  }
+
+  @Put('/:pipeline/:phase/:app/:tag')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Deploy a specific tag for an app' })
+  @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
+  @ApiParam({ name: 'phase', description: 'Phase name' })
+  @ApiParam({ name: 'app', description: 'App name' })
+  @ApiParam({ name: 'tag', description: 'Tag to deploy' })
+  async deployTag(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Param('tag') tag: string,
+  ): Promise<OKDTO> {
+    this.deploymentsService.deployApp(
+      pipeline,
+      phase,
+      app,
+      tag
+    );
+    return {
+      message: `Deployment triggered for ${app} in ${pipeline} phase ${phase} with tag ${tag}`,
+      status: 'success',
+    }
   }
 }
