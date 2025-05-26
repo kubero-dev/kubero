@@ -95,7 +95,7 @@ export class DeploymentsController {
     type: OKDTO,
     isArray: false,
   })
-  @ApiOperation({ summary: 'Delete a specific app' })
+  @ApiOperation({ summary: 'Delete a specific build' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
   @ApiParam({ name: 'phase', description: 'Phase name' })
   @ApiParam({ name: 'app', description: 'App name' })
@@ -130,7 +130,7 @@ export class DeploymentsController {
     type: OKDTO,
     isArray: false,
   })
-  @ApiOperation({ summary: 'Get logs for a specific app' })
+  @ApiOperation({ summary: 'Get logs for a specific build' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
   @ApiParam({ name: 'phase', description: 'Phase name' })
   @ApiParam({ name: 'app', description: 'App name' })
