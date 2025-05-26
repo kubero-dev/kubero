@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
 defaults:
   run:
-    working-directory: ./server-refactored-v3
+    working-directory: ./server
 jobs:
   codecov:
     runs-on: ubuntu-latest
@@ -16,5 +16,5 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
         with:
-          directory: server-refactored-v3/coverage
+          directory: server/coverage
           token: ${{ secrets.CODECOV_TOKEN }}

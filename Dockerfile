@@ -4,7 +4,7 @@ ENV NODE_ENV=development
 WORKDIR /build
 
 ## Server
-COPY server-refactored-v3 ./server
+COPY server ./server
 RUN cd /build/server && \
     yarn install
 RUN cd /build/server && \
@@ -33,7 +33,7 @@ COPY --from=build /build/server/src/deployments/templates /app/server/deployment
 COPY --from=build /build/server/node_modules /app/server/node_modules
 
 # temporary fix for the public folder
-COPY --from=build /build/server-refactored-v3/dist/public /app/server/public
+COPY --from=build /build/server/dist/public /app/server/public
 
 
 RUN echo -n $VERSION > /app/server/VERSION
