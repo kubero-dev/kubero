@@ -14,7 +14,7 @@ import { Tunnel } from './plugins/cloudflare';
 import { PostgresCluster } from './plugins/postgresCluster';
 import { RedisCluster } from './plugins/redisCluster';
 import { Redis } from './plugins/redis';
-import { MongoDB } from './plugins/mongoDB';
+import { PerconaServerMongoDB as MongoDB } from './plugins/mongoDB';
 import { Cockroachdb } from './plugins/cockroachDB';
 import { Tenant } from './plugins/minio';
 import { ClickHouseInstallation } from './plugins/clickhouse';

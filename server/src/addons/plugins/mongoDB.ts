@@ -1,7 +1,7 @@
 import { Plugin, IPlugin, IPluginFormFields } from './plugin';
 
 // Classname must be same as the CRD's Name
-export class MongoDB extends Plugin implements IPlugin {
+export class PerconaServerMongoDB extends Plugin implements IPlugin {
   public id: string = 'mongodb-operator'; //same as operator name
   public displayName = 'Percona MongoDB';
   public icon = '/img/addons/mongo.svg';
