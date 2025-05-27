@@ -2,12 +2,13 @@ import { Plugin, IPlugin, IPluginFormFields } from './plugin';
 
 // Classname must be same as the CRD's Name
 export class Cockroachdb extends Plugin implements IPlugin {
-  public id: string = 'cockroachdb'; //same as operator name
+  public id: string = 'Cockroachdb'; //same as operator name
   public displayName = 'CockroachDB';
   public icon = '/img/addons/CockroachDB.svg';
   public install: string =
-    'kubectl create -f https://operatorhub.io/install/cockroachdb.yaml';
-  public install_olm: string =
+    'kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/crds.yaml && ' +
+    'kubectl apply -f https://raw.githubusercontent.com/cockroachdb/cockroach-operator/master/install/operator.yaml';
+  public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/cockroachdb.yaml';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/cockroachdb';
@@ -18,7 +19,7 @@ export class Cockroachdb extends Plugin implements IPlugin {
     },
   ];
   public artifact_url =
-    'https://artifacthub.io/api/v1/packages/olm/community-operators/mongodb-operator';
+    'https://artifacthub.io/api/v1/packages/olm/community-operators/cockroachdb';
   public beta: boolean = true;
 
   public formfields: { [key: string]: IPluginFormFields } = {

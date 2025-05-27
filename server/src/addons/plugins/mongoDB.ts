@@ -6,6 +6,9 @@ export class MongoDB extends Plugin implements IPlugin {
   public displayName = 'Percona MongoDB';
   public icon = '/img/addons/mongo.svg';
   public install: string =
+    `kubectl create namespace mongodb-operator-system
+kubectl apply -n mongodb-operator-system --server-side -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/v1.20.0/deploy/bundle.yaml`;
+  public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/mongodb-operator';

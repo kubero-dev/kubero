@@ -23,6 +23,10 @@ export class ClickHouseInstallation extends Plugin implements IPlugin {
       name: 'Documentation',
       url: 'https://github.com/Altinity/clickhouse-operator/tree/master/docs',
     },
+    {
+      name: 'Quick Start Guide',
+      url: 'https://github.com/Altinity/clickhouse-operator/blob/master/docs/quick_start.md',
+    },
   ];
   public maintainers = [
     {

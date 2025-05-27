@@ -27,6 +27,7 @@ export interface IPlugin {
   };
   description: string;
   install: string;
+  installOLM?: string;
   formfields: { [key: string]: IPluginFormFields };
   //crd: KubernetesObject,
   resourceDefinitions: any;
@@ -86,13 +87,13 @@ export abstract class Plugin {
 
   private async loadMetadataFromArtefacthub() {
     const response = await axios.get(this.artifact_url).catch((error) => {
+      /*
       this.logger.debug(
-        '   failed loading data from artifacthub for ' +
-          this.id +
-          ': ' +
+        '   No entry found on artefacthub.io for ' + this.id + ': ' +
           error.message,
       );
-      //console.log(error);
+      */
+      return null;
     });
 
     // set artifact hub values
@@ -105,7 +106,7 @@ export abstract class Plugin {
       this.version.latest = response.data.version;
       this.artefact_data = response.data;
     } else {
-      this.logger.debug('   No artefact.io data found for ' + this.id);
+      //this.logger.debug('   No artefacthub.io metadata found for ' + this.id);
     }
   }
 
@@ -145,7 +146,7 @@ export abstract class Plugin {
 
   private loadCRDFromOperatorData() {
     if (this.operator_data === undefined) {
-      this.logger.error('No CRDs defined in operator for ' + this.id);
+      this.logger.error('   No CRDs defined in operator for ' + this.id);
       return;
     }
 
@@ -153,7 +154,7 @@ export abstract class Plugin {
       this.operator_data.metadata.annotations['alm-examples'];
 
     if (operatorCRDList === undefined) {
-      this.logger.error('No CRDs defined in operator for ' + this.id);
+      this.logger.error('   No CRDs defined in operator for ' + this.id);
       return;
     }
 
@@ -167,8 +168,9 @@ export abstract class Plugin {
   }
 
   private loadOperatorData(availableOperators: any): any {
+    //console.log(this.constructor.name, 'loading operator data -------------------'); 
     for (const operatorCRD of availableOperators) {
-      // console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
+      //console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
       if (operatorCRD.spec.names.kind === this.constructor.name) {
         this.enabled = true;
         this.version.installed = operatorCRD.spec.version;

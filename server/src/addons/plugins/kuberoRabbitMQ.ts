@@ -16,7 +16,7 @@ export class KuberoRabbitMQ extends Plugin implements IPlugin {
   ];
   public artifact_url =
     'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator';
-  public beta: boolean = true;
+  public beta: boolean = false;
 
   public formfields: { [key: string]: IPluginFormFields } = {
     'KuberoRabbitMQ.metadata.name': {

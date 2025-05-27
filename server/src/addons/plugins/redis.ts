@@ -6,6 +6,12 @@ export class Redis extends Plugin implements IPlugin {
   public displayName = 'Opstree Redis';
   public icon = '/img/addons/redis.svg';
   public install: string =
+`kubectl apply -f https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/master/config/crd/bases/redis.redis.opstreelabs.in_redis.yaml &&
+kubectl apply -f https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/master/config/manager/manager.yaml &&
+kubectl apply -f https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/master/config/rbac/serviceaccount.yaml &&
+kubectl apply -f https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/master/config/rbac/role.yaml &&
+kubectl apply -f https://raw.githubusercontent.com/OT-CONTAINER-KIT/redis-operator/master/config/rbac/role_binding.yaml`
+  public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/stable/redis-operator.yaml';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/redis-operator';
