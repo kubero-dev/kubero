@@ -10,7 +10,7 @@ metadata:
         kubero.dev/template.links: '["https://www.bugsink.com/docs/"]'
         kubero.dev/template.screenshots: '["https://www.bugsink.com/static/images/JsonSchemaDefinitionExceptionHome.69dcef47aec9.webp"]'
         kubero.dev/template.source: "https://github.com/bugsink/bugsink"
-        kubero.dev/template.categories: '["utilities", "development"]''
+        kubero.dev/template.categories: '["utilities", "development"]'
         kubero.dev/template.title: "Bugsink"
         kubero.dev/template.website: "https://www.bugsink.com/"
     labels:
