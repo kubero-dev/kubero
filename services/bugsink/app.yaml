@@ -1,41 +1,71 @@
 apiVersion: application.kubero.dev/v1alpha1
 kind: KuberoApp
 metadata:
-    name: slash
+    name: bugsink
     annotations:
-        kubero.dev/template.architecture: "[]"
-        kubero.dev/template.description: "An open source, self-hosted platform for sharing and managing your most frequently used links. Easily create customizable, human-readable shortcuts to streamline your link management."
-        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/140182318"
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Bugsink is a self-hosted error tracker. It shows you when something breaks in your app and includes all the information you need to debug it—stack traces, request data, logs, and more—without sending anything to a third party."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/150733838"
         kubero.dev/template.installation: ""
-        kubero.dev/template.links: "[]"
-        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/yourselfhosted/slash/refs/heads/main/docs/assets/demo.png"]'
-        kubero.dev/template.source: "https://github.com/yourselfhosted/slash"
-        kubero.dev/template.categories: '["utilities"]'
-        kubero.dev/template.title: "Slash"
-        kubero.dev/template.website: "https://github.com/yourselfhosted/slash"
+        kubero.dev/template.links: '["https://www.bugsink.com/docs/"]'
+        kubero.dev/template.screenshots: '["https://www.bugsink.com/static/images/JsonSchemaDefinitionExceptionHome.69dcef47aec9.webp"]'
+        kubero.dev/template.source: "https://github.com/bugsink/bugsink"
+        kubero.dev/template.categories: '["utilities", "development"]''
+        kubero.dev/template.title: "Bugsink"
+        kubero.dev/template.website: "https://www.bugsink.com/"
     labels:
         manager: kubero
 spec:
-    name: slash
-    deploymentstrategy: docker
-    envVars: []
-    extraVolumes:
-        - accessMode: ReadWriteOnce
-          accessModes:
-              - ReadWriteOnce
-          emptyDir: false
-          mountPath: /var/opt/slash
-          name: slash-volume
-          size: 1Gi
-          storageClass: standard
+    envVars:
+        - name: SECRET_KEY
+          value: PMjXkH9rHUK9DanCHFMWrvdfr9vXUtfJ95gM4mvPiyGTB3jGgX8VBXBadgMlkqKlPWAY=
+        - name: CREATE_SUPERUSER
+          value: admin:admin
+        - name: DATABASE_URL
+          value: mysql://root:bugsink@bugsink-mysql:3306/bugsink
+        - name: BEHIND_HTTPS_PROXY
+          value: "True"
+    extraVolumes: []
     cronjobs: []
-    addons: []
+    addons:
+        - displayName: MySQL
+          env: []
+          icon: /img/addons/mysql.svg
+          id: kubero-operator
+          kind: KuberoMysql
+          resourceDefinitions:
+              KuberoMysql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoMysql
+                  metadata:
+                      name: bugsink-mysql
+                  spec:
+                      mysql:
+                          auth:
+                              createDatabase: true
+                              database: bugsink
+                              password: bugsink
+                              rootPassword: bugsink
+                              username: bugsink
+                          global:
+                              storageClass: standard
+                          image:
+                              tag: "8.1"
+                          primary:
+                              persistence:
+                                  accessModes:
+                                      - ReadWriteOnce
+                                  size: 1Gi
+          version:
+              latest: 0.1.9
+    name: bugsink
+    deploymentstrategy: docker
     web:
         replicaCount: 1
     worker:
         replicaCount: 0
     image:
-        containerPort: "5231"
+        containerPort: "8000"
         pullPolicy: Always
-        repository: yourselfhosted/slash
+        repository: bugsink/bugsink
         tag: latest
