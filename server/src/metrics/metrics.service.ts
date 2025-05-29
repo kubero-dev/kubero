@@ -52,11 +52,11 @@ export class MetricsService {
         this.status = true;
       })
       .catch((error) => {
-        Logger.log(
+        Logger.warn(
           '❌ Feature: Prometheus not accesible on ' + options.endpoint,
           'Feature',
         );
-        Logger.debug(error);
+        //Logger.debug(error); // too noisiy
         this.status = false;
       });
   }

@@ -24,7 +24,7 @@ export class AppsService {
     private configService: ConfigService,
     private eventsGateway: EventsGateway,
   ) {
-    this.logger.log('AppsService initialized');
+    //this.logger.log('AppsService initialized');
   }
 
   public async getApp(
