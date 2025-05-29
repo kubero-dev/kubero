@@ -44,8 +44,8 @@
     "sass": "^1.60.0",
     "typescript": "^5.0.0",
     "unplugin-fonts": "^1.0.3",
-    "vite": "^5.1.8",
-    "vite-plugin-vuetify": "^1.0.0",
-    "vue-tsc": "^2.1.0"
+    "vite": "^6.3.4",
+    "vite-plugin-vuetify": "^2.1.1",
+    "vue-tsc": "^2.2.10"
   }
 }
