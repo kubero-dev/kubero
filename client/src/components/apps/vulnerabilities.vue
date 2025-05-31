@@ -81,7 +81,7 @@
                                             <th>Exposed Ports</th>
                                             <td>
                                                 <v-chip
-                                                    v-for="(item, key, index) in vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="index"
+                                                    v-for="(item, key) in vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="key"
                                                     small
                                                     label
                                                     class="ma-1"

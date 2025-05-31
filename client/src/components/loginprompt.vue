@@ -23,6 +23,7 @@
                 type="warning"
                 border="start"
                 class="mb-5"
+                :class="{ 'shaking': errorshake }"
                 >Wrong username or password!
             </v-alert>
             <form v-on:submit="login">
@@ -86,10 +87,14 @@ import router from "../router"
 import axios from "axios"
 import { defineComponent } from 'vue'
 
+import { useCookies } from "vue3-cookies";
+const { cookies } = useCookies();
+
 export default defineComponent({
     name: "Login",
     data: () => ({
         error: false,
+        errorshake: false,
         authMethods : {
             "local": false,
             "github": false,
@@ -120,18 +125,57 @@ export default defineComponent({
                     username: username,
                     password: password
                 }
-                axios.post("/api/login", data)
+                axios.post("/api/auth/login", data)
                     .then((response) => {
                         //console.log("Logged in"+response)
-                        router.push("/")
+
+                        // Save topen token in local storage
+                        //localStorage.setItem("kubero.JWT_TOKEN", response.data.access_token);
+
+                        const token = cookies.set("kubero.JWT_TOKEN", response.data.access_token);
+                        window.location.href = "/"
                     })
                     .catch((errors) => {
                         this.error = true;
+                        this.errorshake = true;
+                        setTimeout(() => {
+                            this.errorshake = false;
+                        }, 300);
                         console.log("Cannot log in"+errors)
                     })
             }
             login()
+        },
+        github() {
+            axios.get("/api/auth/github")
+                .then((response) => {
+                    //console.log("Logged in"+response)
+
+                    // Save topen token in local storage
+                    //localStorage.setItem("kubero.JWT_TOKEN", response.data.access_token);
+
+                    const token = cookies.set("kubero.JWT_TOKEN", response.data.access_token);
+                    window.location.href = "/"
+                })
+                .catch((errors) => {
+                    this.error = true;
+                    console.log("Cannot log in"+errors)
+                })
         }
     }
 });
 </script>
+
+<style scoped>
+/* https://unused-css.com/blog/css-shake-animation/ */
+@keyframes horizontal-shaking {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(5px) }
+ 50% { transform: translateX(-5px) }
+ 75% { transform: translateX(5px) }
+ 100% { transform: translateX(0) }
+}
+.shaking {
+    animation: horizontal-shaking 0.3s ease-in-out;
+}
+</style>

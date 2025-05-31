@@ -136,6 +136,7 @@ async function loadPullrequests() {
         response.data.forEach((pr: Pullrequest) => {
             let found = false;
             phases.value[0].apps.forEach((app: App) => {
+                console.log(app.name, pr.branch);
                 if (app.name == pr.branch) {
                     found = true;
                 }
