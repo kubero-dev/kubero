@@ -18,20 +18,21 @@ import {
 } from '@nestjs/swagger';
 import { IUser } from '../auth/auth.interface';
 import { CreateBuild } from './dto/CreateBuild.dto';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/deployments', version: '1' })
 export class DeploymentsController {
   constructor(private readonly deploymentsService: DeploymentsService) {}
 
   @Get('/:pipeline/:phase/:app')
+  @UseGuards(JwtAuthGuard)
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'List deployments for a specific app' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
@@ -46,12 +47,13 @@ export class DeploymentsController {
   }
 
   @Post('/build/:pipeline/:phase/:app')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Build a specific app' })
   @ApiParam({ name: 'pipeline', description: 'Pipeline name' })
@@ -89,6 +91,7 @@ export class DeploymentsController {
 
   @Delete('/:pipeline/:phase/:app/:buildName')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -154,6 +157,7 @@ export class DeploymentsController {
 
   @Put('/:pipeline/:phase/:app/:tag')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

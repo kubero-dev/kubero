@@ -8,8 +8,9 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/config', version: '1' })
 export class ConfigController {
@@ -30,6 +31,7 @@ export class ConfigController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Update the Kubero settings' })
   @ApiForbiddenResponse({
@@ -143,6 +145,7 @@ export class ConfigController {
 
   @Post('/setup/kubeconfig/validate')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -178,6 +181,7 @@ export class ConfigController {
 
   @Post('/setup/save')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
