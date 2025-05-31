@@ -14,8 +14,9 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/repo', version: '1' })
 export class RepoController {
@@ -143,6 +144,7 @@ export class RepoController {
 
   @Post('/:provider/connect')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -163,6 +165,7 @@ export class RepoController {
 
   @Post('/:provider/disconnect')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

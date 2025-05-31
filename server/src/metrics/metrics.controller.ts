@@ -7,7 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 
 @Controller({ path: 'api/metrics', version: '1' })
 export class MetricsController {

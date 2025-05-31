@@ -12,7 +12,7 @@ import {
   ContextDTO,
   GetEventsDTO,
 } from './dto/kubernetes.dto';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
@@ -79,12 +79,12 @@ export class KubernetesController {
   }
 
   @Get('/contexts')
+  @UseGuards(JwtAuthGuard)
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiOkResponse({
     description: 'A List of available contexts',

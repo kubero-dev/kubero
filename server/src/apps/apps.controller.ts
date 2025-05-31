@@ -21,8 +21,9 @@ import {
 } from '@nestjs/swagger';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { GetAppDTO } from './apps.dto';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
@@ -48,15 +49,16 @@ export class AppsController {
     return this.appsService.getApp(pipeline, phase, app);
   }
 
-  @ApiOperation({ summary: 'Create an app' })
   @Post('/:pipeline/:phase/:app')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create an app' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async createApp(
     @Param('pipeline') pipeline: string,
@@ -90,14 +92,15 @@ export class AppsController {
     return this.appsService.createApp(app, user);
   }
 
-  @ApiOperation({ summary: 'Update an app' })
   @Put('/:pipeline/:phase/:app/:resourceVersion')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiOperation({ summary: 'Update an app' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async updateApp(
     @Param('pipeline') pipeline: string,
@@ -123,14 +126,15 @@ export class AppsController {
     return this.appsService.updateApp(app, resourceVersion, user);
   }
 
-  @ApiOperation({ summary: 'Delete an app' })
   @Delete('/:pipeline/:phase/:app')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiOperation({ summary: 'Delete an app' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async deleteApp(
     @Param('pipeline') pipeline: string,
@@ -147,14 +151,15 @@ export class AppsController {
     return this.appsService.deleteApp(pipeline, phase, app, user);
   }
 
-  @ApiOperation({ summary: 'Start a Pull Request App' })
   @Post('/pullrequest')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiOperation({ summary: 'Start a Pull Request App' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async startPullRequest(@Body() body: any) {
     return this.appsService.createPRApp(
@@ -165,14 +170,14 @@ export class AppsController {
     );
   }
 
-  @ApiOperation({ summary: 'Download the app templates' })
   @Get('/:pipeline/:phase/:app/download')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Download the app templates' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async downloadAppTemplates(
     @Param('pipeline') pipeline: string,
@@ -182,14 +187,15 @@ export class AppsController {
     return this.appsService.getTemplate(pipeline, phase, app);
   }
 
-  @ApiOperation({ summary: 'Restart/Reload an app' })
   @Get('/:pipeline/:phase/:app/restart')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiOperation({ summary: 'Restart/Reload an app' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async restartApp(
     @Param('pipeline') pipeline: string,
@@ -207,14 +213,14 @@ export class AppsController {
     return this.appsService.restartApp(pipeline, phase, app, user);
   }
 
-  @ApiOperation({ summary: 'Get the app pods' })
   @Get('/:pipeline/:phase/:app/pods')
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get the app pods' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async getPods(
     @Param('pipeline') pipeline: string,
@@ -224,14 +230,15 @@ export class AppsController {
     return this.appsService.getPods(pipeline, phase, app);
   }
 
-  @ApiOperation({ summary: 'Start a container console' })
   @Post('/:pipeline/:phase/:app/console')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiOperation({ summary: 'Start a container console' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   async execInContainer(
     @Param('pipeline') pipeline: string,

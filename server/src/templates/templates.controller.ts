@@ -8,7 +8,7 @@ import {
 import { TemplatesService } from './templates.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 
 @Controller({ path: 'api/templates', version: '1' })
 export class TemplatesController {

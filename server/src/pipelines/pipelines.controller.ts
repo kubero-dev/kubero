@@ -21,10 +21,11 @@ import {
 } from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {
@@ -50,6 +51,7 @@ export class PipelinesController {
 
   @Post('/:pipeline')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -114,6 +116,7 @@ export class PipelinesController {
 
   @Put('/:pipeline')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -151,6 +154,7 @@ export class PipelinesController {
 
   @Delete('/:pipeline')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

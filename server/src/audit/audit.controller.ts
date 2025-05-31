@@ -13,7 +13,7 @@ import {
   ApiForbiddenResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { OKDTO } from '../shared/dto/ok.dto';
+import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 
 @Controller({ path: 'api/audit', version: '1' })
