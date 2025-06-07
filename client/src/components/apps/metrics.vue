@@ -655,7 +655,7 @@ export default defineComponent({
         },
         getMemoryMetrics() {
             
-            axios.get(`/api/longtermmetrics/memory/${this.pipeline}/${this.phase}/${this.app}`, {
+            axios.get(`/api/metrics/timeseries/memory/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
                     scale: this.scale
                 }
@@ -668,7 +668,7 @@ export default defineComponent({
             });
         },
         getLoadMetrics() {
-            axios.get(`/api/longtermmetrics/load/${this.pipeline}/${this.phase}/${this.app}`, {
+            axios.get(`/api/metrics/timeseries/load/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
                     scale: this.scale
                 }
@@ -681,9 +681,11 @@ export default defineComponent({
             });
         },
         getHttpStatusCodeMetrics() {
-            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/rate`, {
+            axios.get(`/api/metrics/timeseries/httpstatuscodes/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    host: this.host,
+                    calc: 'rate'
                 }
             })
             .then((response) => {
@@ -694,9 +696,11 @@ export default defineComponent({
             });
         },
         getHttpStatusCodeIncreaseMetrics() {
-            axios.get(`/api/longtermmetrics/httpstatuscodes/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+            axios.get(`/api/metrics/timeseries/httpstatuscodes/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    host: this.host,
+                    calc: 'rate'
                 }
             })
             .then((response) => {
@@ -707,9 +711,11 @@ export default defineComponent({
             });
         },
         getResponseTimeMetrics() {
-            axios.get(`/api/longtermmetrics/responsetime/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+            axios.get(`/api/metrics/timeseries/responsetime/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    host: this.host,
+                    calc: 'rate'
                 }
             })
             .then((response) => {
@@ -720,9 +726,11 @@ export default defineComponent({
             });
         },
         getResponseTrafficMetrics() {
-            axios.get(`/api/longtermmetrics/traffic/${this.pipeline}/${this.phase}/${this.host}/increase`, {
+            axios.get(`/api/metrics/timeseries/traffic/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    host: this.host,
+                    calc: 'rate'
                 }
             })
             .then((response) => {
@@ -734,9 +742,10 @@ export default defineComponent({
         },
         getCpuMetrics() {
             // use 'rate' instead of 'increase' when comparing to limit and request
-            axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/increase`, {
+            axios.get(`/api/metrics/timeseries/cpu/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    calc: 'rate'
                 }
             })
             .then((response) => {
@@ -748,9 +757,10 @@ export default defineComponent({
         },
         getCpuMetricsRate() {
             // use 'rate' instead of 'increase' when comparing to limit and request
-            axios.get(`/api/longtermmetrics/cpu/${this.pipeline}/${this.phase}/${this.app}/rate`, {
+            axios.get(`/api/metrics/timeseries/cpu/${this.pipeline}/${this.phase}/${this.app}`, {
                 params: {
-                    scale: this.scale
+                    scale: this.scale,
+                    calc: 'rate'
                 }
             })
             .then((response) => {

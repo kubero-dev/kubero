@@ -480,7 +480,7 @@ export default defineComponent({
     },
     methods: {
         loadUptimes() {
-            axios.get(`/api/uptimes/${this.pipeline}/${this.phase}`)
+            axios.get(`/api/metrics/uptimes/${this.pipeline}/${this.phase}`)
             .then(response => {
                 this.uptimes = response.data;
                 this.loadMetrics();
@@ -491,7 +491,7 @@ export default defineComponent({
         },
 
         loadMetrics() {
-            axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app}`)
+            axios.get(`/api/metrics/resources/${this.pipeline}/${this.phase}/${this.app}`)
             .then(response => {
                 for (var i = 0; i < response.data.length; i++) {
                     if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {

@@ -281,7 +281,7 @@ export default defineComponent({
             this.dialog = true;
         },
         loadStorageClasses() {
-            axios.get(`/api/config/storageclasses`)
+            axios.get(`/api/kubernetes/storageclasses`)
             .then(response => {
                 for (let storageClass of response.data) {
                     this.availableStorageClasses.push({
