@@ -110,7 +110,7 @@ export class ConfigService {
 
     this.kubectl.updateKuberoConfig(namespace, kuberoes);
     this.kubectl.updateKuberoSecret(namespace, config.secrets);
-    this.setEnv(config.secrets);
+    this.setSecretEnv(config.secrets);
 
     const m = {
       name: 'updateSettings',
@@ -129,7 +129,7 @@ export class ConfigService {
     return kuberoes;
   }
 
-  private setEnv(secrets: any) {
+  private setSecretEnv(secrets: any) {
     /*
     for (const key in secrets) {
         process.env[key] = secrets[key]
@@ -153,11 +153,32 @@ export class ConfigService {
     process.env.OAUTH2_CLIENT_SECRET = secrets.OAUTH2_CLIENT_SECRET;
   }
 
+  private setEnvVar(key: string, value: string): void {
+    if (process.env[key] == undefined || process.env[key] == '') {
+      // Only set the environment variable if it is not already set or empty
+      process.env[key] = value;
+      //this.logger.warn(`DEPRECATED v3.x.0: Environment variable ${key} set to ${value}. Use configmap instead.`);
+    }
+  }
+
+  private loadDeprecatedVarsToEnv(config: IKuberoConfig): void {
+    // Update environment variables based on the config
+    this.setEnvVar('KUBERO_READONLY', config.kubero?.readonly ? 'true' : 'false');
+    this.setEnvVar('KUBERO_CONSOLE_ENABLED', config.kubero?.console?.enabled ? 'true' : 'false');
+    this.setEnvVar('KUBERO_ADMIN_DISABLED', config.kubero?.admin?.disabled ? 'true' : 'false');
+    this.setEnvVar('KUBERO_BANNER_SHOW', config.kubero?.banner?.show ? 'true' : 'false');
+    this.setEnvVar('KUBERO_BANNER_MESSAGE', config.kubero?.banner?.message || 'Welcome to Kubero!');
+    this.setEnvVar('KUBERO_BANNER_BGCOLOR', config.kubero?.banner?.bgcolor || '#8560a963');
+    this.setEnvVar('KUBERO_BANNER_FONTCOLOR', config.kubero?.banner?.fontcolor || '#00000087');
+    this.setEnvVar('KUBERO_TEMPLATES_ENABLED', config.templates?.enabled ? 'true' : 'false');
+  }
+
   private reloadRunningConfig(): void {
     this.readConfig()
       .then((config) => {
         this.logger.debug('Kubero config loaded');
         this.runningConfig = config;
+        this.loadDeprecatedVarsToEnv(config);
       })
       .catch((error) => {
         this.logger.error('Error reading kuberoes config');
@@ -168,8 +189,10 @@ export class ConfigService {
   private async readConfig(): Promise<IKuberoConfig> {
     if (process.env.NODE_ENV === 'production') {
       const kuberoCRD = await this.readConfigFromKubernetes();
+      this.logger.debug('Kubero config loaded from Kubernetes');
       return kuberoCRD.kubero.config;
     } else {
+      this.logger.debug('Kubero config loaded from filesystem (dev mode)');
       return this.readConfigFromFS();
     }
   }
@@ -244,7 +267,11 @@ export class ConfigService {
   }
 
   public checkAdminDisabled(): boolean {
-    return this.runningConfig.kubero.admin?.disabled || false;
+    if (process.env.KUBERO_ADMIN_DISABLED === 'true') {
+      this.logger.warn('Admin is disabled');
+      return true;
+    }
+    return false;
   }
 
   public async validateKubeconfig(
@@ -339,18 +366,32 @@ export class ConfigService {
   }
 
   getTemplateEnabled() {
-    return this.runningConfig.templates?.enabled || false;
+    if (process.env.KUBERO_TEMPLATES_ENABLED == undefined) {
+      return false;
+    }
+    if (process.env.KUBERO_TEMPLATES_ENABLED == 'true') {
+      return true;
+    }
+    return false;
   }
 
   public async getTemplateConfig() {
     return this.runningConfig.templates;
   }
 
-  getConsoleEnabled() {
-    if (this.runningConfig.kubero?.console?.enabled == undefined) {
+  getConsoleEnabled(): boolean {
+    if (process.env.KUBERO_CONSOLE_ENABLED == undefined) {
+      this.logger.warn(
+        'KUBERO_CONSOLE_ENABLED is not set, defaulting to false',
+      );
       return false;
     }
-    return this.runningConfig.kubero?.console?.enabled;
+    if (process.env.KUBERO_CONSOLE_ENABLED == 'true') {
+      this.logger.debug('KUBERO_CONSOLE_ENABLED is set to true');
+      return true;
+    }
+    this.logger.debug('KUBERO_CONSOLE_ENABLED is set to false');
+    return false;
   }
 
   setMetricsStatus(status: boolean) {

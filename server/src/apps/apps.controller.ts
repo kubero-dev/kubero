@@ -246,6 +246,26 @@ export class AppsController {
     @Param('app') app: string,
     @Body() body: any,
   ) {
+    if (process.env.KUBERO_CONSOLE_ENABLED !== 'true') {
+      const msg = 'Console is not enabled';
+      Logger.warn(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+    if (!body.podName || !body.containerName || !body.command) {
+      const msg = 'Missing required fields: podName, containerName, command';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+    if (!Array.isArray(body.command)) {
+      const msg = 'Command must be an array';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
+    if (body.command.length === 0) {
+      const msg = 'Command array cannot be empty';
+      Logger.error(msg);
+      throw new HttpException(msg, HttpStatus.BAD_REQUEST);
+    }
     const user: IUser = {
       id: 1,
       method: 'local',

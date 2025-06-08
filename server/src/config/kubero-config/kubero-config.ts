@@ -38,11 +38,11 @@ export class KuberoConfig {
     this.templates = kc.templates;
     this.kubero = kc.kubero;
 
-    for (let i = 0; i < this.buildpacks.length; i++) {
+    for (let i = 0; i < this.buildpacks?.length; i++) {
       this.buildpacks[i] = new Buildpack(kc.buildpacks[i]);
     }
 
-    for (let i = 0; i < this.podSizeList.length; i++) {
+    for (let i = 0; i < this.podSizeList?.length; i++) {
       this.podSizeList[i] = new PodSize(kc.podSizeList[i]);
     }
   }
