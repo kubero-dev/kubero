@@ -366,7 +366,13 @@ export class ConfigService {
   }
 
   getTemplateEnabled() {
-    return process.env.KUBERO_TEMPLATES_ENABLED
+    if (process.env.KUBERO_TEMPLATES_ENABLED == undefined) {
+      return false;
+    }
+    if (process.env.KUBERO_TEMPLATES_ENABLED == 'true') {
+      return true;
+    }
+    return false;
   }
 
   public async getTemplateConfig() {

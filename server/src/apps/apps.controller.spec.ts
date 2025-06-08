@@ -128,6 +128,8 @@ describe('AppsController', () => {
   };
 
   beforeEach(async () => {
+    process.env.KUBERO_CONSOLE_ENABLED = 'true';
+    
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AppsController],
       providers: [
