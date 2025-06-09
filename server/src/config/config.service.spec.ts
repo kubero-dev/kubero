@@ -304,14 +304,14 @@ describe('ConfigService', () => {
   });
 
   it('should getOauth2Enabled', () => {
-    process.env.OAUTO2_CLIENT_AUTH_URL = 'auth';
-    process.env.OAUTO2_CLIENT_TOKEN_URL = 'token';
+    process.env.OAUTH2_CLIENT_AUTH_URL = 'auth';
+    process.env.OAUTH2_CLIENT_TOKEN_URL = 'token';
     process.env.OAUTH2_CLIENT_ID = 'id';
     process.env.OAUTH2_CLIENT_SECRET = 'secret';
     process.env.OAUTH2_CLIENT_CALLBACKURL = 'cb';
     expect(ConfigService.getOauth2Enabled()).toBe(true);
-    delete process.env.OAUTO2_CLIENT_AUTH_URL;
-    delete process.env.OAUTO2_CLIENT_TOKEN_URL;
+    delete process.env.OAUTH2_CLIENT_AUTH_URL;
+    delete process.env.OAUTH2_CLIENT_TOKEN_URL;
     delete process.env.OAUTH2_CLIENT_ID;
     delete process.env.OAUTH2_CLIENT_SECRET;
     delete process.env.OAUTH2_CLIENT_CALLBACKURL;

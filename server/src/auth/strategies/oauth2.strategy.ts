@@ -12,15 +12,15 @@ export class Oauth2Strategy extends PassportStrategy(Strategy) {
   constructor() {
     const logger = new Logger(Oauth2Strategy.name);
 
-    if (!process.env.OAUTO2_CLIENT_AUTH_URL) {
+    if (!process.env.OAUTH2_CLIENT_AUTH_URL) {
       logger.error(
-        'OAUTO2_CLIENT_AUTH_URL is not defined in the environment variables',
+        'OAUTH2_CLIENT_AUTH_URL is not defined in the environment variables',
       );
       return;
     }
-    if (!process.env.OAUTO2_CLIENT_TOKEN_URL) {
+    if (!process.env.OAUTH2_CLIENT_TOKEN_URL) {
       logger.error(
-        'OAUTO2_CLIENT_TOKEN_URL is not defined in the environment variables',
+        'OAUTH2_CLIENT_TOKEN_URL is not defined in the environment variables',
       );
       return;
     }
@@ -44,8 +44,8 @@ export class Oauth2Strategy extends PassportStrategy(Strategy) {
     }
 
     super({
-      authorizationURL: process.env.OAUTO2_CLIENT_AUTH_URL,
-      tokenURL: process.env.OAUTO2_CLIENT_TOKEN_URL,
+      authorizationURL: process.env.OAUTH2_CLIENT_AUTH_URL,
+      tokenURL: process.env.OAUTH2_CLIENT_TOKEN_URL,
       clientID: process.env.OAUTH2_CLIENT_ID,
       clientSecret: process.env.OAUTH2_CLIENT_SECRET,
       callbackURL: process.env.OAUTH2_CLIENT_CALLBACKURL,

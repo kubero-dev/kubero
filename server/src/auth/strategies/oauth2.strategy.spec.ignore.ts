@@ -39,8 +39,8 @@ describe('Oauth2Strategy', () => {
   });
 
   it('should call super with correct options when all env vars are set', () => {
-    process.env.OAUTO2_CLIENT_AUTH_URL = 'https://auth.example.com';
-    process.env.OAUTO2_CLIENT_TOKEN_URL = 'https://token.example.com';
+    process.env.OAUTH2_CLIENT_AUTH_URL = 'https://auth.example.com';
+    process.env.OAUTH2_CLIENT_TOKEN_URL = 'https://token.example.com';
     process.env.OAUTH2_CLIENT_ID = 'clientid';
     process.env.OAUTH2_CLIENT_SECRET = 'secret';
     process.env.OAUTH2_CLIENT_CALLBACKURL = 'https://callback.example.com';
@@ -63,7 +63,7 @@ describe('Oauth2Strategy', () => {
 
   it('should log error and not call super if env vars are missing', () => {
     const LoggerMock = require('@nestjs/common').Logger;
-    process.env.OAUTO2_CLIENT_AUTH_URL = '';
+    process.env.OAUTH2_CLIENT_AUTH_URL = '';
     const loggerInstance = new LoggerMock(Oauth2Strategy.name);
     const errorSpy = jest.spyOn(loggerInstance, 'error');
     new Oauth2Strategy();

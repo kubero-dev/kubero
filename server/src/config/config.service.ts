@@ -505,8 +505,8 @@ export class ConfigService {
 
   public static getOauth2Enabled(): boolean {
     let enabled = false;
-    process.env.OAUTO2_CLIENT_AUTH_URL == undefined ||
-    process.env.OAUTO2_CLIENT_TOKEN_URL == undefined ||
+    process.env.OAUTH2_CLIENT_AUTH_URL == undefined ||
+    process.env.OAUTH2_CLIENT_TOKEN_URL == undefined ||
     process.env.OAUTH2_CLIENT_ID == undefined ||
     process.env.OAUTH2_CLIENT_SECRET == undefined ||
     process.env.OAUTH2_CLIENT_CALLBACKURL == undefined
