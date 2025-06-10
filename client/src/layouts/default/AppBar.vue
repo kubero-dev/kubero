@@ -25,7 +25,7 @@ export default defineComponent({
 
   methods: {
     getBanner() {
-      axios.get('/api/banner').then((response: any) => {
+      axios.get('/api/config/banner').then((response: any) => {
         this.banner.show = response.data.show;
         this.banner.message = response.data.message;
         this.banner.bgcolor = response.data.bgcolor;

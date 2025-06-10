@@ -146,7 +146,7 @@ type Pipeline = {
 
 const socket = useKuberoStore().kubero.socket as any;
 
-socket.on('updatedPipelines', (instances: any) => {
+socket.on('updatePipeline', (instances: any) => {
     //console.log("updatedPipelines", instances);
     loadPipelinesList();
 });

@@ -95,7 +95,7 @@ export default defineComponent({
             //console.log("startReviewApp", this.pullrequest.number);
             this.loadingState = true;
 
-            axios.post("/api/repo/pullrequest/start", {
+            axios.post("/api/apps/pullrequest", {
                 branch: this.pullrequest.branch,
                 title: this.pullrequest.title,
                 ssh_url: this.pullrequest.ssh_url,

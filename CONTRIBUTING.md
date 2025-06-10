@@ -13,17 +13,22 @@ Willing to contribute something, but you don't know where to start? Have a look 
 5. Open a PR
 
 ## Techstack
-**Infrastructure**
-- [Kubernetes](https://kubernetes.io/)
-- [Operator SDK](https://sdk.operatorframework.io/)
-- [Helm (Operator)](https://helm.sh/)
-- [Kind (Development)](https://kind.sigs.k8s.io/)
-
-**Code**
-- [Express](https://expressjs.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Vue.js](https://vuejs.org/)
-- [Vuetify](https://vuetifyjs.com/en/)
+- Backend
+  - [NestJS](https://nestjs.com/)
+  - [TypeScript](https://www.typescriptlang.org/)
+  - [Jest](https://jestjs.io/)
+- Frontend
+  - [Vue.js](https://vuejs.org/)
+  - [Vuetify](https://vuetifyjs.com/en/)
+- CLI
+  - [Go](https://golang.org/)
+  - [Cobra](https://cobra.dev/)
+- Operator
+  - [Operator SDK](https://sdk.operatorframework.io/)
+  - [Helm](https://helm.sh/)
+- Infrastructure 
+  - [Kubernetes](https://kubernetes.io/)
+  - [Kind (Development)](https://kind.sigs.k8s.io/)
 
 
 ## Development setup for the Kubero UI

@@ -8,8 +8,7 @@ COPY server ./server
 RUN cd /build/server && \
     yarn install
 RUN cd /build/server && \
-    yarn build && \
-    yarn swaggergen
+    yarn build
 
 ## Client
 COPY client ./client
@@ -18,7 +17,7 @@ RUN cd /build/client && \
 RUN cd /build/client && \
     yarn build 
 
-FROM build AS release
+FROM node:22-alpine AS release
 ARG VERSION=unknown
 
 LABEL maintainer='www.kubero.dev'
@@ -30,13 +29,15 @@ WORKDIR /app/
 
 COPY --from=build /build/server/dist /app/server
 COPY --from=build /build/server/package.json /app/server/package.json
-COPY --from=build /build/server/src/modules/templates /app/server/modules/templates
+COPY --from=build /build/server/src/deployments/templates /app/server/deployments/templates
 COPY --from=build /build/server/node_modules /app/server/node_modules
-COPY --from=build /build/server/swagger.json /app/swagger.json
+
+# temporary fix for the public folder
+COPY --from=build /build/server/dist/public /app/server/public
 
 
 RUN echo -n $VERSION > /app/server/VERSION
 
 WORKDIR /app/server
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "main" ]

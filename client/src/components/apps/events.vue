@@ -139,7 +139,7 @@ export default defineComponent({
         const namespace = this.pipeline + "-" + this.phase;
         //axios.get(`/api/events?namespace=${this.$route.query.namespace}`)
         //console.log("loadEvents", namespace);
-        axios.get(`/api/events?namespace=${namespace}`)
+        axios.get(`/api/kubernetes/events?namespace=${namespace}`)
         .then(response => {
             // sort by creationTimestamp
             response.data.sort((a: any, b: any) => {

@@ -17,9 +17,9 @@ services:
       # copy the .env.template file to .env and change the values to your needs
       - server/.env
     environment:
-      - KUBECONFIG_BASE64=CHANGE_ME
+      #- KUBECONFIG_BASE64=CHANGE_ME
       #- KUBECONFIG_PATH=/app/server/kubeconfig
-      - KUBERO_CONTEXT=
+      #- KUBERO_CONTEXT=
       - KUBERO_NAMESPACE=kubero
       - KUBERO_SESSION_KEY=randomString
     ports:

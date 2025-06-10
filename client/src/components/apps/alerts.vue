@@ -84,7 +84,7 @@ export default {
             }, 10000);
         },
         loadRules() {
-            axios.get(`/api/rules/${this.pipeline}/${this.phase}/${this.app}`)
+            axios.get(`/api/metrics/rules/${this.pipeline}/${this.phase}/${this.app}`)
             .then(response => {
                 this.rules = response.data
             })

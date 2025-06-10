@@ -1,0 +1,29 @@
+name: 'Jest PR Test'
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  pull-requests: write
+defaults:
+  run:
+    working-directory: ./server
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4         # checkout the repo
+      - name: Install dependencies        # install dependencies
+        run: yarn install --frozen-lockfile
+      - run: yarn build                   # install packages
+      - run: yarn test:ci                 # run tests (configured to use jest-junit reporter)
+      - name: Jest Coverage Comment
+        uses: MishaKav/jest-coverage-comment@main
+        with:
+          coverage-summary-path: server/coverage/coverage-summary.json
+          junitxml-path: server/reports/jest-junit.xml
+      - uses: actions/upload-artifact@v4  # upload test results
+        if: ${{ !cancelled() }}           # run this step even if previous step failed
+        with:
+          name: test-results              # Name of the check run which will be created
+          path: server/reports/jest-junit.xml
+          reporter: jest-junit            # Format of test results

@@ -109,7 +109,7 @@ export default defineComponent({
     }),
     methods: {
         loadPods() {
-            axios.get(`/api/status/pods/${this.pipeline}/${this.phase}/${this.app}`).then((response) => {
+            axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/pods`).then((response) => {
                 //this.loadContainers();
                 for (let pod of response.data) {
                     const p = {name: pod.name, containers: pod.containers.map((c: any) => c.name)} as Pod;
@@ -258,7 +258,7 @@ export default defineComponent({
             });
         },
         execInContainer(){
-            axios.post(`/api/console/${this.pipeline}/${this.phase}/${this.app}/exec`, {
+            axios.post(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/console`, {
                 podName: this.pod.name,
                 containerName: this.container,
                 command: this.command,

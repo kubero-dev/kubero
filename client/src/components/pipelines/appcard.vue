@@ -254,7 +254,7 @@ export default defineComponent({
             })
             .then((result) => {
                 if (result.isConfirmed) {
-                  axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}`)
+                  axios.delete(`/api/apps/${this.pipeline}/${this.phase}/${this.app.name}`)
                     .then(response => {
                       //this.$router.push(`/pipeline/${this.pipeline}/apps`);
                       //console.log("deleteApp");
@@ -269,7 +269,7 @@ export default defineComponent({
             });
         },
         async restartApp() {
-            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
+            axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app.name}/restart`)
             .then(response => {
                 //console.log(response);
                 this.loadingState = true;
@@ -283,7 +283,7 @@ export default defineComponent({
             this.loadingState = false;
         },
         loadMetrics() {
-            axios.get(`/api/metrics/${this.pipeline}/${this.phase}/${this.app.name}`)
+            axios.get(`/api/metrics/resources/${this.pipeline}/${this.phase}/${this.app.name}`)
             .then(response => {
                 for (var i = 0; i < response.data.length; i++) {
                     if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {
