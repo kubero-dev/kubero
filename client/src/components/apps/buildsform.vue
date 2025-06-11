@@ -137,7 +137,7 @@ export default defineComponent({
         const repoB64 = btoa(this.appData?.spec.gitrepo.ssh_url)
         //const provider = this.appData?.spec.gitrepo.provider
         const provider = "github" // TODO: FIX: get provider from appData
-        axios.get(`/api/repo/${provider}/${repoB64}/references/list`)
+        axios.get(`/api/repo/${provider}/${repoB64}/references`)
         .then(response => {
             this.references = response.data
         })

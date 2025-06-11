@@ -160,7 +160,7 @@ export default defineComponent({
             });
         },
         loadApp() {
-            axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
+            axios.get('/api/apps/'+this.pipeline+'/'+this.phase+'/'+this.app).then(response => {
                 this.appData = response.data;
                 //console.log(this.appData);
             });
@@ -172,7 +172,7 @@ export default defineComponent({
             this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/apps/${this.app}`);
         },
         ActionStartDownload() {
-            axios.get('/api/pipelines/'+this.pipeline+'/'+this.phase+'/'+this.app+'/download').then(response => {
+            axios.get('/api/apps/'+this.pipeline+'/'+this.phase+'/'+this.app+'/download').then(response => {
                 //console.log(response.data);
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -197,7 +197,7 @@ export default defineComponent({
             })
             .then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
+                    axios.delete(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`)
                     .then(response => {
                         // sleep 1 second
                         setTimeout(() => {
@@ -213,7 +213,7 @@ export default defineComponent({
             });
         },
         async restartApp() {
-            axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}/restart`)
+            axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/restart`)
             .then(response => {
                 //console.log(response);
                 this.loadingState = true;

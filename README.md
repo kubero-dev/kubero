@@ -4,16 +4,12 @@
 
 [![License](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=blue")](https://github.com/kubero-dev/kubero/blob/main/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)](https://github.com/kubero-dev/kubero/releases/latest)
+[![codecov](https://codecov.io/github/kubero-dev/kubero/branch/main-refactored/graph/badge.svg?token=3J3CWUXG5Z&style=flat-square)](https://codecov.io/github/kubero-dev/kubero)
 [![Discord](https://img.shields.io/discord/1051249947472826408?style=flat-square)](https://discord.gg/tafRPMWS4r)
 [![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/kubero-dev/kubero?style=flat-square)](https://github.com/kubero-dev/kubero/releases/latest)
 [![Demo](https://img.shields.io/badge/demo-up-sucess?style=flat-square&color=blue)](https://demo.kubero.dev)
 
 Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on existing containers or from source code.
-
-> [!NOTE] 
-> Kubero v3.0.0 is on the way! 
-> 
-> We're gearing up for the Kubero v3.0.0 release! 🎉 This major update features a rewritten backend, now powered by NestJS, bringing best practices and maintainability.
 
 ![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/screenshots/createapp.gif)
 
@@ -21,23 +17,23 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 [YouTube](https://www.youtube.com/watch?v=kmqhddc6UlI)
 
 ## Features ([DEMO](https://demo.kubero.dev))
-- **CI/CD Pipelines:** Create unlimited pipelines with up to 4 separate staging environments for all your applications.  
-- **GitOps Review Apps:** Automatically build, start, and clean up review apps when opening or closing pull requests.  
-- **Automatic Redeployments:** Trigger app redeployments on pushes to branches or tags.  
-- **Docker Deployments:** Deploy Docker containers on Kubernetes without needing Helm charts.  
-- **App Templates:** Deploy popular applications like WordPress and Grafana with ready-to-use templates.  
-- **Add-ons Integration:** Seamlessly deploy add-ons such as PostgreSQL and Redis alongside your applications.  
-- **API & CLI:** Integrate seamlessly with existing tools and CI/CD workflows.  
-- **Metrics & Monitoring:** Access integrated metrics to monitor application health.  
-- **Notifications:** Get build and deployment updates via Discord, Slack, or Webhooks.  
-- **Vulnerability Scans:** Perform scheduled or triggered scans for running applications.  
-- **Application Logs:** View logs directly from the web UI for easy monitoring.  
-- **Safe Restarts:** Restart applications safely and easily through the web UI.  
-- **Web Console:** Use the built-in container web console for direct access.  
-- **Scheduled Tasks:** Easily create and manage cronjobs.  
-- **Multi-Tenancy:** Support for managing multiple tenants.  
-- **Single Sign-On (SSO):** Authenticate securely with GitHub and OAuth2.  
-- **Basic Auth:** Configure Basic Auth for your applications with ease. 
+- **CI/CD Pipelines** <br> Create unlimited pipelines with up to 4 separate staging environments for all your applications.  
+- **GitOps Review Apps** <br>  Automatically build, start, and clean up review apps when opening or closing pull requests.  
+- **Automatic Redeployments** <br> Trigger app redeployments on pushes to branches or tags.  
+- **Docker Deployments** <br> Deploy Docker containers on Kubernetes without needing Helm charts.  
+- **App Templates** <br> Deploy popular applications like WordPress and Grafana with ready-to-use templates.  
+- **Add-ons Integration** <br> Seamlessly deploy add-ons such as PostgreSQL and Redis alongside your applications.  
+- **API & CLI** <br> Integrate seamlessly with existing tools and CI/CD workflows.  
+- **Metrics & Monitoring** <br> Access integrated metrics to monitor application health.  
+- **Notifications** <br> Get build and deployment updates via Discord, Slack, or Webhooks.  
+- **Vulnerability Scans** <br> Perform scheduled or triggered scans for running applications.  
+- **Application Logs** <br> View logs directly from the web UI for easy monitoring.  
+- **Safe Restarts** <br> Restart applications safely and easily through the web UI.  
+- **Web Console** <br> Use the built-in container web console for direct access.  
+- **Scheduled Tasks** <br> Easily create and manage cronjobs.  
+- **Multi-Tenancy** <br> Support for managing multiple tenants.  
+- **Single Sign-On (SSO)** <br> Authenticate securely with GitHub and OAuth2.  
+- **Basic Auth** <br> Configure Basic Auth for your applications with ease. 
 
 
 ## Basic Concept 
@@ -134,11 +130,28 @@ Basically *everything* that can be packaged in a single container can be deploye
 
 Kubero starts now building your app. Once the build is complete, Kubero will launch the final container and make it accessible via the configured domain. 
 
-## Documentation
-https://www.kubero.dev/docs/
+## Techstack
 
-## Roadmap
-https://github.com/orgs/kubero-dev/projects/1/views/3
+- Backend
+  - [NestJS](https://nestjs.com/)
+  - [TypeScript](https://www.typescriptlang.org/)
+  - [Jest](https://jestjs.io/)
+- Frontend
+  - [Vue.js](https://vuejs.org/)
+  - [Vuetify](https://vuetifyjs.com/en/)
+- CLI
+  - [Go](https://golang.org/)
+  - [Cobra](https://cobra.dev/)
+- Operator
+  - [Operator SDK](https://sdk.operatorframework.io/)
+  - [Helm](https://helm.sh/)
+- Infrastructure 
+  - [Kubernetes](https://kubernetes.io/)
+  - [Kind (Development)](https://kind.sigs.k8s.io/)
+
+## Links
+- Documentation https://www.kubero.dev/docs/
+- Roadmap https://github.com/orgs/kubero-dev/projects/1/views/3
 
 ## Community
 [![kubero Discord server Banner](https://discordapp.com/api/guilds/1051249947472826408/widget.png?style=banner2)](https://discord.gg/tafRPMWS4r)

@@ -51,12 +51,12 @@
           md="6"
         >
           <v-text-field
-            v-model="appname"
+            v-model="name"
             :rules="nameRules"
             :counter="60"
             :disabled="app!='new'"
             label="App name"
-            v-on:input="changeName(appname)"
+            v-on:input="changeName(name)"
             required
           ></v-text-field>
         </v-col>
@@ -64,6 +64,7 @@
           cols="12"
           md="2"
         >
+        <!--
         <v-switch
             v-model="sleep"
             hint="Sleep after 1 Minutes of inactivity"
@@ -76,6 +77,7 @@
             :disabled="!kuberoConfig.sleepEnabled"
             inset
           ></v-switch>
+        -->
         </v-col>
       </v-row>
 
@@ -566,7 +568,7 @@
               md="6"
             >
               <v-switch
-                v-model="security.vulnerabilityScans"
+                v-model="vulnerabilityscan.enabled"
                 label="Enable Trivy vulnerabfility scans"
                 color="primary"
             ></v-switch>
@@ -881,7 +883,7 @@
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
         <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
-            <v-row v-for="(envvar, index) in envvars" :key="index">
+            <v-row v-for="(envvar, index) in envVars" :key="index">
               <v-col
                 cols="12"
                 md="5"
@@ -1284,7 +1286,7 @@
 
       <!-- ADDONS -->
       <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
-      <Addons :addons="addons" :appname="appname"/>
+      <Addons :addons="addons" :appname="name"/>
 
       <!-- SUBMIT -->
       <v-row class="pt-5">
@@ -1307,6 +1309,7 @@
                 :disabled="!valid"
                 >Update</v-btn>
         </v-col>
+        <!--
         <v-col
           cols="12"
           md="4"
@@ -1318,6 +1321,7 @@
                 @click="deleteApp()"
                 >Delete</v-btn>
         </v-col>
+        -->
       </v-row>
     </v-container>
   </v-form>
@@ -1490,7 +1494,7 @@ export default defineComponent({
     return {
       breadcrumbItems: [
           {
-              title: 'dashboard.-',
+              title: 'dashboard.pipelines',
               disabled: false,
               to: { name: 'Pipelines', params: {}}
           },
@@ -1609,7 +1613,7 @@ export default defineComponent({
         deploymentstrategy: 'docker',
         phases: [] as Phase[],
       },
-      appname: '',
+      name: '',
       resourceVersion: '',
       /*
       phases: [
@@ -1643,7 +1647,7 @@ export default defineComponent({
       },
       autodeploy: true,
       sslIndex: [] as (boolean|undefined)[],
-      envvars: [
+      envVars: [
         //{ name: '', value: '' },
       ] as EnvVar[],
       sAAnnotations: [
@@ -1711,7 +1715,6 @@ export default defineComponent({
       letsecryptClusterIssuer: 'letsencrypt-prod',
       // deprecated in version 1.11.0
       security: {
-        vulnerabilityScans: false,
         allowPrivilegeEscalation: false,
         runAsNonRoot: false,
         readOnlyRootFilesystem: true,
@@ -1789,6 +1792,14 @@ export default defineComponent({
         'SYSLOG',
         'WAKE_ALARM',
       ],
+      vulnerabilityscan: {
+        enabled: false,
+        schedule: "0 0 * * *",
+        image: {
+          repository: 'aquasec/trivy',
+          tag: 'latest',
+        },
+      },
       healthcheck: {
         enabled: true,
         path: '/',
@@ -1877,7 +1888,7 @@ export default defineComponent({
         return domainsList;
       },
       getDomains() {
-        axios.get('/api/domains').then(response => {
+        axios.get('/api/kubernetes/domains').then(response => {
           this.takenDomains = this.whiteListDomains(response.data);
         });
       },
@@ -1896,21 +1907,21 @@ export default defineComponent({
         }
       },
       loadClusterIssuers(){
-        axios.get('/api/config/clusterissuers').then(response => {
-          this.letsecryptClusterIssuer = response.data.id;
+        axios.get('/api/config/clusterissuer').then(response => {
+          this.letsecryptClusterIssuer = response.data.clusterissuer;
         });
       },
       loadTemplate(template: string) {
         axios.get('/api/templates/'+template).then(response => {
 
-          this.appname = response.data.name;
+          this.name = response.data.name;
           this.containerPort = response.data.image.containerPort;
           this.deploymentstrategy = response.data.deploymentstrategy;
 
           this.docker.image = response.data.image.repository;
           this.docker.tag = response.data.image.tag;
 
-          this.envvars = response.data.envVars;
+          this.envVars = response.data.envVars;
           if (response.data.serviceAccount && response.data.serviceAccount.annotations) {
             this.sAAnnotations = Object.entries(response.data.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
           }
@@ -1932,7 +1943,7 @@ export default defineComponent({
           }
 
           // Open Panel if there is some data to show
-          if (this.envvars.length > 0) {
+          if (this.envVars.length > 0) {
             this.panel.push(6)
           }
           if (Object.keys(this.sAAnnotations).length > 0) {
@@ -1989,12 +2000,12 @@ export default defineComponent({
             // extract defaultEnvvars from pipeline phase
             for (let i = 0; i < this.pipelineData.phases.length; i++) {
               if (this.pipelineData.phases[i].name == this.phase) {
-                this.envvars = this.pipelineData.phases[i].defaultEnvvars;
+                this.envVars = this.pipelineData.phases[i].defaultEnvvars;
               }
             }
 
             // Open Panel if there is some data to show
-            if (this.envvars.length > 0) {
+            if (this.envVars.length > 0) {
               this.panel.push(6)
             }
 
@@ -2032,7 +2043,7 @@ export default defineComponent({
         });
       },
       loadStorageClasses() {
-        axios.get('/api/config/storageclasses').then(response => {
+        axios.get('/api/kubernetes/storageclasses').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.storageclasses.push(response.data[i].name);
           }
@@ -2049,7 +2060,7 @@ export default defineComponent({
         const gitrepoB64 = btoa(this.pipelineData.git.repository.ssh_url);
         const gitprovider = this.pipelineData.git.provider;
 
-        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches/list").then(response => {
+        axios.get('/api/repo/'+gitprovider+"/"+gitrepoB64+"/branches").then(response => {
           if (response.data.length === 0) {
             return;
           }
@@ -2070,7 +2081,7 @@ export default defineComponent({
 
 
       loadPodsizeList() {
-        axios.get('/api/config/podsize').then(response => {
+        axios.get('/api/config/podsizes').then(response => {
           if (response.data.length > 0 && this.app == 'new') {
             this.podsize = response.data[0];
           }
@@ -2089,7 +2100,7 @@ export default defineComponent({
       },
 
       loadBuildpacks() {
-        axios.get('/api/config/buildpacks').then(response => {
+        axios.get('/api/config/runpacks').then(response => {
           for (let i = 0; i < response.data.length; i++) {
             this.buildpacks.push({
               text: response.data[i].name,
@@ -2104,7 +2115,7 @@ export default defineComponent({
       },
 
       deleteApp() {
-        axios.delete(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`)
+        axios.delete(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`)
           .then(() => {
             // wait for 1 second and redirect to apps page
             // this avoids a race condition with the backend
@@ -2118,8 +2129,8 @@ export default defineComponent({
       },
       loadApp() {
         if (this.app !== 'new') {
-          axios.get(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
-            this.resourceVersion = response.data.resourceVersion;
+          axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`).then(response => {
+            this.resourceVersion = response.data.metadata.resourceVersion;
 
             // Open Panel if there is some data to show
             if (response.data.spec.envVars.length > 0) {
@@ -2144,7 +2155,7 @@ export default defineComponent({
 
             this.deploymentstrategy = response.data.spec.deploymentstrategy;
             this.buildstrategy = response.data.spec.buildstrategy || 'plain';
-            this.appname = response.data.spec.name;
+            this.name = response.data.spec.name;
             this.sleep = response.data.spec.sleep;
             this.basicAuth = response.data.spec.basicAuth || { enabled: false, realm: 'Authentication required', accounts: [] };
             this.buildpack = {
@@ -2159,7 +2170,7 @@ export default defineComponent({
             this.docker.tag = response.data.spec.image.tag || 'latest';
             this.docker.command = command;
             this.autodeploy = response.data.spec.autodeploy;
-            this.envvars = response.data.spec.envVars;
+            this.envVars = response.data.spec.envVars;
             this.serviceAccount = response.data.spec.serviceAccount;
             if (response.data.spec.serviceAccount && response.data.spec.serviceAccount.annotations) {
               this.sAAnnotations = Object.entries(response.data.spec.serviceAccount.annotations).map(([key, value]) => ({annotation: key, value: value as string}));
@@ -2174,7 +2185,7 @@ export default defineComponent({
             this.workerreplicasrange = [response.data.spec.worker.autoscaling.minReplicas, response.data.spec.worker.autoscaling.maxReplicas];
             this.cronjobs = this.cronjobUnformat(response.data.spec.cronjobs) || [];
             this.addons= response.data.spec.addons || [];
-            this.security.vulnerabilityScans = response.data.spec.vulnerabilityscan.enabled;
+            this.vulnerabilityscan = response.data.spec.vulnerabilityscan;
             this.ingress = response.data.spec.ingress || {};
             this.healthcheck = response.data.spec.healthcheck || { enabled: true, path: '/', startupSeconds: 90, timeoutSeconds: 30, periodSeconds: 10 };
 
@@ -2195,10 +2206,10 @@ export default defineComponent({
       },
       setSSL() {
         if (this.ingress.tls?.length == 0) {
-          this.ingress.tls = [{ hosts: [], secretName: this.appname+'-tls' }];
+          this.ingress.tls = [{ hosts: [], secretName: this.name+'-tls' }];
         }
         this.ingress.tls[0].hosts = [];
-        this.ingress.tls[0].secretName = this.appname+'-tls';
+        this.ingress.tls[0].secretName = this.name+'-tls';
         this.ingress.hosts.forEach((host, index) => {
           if (this.sslIndex[index]) {
             this.ingress.tls[0].hosts.push(host.host);
@@ -2266,9 +2277,11 @@ export default defineComponent({
         }
 
         let postdata = {
+          pipeline: this.pipeline,
+          phase: this.phase,
           resourceVersion: this.resourceVersion,
           buildpack: this.buildpack,
-          appname: this.appname,
+          name: this.name,
           sleep: this.sleep,
           basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
@@ -2276,7 +2289,7 @@ export default defineComponent({
           deploymentstrategy: this.deploymentstrategy,
           buildstrategy: this.buildstrategy,
           image : {
-            containerport: this.containerPort,
+            containerPort: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             command: command,
@@ -2285,7 +2298,7 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          envvars: this.envvars,
+          envVars: this.envVars,
           // loop through serviceaccount annotations and convert to object
           serviceAccount: {
             annotations: this.sAAnnotations.reduce((acc, cur) => {
@@ -2318,6 +2331,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          vulnerabilityscan: this.vulnerabilityscan,
           healthcheck: this.healthcheck,
         }
 
@@ -2328,7 +2342,7 @@ export default defineComponent({
           postdata.image.run.securityContext.runAsGroup = parseInt(postdata.image.run.securityContext.runAsGroup);
         }
 
-        axios.put(`/api/pipelines/${this.pipeline}/${this.phase}/${this.app}`, postdata
+        axios.put(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/${this.resourceVersion}`, postdata
           // eslint-disable-next-line no-unused-vars
         ).then(response => {
           this.$router.push(`/pipeline/${this.pipeline}/apps`);
@@ -2369,7 +2383,7 @@ export default defineComponent({
           pipeline: this.pipeline,
           buildpack: this.buildpack,
           phase: this.phase,
-          appname: this.appname.toLowerCase(),
+          name: this.name.toLowerCase(),
           sleep: this.sleep,
           basicAuth: this.basicAuth,
           gitrepo: this.gitrepo,
@@ -2377,7 +2391,7 @@ export default defineComponent({
           deploymentstrategy: this.deploymentstrategy,
           buildstrategy: this.buildstrategy,
           image : {
-            containerport: this.containerPort,
+            containerPort: this.containerPort,
             repository: this.docker.image,
             tag: this.docker.tag,
             fetch: this.buildpack?.fetch,
@@ -2385,7 +2399,7 @@ export default defineComponent({
             run: this.buildpack?.run,
           },
           autodeploy: this.autodeploy,
-          envvars: this.envvars,
+          envVars: this.envVars,
           serviceAccount: {
             annotations: this.sAAnnotations.reduce((acc, cur) => {
               acc[cur.annotation] = cur.value;
@@ -2417,6 +2431,7 @@ export default defineComponent({
           addons: this.addons,
           security: this.security,
           ingress: this.ingress,
+          vulnerabilityscan: this.vulnerabilityscan,
           healthcheck: this.healthcheck,
         }
 
@@ -2442,10 +2457,10 @@ export default defineComponent({
             },
         }
 */
-        axios.post(`/api/apps`, postdata)
+        axios.post(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`, postdata)
         // eslint-disable-next-line no-unused-vars
         .then(response => {
-          this.appname = '';
+          this.name = '';
           //console.log(response);
           this.$router.push({path: '/pipeline/' + this.pipeline + '/apps'});
         })
@@ -2467,15 +2482,15 @@ export default defineComponent({
         }
       },
       addEnvLine() {
-        this.envvars.push({
+        this.envVars.push({
           name: '',
           value: '',
         });
       },
       removeEnvLine(index: string) {
-        for (let i = 0; i < this.envvars.length; i++) {
-          if (this.envvars[i].name === index) {
-            this.envvars.splice(i, 1);
+        for (let i = 0; i < this.envVars.length; i++) {
+          if (this.envVars[i].name === index) {
+            this.envVars.splice(i, 1);
           }
         }
       },
@@ -2512,8 +2527,8 @@ export default defineComponent({
           const [name, value] = line.split('=');
           // check if name isn't commented out
           if (name && !name.startsWith('#') && value) {
-            if (!this.envvars.some(envvar => envvar.name === name.trim())) {
-              this.envvars.push({ name: name.trim(), value: value.trim() });
+            if (!this.envVars.some(envVars => envVars.name === name.trim())) {
+              this.envVars.push({ name: name.trim(), value: value.trim() });
             }
           }
         }
