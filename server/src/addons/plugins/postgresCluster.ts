@@ -5,9 +5,8 @@ export class PostgresCluster extends Plugin implements IPlugin {
   public id: string = 'postgresoperator'; //same as operator name
   public displayName = 'Crunchy Postgres Cluster';
   public icon = '/img/addons/pgsql.svg';
-  public install: string =
-    `kubectl apply -k github.com/CrunchyData/postgres-operator-examples/kustomize/install/namespace/ && 
-kubectl apply --server-side -k github.com/CrunchyData/postgres-operator-examples/kustomize/install/default/`
+  public install: string = `kubectl apply -k github.com/CrunchyData/postgres-operator-examples/kustomize/install/namespace/ && 
+kubectl apply --server-side -k github.com/CrunchyData/postgres-operator-examples/kustomize/install/default/`;
   public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/v5/postgresql.yaml';
   public url =

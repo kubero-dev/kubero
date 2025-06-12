@@ -163,14 +163,38 @@ export class ConfigService {
 
   private loadDeprecatedVarsToEnv(config: IKuberoConfig): void {
     // Update environment variables based on the config
-    this.setEnvVar('KUBERO_READONLY', config.kubero?.readonly ? 'true' : 'false');
-    this.setEnvVar('KUBERO_CONSOLE_ENABLED', config.kubero?.console?.enabled ? 'true' : 'false');
-    this.setEnvVar('KUBERO_ADMIN_DISABLED', config.kubero?.admin?.disabled ? 'true' : 'false');
-    this.setEnvVar('KUBERO_BANNER_SHOW', config.kubero?.banner?.show ? 'true' : 'false');
-    this.setEnvVar('KUBERO_BANNER_MESSAGE', config.kubero?.banner?.message || 'Welcome to Kubero!');
-    this.setEnvVar('KUBERO_BANNER_BGCOLOR', config.kubero?.banner?.bgcolor || '#8560a963');
-    this.setEnvVar('KUBERO_BANNER_FONTCOLOR', config.kubero?.banner?.fontcolor || '#00000087');
-    this.setEnvVar('KUBERO_TEMPLATES_ENABLED', config.templates?.enabled ? 'true' : 'false');
+    this.setEnvVar(
+      'KUBERO_READONLY',
+      config.kubero?.readonly ? 'true' : 'false',
+    );
+    this.setEnvVar(
+      'KUBERO_CONSOLE_ENABLED',
+      config.kubero?.console?.enabled ? 'true' : 'false',
+    );
+    this.setEnvVar(
+      'KUBERO_ADMIN_DISABLED',
+      config.kubero?.admin?.disabled ? 'true' : 'false',
+    );
+    this.setEnvVar(
+      'KUBERO_BANNER_SHOW',
+      config.kubero?.banner?.show ? 'true' : 'false',
+    );
+    this.setEnvVar(
+      'KUBERO_BANNER_MESSAGE',
+      config.kubero?.banner?.message || 'Welcome to Kubero!',
+    );
+    this.setEnvVar(
+      'KUBERO_BANNER_BGCOLOR',
+      config.kubero?.banner?.bgcolor || '#8560a963',
+    );
+    this.setEnvVar(
+      'KUBERO_BANNER_FONTCOLOR',
+      config.kubero?.banner?.fontcolor || '#00000087',
+    );
+    this.setEnvVar(
+      'KUBERO_TEMPLATES_ENABLED',
+      config.templates?.enabled ? 'true' : 'false',
+    );
   }
 
   private reloadRunningConfig(): void {

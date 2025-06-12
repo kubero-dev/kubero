@@ -77,7 +77,7 @@ describe('AuditService', () => {
       resource: 'system',
       message: 'msg',
     };
-    const spy = jest.spyOn(service['db']!, 'run');
+    const spy = jest.spyOn(service['db'], 'run');
     service.log(entry);
     expect(spy).toHaveBeenCalled();
   });
@@ -146,7 +146,7 @@ describe('AuditService', () => {
   });
 
   it('should call limit', () => {
-    const spy = jest.spyOn(service['db']!, 'run');
+    const spy = jest.spyOn(service['db'], 'run');
     (service as any).limit(100);
     expect(spy).toHaveBeenCalled();
   });
