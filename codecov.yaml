@@ -1,5 +1,3 @@
-codecov:
-  token: cd510c7d-da22-41bb-aec2-e7ebd611d51d
 ignore:
   - 'services'
   - '**/*.json'
