@@ -411,10 +411,8 @@ export class ConfigService {
       return false;
     }
     if (process.env.KUBERO_CONSOLE_ENABLED == 'true') {
-      this.logger.debug('KUBERO_CONSOLE_ENABLED is set to true');
       return true;
     }
-    this.logger.debug('KUBERO_CONSOLE_ENABLED is set to false');
     return false;
   }
 
