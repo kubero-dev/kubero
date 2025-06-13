@@ -39,7 +39,10 @@ export class TemplatesController {
       res.send(template);
     } catch (err) {
       this.logger.error(err);
-      res.status(500).send(err);
+      res.status(500).send({
+        error: 'Failed to load template',
+        message: err.message || 'An unexpected error occurred',
+      });
     }
   }
 }

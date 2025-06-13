@@ -5,8 +5,8 @@ export class Tenant extends Plugin implements IPlugin {
   public id: string = 'minio-operator'; //same as operator name
   public displayName = 'Minio';
   public icon = '/img/addons/Minio.png';
-  public install: string = 
-    'kubectl apply -k "github.com/minio/operator?ref=v5.0.18"'
+  public install: string =
+    'kubectl apply -k "github.com/minio/operator?ref=v5.0.18"';
   public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/stable/minio-operator.yaml -n operators';
   public url =

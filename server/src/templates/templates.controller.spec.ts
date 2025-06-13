@@ -48,6 +48,10 @@ describe('TemplatesController', () => {
 
   it('should return 500 on error', async () => {
     const error = new Error('fail');
+    const errorMessage = {
+      error: 'Failed to load template',
+      message: error.message,
+    }
     const templateB64 = Buffer.from('http://fail.com/template.yaml').toString(
       'base64',
     );
@@ -66,7 +70,7 @@ describe('TemplatesController', () => {
 
     expect(service.getTemplate).toHaveBeenCalledWith(templateB64);
     expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.send).toHaveBeenCalledWith(error);
+    expect(res.send).toHaveBeenCalledWith(errorMessage);
     expect(loggerSpy).toHaveBeenCalledWith(error);
 
     loggerSpy.mockRestore();

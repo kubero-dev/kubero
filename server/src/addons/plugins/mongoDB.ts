@@ -5,8 +5,7 @@ export class PerconaServerMongoDB extends Plugin implements IPlugin {
   public id: string = 'mongodb-operator'; //same as operator name
   public displayName = 'Percona MongoDB';
   public icon = '/img/addons/mongo.svg';
-  public install: string =
-    `kubectl create namespace mongodb-operator-system
+  public install: string = `kubectl create namespace mongodb-operator-system
 kubectl apply -n mongodb-operator-system --server-side -f https://raw.githubusercontent.com/percona/percona-server-mongodb-operator/v1.20.0/deploy/bundle.yaml`;
   public installOLM: string =
     'kubectl create -f https://operatorhub.io/install/mongodb-operator.yaml';
