@@ -1,1 +1,1 @@
-process.env.KUBERO_LOGLEVEL = 'fatal';
+process.env.LOGLEVEL = 'fatal';

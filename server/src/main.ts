@@ -11,7 +11,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-  const logLevels = process.env.KUBERO_LOGLEVEL?.split(',') ?? [
+  const logLevels = process.env.LOGLEVEL?.split(',') ?? [
     'log',
     'fatal',
     'error',
