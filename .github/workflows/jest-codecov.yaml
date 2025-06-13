@@ -1,6 +1,9 @@
 name: 'Jest Codecov'
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
 defaults:
   run:
     working-directory: ./server
