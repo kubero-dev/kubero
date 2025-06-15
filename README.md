@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/github/license/kubero-dev/kubero?style=flat-square&color=blue")](https://github.com/kubero-dev/kubero/blob/main/LICENSE) 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kubero-dev/kubero?style=flat-square&color=brightgreen)](https://github.com/kubero-dev/kubero/releases/latest)
-[![codecov](https://codecov.io/gh/kubero-dev/kubero/graph/badge.svg?token=3J3CWUXG5Z)](https://codecov.io/gh/kubero-dev/kubero)
+[![codecov](https://codecov.io/gh/kubero-dev/kubero/branch/main/graph/badge.svg?token=3J3CWUXG5Z)](https://codecov.io/gh/kubero-dev/kubero)
 [![Discord](https://img.shields.io/discord/1051249947472826408?style=flat-square)](https://discord.gg/tafRPMWS4r)
 [![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/kubero-dev/kubero?style=flat-square)](https://github.com/kubero-dev/kubero/releases/latest)
 [![Demo](https://img.shields.io/badge/demo-up-sucess?style=flat-square&color=blue)](https://demo.kubero.dev)
