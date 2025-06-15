@@ -16,11 +16,11 @@ More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
 [YouTube](https://www.youtube.com/watch?v=kmqhddc6UlI)
 
 ## Features ([DEMO](https://demo.kubero.dev))
+- **Docker Deployments** <br> Deploy Docker containers on Kubernetes without needing Helm charts.  
+- **App Templates (+160)** <br> Deploy popular applications like WordPress and Grafana with ready-to-use [templates](https://www.kubero.dev/templates/).  
 - **CI/CD Pipelines** <br> Create unlimited pipelines with up to 4 separate staging environments for all your applications.  
 - **GitOps Review Apps** <br>  Automatically build, start, and clean up review apps when opening or closing pull requests.  
 - **Automatic Redeployments** <br> Trigger app redeployments on pushes to branches or tags.  
-- **Docker Deployments** <br> Deploy Docker containers on Kubernetes without needing Helm charts.  
-- **App Templates** <br> Deploy popular applications like WordPress and Grafana with ready-to-use templates.  
 - **Add-ons Integration** <br> Seamlessly deploy add-ons such as PostgreSQL and Redis alongside your applications.  
 - **API & CLI** <br> Integrate seamlessly with existing tools and CI/CD workflows.  
 - **Metrics & Monitoring** <br> Access integrated metrics to monitor application health.  
