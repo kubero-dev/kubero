@@ -20,6 +20,7 @@ import { SecurityModule } from './security/security.module';
 import { TemplatesController } from './templates/templates.controller';
 import { TemplatesService } from './templates/templates.service';
 import { StatusModule } from './status/status.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { StatusModule } from './status/status.module';
     NotificationsModule,
     SecurityModule,
     StatusModule,
+    DatabaseModule,
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

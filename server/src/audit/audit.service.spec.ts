@@ -15,8 +15,7 @@ describe('AuditService', () => {
     process.env.KUBERO_AUDIT = 'true';
     process.env.KUBERO_AUDIT_LIMIT = '10';
     AuditService.prototype.init = jest.fn();
-    service = new AuditService();
-    service['prisma'] = mockPrisma;
+    service = new AuditService(mockPrisma);
     service['enabled'] = true;
   });
 
@@ -30,7 +29,7 @@ describe('AuditService', () => {
 
   it('should not enable audit if KUBERO_AUDIT is not true', () => {
     process.env.KUBERO_AUDIT = 'false';
-    const s = new AuditService();
+    const s = new AuditService(mockPrisma);
     expect(s.getAuditEnabled()).toBe(false);
   });
 /*

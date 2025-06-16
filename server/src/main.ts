@@ -4,7 +4,7 @@ import { CustomConsoleLogger } from './logger/logger';
 import { LogLevel } from '@nestjs/common/services/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { PrismaClient } from '@prisma/client'; 
+import { DatabaseService } from './database/database.service';
 
 import helmet from 'helmet';
 
@@ -12,21 +12,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-  // Run Prisma migrations before starting the app
-  const prisma = new PrismaClient();
-  try {
-    Logger.log('Running Prisma migrations...', 'Bootstrap');
-    // @ts-ignore
-    await prisma.$executeRawUnsafe?.('PRAGMA foreign_keys=OFF;'); // For SQLite, optional
-    await prisma.$disconnect();
-    // Use CLI for migrations
-    const { execSync } = await import('child_process');
-    execSync('npx prisma migrate deploy', { stdio: 'inherit' });
-    Logger.log('Prisma migrations completed.', 'Bootstrap');
-  } catch (err) {
-    Logger.error('Prisma migration failed', err, 'Bootstrap');
-    process.exit(1);
-  }
 
   const logLevels = process.env.LOGLEVEL?.split(',') ?? [
     'log',
@@ -45,6 +30,8 @@ async function bootstrap() {
     }),
     cors: true,
   });
+
+  DatabaseService.RunMigrations();
 
   app.use(
     helmet({

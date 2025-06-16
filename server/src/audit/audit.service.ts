@@ -5,12 +5,11 @@ import { PrismaClient } from '@prisma/client';
 
 @Injectable()
 export class AuditService {
-  private prisma: PrismaClient;
   private logmaxbackups: number = 1000;
   private enabled: boolean = true;
   private readonly logger = new Logger(AuditService.name);
 
-  constructor() {
+  constructor(private readonly prisma: PrismaClient) {
     this.logmaxbackups = process.env.KUBERO_AUDIT_LIMIT
       ? parseInt(process.env.KUBERO_AUDIT_LIMIT)
       : 1000;
@@ -20,7 +19,6 @@ export class AuditService {
       Logger.log('⏸️ Audit logging not enabled', 'Feature');
       return;
     }
-    this.prisma = new PrismaClient();
     this.init();
   }
 
