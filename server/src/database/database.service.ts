@@ -16,17 +16,9 @@ export class DatabaseService {
   
   public static async RunMigrations() {
 
-    this.Init();
+    await this.Init();
     
     const prisma = new PrismaClient();
-  
-    if (process.env.DATABASE_URL === '' || process.env.DATABASE_URL === undefined) {
-      process.env.DATABASE_URL = 'file:../db/kubero.db';
-      Logger.debug(
-        'DATABASE_URL is not set. Using SQLite database: '+ process.env.DATABASE_URL,
-        'Bootstrap',
-      );
-    } 
     
     try {
       Logger.log('Running Prisma migrations...', 'Bootstrap');
