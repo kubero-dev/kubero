@@ -31,10 +31,12 @@ COPY --from=build /build/server/dist /app/server
 COPY --from=build /build/server/package.json /app/server/package.json
 COPY --from=build /build/server/src/deployments/templates /app/server/deployments/templates
 COPY --from=build /build/server/node_modules /app/server/node_modules
+COPY server/prisma /app/server/prisma
 
 # temporary fix for the public folder
 COPY --from=build /build/server/dist/public /app/server/public
-
+ENV DATABASE_URL=file:/app/server/db/kubero.sqlite
+ENV DATABASE_TYPE=sqlite
 
 RUN echo -n $VERSION > /app/server/VERSION
 
