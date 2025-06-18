@@ -6,7 +6,8 @@ export class DatabaseService {
 
   public static async Init() {
     if (process.env.DATABASE_URL === '' || process.env.DATABASE_URL === undefined) {
-      process.env.DATABASE_URL = 'file:../db/kubero.db';
+      process.env.DATABASE_URL = 'file:../db/kubero.sqlite';
+      process.env.DATABASE_TYPE = 'sqlite';
       Logger.debug(
         'DATABASE_URL is not set. Using SQLite database: ' + process.env.DATABASE_URL,
         'DatabaseService',

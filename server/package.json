@@ -20,7 +20,16 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "prisma:generate": "npx prisma generate",
+    "prisma:studio": "npx prisma studio",
+    "prisma:reset": "npx prisma migrate reset --force",
+    "prisma:init": "npx prisma migrate dev --name init --create-only",
+    "prisma:deploy": "npx prisma migrate deploy",
+    "prisma:migrate": "npx prisma migrate deploy",
+    "prisma:push": "npx prisma db push",
+    "prisma:db:seed": "npx prisma db seed --preview-feature",
+    "prisma:db:seed:test": "npx prisma db seed --preview-feature --schema=./prisma/schema.prod.prisma"
   },
   "dependencies": {
     "@kubernetes/client-node": "^0.22.3",

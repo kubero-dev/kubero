@@ -18,6 +18,8 @@ export class AuditService {
       this.enabled = false;
       Logger.log('⏸️ Audit logging not enabled', 'Feature');
       return;
+    } else {
+      Logger.log('✅ Audit logging enabled', 'Feature');
     }
     this.init();
   }
@@ -26,9 +28,6 @@ export class AuditService {
     if (!this.enabled) {
       return;
     }
-    // Prisma migriert das Schema automatisch, falls nötig (z.B. mit prisma migrate deploy)
-    Logger.log('✅ Audit logging enabled', 'Feature');
-
     const auditEntry: AuditEntry = {
       user: 'kubero',
       severity: 'normal',
@@ -41,7 +40,7 @@ export class AuditService {
       message: 'server started',
     };
 
-    await this.log(auditEntry);
+    await this.logDelayed(auditEntry, 5000);
   }
 
   public logDelayed(entry: AuditEntry, delay: number = 1000) {

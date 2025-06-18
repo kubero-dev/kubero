@@ -19,17 +19,20 @@ generator client {
 }
 
 model Audit {
-  id        Int      @id @default(autoincrement())
-  timestamp DateTime @default(now())
+  id        Int          @id @default(autoincrement())
+  timestamp DateTime     @default(now())
   user      String
-  severity  Severity @default(normal)
+  severity  Severity     @default(normal)
   action    String
   namespace String
   phase     String
   app       String
   pipeline  String
-  resource  ResourceType  @default(unknown)
+  resource  ResourceType @default(unknown)
   message   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Severity {
@@ -58,4 +61,85 @@ enum ResourceType {
   config
   addons
   kubernetes
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String
+  twoFaSecret   String?
+  twoFaEnabled  Boolean   @default(false)
+  image         String?
+
+  roleId     String?
+  role       Role?       @relation(fields: [roleId], references: [id])
+  userGroups UserGroup[] // Many-to-many relationship with UserGroup
+
+  isActive  Boolean   @default(true)
+  lastLogin DateTime?
+  lastIp    String? // Last known IP address
+
+  provider     String? @default("local") // e.g., "github", "local", ...
+  providerId   String? // ID from the external provider (e.g., GitHub ID)
+  providerData String? // JSON string for additional provider data
+
+  tokens Token[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserGroup {
+  id          String  @id @default(uuid())
+  name        String  @unique
+  description String?
+
+  users User[]
+
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+}
+
+model Role {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+
+  users User[] // Users associated with this role
+  permissions Permission[] // Permissions directly assigned to this role
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Token {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  token       String    @unique
+  expiresAt   DateTime
+  isActive    Boolean   @default(true)
+  lastUsed    DateTime?
+  lastIp      String? // Last known IP address used for this token
+  description String? // Description of the token's purpose
+
+  permissions Permission[] // Permissions associated with this token
+
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model Permission {
+  id        String       @id @default(cuid())
+  resource  ResourceType
+  action    String // e.g., "create", "read", "update", "delete"
+  namespace String? // Optional namespace for scoping permissions
+
+  roles     Role[]     // Roles that have this permission
+  tokens    Token[]    // Tokens that have this permission
+
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
 }

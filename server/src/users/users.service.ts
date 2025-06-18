@@ -8,20 +8,6 @@ export type User = any;
 
 @Injectable()
 export class UsersService {
-  /*
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'foo',
-      password: 'bar',
-    },
-    {
-      userId: 2,
-      username: 'mms-gianni',
-      password: 'bar',
-    },
-  ];
-  */
   private readonly users = [] as User[];
   private logger = new Logger(UsersService.name);
 

@@ -31,7 +31,7 @@ async function bootstrap() {
     cors: true,
   });
 
-  await DatabaseService.RunMigrations();
+  DatabaseService.RunMigrations();
 
   app.use(
     helmet({
