@@ -11,6 +11,7 @@ import {
   Post,
   Put,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { AppsService } from './apps.service';
 import { IUser } from '../auth/auth.interface';
@@ -65,6 +66,7 @@ export class AppsController {
     @Param('phase') phase: string,
     @Param('app') appName: string,
     @Body() app: any,
+    @Request() req: any,
   ) {
     if (appName !== 'new') {
       const msg = 'App name does not match the URL';
@@ -82,12 +84,10 @@ export class AppsController {
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
 
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
     return this.appsService.createApp(app, user);
   }
@@ -108,6 +108,7 @@ export class AppsController {
     @Param('app') appName: string,
     @Param('resourceVersion') resourceVersion: string,
     @Body() app: any,
+    @Request() req: any,
   ) {
     if (appName !== app.name) {
       const msg =
@@ -116,12 +117,10 @@ export class AppsController {
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
 
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
     return this.appsService.updateApp(app, resourceVersion, user);
   }
@@ -140,13 +139,13 @@ export class AppsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    //TODO: Migration -> this is a mock user
+
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
     return this.appsService.deleteApp(pipeline, phase, app, user);
   }
@@ -201,13 +200,12 @@ export class AppsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
 
     return this.appsService.restartApp(pipeline, phase, app, user);
@@ -245,6 +243,7 @@ export class AppsController {
     @Param('phase') phase: string,
     @Param('app') app: string,
     @Body() body: any,
+    @Request() req: any,
   ) {
     if (process.env.KUBERO_CONSOLE_ENABLED !== 'true') {
       const msg = 'Console is not enabled';
@@ -266,11 +265,11 @@ export class AppsController {
       Logger.error(msg);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
+
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
 
     const podName = body.podName;

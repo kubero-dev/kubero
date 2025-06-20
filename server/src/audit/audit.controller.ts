@@ -21,7 +21,7 @@ export class AuditController {
   constructor(private readonly auditService: AuditService) {}
 
   @ApiOperation({ summary: 'Get all audit entries for a specific app' })
-  @Get('/:pipeline/:phase/:app')
+  @Get('/app/:pipeline/:phase/:app')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,

@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { DeploymentsService } from './deployments.service';
 import {
@@ -69,13 +70,12 @@ export class DeploymentsController {
     @Param('phase') phase: string,
     @Param('app') app: string,
     @Body() body: CreateBuild,
+    @Request() req: any,
   ) {
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
     return this.deploymentsService.triggerBuildjob(
       pipeline,
@@ -108,13 +108,12 @@ export class DeploymentsController {
     @Param('phase') phase: string,
     @Param('app') app: string,
     @Param('buildName') buildName: string,
+    @Request() req: any,
   ) {
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
     return this.deploymentsService.deleteBuildjob(
       pipeline,

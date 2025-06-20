@@ -17,6 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    return { userId: payload.userID, username: payload.username };
+    //return payload // for debugging purposes
+    // cast userId to string in case it is a number
+    // Backward compatibility for userId as number v3.0.0
+    if (typeof payload.userId === 'number') {
+      payload.userId = payload.userId.toString();
+    }
+    return { userId: payload.userId, username: payload.username };
   }
 }

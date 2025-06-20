@@ -14,7 +14,7 @@
                             <div class="d-flex">
                                 <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
                                 <div>
-                                    <strong>{{ event.user }}: </strong>  {{ event.action }} {{ event.resource }}
+                                    <strong>{{ event.users.username }}: </strong>  {{ event.action }} {{ event.resource }}
                                     <div class="text-caption">
                                         {{ event.timestamp }} · v{{ event.id }} · {{ event.message }}
                                     </div>
@@ -49,6 +49,13 @@ type AuditEvent = {
     severity: string,
     color: string,
     icon: string,
+    users: {
+        id?: string,
+        username: string,
+        email?: string,
+        firstName?: string,
+        lastName?: string,
+    },
 }
 
 type Audit = {

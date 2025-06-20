@@ -1,6 +1,6 @@
 export type IUser = {
-  id: number;
-  method: string;
+  id: string;
+  strategy: string;
   username: string;
   apitoken?: string;
 };
