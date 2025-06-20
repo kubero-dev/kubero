@@ -29,7 +29,7 @@ export class AuditService {
       return;
     }
     const auditEntry: AuditEntry = {
-      user: 'kubero',
+      user: '1',
       severity: 'normal',
       action: 'start',
       namespace: '',
@@ -54,6 +54,12 @@ export class AuditService {
       return;
     }
     try {
+      if (entry.user === '' || entry.user === null) {
+        this.logger.debug(
+          'Audit log entry without user. Defaulting to system user.',
+        );
+        entry.user = '1'; // Default to system user if not provided
+      }
       await this.prisma.audit.create({
         data: {
           user: entry.user,
@@ -65,7 +71,6 @@ export class AuditService {
           pipeline: entry.pipeline,
           resource: entry.resource,
           message: entry.message,
-          // timestamp wird automatisch gesetzt, falls im Prisma-Schema so definiert
         },
       });
       await this.limit(this.logmaxbackups);

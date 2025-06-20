@@ -2,7 +2,6 @@
 CREATE TABLE "Audit" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "user" TEXT NOT NULL,
     "severity" TEXT NOT NULL DEFAULT 'normal',
     "action" TEXT NOT NULL,
     "namespace" TEXT NOT NULL,
@@ -11,14 +10,20 @@ CREATE TABLE "Audit" (
     "pipeline" TEXT NOT NULL,
     "resource" TEXT NOT NULL DEFAULT 'unknown',
     "message" TEXT NOT NULL,
+    "user" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" DATETIME NOT NULL
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Audit_user_fkey" FOREIGN KEY ("user") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
-    "name" TEXT,
+    "username" TEXT NOT NULL,
+    "firstName" TEXT,
+    "lastName" TEXT,
+    "company" TEXT,
+    "location" TEXT,
     "email" TEXT NOT NULL,
     "emailVerified" DATETIME,
     "password" TEXT NOT NULL,
@@ -103,6 +108,9 @@ CREATE TABLE "_PermissionToToken" (
     CONSTRAINT "_PermissionToToken_A_fkey" FOREIGN KEY ("A") REFERENCES "Permission" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT "_PermissionToToken_B_fkey" FOREIGN KEY ("B") REFERENCES "Token" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

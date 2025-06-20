@@ -48,4 +48,44 @@ export class UsersService {
   async findOne(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
   }
+
+  async findById(userId: number): Promise<User | undefined> {
+    return this.users.find((user) => user.userId === userId);
+  }
+  async findAll(): Promise<User[]> {
+    return this.users;
+  }
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.users.find((user) => user.username === username);
+  }
+  async create(user: User): Promise<User> {
+    this.users.push(user);
+    return user;
+  }
+  async update(userId: number, user: User): Promise<User | undefined> {
+    const index = this.users.findIndex((u) => u.userId === userId);
+    if (index === -1) {
+      return undefined;
+    }
+    this.users[index] = { ...this.users[index], ...user };
+    return this.users[index];
+  }
+  async delete(userId: number): Promise<void> {
+    const index = this.users.findIndex((u) => u.userId === userId);
+    if (index !== -1) {
+      this.users.splice(index, 1);
+    } else {
+      this.logger.warn(`User with ID ${userId} not found for deletion.`);
+    }
+  }
+  async reset(): Promise<void> {
+    this.users.length = 0; // Clear the users array
+    this.logger.log('Users reset successfully.');
+  }
+  async count(): Promise<number> {
+    return this.users.length;
+  }
+  async exists(username: string): Promise<boolean> {
+    return this.users.some((user) => user.username === username);
+  }
 }

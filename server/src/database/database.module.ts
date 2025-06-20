@@ -2,7 +2,7 @@ import { Global, Module, Logger } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { PrismaClient } from '@prisma/client';
 
-DatabaseService.Init(); // configing the database connection initialization
+//DatabaseService.Init(); // configing the database connection initialization
 
 @Global()
 @Module({

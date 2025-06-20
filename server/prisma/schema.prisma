@@ -21,7 +21,6 @@ generator client {
 model Audit {
   id        Int          @id @default(autoincrement())
   timestamp DateTime     @default(now())
-  user      String
   severity  Severity     @default(normal)
   action    String
   namespace String
@@ -30,6 +29,9 @@ model Audit {
   pipeline  String
   resource  ResourceType @default(unknown)
   message   String
+
+  user  String
+  users User   @relation(fields: [user], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -65,7 +67,11 @@ enum ResourceType {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
+  username      String    @unique
+  firstName     String?
+  lastName      String?
+  company       String?
+  location      String?
   email         String    @unique
   emailVerified DateTime?
   password      String
@@ -89,6 +95,7 @@ model User {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  Audit     Audit[]
 }
 
 model UserGroup {
@@ -98,8 +105,8 @@ model UserGroup {
 
   users User[]
 
-  createdAt         DateTime            @default(now())
-  updatedAt         DateTime            @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Role {
@@ -107,7 +114,7 @@ model Role {
   name        String  @unique
   description String?
 
-  users User[] // Users associated with this role
+  users       User[] // Users associated with this role
   permissions Permission[] // Permissions directly assigned to this role
 
   createdAt DateTime @default(now())
@@ -127,8 +134,8 @@ model Token {
 
   permissions Permission[] // Permissions associated with this token
 
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Permission {
@@ -137,9 +144,9 @@ model Permission {
   action    String // e.g., "create", "read", "update", "delete"
   namespace String? // Optional namespace for scoping permissions
 
-  roles     Role[]     // Roles that have this permission
-  tokens    Token[]    // Tokens that have this permission
+  roles  Role[] // Roles that have this permission
+  tokens Token[] // Tokens that have this permission
 
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
