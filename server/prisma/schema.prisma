@@ -70,8 +70,6 @@ model User {
   username      String    @unique
   firstName     String?
   lastName      String?
-  company       String?
-  location      String?
   email         String    @unique
   emailVerified DateTime?
   password      String

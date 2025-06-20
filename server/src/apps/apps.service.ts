@@ -86,7 +86,7 @@ export class AppsService {
 
       const m = {
         name: 'newApp',
-        user: user.username,
+        user: user.id,
         resource: 'app',
         action: 'create',
         severity: 'normal',
@@ -222,7 +222,7 @@ export class AppsService {
 
       const m = {
         name: 'deleteApp',
-        user: user.username,
+        user: user.id,
         resource: 'app',
         action: 'delete',
         severity: 'normal',
@@ -570,7 +570,7 @@ export class AppsService {
 
       const m = {
         name: 'restartApp',
-        user: user.username,
+        user: user.id,
         resource: 'app',
         action: 'restart',
         severity: 'normal',
@@ -629,7 +629,7 @@ export class AppsService {
 
       const m = {
         name: 'updateApp',
-        user: user.username,
+        user: user.id,
         resource: 'app',
         action: 'update',
         severity: 'normal',

@@ -146,7 +146,7 @@ export class PipelinesService {
 
           const m = {
             name: 'updatePipeline',
-            user: user.username,
+            user: user.id,
             resource: 'pipeline',
             action: 'delete',
             severity: 'normal',
@@ -196,7 +196,7 @@ export class PipelinesService {
     await new Promise((resolve) => setTimeout(resolve, 500));
     const m = {
       name: 'updatePipeline',
-      user: user.username,
+      user: user.id,
       resource: 'pipeline',
       action: 'update',
       severity: 'normal',
@@ -227,7 +227,7 @@ export class PipelinesService {
 
     const m = {
       name: 'updatePipeline',
-      user: user.username,
+      user: user.id,
       resource: 'pipeline',
       action: 'created',
       severity: 'normal',
