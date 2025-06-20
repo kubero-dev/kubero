@@ -88,7 +88,7 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Get User by ID' })
-  async getUserById(@Param('id') id: number) {
+  async getUserById(@Param('id') id: string) {
     return this.usersService.findById(id);
   }
   @Get('/count')
