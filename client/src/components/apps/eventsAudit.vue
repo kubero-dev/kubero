@@ -18,7 +18,7 @@
                             <div>
                                 <!--<strong class="me-4">{{ event.metadata.creationTimestamp }}</strong>-->
                                 <div>
-                                    <strong>{{ event.user }}: </strong> {{ event.action }} {{ event.resource }}
+                                    <strong>{{ event.users.username }}: </strong> {{ event.action }} {{ event.resource }}
                                     <div class="text-caption">
                                         {{ event.timestamp }} · v{{ event.id }} · {{ event.message }}
                                     </div>
@@ -63,6 +63,13 @@ type AuditEvent = {
     severity: string,
     color: string,
     icon: string,
+    users: {
+        id?: string,
+        username: string,
+        email?: string,
+        firstName?: string,
+        lastName?: string,
+    },
 }
 
 
@@ -117,7 +124,7 @@ export default defineComponent({
             return "mdi-rocket";
         },
         loadAudit() {
-            axios.get('/api/audit', { params: { limit: this.limit, pipeline: this.pipeline, phase: this.phase, app: this.app } }).then(response => {
+            axios.get(`/api/audit/app/${this.pipeline}/${this.phase}/${this.app}`, { params: { limit: this.limit } }).then(response => {
                 this.auditEvents = response.data.audit;
                 this.count = response.data.count;
             });
