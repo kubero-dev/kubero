@@ -57,8 +57,10 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+    // Defines the user object to be signed in the JWT
+    // Add more fields if needed
     const u = {
-      userId: user.userId,
+      userId: user.id,
       username: user.username,
       strategy: 'local',
     };
