@@ -57,8 +57,10 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+    // Defines the user object to be signed in the JWT
+    // Add more fields if needed
     const u = {
-      userId: user.userId,
+      userId: user.id,
       username: user.username,
       strategy: 'local',
     };
@@ -70,8 +72,11 @@ export class AuthService {
 
   async loginOAuth2(username) {
     const user = await this.usersService.findOne(username); //TODO: find or create
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
     const u = {
-      userId: user.userId,
+      userId: user.id,
       username: user.username,
       strategy: 'github',
     };

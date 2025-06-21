@@ -18,6 +18,8 @@ export class AuditService {
       this.enabled = false;
       Logger.log('⏸️ Audit logging not enabled', 'Feature');
       return;
+    } else {
+      Logger.log('✅ Audit logging enabled', 'Feature');
     }
     this.init();
   }
@@ -26,11 +28,8 @@ export class AuditService {
     if (!this.enabled) {
       return;
     }
-    // Prisma migriert das Schema automatisch, falls nötig (z.B. mit prisma migrate deploy)
-    Logger.log('✅ Audit logging enabled', 'Feature');
-
     const auditEntry: AuditEntry = {
-      user: 'kubero',
+      user: '1',
       severity: 'normal',
       action: 'start',
       namespace: '',
@@ -41,7 +40,7 @@ export class AuditService {
       message: 'server started',
     };
 
-    await this.log(auditEntry);
+    await this.logDelayed(auditEntry, 5000);
   }
 
   public logDelayed(entry: AuditEntry, delay: number = 1000) {
@@ -55,6 +54,12 @@ export class AuditService {
       return;
     }
     try {
+      if (entry.user === '' || entry.user === null) {
+        this.logger.debug(
+          'Audit log entry without user. Defaulting to system user.',
+        );
+        entry.user = '1'; // Default to system user if not provided
+      }
       await this.prisma.audit.create({
         data: {
           user: entry.user,
@@ -66,7 +71,6 @@ export class AuditService {
           pipeline: entry.pipeline,
           resource: entry.resource,
           message: entry.message,
-          // timestamp wird automatisch gesetzt, falls im Prisma-Schema so definiert
         },
       });
       await this.limit(this.logmaxbackups);
@@ -84,6 +88,11 @@ export class AuditService {
     const audit = await this.prisma.audit.findMany({
       orderBy: { timestamp: 'desc' },
       take: limit,
+      include: {
+        users: {
+          select: { username: true },
+        },
+      },
     });
     const count = await this.prisma.audit.count();
     return { audit, count, limit };
@@ -102,6 +111,11 @@ export class AuditService {
       },
       orderBy: { timestamp: 'desc' },
       take: limit,
+      include: {
+        users: {
+          select: { username: true },
+        },
+      },
     });
   }
 
@@ -110,43 +124,24 @@ export class AuditService {
     phase: string,
     app: string,
     limit: number = 100,
-  ): Promise<AuditEntry[]> {
+  ): Promise<{ audit: AuditEntry[]; count: number; limit: number }> {
     if (!this.enabled) {
-      return [];
+      return { audit: [], count: 0, limit: limit };
     }
-    return this.prisma.audit.findMany({
+    const audit = await this.prisma.audit.findMany({
       where: { pipeline, phase, app },
       orderBy: { timestamp: 'desc' },
       take: limit,
+      include: {
+        users: {
+          select: { username: true },
+        },
+      },
     });
-  }
-
-  public async getPhaseEntries(
-    phase: string,
-    limit: number = 100,
-  ): Promise<AuditEntry[]> {
-    if (!this.enabled) {
-      return [];
-    }
-    return this.prisma.audit.findMany({
-      where: { phase },
-      orderBy: { timestamp: 'desc' },
-      take: limit,
+    const count = await this.prisma.audit.count({
+      where: { pipeline, phase, app },
     });
-  }
-
-  public async getPipelineEntries(
-    pipeline: string,
-    limit: number = 100,
-  ): Promise<AuditEntry[]> {
-    if (!this.enabled) {
-      return [];
-    }
-    return this.prisma.audit.findMany({
-      where: { pipeline },
-      orderBy: { timestamp: 'desc' },
-      take: limit,
-    });
+    return { audit, count, limit };
   }
 
   private async flush(): Promise<void> {

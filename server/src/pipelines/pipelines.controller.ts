@@ -11,6 +11,8 @@ import {
   Post,
   Put,
   UseGuards,
+  Request,
+  Req,
 } from '@nestjs/common';
 import { PipelinesService } from './pipelines.service';
 import {
@@ -18,7 +20,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
-} from '@nestjs/swagger';
+} from '@nestjs/swagger'
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
 import { OKDTO } from '../common/dto/ok.dto';
@@ -64,23 +66,20 @@ export class PipelinesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Create a new pipeline' })
-  @HttpCode(HttpStatus.CREATED)
   async createPipeline(
     @Param('pipeline') pipelineName: string,
     @Body() pl: CreatePipelineDTO,
+    @Request() req: any,
   ): Promise<OKDTO> {
     if (pipelineName !== 'new') {
       const msg = 'Pipeline name does not match the URL';
       Logger.error(msg);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
-
-    //TODO: Migration -> this is a mock user
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
 
     const pipeline: IPipeline = {
@@ -124,13 +123,15 @@ export class PipelinesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update a pipeline' })
-  async updatePipeline(@Body() pl: CreatePipelineDTO) {
-    //TODO: Migration -> this is a mock user
+  async updatePipeline(
+    @Body() pl: CreatePipelineDTO,
+    @Request() req: any,
+    @Param('pipeline') pipelineName: string,
+  ) {
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
 
     const pipeline: IPipeline = {
@@ -162,14 +163,17 @@ export class PipelinesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Delete a pipeline' })
-  async deletePipeline(@Param('pipeline') pipeline: string) {
+  async deletePipeline(
+    @Param('pipeline') pipeline: string,
+    @Request() req: any,
+  ): Promise<OKDTO> {
     const user: IUser = {
-      id: 1,
-      method: 'local',
-      username: 'admin',
-      apitoken: '1234567890',
+      id: req.user.userId,
+      strategy: req.user.strategy,
+      username: req.user.username,
     };
-    return this.pipelinesService.deletePipeline(pipeline, user);
+    await this.pipelinesService.deletePipeline(pipeline, user);
+    return { status: 'ok', message: '' } as OKDTO;
   }
 
   @Get('/:pipeline/apps')

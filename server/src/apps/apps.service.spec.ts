@@ -106,7 +106,7 @@ const mockApp = {
   },
 } as IApp;
 
-export const mochKubectlApp = {
+export const mockKubectlApp = {
   apiVersion: 'kubero.io/v1',
   kind: 'KuberoApp',
   spec: mockApp,
@@ -120,7 +120,7 @@ describe('AppsService', () => {
   let notificationsService: jest.Mocked<NotificationsService>;
   let configService: jest.Mocked<ConfigService>;
   let eventsGateway: jest.Mocked<EventsGateway>;
-  const user: IUser = { username: 'testuser' } as IUser;
+  const user: IUser = { id: '1', username: 'testuser' } as IUser;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -900,7 +900,7 @@ describe('AppsService', () => {
     });
 
     it('should return a YAML template for an app', async () => {
-      mockGetApp.mockResolvedValue(mochKubectlApp);
+      mockGetApp.mockResolvedValue(mockKubectlApp);
 
       const result = await service.getTemplate('pipeline1', 'dev', 'test-app');
 
@@ -949,7 +949,7 @@ describe('AppsService', () => {
 
     it('should not restart app if KUBERO_READONLY is true', async () => {
       process.env.KUBERO_READONLY = 'true';
-      const user = { username: 'testuser' };
+      const user = { id: '1', username: 'testuser' };
       const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
       await service.restartApp('pipe', 'dev', 'app1', user as any);
       expect(mockKubectl.restartApp).not.toHaveBeenCalled();
@@ -958,7 +958,7 @@ describe('AppsService', () => {
     });
 
     it('should call restartApp for web and worker and send notification', async () => {
-      const user = { username: 'testuser' };
+      const user = { id: '1', username: 'testuser' };
       await service.restartApp('pipe', 'dev', 'app1', user as any);
 
       expect(mockLogger.debug).toHaveBeenCalledWith(
@@ -985,7 +985,7 @@ describe('AppsService', () => {
       expect(mockNotificationsService.send).toHaveBeenCalledWith(
         expect.objectContaining({
           name: 'restartApp',
-          user: 'testuser',
+          user: '1',
           resource: 'app',
           action: 'restart',
           pipelineName: 'pipe',
@@ -997,7 +997,7 @@ describe('AppsService', () => {
 
     it('should do nothing if getContext returns undefined', async () => {
       mockPipelinesService.getContext.mockResolvedValueOnce(undefined);
-      const user = { username: 'testuser' };
+      const user = { id: '1', username: 'testuser' };
       await service.restartApp('pipe', 'dev', 'app1', user as any);
       expect(mockKubectl.restartApp).not.toHaveBeenCalled();
       expect(mockNotificationsService.send).not.toHaveBeenCalled();

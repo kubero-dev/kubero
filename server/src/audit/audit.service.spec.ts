@@ -178,6 +178,11 @@ describe('AuditService', () => {
       where: { message: { contains: 'foo' } },
       orderBy: { timestamp: 'desc' },
       take: 10,
+      include: {
+        users: {
+          select: { username: true },
+        },
+      },
     });
     expect(result).toEqual(rows);
   });
@@ -209,75 +214,19 @@ describe('AuditService', () => {
       where: { pipeline: 'pipe', phase: 'dev', app: 'app' },
       orderBy: { timestamp: 'desc' },
       take: 5,
+      include: {
+        users: {
+          select: { username: true },
+        },
+      },
     });
-    expect(result).toEqual(rows);
+    expect(result).toEqual({ 'audit': rows, 'count': 1, 'limit': 5 });
   });
 
   it('getAppEntries returns [] if disabled', async () => {
     service['enabled'] = false;
     const result = await service.getAppEntries('pipe', 'dev', 'app', 5);
-    expect(result).toEqual([]);
+    expect(result).toEqual({"audit": [], "count": 0, "limit": 5});
   });
 
-  it('getPhaseEntries returns phase entries', async () => {
-    const rows: AuditEntry[] = [
-      {
-        user: 'test',
-        severity: 'normal',
-        action: 'create',
-        namespace: 'ns',
-        phase: 'dev',
-        app: 'app',
-        pipeline: 'pipe',
-        resource: 'system',
-        message: 'foo',
-      },
-    ];
-    mockPrisma.audit.findMany = jest.fn().mockResolvedValue(rows);
-
-    const result = await service.getPhaseEntries('dev', 7);
-    expect(mockPrisma.audit.findMany).toHaveBeenCalledWith({
-      where: { phase: 'dev' },
-      orderBy: { timestamp: 'desc' },
-      take: 7,
-    });
-    expect(result).toEqual(rows);
-  });
-
-  it('getPhaseEntries returns [] if disabled', async () => {
-    service['enabled'] = false;
-    const result = await service.getPhaseEntries('dev', 7);
-    expect(result).toEqual([]);
-  });
-
-  it('getPipelineEntries returns pipeline entries', async () => {
-    const rows: AuditEntry[] = [
-      {
-        user: 'test',
-        severity: 'normal',
-        action: 'create',
-        namespace: 'ns',
-        phase: 'dev',
-        app: 'app',
-        pipeline: 'pipe',
-        resource: 'system',
-        message: 'foo',
-      },
-    ];
-    mockPrisma.audit.findMany = jest.fn().mockResolvedValue(rows);
-
-    const result = await service.getPipelineEntries('pipe', 3);
-    expect(mockPrisma.audit.findMany).toHaveBeenCalledWith({
-      where: { pipeline: 'pipe' },
-      orderBy: { timestamp: 'desc' },
-      take: 3,
-    });
-    expect(result).toEqual(rows);
-  });
-
-  it('getPipelineEntries returns [] if disabled', async () => {
-    service['enabled'] = false;
-    const result = await service.getPipelineEntries('pipe', 3);
-    expect(result).toEqual([]);
-  });
 });
