@@ -2,6 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DeploymentsController } from './deployments.controller';
 import { DeploymentsService } from './deployments.service';
 
+const mockUser = {
+  id: 1,
+  strategy: 'local',
+  username: 'admin',
+};
+
+const mockJWT = {
+  userId: 1,
+  strategy: 'local',
+  username: 'admin',
+  apitoken: '1234567890',
+};
+
 describe('DeploymentsController', () => {
   let controller: DeploymentsController;
   let service: jest.Mocked<DeploymentsService>;
@@ -44,11 +57,13 @@ describe('DeploymentsController', () => {
       reference: 'main',
       dockerfilePath: 'Dockerfile',
     };
+    const req = { user: mockJWT };
     const result = await controller.buildApp(
       'pipe',
       'phase',
       'app',
       body as any,
+      req
     );
     expect(service.triggerBuildjob).toHaveBeenCalledWith(
       'pipe',
@@ -64,7 +79,8 @@ describe('DeploymentsController', () => {
   });
 
   it('should delete app', async () => {
-    const result = await controller.deleteApp('pipe', 'phase', 'app', 'build1');
+    const req = { user: mockJWT };
+    const result = await controller.deleteApp('pipe', 'phase', 'app', 'build1', req);
     expect(service.deleteBuildjob).toHaveBeenCalledWith(
       'pipe',
       'phase',

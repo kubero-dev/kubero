@@ -108,7 +108,7 @@ describe('AuthService', () => {
     it('should return access_token if user is valid', async () => {
       jest
         .spyOn(service, 'validateUser')
-        .mockResolvedValueOnce({ userId: 1, username: 'test' });
+        .mockResolvedValueOnce({ id: 1, username: 'test' });
       const result = await service.login('test', 'pass');
       expect(result).toEqual({ access_token: 'signed-token' });
       expect(jwtService.sign).toHaveBeenCalledWith({
@@ -129,7 +129,7 @@ describe('AuthService', () => {
   describe('loginOAuth2', () => {
     it('should sign and return token for OAuth2 user', async () => {
       usersService.findOne.mockResolvedValueOnce({
-        userId: 3,
+        id: 3,
         username: 'oauthuser',
       });
       const result = await service.loginOAuth2('oauthuser');

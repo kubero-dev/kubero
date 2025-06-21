@@ -144,44 +144,6 @@ export class AuditService {
     return { audit, count, limit };
   }
 
-  public async getPhaseEntries(
-    phase: string,
-    limit: number = 100,
-  ): Promise<AuditEntry[]> {
-    if (!this.enabled) {
-      return [];
-    }
-    return this.prisma.audit.findMany({
-      where: { phase },
-      orderBy: { timestamp: 'desc' },
-      take: limit,
-      include: {
-        users: {
-          select: { username: true },
-        },
-      },
-    });
-  }
-
-  public async getPipelineEntries(
-    pipeline: string,
-    limit: number = 100,
-  ): Promise<AuditEntry[]> {
-    if (!this.enabled) {
-      return [];
-    }
-    return this.prisma.audit.findMany({
-      where: { pipeline },
-      orderBy: { timestamp: 'desc' },
-      take: limit,
-      include: {
-        users: {
-          select: { username: true },
-        },
-      },
-    });
-  }
-
   private async flush(): Promise<void> {
     await this.prisma.audit.deleteMany({});
   }

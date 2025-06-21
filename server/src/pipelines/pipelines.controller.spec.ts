@@ -2,6 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PipelinesController } from './pipelines.controller';
 import { PipelinesService } from './pipelines.service';
 
+const mockUser = {
+  id: 1,
+  strategy: 'local',
+  username: 'admin',
+};
+
+const mockJWT = {
+  userId: 1,
+  strategy: 'local',
+  username: 'admin',
+  apitoken: '1234567890',
+};
+
 describe('PipelinesController', () => {
   let controller: PipelinesController;
   let service: jest.Mocked<PipelinesService>;
@@ -52,7 +65,9 @@ describe('PipelinesController', () => {
       deploymentstrategy: '',
       buildstrategy: '',
     };
-    const result = await controller.createPipeline('new', dto);
+
+    const req = { user: mockJWT };
+    const result = await controller.createPipeline('new', dto, req);
     expect(service.createPipeline).toHaveBeenCalled();
     expect(result).toEqual({ ok: true });
   });
@@ -70,7 +85,8 @@ describe('PipelinesController', () => {
       deploymentstrategy: '',
       buildstrategy: '',
     };
-    await expect(controller.createPipeline('notnew', dto)).rejects.toThrow();
+    const req = { user: mockJWT };
+    await expect(controller.createPipeline('notnew', dto, req)).rejects.toThrow();
   });
 
   it('should get a specific pipeline', async () => {
@@ -93,18 +109,20 @@ describe('PipelinesController', () => {
       buildstrategy: '',
       resourceVersion: '1',
     };
-    const result = await controller.updatePipeline(dto);
+    const req = { user: mockJWT };
+    const result = await controller.updatePipeline(dto, req, "pipeline1");
     expect(service.updatePipeline).toHaveBeenCalled();
     expect(result).toEqual({ ok: true });
   });
 
   it('should delete a pipeline', async () => {
-    const result = await controller.deletePipeline('pipeline1');
+    const req = { user: mockJWT };
+    const result = await controller.deletePipeline('pipeline1', req);
     expect(service.deletePipeline).toHaveBeenCalledWith(
       'pipeline1',
       expect.any(Object),
     );
-    expect(result).toEqual({ ok: true });
+    expect(result).toEqual({ message: '', status: 'ok' });
   });
 
   it('should get all apps for a pipeline', async () => {
