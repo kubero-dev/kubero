@@ -21,6 +21,8 @@ import { TemplatesController } from './templates/templates.controller';
 import { TemplatesService } from './templates/templates.service';
 import { StatusModule } from './status/status.module';
 import { DatabaseModule } from './database/database.module';
+import { GroupModule } from './groups/groups.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -43,6 +45,8 @@ import { DatabaseModule } from './database/database.module';
     SecurityModule,
     StatusModule,
     DatabaseModule,
+    GroupModule,
+    RolesModule,
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

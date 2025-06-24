@@ -23,6 +23,7 @@ export class DatabaseService {
         // create user after migrations
         this.createAdminUser()
         this.migrateLegeacyUsers()
+        this.seedDefaultData()
       })
       .catch((error) => {
         this.logger.error('Error during database migrations.', error);
@@ -182,5 +183,90 @@ export class DatabaseService {
     
     this.logger.log('Legacy users migrated successfully.');
     //await prisma.$disconnect();
+  }
+
+  private async seedDefaultData() {
+
+    // Ensure the 'admin' role exists with permissions
+    this.prisma.role.upsert({
+      where: { name: 'admin' },
+      update: {},
+      create: {
+        name: 'admin',
+        description: 'Administrator role with full access',
+        permissions: {
+          create: [
+            { action: 'write', resource: 'user' },
+            { action: 'write', resource: 'pipeline' },
+            { action: 'write', resource: 'app' },
+            { action: 'write', resource: 'settings' },
+            { action: 'write', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "admin" seeded successfully.');
+    })
+
+    // Ensure the 'member' role exists with limited permissions
+    this.prisma.role.upsert({
+      where: { name: 'member' },
+      update: {},
+      create: {
+        name: 'member',
+        description: 'Member role with limited access',
+        permissions: {
+          create: [
+            { action: 'read', resource: 'user' },
+            { action: 'write', resource: 'pipeline' },
+            { action: 'write', resource: 'app' },
+            { action: 'write', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "member" seeded successfully.');
+    })
+
+    // Ensure the 'guest' role exists with minimal permissions
+    this.prisma.role.upsert({
+      where: { name: 'guest' },
+      update: {},
+      create: {
+        name: 'guest',
+        description: 'Guest role with minimal access',
+        permissions: {
+          create: [
+            { action: 'read', resource: 'app' },
+            { action: 'read', resource: 'pipeline' },
+            { action: 'read', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "guest" seeded successfully.');
+    })
+
+    // Ensure the 'everyone' user group exists
+    const existingGroup = await this.prisma.userGroup.findUnique({
+      where: { name: 'everyone' },
+    });
+
+    if (!existingGroup) {
+      await this.prisma.userGroup.create({
+        data: {
+          name: 'everyone',
+          description: 'Standard group for all users',
+        },
+      });
+      this.logger.log('UserGroup "everyone" created successfully.');
+    } else {
+      this.logger.log('UserGroup "everyone" already exists. Skipping creation.');
+    }
+
+    this.logger.log('Default data seeded successfully.');
   }
 }
