@@ -35,6 +35,12 @@
             title="Settings">
         </v-list-item>
         <v-list-item 
+            link to="/accounts" 
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            prepend-icon="mdi-account-outline"
+            title="Accounts">
+        </v-list-item>
+        <v-list-item 
             @click="logout()" 
             v-if="kubero.isAuthenticated"
             prepend-icon="mdi-logout"
