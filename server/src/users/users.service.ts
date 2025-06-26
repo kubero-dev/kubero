@@ -72,7 +72,7 @@ export class UsersService {
   }
 
   async create(user: any): Promise<PrismaUser> {
-    console.log('Creating user with data:', user);
+    this.logger.debug('Creating user with data:', user);
     const {
       role,
       userGroups,
