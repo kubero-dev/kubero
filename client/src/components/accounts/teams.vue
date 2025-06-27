@@ -21,6 +21,13 @@
           density="compact"
         ></v-text-field>
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        <span class="font-weight-bold">{{ item.name }}</span>
+      </template>
+      <template v-slot:[`item.description`]="{ item }">
+        <span v-if="item.description">{{ item.description }}</span>
+        <span v-else class="text--secondary">-</span>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           elevation="0"
@@ -68,6 +75,13 @@
         <v-card-title>Edit Team</v-card-title>
         <v-card-text>
           <v-text-field v-model="editedTeam.name" label="Team Name"></v-text-field>
+          <v-text-field
+            v-model="editedTeam.description"
+            label="Description"
+            type="text"
+            multiline
+            rows="2"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -83,6 +97,13 @@
         <v-card-title>Create Team</v-card-title>
         <v-card-text>
           <v-text-field v-model="newTeam.name" label="Team Name"></v-text-field>
+          <v-text-field
+            v-model="newTeam.description"
+            label="Description"
+            type="text"
+            multiline
+            rows="2"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -102,9 +123,9 @@ export default defineComponent({
   name: 'TeamsTable',
   setup() {
     interface Team {
-      id: string | number;
+      id?: string;
       name: string;
-      // ggf. weitere Felder
+      description?: string;
     }
     const teams = ref<Team[]>([])
     const loading = ref(false)
@@ -112,13 +133,12 @@ export default defineComponent({
     const editDialog = ref(false)
     const createDialog = ref(false)
     const editedTeam = ref<Team | any>({})
-    const newTeam = ref({
-      name: '',
-    })
+    const newTeam = ref(<Team>({ name: '', description: '' }))
 
     const headers = [
       { text: 'Team Name', value: 'name' },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: 'Description', value: 'description' },
+      { text: 'Actions', value: 'actions', sortable: false, align: 'end' },
     ]
 
     const loadTeams = async () => {

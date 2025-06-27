@@ -26,7 +26,7 @@
           {{ item.isActive ? 'Aktive' : 'Disabled' }}
         </v-chip>
       </template>
-      <template v-slot:[`item.role.name`]="{ item }">
+      <template v-slot:[`item.role`]="{ item }">
         <span v-if="item.role">
           <v-chip
             class="ma-2"
@@ -39,7 +39,7 @@
         </span>
         <span v-else></span>
       </template>
-      <template v-slot:[`item.userGroups.name`]="{ item }">
+      <template v-slot:[`item.userGroups`]="{ item }">
         <span v-if="item.userGroups && item.userGroups.length">
           <span v-for="team in item.userGroups" :key="team.id">
             <!--{{ team.name }}<span v-if="team !== item.teams[item.teams.length - 1]">, </span>-->
@@ -145,6 +145,27 @@
           <v-text-field v-model="editedUser.lastName" label="Last Name"></v-text-field>
           <v-text-field v-model="editedUser.email" label="E-Mail"></v-text-field>
           <v-switch v-model="editedUser.isActive" label="Aktive"></v-switch>
+          <v-select
+            v-model="editedUser.role"
+            :items="roles"
+            item-title="name"
+            item-value="id"
+            label="Role"
+            clearable
+          ></v-select>
+          <v-select
+            v-model="editedUser.userGroups"
+            :items="teams"
+            item-title="name"
+            item-value="id"
+            label="Teams"
+            multiple
+            clearable
+          >
+            <template v-slot:selection="{ item, index }">
+              <v-chip :text="item.title"></v-chip>
+            </template>
+          </v-select>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -181,7 +202,11 @@
             label="Teams"
             multiple
             clearable
-          ></v-select>
+          >
+            <template v-slot:selection="{ item, index }">
+              <v-chip :text="item.title"></v-chip>
+            </template>
+          </v-select>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -277,13 +302,13 @@ export default defineComponent({
       { text: 'First Name', value: 'firstName' },
       { text: 'Last Name', value: 'lastName' },
       { text: 'E-Mail', value: 'email' },
-      { text: 'Roles', value: 'role.name', sortable: false },
-      { text: 'Teams', value: 'userGroups.name', sortable: false },
+      { text: 'Roles', value: 'role', sortable: false },
+      { text: 'Teams', value: 'userGroups', sortable: false },
       /*
       { text: 'Created', value: 'createdAt' },
       { text: 'Updated', value: 'updatedAt' },
       */
-      { text: 'Acctions', value: 'actions', sortable: false },
+      { text: 'Acctions', value: 'actions', sortable: false, align: 'end'  },
     ]
 
     const loadUsers = async () => {

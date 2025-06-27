@@ -21,6 +21,14 @@
           density="compact"
         ></v-text-field>
       </template>
+      <template v-slot:[`item.name`]="{ item }">
+        <span class="font-weight-bold">{{ item.name }}</span>
+      </template>
+      <template v-slot:[`item.permissions`]="{ item }">
+        <span v-for="permission in item.permissions" :key="permission.id">
+          {{ permission.resource }}: {{ permission.action }}
+        </span>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           elevation="0"
@@ -104,7 +112,12 @@ export default defineComponent({
     interface Role {
       id: string | number;
       name: string;
-      // ggf. weitere Felder
+      permissions?: Permission[]; 
+    }
+    interface Permission {
+      id: string | number;
+      resource: string;
+      action: string;
     }
     const roles = ref<Role[]>([])
     const loading = ref(false)
@@ -118,7 +131,8 @@ export default defineComponent({
 
     const headers = [
       { text: 'Role Name', value: 'name' },
-      { text: 'Actions', value: 'actions', sortable: false },
+      { text: 'Permissions', value: 'permissions' },
+      { text: 'Actions', value: 'actions', sortable: false, align: 'end' },
     ]
 
     const loadRoles = async () => {

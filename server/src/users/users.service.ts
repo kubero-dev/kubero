@@ -4,10 +4,10 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 //import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
-import e from 'express';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
+export type PartialPrismaUser = Partial<PrismaUser>; // Partial type for Prisma User to remove sensitive fields
 
 @Injectable()
 export class UsersService {
@@ -99,9 +99,9 @@ export class UsersService {
     });
   }
   
-  async update(userId: string, user: any): Promise<PrismaUser | undefined> {
+  async update(userId: string, user: any): Promise<PartialPrismaUser | undefined> {
     
-    const {
+    let {
       id,
       createdAt,
       updatedAt,
@@ -113,12 +113,13 @@ export class UsersService {
     } = user;
 
     // fix relations
-    if (role && typeof role === 'object' && role.id) {
-      data.role = { connect: { id: role.id } };
+    if (role && typeof role === 'string' ) {
+      data.role = { connect: { id: role } };
     }
     if (userGroups && Array.isArray(userGroups)) {
       data.userGroups = {
-        set: userGroups.map((g: any) => ({ id: g.id })),
+        set: [],
+        connect: userGroups.map((g: any) => ({ id: g.id || g })),
       };
     }
 
@@ -129,6 +130,9 @@ export class UsersService {
 
     try {
       return await this.prisma.user.update({
+        omit: {
+          password: true
+        },
         where: { id: userId },
         data,
       });
@@ -140,12 +144,20 @@ export class UsersService {
   }
 
   async updatePassword(userId: string, newPassword: string): Promise<PrismaUser | undefined> {
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.length === 0) {
+      this.logger.warn('No valid new password provided for password update.');
+      return undefined;
+    }
     try {
-      return await this.prisma.user.update({
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const user = await this.prisma.user.update({
         where: { id: userId },
-        data: { password: newPassword },
+        data: { password: hashedPassword },
       });
+      this.logger.debug(`Password updated for user with ID ${userId}.`);
+      return user;
     } catch (error) {
+      this.logger.debug(`Error updating password for user with ID ${userId}:`, error);
       this.logger.warn(`User with ID ${userId} not found for password update.`);
       return undefined;
     }
@@ -179,21 +191,6 @@ export class UsersService {
       }
     });
   }
-  /*
-  async generatePasswordHash(password: string): Promise<string> {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return `${salt}:${hash}`;
-  }
-  async verifyPassword(password: string, hash: string): Promise<boolean> {
-    const [salt, key] = hash.split(':');
-    const hashVerify = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return key === hashVerify;
-  }
-  async getUserByEmail(email: string): Promise<PrismaUser | null> {
-    return this.prisma.user.findUnique({ where: { email } });
-  }
-    */
 
   async findAllRoles(): Promise<any[]> {
     return this.prisma.role.findMany({

@@ -18,4 +18,33 @@ export class GroupsService {
       },
     });
   }
-}
+
+  async create(name: string, description: string): Promise<any> {
+    const groupData = {
+      name,
+      description,
+    };
+    return this.prisma.userGroup.create({
+      data: groupData,
+    });
+  }
+
+  async findById(id: string): Promise<any | null> {
+    return this.prisma.userGroup.findUnique({
+      where: { id },
+    });
+  }
+
+  async update(id: string, groupData: any): Promise<any | null> {
+    return this.prisma.userGroup.update({
+      where: { id },
+      data: groupData,
+    });
+  }
+
+  async delete(id: string): Promise<any | null> {
+    return this.prisma.userGroup.delete({
+      where: { id },
+    });
+  }
+} 

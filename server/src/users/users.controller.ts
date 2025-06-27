@@ -157,7 +157,7 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 
-  @Put('/update-password/:id')
+  @Put('/:id/password/')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -173,9 +173,12 @@ export class UsersController {
   @ApiOperation({ summary: 'Update User password by ID' })
   async updateUserPassword(
     @Param('id') id: string,
-    @Param('password') password: string,
+    @Body() body: Partial<User>,
   ) {
-    return this.usersService.updatePassword(id, password);
+    if (!body.password || typeof body.password !== 'string' || body.password.length === 0) {
+      throw new HttpException('Invalid password provided', HttpStatus.BAD_REQUEST);
+    }
+    return this.usersService.updatePassword(id, body.password);
   }
 
   @Put('/update-my-password')
