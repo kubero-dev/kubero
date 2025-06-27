@@ -26,6 +26,12 @@
           {{ item.isActive ? 'Aktive' : 'Disabled' }}
         </v-chip>
       </template>
+      <template v-slot:[`item.username`]="{ item }">
+        <span>{{ item.username }}</span>
+      </template>
+      <template v-slot:[`item.name`]="{ item }">
+        <span>{{ item.firstName }} {{ item.lastName }}</span>
+      </template>
       <template v-slot:[`item.role`]="{ item }">
         <span v-if="item.role">
           <v-chip
@@ -42,7 +48,6 @@
       <template v-slot:[`item.userGroups`]="{ item }">
         <span v-if="item.userGroups && item.userGroups.length">
           <span v-for="team in item.userGroups" :key="team.id">
-            <!--{{ team.name }}<span v-if="team !== item.teams[item.teams.length - 1]">, </span>-->
             <v-chip
               class="ma-2"
               color="grey"
@@ -297,13 +302,14 @@ export default defineComponent({
     const roles = ref<Role[]>([])
 
     const headers = [
-      { text: 'Status', value: 'isActive' },
-      { text: 'Username', value: 'username' },
-      { text: 'First Name', value: 'firstName' },
-      { text: 'Last Name', value: 'lastName' },
-      { text: 'E-Mail', value: 'email' },
-      { text: 'Roles', value: 'role', sortable: false },
-      { text: 'Teams', value: 'userGroups', sortable: false },
+      { title: 'Status', value: 'isActive' },
+      { title: 'Username', value: 'username' },
+      { title: 'Name', value: 'name' },
+      //{ title: 'First Name', value: 'firstName' },
+      //{ title: 'Last Name', value: 'lastName' },
+      { title: 'E-Mail', value: 'email' },
+      { title: 'Roles', value: 'role', sortable: false },
+      { title: 'Teams', value: 'userGroups', sortable: false },
       /*
       { text: 'Created', value: 'createdAt' },
       { text: 'Updated', value: 'updatedAt' },

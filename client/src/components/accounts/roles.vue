@@ -22,11 +22,56 @@
         ></v-text-field>
       </template>
       <template v-slot:[`item.name`]="{ item }">
-        <span class="font-weight-bold">{{ item.name }}</span>
+        <span>
+          <v-chip
+            class="ma-2"
+            color="primary"
+            label
+          >
+            <v-icon icon="mdi-account-circle-outline" start></v-icon>
+            {{ item.name}}
+          </v-chip>
+        </span>
       </template>
       <template v-slot:[`item.permissions`]="{ item }">
         <span v-for="permission in item.permissions" :key="permission.id">
           {{ permission.resource }}: {{ permission.action }}
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsApp`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'app') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsPipeline`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'pipeline') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsAccount`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'account') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsConfig`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'config') }}
+          </v-icon>
         </span>
       </template>
       <template v-slot:[`item.actions`]="{ item }">
@@ -130,9 +175,13 @@ export default defineComponent({
     })
 
     const headers = [
-      { text: 'Role Name', value: 'name' },
-      { text: 'Permissions', value: 'permissions' },
-      { text: 'Actions', value: 'actions', sortable: false, align: 'end' },
+      { title: 'Role', value: 'name' },
+      //{ text: 'Permissions', value: 'permissions' },
+      { title: 'App', value: 'permissionsApp', align: 'center' },
+      { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' },
+      { title: 'Accounts', value: 'permissionsAccount', align: 'center' },
+      { title: 'Configuration', value: 'permissionsConfig', align: 'center' },
+      //{ text: 'Actions', value: 'actions', sortable: false, align: 'end' },
     ]
 
     const loadRoles = async () => {
@@ -184,7 +233,34 @@ export default defineComponent({
         console.error('Error creating role:', e)
       }
     }
-
+/*
+    const getResources = async () => {
+      try {
+        const res = await axios.get('/api/roles/resources')
+        return res.data
+      } catch (e) {
+        console.error('Error fetching resources:', e)
+        return []
+      }
+    }
+*/
+    const getResourcePermissions = (permissions: any, resource: string) => {
+      for (const permission of permissions) {
+        if (permission.resource === resource) {
+          switch (permission.action) {
+            case 'write':
+              return 'mdi-pencil';
+              break;
+            case 'read':
+              return 'mdi-eye';
+              break;
+          }
+          return 
+        }
+      }
+      return 'mdi-cancel'
+    }
+      
     onMounted(() => {
       loadRoles()
     })
@@ -203,6 +279,7 @@ export default defineComponent({
       deleteRole,
       openCreateDialog,
       saveCreate,
+      getResourcePermissions,
     }
   },
 })

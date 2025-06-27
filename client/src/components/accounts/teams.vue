@@ -22,7 +22,13 @@
         ></v-text-field>
       </template>
       <template v-slot:[`item.name`]="{ item }">
-        <span class="font-weight-bold">{{ item.name }}</span>
+        <v-chip
+          class="ma-2"
+          color="grey"
+          size="small"
+        >
+          {{ item.name }}
+        </v-chip>
       </template>
       <template v-slot:[`item.description`]="{ item }">
         <span v-if="item.description">{{ item.description }}</span>
@@ -136,9 +142,9 @@ export default defineComponent({
     const newTeam = ref(<Team>({ name: '', description: '' }))
 
     const headers = [
-      { text: 'Team Name', value: 'name' },
-      { text: 'Description', value: 'description' },
-      { text: 'Actions', value: 'actions', sortable: false, align: 'end' },
+      { title: 'Team', value: 'name' },
+      { title: 'Description', value: 'description' },
+      { title: 'Actions', value: 'actions', sortable: false, align: 'end' },
     ]
 
     const loadTeams = async () => {
