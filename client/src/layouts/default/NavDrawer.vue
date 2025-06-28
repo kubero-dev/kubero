@@ -5,11 +5,21 @@
       permanent
       rail
   >
+    <v-list>
+        <v-list-item
+        prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
+        subtitle="sandra_a88@gmailcom"
+        title="Sandra Adams"
+        link to="/profile"
+        ></v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
     <v-list nav density="compact">
         <v-list-item 
             link to="/"
             prepend-icon="mdi-server"
-            title="Projects">
+            title="Pipelines">
         </v-list-item>
         <v-list-item 
             link to="/templates" 

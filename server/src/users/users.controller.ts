@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Request,
   UseGuards,
 
 } from '@nestjs/common';
@@ -224,5 +225,24 @@ export class UsersController {
     } catch (error) {
       throw new HttpException(`Error creating user: ${error.message}`, HttpStatus.BAD_REQUEST);
     }
+  }
+
+  @Get('/profile')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Get current User profile',
+    type: GetAllUsersDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Get current User profile' })
+  async getProfile(@Request() req: any) {
+    const user = req.user;
+    return this.usersService.findById(user.userId);
   }
 }

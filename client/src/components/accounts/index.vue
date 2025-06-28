@@ -4,6 +4,7 @@
       <v-tab>Users</v-tab>
       <v-tab>Teams</v-tab>
       <v-tab>Roles</v-tab>
+      <v-tab>Tokens</v-tab>
     </v-tabs>
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="0">
@@ -15,6 +16,9 @@
       <v-tabs-window-item :value="2">
         <roles />
       </v-tabs-window-item>
+      <v-tabs-window-item :value="3">
+        <tokens />
+      </v-tabs-window-item>
     </v-tabs-window>
   </v-container>
 </template>
@@ -24,6 +28,7 @@ import { defineComponent, ref } from 'vue'
 import users from './users.vue'
 import teams from './teams.vue'
 import roles from './roles.vue'
+import tokens from './tokens.vue'
 
 export default defineComponent({
   name: 'AccountTabs',
@@ -31,6 +36,7 @@ export default defineComponent({
     users,
     teams,
     roles,
+    tokens,
   },
   setup() {
     const tab = ref(0)

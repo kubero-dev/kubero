@@ -121,6 +121,7 @@ model Role {
 
 model Token {
   id          String    @id @default(cuid())
+  name        String
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   token       String    @unique

@@ -23,6 +23,7 @@ import { StatusModule } from './status/status.module';
 import { DatabaseModule } from './database/database.module';
 import { GroupModule } from './groups/groups.module';
 import { RolesModule } from './roles/roles.module';
+import { TokenModule } from './token/token.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { RolesModule } from './roles/roles.module';
     DatabaseModule,
     GroupModule,
     RolesModule,
+    TokenModule,
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

@@ -102,7 +102,7 @@
       </template>
     </v-data-table>
 
-    <!-- Button to add a role -->
+    <!-- Button to add a role
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn
         fab
@@ -114,6 +114,7 @@
         <span class="sr-only">Create Role</span>
       </v-btn>
     </div>
+    -->
 
     <!-- Dialog to edit a role -->
     <v-dialog v-model="editDialog" max-width="500px">
@@ -176,12 +177,12 @@ export default defineComponent({
 
     const headers = [
       { title: 'Role', value: 'name' },
-      //{ text: 'Permissions', value: 'permissions' },
-      { title: 'App', value: 'permissionsApp', align: 'center' },
-      { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' },
-      { title: 'Accounts', value: 'permissionsAccount', align: 'center' },
-      { title: 'Configuration', value: 'permissionsConfig', align: 'center' },
-      //{ text: 'Actions', value: 'actions', sortable: false, align: 'end' },
+      //{ title: 'Permissions', value: 'permissions' },
+      { title: 'App', value: 'permissionsApp', align: 'center' as const },
+      { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' as const },
+      { title: 'Accounts', value: 'permissionsAccount', align: 'center' as const},
+      { title: 'Configuration', value: 'permissionsConfig', align: 'center' as const},
+      //{ title: 'Actions', value: 'actions', sortable: false, align: 'end' },
     ]
 
     const loadRoles = async () => {

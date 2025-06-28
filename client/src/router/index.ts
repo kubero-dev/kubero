@@ -41,6 +41,17 @@ const routes = [
     ],
   },
   {
+    path: '/profile',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/views/Profile.vue'),
+      },
+    ],
+  },
+  {
     path: '/addons',
     component: () => import('@/layouts/default/Default.vue'),
     children: [

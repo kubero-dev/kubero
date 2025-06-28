@@ -314,7 +314,7 @@ export default defineComponent({
       { text: 'Created', value: 'createdAt' },
       { text: 'Updated', value: 'updatedAt' },
       */
-      { text: 'Acctions', value: 'actions', sortable: false, align: 'end'  },
+      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadUsers = async () => {

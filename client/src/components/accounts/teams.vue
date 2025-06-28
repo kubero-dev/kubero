@@ -144,7 +144,7 @@ export default defineComponent({
     const headers = [
       { title: 'Team', value: 'name' },
       { title: 'Description', value: 'description' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' },
+      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadTeams = async () => {
