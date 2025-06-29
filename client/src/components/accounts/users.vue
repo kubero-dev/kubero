@@ -308,7 +308,7 @@ export default defineComponent({
       //{ title: 'First Name', value: 'firstName' },
       //{ title: 'Last Name', value: 'lastName' },
       { title: 'E-Mail', value: 'email' },
-      { title: 'Roles', value: 'role', sortable: false },
+      { title: 'Role', value: 'role', sortable: false },
       { title: 'Teams', value: 'userGroups', sortable: false },
       /*
       { text: 'Created', value: 'createdAt' },

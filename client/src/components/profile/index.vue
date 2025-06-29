@@ -60,24 +60,30 @@
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Token</th>
                 <th>Expires At</th>
-                <th>Actions</th>
+                <th class="text-end">Actions</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="token in tokens" :key="token.id">
                 <td>{{ token.name }}</td>
-                <td>{{ token.token }}</td>
                 <td>{{ token.expiresAt ? new Date(token.expiresAt).toLocaleString() : '-' }}</td>
-                <td>
-                  <v-btn icon color="red" @click="deleteToken(token)">
-                    <v-icon>mdi-delete</v-icon>
+                <td class="text-end">
+                  <v-btn
+                    elevation="0"
+                    variant="tonal"
+                    size="small"
+                    class="ma-2"
+                    @click="deleteToken(token)"
+                  >
+                    <v-icon color="primary">
+                      mdi-delete
+                    </v-icon>
                   </v-btn>
                 </td>
               </tr>
               <tr v-if="tokens.length === 0">
-                <td colspan="4" class="text-center">No tokens found.</td>
+                <td colspan="3" class="text-center">No tokens found.</td>
               </tr>
             </tbody>
           </v-table>
@@ -120,8 +126,7 @@ export default defineComponent({
     const loadTokens = async () => {
       try {
         const res = await axios.get('/api/tokens/my')
-        // Filter tokens for the current user if needed, or assume API returns only user's tokens
-        tokens.value = res.data.filter((t: any) => t.userId === user.value.id)
+        tokens.value = res.data 
       } catch (e) {
         tokens.value = []
       }

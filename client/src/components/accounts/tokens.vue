@@ -24,6 +24,9 @@
       <template v-slot:[`item.token`]="{ item }">
         {{ item.id }}
       </template>
+      <template v-slot:[`item.user.username`]="{ item }">
+        <span>{{ item.user.username }}</span>
+      </template>
       <template v-slot:[`item.expiresAt`]="{ item }">
         <span v-if="item.expiresAt">{{ new Date(item.expiresAt).toLocaleString() }}</span>
         <span v-else class="text--secondary">-</span>
@@ -99,7 +102,8 @@ export default defineComponent({
     const newToken = ref<Token>({ token: '', expiresAt: '', userId: '' })
 
     const headers = [
-      { title: 'Token', value: 'token' },
+      { title: 'Token ID', value: 'token' },
+      { title: 'Owner', value: 'user.username' },
       { title: 'Expires At', value: 'expiresAt' },
       { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
     ]
