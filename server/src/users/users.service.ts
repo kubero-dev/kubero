@@ -20,8 +20,42 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
-  async findById(userId: string): Promise<PrismaUser | null> {
-    return this.prisma.user.findUnique({ where: { id: userId } });
+  async findById(userId: string): Promise<PartialPrismaUser | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        createdAt: true,
+        updatedAt: true,
+        isActive: true,
+        lastLogin: true,
+        lastIp: true,
+        provider: true,
+        providerId: true,
+        providerData: true,
+        image: true,
+        role: {
+          select: {
+            id: true,
+            name: true,
+            description: true
+          }
+        },
+        userGroups: {
+          select: {
+            id: true,
+            name: true,
+            description: true
+          }
+        },
+      } 
+    });
   }
 
   async findAll(): Promise<User[]> {
@@ -191,6 +225,21 @@ export class UsersService {
       }
     });
   }
+  /*
+  async generatePasswordHash(password: string): Promise<string> {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return `${salt}:${hash}`;
+  }
+  async verifyPassword(password: string, hash: string): Promise<boolean> {
+    const [salt, key] = hash.split(':');
+    const hashVerify = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    return key === hashVerify;
+  }
+  async getUserByEmail(email: string): Promise<PrismaUser | null> {
+    return this.prisma.user.findUnique({ where: { email } });
+  }
+    */
 
   async findAllRoles(): Promise<any[]> {
     return this.prisma.role.findMany({
@@ -202,6 +251,25 @@ export class UsersService {
         updatedAt: true,
       },
     });
+  }
+
+  async updateAvatar(userId: string, avatarFile: any): Promise<PrismaUser | undefined> {
+    if (!avatarFile || !avatarFile.buffer) {
+      this.logger.warn('No avatar file buffer provided.');
+      return undefined;
+    }
+    // Store as base64 string in DB (for demo; in production, store in object storage or filesystem)
+    const base64Image = `data:${avatarFile.mimetype};base64,${avatarFile.buffer.toString('base64')}`;
+    try {
+      return await this.prisma.user.update({
+        where: { id: userId },
+        data: { image: base64Image },
+      });
+    } catch (error) {
+      this.logger.warn(`User with ID ${userId} not found for avatar update.`);
+      this.logger.debug(error);
+      return undefined;
+    }
   }
 
 }

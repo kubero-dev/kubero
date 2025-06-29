@@ -10,6 +10,8 @@ import {
   Put,
   Request,
   UseGuards,
+  UploadedFile,
+  UseInterceptors,
 
 } from '@nestjs/common';
 import {
@@ -22,6 +24,8 @@ import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { OKDTO } from '../common/dto/ok.dto';
 import { User, UsersService } from './users.service';
 import { GetAllUsersDTO } from './dto/users.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller({ path: 'api/users', version: '1' })
 export class UsersController {
@@ -244,5 +248,34 @@ export class UsersController {
   async getProfile(@Request() req: any) {
     const user = req.user;
     return this.usersService.findById(user.userId);
+  }
+
+  @Post('/profile/avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Update current User avatar',
+    type: GetAllUsersDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Update current User avatar' })
+  async updateProfileAvatar(
+    @Request() req: any,
+    @UploadedFile() file: any,
+  ) {
+    const user = req.user;
+    if (!file) {
+      throw new HttpException('No avatar file uploaded', HttpStatus.BAD_REQUEST);
+    }
+    if (file.size > 102400) { // 100KB
+      throw new HttpException('Avatar image too large (max 100KB)', HttpStatus.BAD_REQUEST);
+    }
+    return this.usersService.updateAvatar(user.userId, file);
   }
 }

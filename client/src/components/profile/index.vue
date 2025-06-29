@@ -3,14 +3,45 @@
     <v-row>
       <v-col cols="12" md="6" lg="4">
         <v-card class="pa-4">
-          <v-avatar size="80" class="mb-4">
-            <v-img :src="user.image || defaultAvatar" alt="User avatar" />
-          </v-avatar>
+          <div style="position: relative; display: inline-block;">
+            <v-avatar size="150" class="mb-4">
+              <v-img :src="user.image || defaultAvatar" alt="User avatar" />
+            </v-avatar>
+            <v-btn
+              icon
+              size="x-small"
+              color="secondary"
+              style="position: absolute; bottom: 8px; right: 8px; z-index: 2;"
+              @click="editAvatarDialog = true"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </div>
           <h2 class="mb-1">{{ user.firstName }} {{ user.lastName }}</h2>
-          <div class="text--secondary mb-2">@{{ user.username }}</div>
+          <div class="text-h5 font-weight-bold mb-2">{{ user.username }}</div>
           <div class="mb-2">{{ user.email }}</div>
-          <v-chip v-if="user.role" color="primary" class="mb-2">{{ user.role.name }}</v-chip>
           <div class="text--secondary">Last login: <span v-if="user.lastLogin">{{ new Date(user.lastLogin).toLocaleString() }}</span><span v-else>-</span></div>
+          <v-dialog v-model="editAvatarDialog" max-width="400px">
+            <v-card>
+              <v-card-title>Edit Avatar</v-card-title>
+              <v-card-text>
+                <v-alert type="warning" density="compact" class="mb-2">
+                  The image must not exceed 100KB.
+                </v-alert>
+                <v-file-input
+                  v-model="avatarFile"
+                  label="Upload new avatar"
+                  accept="image/*"
+                  prepend-icon="mdi-image"
+                ></v-file-input>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="editAvatarDialog = false">Cancel</v-btn>
+                <v-btn color="primary" @click="saveAvatar">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
       <v-col cols="12" md="6" lg="8">
@@ -35,14 +66,22 @@
             </v-list-item>
             <v-list-item>
               <v-list-item-title>Role</v-list-item-title>
-              <v-list-item-subtitle>{{ user.role ? user.role.name : '-' }}</v-list-item-subtitle>
+                
+                <v-chip
+                  class="ma-2"
+                  color="primary"
+                  label
+                  v-if="user.role"
+                >
+                  <v-icon icon="mdi-account-circle-outline" start></v-icon>
+                  {{ user.role.name}}
+                </v-chip>
+                <span v-else>-</span>
             </v-list-item>
             <v-list-item>
               <v-list-item-title>Groups</v-list-item-title>
-              <v-list-item-subtitle>
-                <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="secondary">{{ group.name }}</v-chip>
+                <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey">{{ group.name }}</v-chip>
                 <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
-              </v-list-item-subtitle>
             </v-list-item>
             <v-list-item>
               <v-list-item-title>Provider</v-list-item-title>
@@ -113,6 +152,8 @@ export default defineComponent({
     })
     const defaultAvatar = '/avatar.svg'
     const tokens = ref<any[]>([])
+    const editAvatarDialog = ref(false)
+    const avatarFile = ref<File | null>(null)
 
     const loadProfile = async () => {
       try {
@@ -141,6 +182,21 @@ export default defineComponent({
       }
     }
 
+    const saveAvatar = async () => {
+      if (!avatarFile.value) return
+      const formData = new FormData()
+      formData.append('avatar', avatarFile.value)
+      try {
+        await axios.post('/api/users/profile/avatar', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        })
+        editAvatarDialog.value = false
+        await loadProfile()
+      } catch (e) {
+        // error handling
+      }
+    }
+
     onMounted(() => {
       loadProfile()
       loadTokens()
@@ -151,6 +207,9 @@ export default defineComponent({
       defaultAvatar,
       tokens,
       deleteToken,
+      editAvatarDialog,
+      avatarFile,
+      saveAvatar,
     }
   },
 })
