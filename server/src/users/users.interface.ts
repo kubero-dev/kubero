@@ -4,7 +4,7 @@ export interface User {
   name?: string;
   email: string;
   emailVerified?: Date;
-  password: string;
+  password?: string;
   twoFaSecret?: string;
   twoFaEnabled: boolean;
   image?: string;

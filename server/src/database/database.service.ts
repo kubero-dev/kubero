@@ -21,8 +21,12 @@ export class DatabaseService {
     this.runMigrations()
       .then(() => {
         // create user after migrations
-        this.createAdminUser()
-        this.migrateLegeacyUsers()
+        this.seedDefaultData()
+        .then(() => {
+          this.createSystemUser()
+          this.createAdminUser()
+          this.migrateLegeacyUsers()
+        })
       })
       .catch((error) => {
         this.logger.error('Error during database migrations.', error);
@@ -55,28 +59,44 @@ export class DatabaseService {
       execSync('npx prisma migrate deploy', { stdio: 'inherit' });
       //execSync('npx prisma migrate deploy', {});
       this.logger.log('Prisma migrations completed.');
-      await prisma.$executeRaw`
-        INSERT INTO "User" (
-          "id", 
-          "email", 
-          "username", 
-          "password", 
-          "isActive",
-          createdAt,
-          updatedAt
-        ) VALUES (
-          "1", 
-          'system@kubero.dev', 
-          'system', 
-          '', 
-          false,
-          CURRENT_TIMESTAMP,
-          CURRENT_TIMESTAMP
-        ) ON CONFLICT DO NOTHING;`
-      await prisma.$disconnect();
+      //await prisma.$disconnect();
     } catch (err) {
       this.logger.error('Prisma migration failed', err);
       process.exit(1);
+    }
+  }
+
+  private async createSystemUser() {
+    const prisma = new PrismaClient();
+    
+    // Check if the system user already exists
+    const existingUser = await prisma.user.findUnique({
+      where: { id: '1' },
+    });
+    if (existingUser) {
+      this.logger.log('System user already exists. Skipping creation.');
+      return;
+    }
+
+    const role = process.env.KUBERO_SYSTEM_USER_ROLE || 'guest';
+    const userGroups = ['everyone'];
+    try {
+      await prisma.user.create({
+        data: {
+          id: '1',
+          username: 'system',
+          email: 'system@kubero.dev',
+          password: '', // No password for system user
+          isActive: false,
+          role: { connect: { name: role } },
+          userGroups: userGroups && Array.isArray(userGroups) ? {
+            connect: userGroups.map((g: any) => ({ name: g })),
+          } : undefined
+        },
+      });
+      this.logger.log('System user created successfully.');
+    } catch (error) {
+      this.logger.error('Failed to create system user.', error);
     }
   }
 
@@ -94,6 +114,8 @@ export class DatabaseService {
 
     const adminUser = process.env.KUBERO_ADMIN_USERNAME || 'admin';
     const adminEmail = process.env.KUBERO_ADMIN_EMAIL || 'admin@kubero.dev';
+    const role = process.env.KUBERO_SYSTEM_USER_ROLE || 'admin';
+    const userGroups = ['everyone'];
 
     try {
 
@@ -113,6 +135,10 @@ export class DatabaseService {
           email: adminEmail,
           password: passwordHash,
           isActive: true,
+          role: { connect: { name: role } },
+          userGroups: userGroups && Array.isArray(userGroups) ? {
+            connect: userGroups.map((g: any) => ({ name: g })),
+          } : undefined,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -121,7 +147,6 @@ export class DatabaseService {
     } catch (error) {
       Logger.error('Failed to create admin user.', error);
     }
-    //await prisma.$disconnect();
   }
 
   private async migrateLegeacyUsers() {
@@ -162,7 +187,8 @@ export class DatabaseService {
       }
 
       const userID = crypto.randomUUID();
-
+      const role = process.env.KUBERO_DEFAULT_USER_ROLE || 'guest';
+      const userGroups = ['everyone'];
       try {
         await prisma.user.create({
           data: {
@@ -171,6 +197,10 @@ export class DatabaseService {
             email: user.username + '@kubero.dev',
             password: password,
             isActive: true,
+            role: { connect: { name: role } },
+            userGroups: userGroups && Array.isArray(userGroups) ? {
+              connect: userGroups.map((g: any) => ({ name: g })),
+            } : undefined,
           },
         });
         this.logger.log(`Migrated user ${user.username} successfully.`);
@@ -181,6 +211,90 @@ export class DatabaseService {
     };
     
     this.logger.log('Legacy users migrated successfully.');
-    //await prisma.$disconnect();
+  }
+
+  private async seedDefaultData() {
+
+    // Ensure the 'admin' role exists with permissions
+    this.prisma.role.upsert({
+      where: { name: 'admin' },
+      update: {},
+      create: {
+        name: 'admin',
+        description: 'Administrator role with full access',
+        permissions: {
+          create: [
+            { action: 'write', resource: 'user' },
+            { action: 'write', resource: 'pipeline' },
+            { action: 'write', resource: 'app' },
+            { action: 'write', resource: 'settings' },
+            { action: 'write', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "admin" seeded successfully.');
+    })
+
+    // Ensure the 'member' role exists with limited permissions
+    this.prisma.role.upsert({
+      where: { name: 'member' },
+      update: {},
+      create: {
+        name: 'member',
+        description: 'Member role with limited access',
+        permissions: {
+          create: [
+            { action: 'read', resource: 'user' },
+            { action: 'write', resource: 'pipeline' },
+            { action: 'write', resource: 'app' },
+            { action: 'write', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "member" seeded successfully.');
+    })
+
+    // Ensure the 'guest' role exists with minimal permissions
+    this.prisma.role.upsert({
+      where: { name: 'guest' },
+      update: {},
+      create: {
+        name: 'guest',
+        description: 'Guest role with minimal access',
+        permissions: {
+          create: [
+            { action: 'read', resource: 'app' },
+            { action: 'read', resource: 'pipeline' },
+            { action: 'read', resource: 'templates' },
+          ],
+        },
+      },
+    })
+    .then(() => {
+      this.logger.log('Role "guest" seeded successfully.');
+    })
+
+    // Ensure the 'everyone' user group exists
+    const existingGroup = await this.prisma.userGroup.findUnique({
+      where: { name: 'everyone' },
+    });
+
+    if (!existingGroup) {
+      await this.prisma.userGroup.create({
+        data: {
+          name: 'everyone',
+          description: 'Standard group for all users',
+        },
+      });
+      this.logger.log('UserGroup "everyone" created successfully.');
+    } else {
+      this.logger.log('UserGroup "everyone" already exists. Skipping creation.');
+    }
+
+    this.logger.log('Default data seeded successfully.');
   }
 }

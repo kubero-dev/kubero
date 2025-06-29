@@ -1186,8 +1186,8 @@ export class KubernetesService {
       );
       //console.log(config.body);
       return config.body as any;
-    } catch (_error) {
-      //this.logger.debug(error);
+    } catch (error) {
+      this.logger.debug(error);
       this.logger.debug('getKuberoConfig: error getting config');
     }
   }

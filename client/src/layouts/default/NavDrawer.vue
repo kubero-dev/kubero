@@ -5,11 +5,30 @@
       permanent
       rail
   >
+    <v-list>
+      <v-list-item
+        link to="/profile"
+      >
+        <template #prepend>
+          <v-avatar size="30">
+            <v-img :src="userAvatar || '/avatar.svg'" alt="User avatar" />
+          </v-avatar>
+        </template>
+        <template #title>
+          {{ userName }}
+        </template>
+        <template #subtitle>
+          {{ userEmail }}
+        </template>
+      </v-list-item>
+    </v-list>
+
+    <v-divider></v-divider>
     <v-list nav density="compact">
         <v-list-item 
             link to="/"
             prepend-icon="mdi-server"
-            title="Projects">
+            title="Pipelines">
         </v-list-item>
         <v-list-item 
             link to="/templates" 
@@ -33,6 +52,12 @@
             v-if="kubero.isAuthenticated && !kubero.adminDisabled"
             prepend-icon="mdi-cog-outline"
             title="Settings">
+        </v-list-item>
+        <v-list-item 
+            link to="/accounts" 
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            prepend-icon="mdi-account-outline"
+            title="Accounts">
         </v-list-item>
         <v-list-item 
             @click="logout()" 
@@ -183,8 +208,31 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import { useTheme } from 'vuetify'
+import axios from 'axios'
 const theme = useTheme()
+
+const userAvatar = ref<string>('')
+const userName = ref<string>('')
+const userEmail = ref<string>('')
+
+async function loadUserProfile() {
+  try {
+    const res = await axios.get('/api/users/profile')
+    userName.value = `${res.data.firstName || ''} ${res.data.lastName || ''}`.trim() || res.data.username
+    userEmail.value = res.data.email
+    userAvatar.value = res.data.image
+  } catch {
+    userName.value = 'Profile'
+    userEmail.value = ''
+    userAvatar.value = '/avatar.svg'
+  }
+}
+
+onMounted(() => {
+  loadUserProfile()
+})
 
 function toggleTheme() {
     theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'

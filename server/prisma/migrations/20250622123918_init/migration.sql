@@ -22,8 +22,6 @@ CREATE TABLE "User" (
     "username" TEXT NOT NULL,
     "firstName" TEXT,
     "lastName" TEXT,
-    "company" TEXT,
-    "location" TEXT,
     "email" TEXT NOT NULL,
     "emailVerified" DATETIME,
     "password" TEXT NOT NULL,

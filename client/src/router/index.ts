@@ -41,6 +41,17 @@ const routes = [
     ],
   },
   {
+    path: '/profile',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/profile',
+        name: 'Profile',
+        component: () => import('@/views/Profile.vue'),
+      },
+    ],
+  },
+  {
     path: '/addons',
     component: () => import('@/layouts/default/Default.vue'),
     children: [
@@ -70,6 +81,17 @@ const routes = [
         path: '/templates',
         name: 'Templates',
         component: () => import('@/views/Templates.vue'),
+      },
+    ],
+  },
+  {
+    path: '/accounts',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/accounts',
+        name: 'Accounts',
+        component: () => import('@/views/Accounts.vue'),
       },
     ],
   },
