@@ -47,47 +47,47 @@
       <v-col cols="12" md="6" lg="8">
         <v-card class="pa-4">
           <h3 class="mb-4">Profile Details</h3>
-          <v-list dense>
-            <v-list-item>
-              <v-list-item-title>First Name</v-list-item-title>
-              <v-list-item-subtitle>{{ user.firstName }}</v-list-item-subtitle>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Last Name</v-list-item-title>
-              <v-list-item-subtitle>{{ user.lastName }}</v-list-item-subtitle>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Email</v-list-item-title>
-              <v-list-item-subtitle>{{ user.email }}</v-list-item-subtitle>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Username</v-list-item-title>
-              <v-list-item-subtitle>{{ user.username }}</v-list-item-subtitle>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Role</v-list-item-title>
-                
-                <v-chip
-                  class="ma-2"
-                  color="primary"
-                  label
-                  v-if="user.role"
-                >
-                  <v-icon icon="mdi-account-circle-outline" start></v-icon>
-                  {{ user.role.name}}
-                </v-chip>
-                <span v-else>-</span>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Groups</v-list-item-title>
-                <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey">{{ group.name }}</v-chip>
-                <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
-            </v-list-item>
-            <v-list-item>
-              <v-list-item-title>Provider</v-list-item-title>
-              <v-list-item-subtitle>{{ user.provider || 'local' }}</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
+          <v-table density="compact">
+            <tbody>
+              <tr>
+                <td><strong>First Name</strong></td>
+                <td>{{ user.firstName }}</td>
+              </tr>
+              <tr>
+                <td><strong>Last Name</strong></td>
+                <td>{{ user.lastName }}</td>
+              </tr>
+              <tr>
+                <td><strong>Email</strong></td>
+                <td>{{ user.email }}</td>
+              </tr>
+              <tr>
+                <td><strong>Username</strong></td>
+                <td>{{ user.username }}</td>
+              </tr>
+              <tr>
+                <td><strong>Role</strong></td>
+                <td>
+                  <v-chip class="ma-2" color="primary" label v-if="user.role">
+                    <v-icon icon="mdi-account-circle-outline" start></v-icon>
+                    {{ user.role.name }}
+                  </v-chip>
+                  <span v-else>-</span>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Groups</strong></td>
+                <td>
+                  <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey">{{ group.name }}</v-chip>
+                  <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>Provider</strong></td>
+                <td>{{ user.provider || 'local' }}</td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card>
       </v-col>
     </v-row>

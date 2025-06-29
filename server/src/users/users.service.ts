@@ -272,4 +272,12 @@ export class UsersService {
     }
   }
 
+  async getAvatar(userId: string): Promise<string | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { image: true },
+    });
+    return user ? user.image : null;
+  }
+
 }

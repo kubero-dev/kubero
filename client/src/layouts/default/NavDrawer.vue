@@ -6,12 +6,21 @@
       rail
   >
     <v-list>
-        <v-list-item
-        prepend-avatar="https://randomuser.me/api/portraits/women/85.jpg"
-        subtitle="sandra_a88@gmailcom"
-        title="Sandra Adams"
+      <v-list-item
         link to="/profile"
-        ></v-list-item>
+      >
+        <template #prepend>
+          <v-avatar size="30">
+            <v-img :src="userAvatar || '/avatar.svg'" alt="User avatar" />
+          </v-avatar>
+        </template>
+        <template #title>
+          {{ userName }}
+        </template>
+        <template #subtitle>
+          {{ userEmail }}
+        </template>
+      </v-list-item>
     </v-list>
 
     <v-divider></v-divider>
@@ -199,8 +208,31 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, onMounted } from 'vue'
 import { useTheme } from 'vuetify'
+import axios from 'axios'
 const theme = useTheme()
+
+const userAvatar = ref<string>('')
+const userName = ref<string>('')
+const userEmail = ref<string>('')
+
+async function loadUserProfile() {
+  try {
+    const res = await axios.get('/api/users/profile')
+    userName.value = `${res.data.firstName || ''} ${res.data.lastName || ''}`.trim() || res.data.username
+    userEmail.value = res.data.email
+    userAvatar.value = res.data.image
+  } catch {
+    userName.value = 'Profile'
+    userEmail.value = ''
+    userAvatar.value = '/avatar.svg'
+  }
+}
+
+onMounted(() => {
+  loadUserProfile()
+})
 
 function toggleTheme() {
     theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
