@@ -94,13 +94,15 @@ export class AuthService {
       throw new HttpException('Username or email not found in OAuth2 user data', HttpStatus.BAD_REQUEST);
     }
 
-    const user = await this.usersService.findOneOrCreate(username, email, provider, image);
+    const user = await this.usersService.findOneOrCreate(username, email, provider, image) as any;
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     const u = {
       userId: user.id,
       username: user.username,
+      role: user.role ? user.role.name : 'none',
+      userGroups: user.userGroups ? user.userGroups.map((g) => g.name) : [],
       strategy: 'oauth2',
     };
     return this.jwtService.sign(u);
