@@ -95,6 +95,17 @@
       <v-col cols="12">
         <v-card class="pa-4">
           <h3 class="mb-4">API Tokens</h3>
+          <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <v-btn
+              fab
+              color="primary"
+              style="margin-right: 6px;"
+              @click="openCreateDialog"
+            >
+              <v-icon>mdi-plus</v-icon>
+              <span class="sr-only">Create Token</span>
+            </v-btn>
+          </div>
           <v-table density="compact">
             <thead>
               <tr>
@@ -126,6 +137,24 @@
               </tr>
             </tbody>
           </v-table>
+          <v-dialog v-model="createDialog" max-width="500px">
+            <v-card>
+              <v-card-title>Create Token</v-card-title>
+              <v-card-text>
+                <v-text-field v-model="newToken.name" label="Name"></v-text-field>
+                <v-text-field
+                  v-model="newToken.expiresAt"
+                  label="Expires At (ISO)"
+                  type="datetime-local"
+                ></v-text-field>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="createDialog = false">Abort</v-btn>
+                <v-btn color="primary" @click="saveCreate">Create</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -154,6 +183,8 @@ export default defineComponent({
     const tokens = ref<any[]>([])
     const editAvatarDialog = ref(false)
     const avatarFile = ref<File | null>(null)
+    const createDialog = ref(false)
+    const newToken = ref<any>({ name: '', expiresAt: '' })
 
     const loadProfile = async () => {
       try {
@@ -197,6 +228,21 @@ export default defineComponent({
       }
     }
 
+    const openCreateDialog = () => {
+      newToken.value = { name: '', expiresAt: '' }
+      createDialog.value = true
+    }
+
+    const saveCreate = async () => {
+      try {
+        await axios.post('/api/tokens', newToken.value)
+        await loadTokens()
+        createDialog.value = false
+      } catch (e) {
+        // error handling
+      }
+    }
+
     onMounted(() => {
       loadProfile()
       loadTokens()
@@ -210,6 +256,10 @@ export default defineComponent({
       editAvatarDialog,
       avatarFile,
       saveAvatar,
+      createDialog,
+      newToken,
+      openCreateDialog,
+      saveCreate,
     }
   },
 })

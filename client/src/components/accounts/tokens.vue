@@ -47,7 +47,7 @@
       </template>
     </v-data-table>
 
-    <!-- Button to add a token -->
+    <!-- Button to add a token 
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn
         fab
@@ -60,7 +60,7 @@
       </v-btn>
     </div>
 
-    <!-- Dialog for a new Token -->
+    <!-- Dialog for a new Token 
     <v-dialog v-model="createDialog" max-width="500px">
       <v-card>
         <v-card-title>Create Token</v-card-title>
@@ -79,6 +79,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+  -->
   </v-container>
 </template>
 

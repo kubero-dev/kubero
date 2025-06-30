@@ -121,7 +121,7 @@ model Role {
 
 model Token {
   id          String    @id @default(cuid())
-  name        String
+  name        String?
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   token       String    @unique
@@ -148,4 +148,70 @@ model Permission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+// CONFIGURATION 
+model Buildpack {
+  id          String         @id @default(cuid())
+  name        String
+  language    String
+  fetch       BuildpackPhase @relation("fetch", fields: [fetchId], references: [id])
+  fetchId     String
+  build       BuildpackPhase @relation("build", fields: [buildId], references: [id])
+  buildId     String
+  run         BuildpackPhase @relation("run", fields: [runId], references: [id])
+  runId       String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model BuildpackPhase {
+  id                   String                @id @default(cuid())
+  repository           String
+  tag                  String
+  command              String?
+  readOnlyAppStorage   Boolean
+  securityContext      SecurityContext       @relation("SecurityContextOnBuildpackPhase", fields: [securityContextId], references: [id])
+  securityContextId    String
+  buildpacksFetch      Buildpack[]           @relation("fetch")
+  buildpacksBuild      Buildpack[]           @relation("build")
+  buildpacksRun        Buildpack[]           @relation("run")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model SecurityContext {
+  id                        String      @id @default(cuid())
+  runAsUser                 Int
+  runAsGroup                Int
+  runAsNonRoot              Boolean
+  readOnlyRootFilesystem    Boolean
+  allowPrivilegeEscalation  Boolean
+  capabilities              Capability[]
+  buildpackPhases           BuildpackPhase[] @relation("SecurityContextOnBuildpackPhase")
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+}
+
+model Capability {
+  id            String   @id @default(cuid())
+  add           CapabilityAdd[]
+  drop          CapabilityDrop[]
+  securityCtxId String
+  securityCtx   SecurityContext @relation(fields: [securityCtxId], references: [id])
+}
+
+model CapabilityAdd {
+  id           String      @id @default(cuid())
+  value        String
+  capability   Capability  @relation(fields: [capabilityId], references: [id])
+  capabilityId String
+}
+
+model CapabilityDrop {
+  id           String      @id @default(cuid())
+  value        String
+  capability   Capability  @relation(fields: [capabilityId], references: [id])
+  capabilityId String
 }

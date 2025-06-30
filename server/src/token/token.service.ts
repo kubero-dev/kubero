@@ -30,13 +30,15 @@ export class TokenService {
   }
 
   async create(tokenData: any, userId: string): Promise<any> {
-    const { token, expiresAt, name } = tokenData;
+    const { expiresAt, name } = tokenData;
     if (!name || !expiresAt || !userId) {
       throw new Error('Invalid token data');
     }
+    //create a new JWT Token 
+    const token = 'generated-jwt-token'; // Replace with actual JWT generation logic
     const newToken = {
-      token,
       name: name || '', // Optional name field
+      token: token,
       expiresAt: new Date(expiresAt),
       user: {
         connect: { id: userId },
