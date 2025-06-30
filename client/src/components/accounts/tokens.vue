@@ -65,7 +65,7 @@
       <v-card>
         <v-card-title>Create Token</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newToken.token" label="Token Value"></v-text-field>
+          <v-text-field v-model="newToken.name" label="Name"></v-text-field>
           <v-text-field
             v-model="newToken.expiresAt"
             label="Expires At (ISO)"
@@ -91,7 +91,8 @@ export default defineComponent({
   setup() {
     interface Token {
       id?: string;
-      token: string;
+      token?: string;
+      name: string;
       expiresAt?: string;
       userId?: string;
     }
@@ -99,10 +100,11 @@ export default defineComponent({
     const loading = ref(false)
     const search = ref('')
     const createDialog = ref(false)
-    const newToken = ref<Token>({ token: '', expiresAt: '', userId: '' })
+    const newToken = ref<Token>({ token: '', name: '', expiresAt: '', userId: '' })
 
     const headers = [
       { title: 'Token ID', value: 'token' },
+      { title: 'Name', value: 'name' },
       { title: 'Owner', value: 'user.username' },
       { title: 'Expires At', value: 'expiresAt' },
       { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
@@ -129,7 +131,7 @@ export default defineComponent({
     }
 
     const openCreateDialog = () => {
-      newToken.value = { token: '', expiresAt: '', userId: '' }
+      newToken.value = { token: '', name: '', expiresAt: '', userId: '' }
       createDialog.value = true
     }
 
