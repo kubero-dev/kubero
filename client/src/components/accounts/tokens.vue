@@ -25,7 +25,7 @@
         {{ item.id }}
       </template>
       <template v-slot:[`item.user.username`]="{ item }">
-        <span>{{ item.user.username }}</span>
+        <span>{{ item.user?.username }}</span>
       </template>
       <template v-slot:[`item.expiresAt`]="{ item }">
         <span v-if="item.expiresAt">{{ new Date(item.expiresAt).toLocaleString() }}</span>
@@ -96,6 +96,10 @@ export default defineComponent({
       name: string;
       expiresAt?: string;
       userId?: string;
+      user?: {
+        id: string;
+        username: string;
+      };
     }
     const tokens = ref<Token[]>([])
     const loading = ref(false)

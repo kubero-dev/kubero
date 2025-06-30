@@ -6,6 +6,8 @@ import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { IUser } from './auth.interface';
+import axios from 'axios';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +22,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
-    const user = await this.usersService.findOne(username);
+    const user = await this.usersService.findOneFull(username);
 
     if (user) {
       if (process.env.KUBERO_SESSION_KEY === undefined) {
@@ -33,6 +35,14 @@ export class AuthService {
         .createHmac('sha256', process.env.KUBERO_SESSION_KEY)
         .update(pass)
         .digest('hex');
+
+      if (user.password === undefined) {
+        this.logger.warn(
+          `User ${username} does not have a password set. Please set a password for the user.`,
+        );
+        return null;
+      }
+
       const passwordMatch = await bcrypt.compare(pass, user.password);
       //if (passwordMatch) {
       if (user.password === password || passwordMatch) {
@@ -62,6 +72,8 @@ export class AuthService {
     const u = {
       userId: user.id,
       username: user.username,
+      role: user.role ? user.role.name : 'none',
+      userGroups: user.userGroups ? user.userGroups.map((g) => g.name) : [],
       strategy: 'local',
     };
 
@@ -70,15 +82,26 @@ export class AuthService {
     };
   }
 
-  async loginOAuth2(username) {
-    const user = await this.usersService.findOne(username); //TODO: find or create
+  async loginOAuth2(reqUser: any) {
+    const username = reqUser.username || reqUser.email || reqUser.id;
+    const email = reqUser.emails[0]?.value || reqUser.email || 'undefined@kubero.dev';
+    const provider = reqUser.provider || 'oauth2';
+
+    // extract image data from url 
+    const image = reqUser.photos ? reqUser.photos[0]?.value : null;
+    
+    if (!username) {
+      throw new HttpException('Username or email not found in OAuth2 user data', HttpStatus.BAD_REQUEST);
+    }
+
+    const user = await this.usersService.findOneOrCreate(username, email, provider, image);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
     const u = {
       userId: user.id,
       username: user.username,
-      strategy: 'github',
+      strategy: 'oauth2',
     };
     return this.jwtService.sign(u);
   }

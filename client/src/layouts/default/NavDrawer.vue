@@ -11,7 +11,7 @@
       >
         <template #prepend>
           <v-avatar size="30">
-            <v-img :src="userAvatar || '/avatar.svg'" alt="User avatar" />
+            <v-img :src="userAvatar || '/img/icons/avatar.svg'" alt="User avatar" />
           </v-avatar>
         </template>
         <template #title>

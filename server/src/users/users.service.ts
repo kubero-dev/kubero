@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 //import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -19,6 +20,64 @@ export class UsersService {
   async findOne(username: string): Promise<PrismaUser | null> {
     return this.prisma.user.findUnique({ where: { username } });
   }
+
+  async findOneFull(username: string): Promise<PartialPrismaUser | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        username
+      },
+      include: {
+        tokens: {
+          select: {
+            id: true,
+            token: true,
+            createdAt: true,
+            expiresAt: true,
+          }
+        },
+        role: {
+          select: {
+            id: true,
+            name: true,
+            description: true
+          }
+        },
+        userGroups: {
+          select: {
+            id: true,
+            name: true,
+            description: true
+          }
+        },
+      }
+    });
+  }
+
+  // Required for OAuth2 login
+  async findOneOrCreate(username: string, email: string, provider: string, image: string): Promise<PartialPrismaUser> {
+    let user = await this.findOne(username);
+    if (!user) {
+      this.logger.debug(`User ${username} not found, creating new user.`);
+      const password = Math.random().toString(36).slice(-8); // Generate a random password
+      const imageData = image ? await this.generateUserDataFromImageUrl(image) : null;
+      user = await this.create({
+        username,
+        password,
+        email,
+        provider,
+        image: imageData,
+        //role: process.env.DEFAULT_USER_ROLE || 'guest', // Default role if not specified
+        //userGroups: process.env.DEFAULT_USER_GROUPS ? process.env.DEFAULT_USER_GROUPS.split(',') : [],
+        providerId: null, // Set providerId if needed
+        providerData: null, // Set providerData if needed
+      });
+      this.logger.debug(`User ${username} created successfully.`);
+    } else {
+      this.logger.debug(`User ${username} found.`);
+    }
+    return user;
+  }
+        
 
   async findById(userId: string): Promise<PartialPrismaUser | null> {
     return this.prisma.user.findUnique({
@@ -278,6 +337,23 @@ export class UsersService {
       select: { image: true },
     });
     return user ? user.image : null;
+  }
+
+
+  private async generateUserDataFromImageUrl(imageUrl: string): Promise<string> {
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' })
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch image from URL: ${imageUrl}`);
+    }
+    const mimetype = response.headers['content-type'] || 'image/jpeg'; // Default to jpeg if not specified
+    if (!mimetype.startsWith('image/')) {
+      throw new Error(`Invalid image MIME type: ${mimetype}`);
+    }
+
+    console.debug(`Image MIME type: ${mimetype}`);
+    const buffer = Buffer.from(response.data, 'binary');
+    const base64Image = buffer.toString('base64');
+    return `data:${mimetype};base64,${base64Image}`;
   }
 
 }
