@@ -13,6 +13,7 @@ export class TokenService {
       select: {
         id: true,
         token: true,
+        name: true,
         createdAt: true,
         expiresAt: true,
         user: {
@@ -29,12 +30,13 @@ export class TokenService {
   }
 
   async create(tokenData: any, userId: string): Promise<any> {
-    const { token, expiresAt } = tokenData;
-    if (!token || !expiresAt || !userId) {
+    const { token, expiresAt, name } = tokenData;
+    if (!name || !expiresAt || !userId) {
       throw new Error('Invalid token data');
     }
     const newToken = {
       token,
+      name: name || '', // Optional name field
       expiresAt: new Date(expiresAt),
       user: {
         connect: { id: userId },

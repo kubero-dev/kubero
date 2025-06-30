@@ -65,7 +65,7 @@ export class TokenController {
         return this.tokenService.create(tokenData, userId);
     }
 */
-    @Post('')
+    @Post('/')
     @UseGuards(JwtAuthGuard)
     @ApiBearerAuth('bearerAuth')
     @ApiForbiddenResponse({
@@ -80,7 +80,7 @@ export class TokenController {
     })
     @ApiOperation({ summary: 'Create a new Token for the current logged in user' })
     async createToken(@Body() tokenData: any, @Request() req: any,) {
-        if (!tokenData || !tokenData.token || !tokenData.expiresAt || !req.user.userId) {
+        if (!tokenData || !tokenData.name || !tokenData.expiresAt || !req.user.userId) {
             throw new HttpException('Invalid token data', HttpStatus.BAD_REQUEST);
         }
         const userId = req.user.userId;
