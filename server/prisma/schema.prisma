@@ -121,10 +121,7 @@ model Role {
 
 model Token {
   id          String    @id @default(cuid())
-<<<<<<< Updated upstream
-=======
   name        String?
->>>>>>> Stashed changes
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   token       String    @unique
