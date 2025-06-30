@@ -224,6 +224,10 @@ export class ConfigService {
   private async readConfigFromKubernetes(): Promise<IKuberoCRD> {
     const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
     const kuberoes = await this.kubectl.getKuberoConfig(namespace);
+    if (!kuberoes || !kuberoes.spec) {
+      this.logger.error('Kubero config not found in Kubernetes');
+      throw new Error('Kubero config not found');
+    }
     return kuberoes.spec;
   }
 
