@@ -6,8 +6,8 @@ import { AuditService } from '../audit/audit.service';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
-import { IUser } from './auth.interface';
-import axios from 'axios';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 @Injectable()
 export class AuthService {
@@ -107,6 +107,31 @@ export class AuthService {
     };
     return this.jwtService.sign(u);
   }
+
+  async generateToken(userId: string, username: string, role: string, userGroups: string[]): Promise<string> {
+    if (!userId || !username || !role) {
+      this.logger.error('Invalid user data for token generation', {
+        userId,
+        username,
+        role,
+        userGroups,
+      });
+      throw new HttpException('Invalid user data', HttpStatus.BAD_REQUEST);
+    }
+    const u = {
+      userId: userId,
+      username: username,
+      role: role ,
+      userGroups: userGroups,
+      strategy: 'token',
+    };
+    const token = this.jwtService.sign(u, {
+      secret: process.env.JWT_SECRET || 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+      expiresIn: process.env.JWT_EXPIRESIN || '36000s',
+    });
+    return token;
+  }
+
 
   async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
     const status = 200;

@@ -155,6 +155,45 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="tokenDialog" max-width="500px">
+            <v-card>
+              <v-card-title>Token Details</v-card-title>
+              <v-card-text>
+                <v-alert type="warning" density="compact" class="mb-2">
+                  This token will <strong>not be shown again</strong>. Please copy and store it securely now.
+                </v-alert>
+                <v-textarea
+                  v-model="generatedToken.token"
+                  label="Token"
+                  auto-grow
+                  readonly
+                  rows="3"
+                  class="mb-2"
+                  :class="{ 'flash': textareaFlash }"
+                ></v-textarea>
+                <v-btn
+                  color="primary"
+                  @click="copyToken"
+                  class="mb-2"
+                >
+                  <v-icon left>mdi-content-copy</v-icon>
+                  Copy Token
+                </v-btn>
+                <v-snackbar v-model="textareaFlash" timeout="3000">
+                  Token copied to clipboard!
+                  <template #action="{ attrs }">
+                    <v-btn text v-bind="attrs" @click="textareaFlash = false">
+                      Close
+                    </v-btn>
+                  </template>
+                </v-snackbar>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="tokenDialog = false">Close</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -184,7 +223,10 @@ export default defineComponent({
     const editAvatarDialog = ref(false)
     const avatarFile = ref<File | null>(null)
     const createDialog = ref(false)
+    const tokenDialog = ref(false)
+    const generatedToken = ref<any>({ name: '', expiresAt: '', token: '' })
     const newToken = ref<any>({ name: '', expiresAt: '' })
+    const textareaFlash = ref(false)
 
     const loadProfile = async () => {
       try {
@@ -229,17 +271,30 @@ export default defineComponent({
     }
 
     const openCreateDialog = () => {
-      newToken.value = { name: '', expiresAt: '' }
+      newToken.value = { name: '', expiresAt: '', token: '' }
       createDialog.value = true
     }
 
     const saveCreate = async () => {
       try {
-        await axios.post('/api/tokens', newToken.value)
+        const response = await axios.post('/api/tokens', newToken.value)
+        generatedToken.value = response.data
         await loadTokens()
         createDialog.value = false
+        tokenDialog.value = true
+        console.log('Token created:', newToken)
       } catch (e) {
         // error handling
+      }
+    }
+
+    const copyToken = () => {
+      if (generatedToken.value.token) {
+        navigator.clipboard.writeText(generatedToken.value.token)
+        textareaFlash.value = true
+        setTimeout(() => {
+          textareaFlash.value = false
+        }, 300)
       }
     }
 
@@ -257,10 +312,25 @@ export default defineComponent({
       avatarFile,
       saveAvatar,
       createDialog,
+      tokenDialog,
+      generatedToken,
       newToken,
       openCreateDialog,
       saveCreate,
+      copyToken,
+      textareaFlash,
     }
   },
 })
 </script>
+
+<style scoped>
+.flash {
+  animation: flash-animation 3s ease-in-out;
+}
+
+@keyframes flash-animation {
+  0% { background-color: rgba(255, 255, 0, 0.3); }
+  100% { background-color: transparent; }
+}
+</style>

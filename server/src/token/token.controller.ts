@@ -83,9 +83,16 @@ export class TokenController {
         if (!tokenData || !tokenData.name || !tokenData.expiresAt || !req.user.userId) {
             throw new HttpException('Invalid token data', HttpStatus.BAD_REQUEST);
         }
-        const userId = req.user.userId;
 
-        return this.tokenService.create(tokenData, userId);
+        const token = this.tokenService.create(
+            tokenData.name,
+            tokenData.expiresAt,
+            req.user.userId,
+            req.user.username,
+            req.user.role,
+            req.user.userGroups
+        );
+        return token;
     }
 
     @Delete('/:id')

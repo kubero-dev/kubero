@@ -120,7 +120,7 @@ export class AuthController {
   @UseGuards(AuthGuard('github'))
   @ApiBearerAuth('OAuth2')
   async githubCallback(@Request() req: any, @Response() res: any) {
-    console.log(req.user);
+    //console.log(req.user); // debug github user data
     const token = await this.authService.loginOAuth2(req.user);
     res.cookie('kubero.JWT_TOKEN', token);
     res.redirect('/');
