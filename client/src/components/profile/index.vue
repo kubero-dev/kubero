@@ -179,7 +179,7 @@ export default defineComponent({
       provider: '',
       lastLogin: null,
     })
-    const defaultAvatar = '/avatar.svg'
+    const defaultAvatar = '/img/icons/avatar.svg'
     const tokens = ref<any[]>([])
     const editAvatarDialog = ref(false)
     const avatarFile = ref<File | null>(null)
