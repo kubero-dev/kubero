@@ -3,7 +3,6 @@ import { PrismaClient, User as PrismaUser } from '@prisma/client';
 
 @Injectable()
 export class RolesService {
-
   private readonly prisma = new PrismaClient();
   private logger = new Logger(RolesService.name);
 
@@ -27,6 +26,4 @@ export class RolesService {
       },
     });
   }
-
-
 }

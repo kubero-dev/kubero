@@ -23,11 +23,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (typeof payload.userId === 'number') {
       payload.userId = payload.userId.toString();
     }
-    return { 
-      userId: payload.userId, 
+    return {
+      userId: payload.userId,
       username: payload.username,
       role: payload.role,
-      userGroups: payload.userGroups
+      userGroups: payload.userGroups,
     };
   }
 }

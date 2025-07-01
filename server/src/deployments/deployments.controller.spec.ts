@@ -63,7 +63,7 @@ describe('DeploymentsController', () => {
       'phase',
       'app',
       body as any,
-      req
+      req,
     );
     expect(service.triggerBuildjob).toHaveBeenCalledWith(
       'pipe',
@@ -80,7 +80,13 @@ describe('DeploymentsController', () => {
 
   it('should delete app', async () => {
     const req = { user: mockJWT };
-    const result = await controller.deleteApp('pipe', 'phase', 'app', 'build1', req);
+    const result = await controller.deleteApp(
+      'pipe',
+      'phase',
+      'app',
+      'build1',
+      req,
+    );
     expect(service.deleteBuildjob).toHaveBeenCalledWith(
       'pipe',
       'phase',

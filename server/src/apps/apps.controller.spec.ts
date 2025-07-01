@@ -184,11 +184,16 @@ describe('AppsController', () => {
     it('should throw an error if appName is not "new"', async () => {
       const req = { user: mockJWT };
       await expect(
-        controller.createApp('pipeline', 'phase', 'invalid', {
+        controller.createApp(
+          'pipeline',
+          'phase',
+          'invalid',
+          {
             pipeline: 'pipeline',
             phase: 'phase',
           },
-          req),
+          req,
+        ),
       ).rejects.toThrow(HttpException);
     });
 
@@ -220,7 +225,7 @@ describe('AppsController', () => {
           'wrong-name',
           'resourceVersion',
           { name: 'app' },
-          req
+          req,
         ),
       ).rejects.toThrow(HttpException);
     });
@@ -254,7 +259,12 @@ describe('AppsController', () => {
       mockAppsService.deleteApp.mockResolvedValue(mockResult);
 
       const req = { user: mockJWT };
-      const result = await controller.deleteApp('pipeline', 'phase', 'app', req);
+      const result = await controller.deleteApp(
+        'pipeline',
+        'phase',
+        'app',
+        req,
+      );
       expect(result).toEqual(mockResult);
       expect(mockAppsService.deleteApp).toHaveBeenCalledWith(
         'pipeline',
@@ -271,7 +281,12 @@ describe('AppsController', () => {
       mockAppsService.restartApp.mockResolvedValue(mockResult);
 
       const req = { user: mockJWT };
-      const result = await controller.restartApp('pipeline', 'phase', 'app', req);
+      const result = await controller.restartApp(
+        'pipeline',
+        'phase',
+        'app',
+        req,
+      );
       expect(result).toEqual(mockResult);
       expect(mockAppsService.restartApp).toHaveBeenCalledWith(
         'pipeline',

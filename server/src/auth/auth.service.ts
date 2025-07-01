@@ -84,17 +84,26 @@ export class AuthService {
 
   async loginOAuth2(reqUser: any) {
     const username = reqUser.username || reqUser.email || reqUser.id;
-    const email = reqUser.emails[0]?.value || reqUser.email || 'undefined@kubero.dev';
+    const email =
+      reqUser.emails[0]?.value || reqUser.email || 'undefined@kubero.dev';
     const provider = reqUser.provider || 'oauth2';
 
-    // extract image data from url 
+    // extract image data from url
     const image = reqUser.photos ? reqUser.photos[0]?.value : null;
-    
+
     if (!username) {
-      throw new HttpException('Username or email not found in OAuth2 user data', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'Username or email not found in OAuth2 user data',
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
-    const user = await this.usersService.findOneOrCreate(username, email, provider, image) as any;
+    const user = (await this.usersService.findOneOrCreate(
+      username,
+      email,
+      provider,
+      image,
+    )) as any;
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -108,7 +117,12 @@ export class AuthService {
     return this.jwtService.sign(u);
   }
 
-  async generateToken(userId: string, username: string, role: string, userGroups: string[]): Promise<string> {
+  async generateToken(
+    userId: string,
+    username: string,
+    role: string,
+    userGroups: string[],
+  ): Promise<string> {
     if (!userId || !username || !role) {
       this.logger.error('Invalid user data for token generation', {
         userId,
@@ -121,17 +135,18 @@ export class AuthService {
     const u = {
       userId: userId,
       username: username,
-      role: role ,
+      role: role,
       userGroups: userGroups,
       strategy: 'token',
     };
     const token = this.jwtService.sign(u, {
-      secret: process.env.JWT_SECRET || 'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+      secret:
+        process.env.JWT_SECRET ||
+        'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
       expiresIn: process.env.JWT_EXPIRESIN || '36000s',
     });
     return token;
   }
-
 
   async getSession(isAuthenticated): Promise<{ message: any; status: number }> {
     const status = 200;

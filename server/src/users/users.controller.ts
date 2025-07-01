@@ -1,4 +1,4 @@
-import { 
+import {
   Body,
   Controller,
   Delete,
@@ -13,7 +13,6 @@ import {
   UploadedFile,
   UseInterceptors,
   Response,
-
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -138,10 +137,7 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update User by ID' })
-  async updateUser(
-    @Param('id') id: string,
-    @Body() body: Partial<User>,
-  ) {
+  async updateUser(@Param('id') id: string, @Body() body: Partial<User>) {
     return this.usersService.update(id, body);
   }
 
@@ -181,8 +177,15 @@ export class UsersController {
     @Param('id') id: string,
     @Body() body: Partial<User>,
   ) {
-    if (!body.password || typeof body.password !== 'string' || body.password.length === 0) {
-      throw new HttpException('Invalid password provided', HttpStatus.BAD_REQUEST);
+    if (
+      !body.password ||
+      typeof body.password !== 'string' ||
+      body.password.length === 0
+    ) {
+      throw new HttpException(
+        'Invalid password provided',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return this.usersService.updatePassword(id, body.password);
   }
@@ -201,9 +204,7 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update current User password' })
-  async updateMyPassword(
-    @Param('password') password: string,
-  ) {
+  async updateMyPassword(@Param('password') password: string) {
     const user = (this.usersService as any).request.user;
     return this.usersService.updatePassword(user.id, password);
   }
@@ -222,13 +223,14 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Create a new User' })
-  async createUser(
-    @Body() body: User,
-  ) {
+  async createUser(@Body() body: User) {
     try {
       return this.usersService.create(body);
     } catch (error) {
-      throw new HttpException(`Error creating user: ${error.message}`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Error creating user: ${error.message}`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
   }
 
@@ -266,20 +268,24 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update current User avatar' })
-  async updateProfileAvatar(
-    @Request() req: any,
-    @UploadedFile() file: any,
-  ) {
+  async updateProfileAvatar(@Request() req: any, @UploadedFile() file: any) {
     const user = req.user;
     if (!file) {
-      throw new HttpException('No avatar file uploaded', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'No avatar file uploaded',
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    if (file.size > 102400) { // 100KB
-      throw new HttpException('Avatar image too large (max 100KB)', HttpStatus.BAD_REQUEST);
+    if (file.size > 102400) {
+      // 100KB
+      throw new HttpException(
+        'Avatar image too large (max 100KB)',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     return this.usersService.updateAvatar(user.userId, file);
   }
-/*
+  /*
   @Get('/profile/avatar')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('bearerAuth')

@@ -32,7 +32,7 @@ describe('AuditService', () => {
     const s = new AuditService(mockPrisma);
     expect(s.getAuditEnabled()).toBe(false);
   });
-/*
+  /*
   it('init should log audit entry if enabled', async () => {
     const logSpy = jest.spyOn(AuditService.prototype, 'log').mockResolvedValue(undefined);
     service = new AuditService();
@@ -135,7 +135,9 @@ describe('AuditService', () => {
   });
 
   it('should call flush in reset', async () => {
-    const flushSpy = jest.spyOn(service as any, 'flush').mockResolvedValue(undefined);
+    const flushSpy = jest
+      .spyOn(service as any, 'flush')
+      .mockResolvedValue(undefined);
     await service.reset();
     expect(flushSpy).toHaveBeenCalled();
   });
@@ -220,13 +222,12 @@ describe('AuditService', () => {
         },
       },
     });
-    expect(result).toEqual({ 'audit': rows, 'count': 1, 'limit': 5 });
+    expect(result).toEqual({ audit: rows, count: 1, limit: 5 });
   });
 
   it('getAppEntries returns [] if disabled', async () => {
     service['enabled'] = false;
     const result = await service.getAppEntries('pipe', 'dev', 'app', 5);
-    expect(result).toEqual({"audit": [], "count": 0, "limit": 5});
+    expect(result).toEqual({ audit: [], count: 0, limit: 5 });
   });
-
 });

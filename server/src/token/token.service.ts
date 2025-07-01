@@ -7,11 +7,8 @@ export class TokenService {
   private readonly prisma = new PrismaClient();
   private logger = new Logger(TokenService.name);
 
-  constructor(
-    private authService: AuthService,
-  ) {}
+  constructor(private authService: AuthService) {}
   async findAll(): Promise<any[]> {
-
     return this.prisma.token.findMany({
       select: {
         id: true,
@@ -32,7 +29,14 @@ export class TokenService {
     });
   }
 
-  async create(name: string, expiresAt: string, userId: string, username: string, role: string, userGroups: any): Promise<{
+  async create(
+    name: string,
+    expiresAt: string,
+    userId: string,
+    username: string,
+    role: string,
+    userGroups: any,
+  ): Promise<{
     name: string;
     token: string;
     expiresAt: string;
@@ -40,7 +44,7 @@ export class TokenService {
     if (!name || !expiresAt || !userId) {
       throw new Error('Invalid token data');
     }
-    //create a new JWT Token 
+    //create a new JWT Token
     const token = await this.authService.generateToken(
       userId,
       username,
@@ -69,7 +73,7 @@ export class TokenService {
         },
       },
     });
-    
+
     return {
       name: name,
       token: token,
@@ -82,5 +86,4 @@ export class TokenService {
       where: { id },
     });
   }
-  
 }

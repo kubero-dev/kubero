@@ -51,7 +51,7 @@ describe('TemplatesController', () => {
     const errorMessage = {
       error: 'Failed to load template',
       message: error.message,
-    }
+    };
     const templateB64 = Buffer.from('http://fail.com/template.yaml').toString(
       'base64',
     );
