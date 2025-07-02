@@ -63,12 +63,13 @@ CREATE TABLE "Token" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT,
     "userId" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
     "expiresAt" DATETIME NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "lastUsed" DATETIME,
     "lastIp" TEXT,
     "description" TEXT,
+    "role" TEXT NOT NULL,
+    "groups" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -85,7 +86,7 @@ CREATE TABLE "Permission" (
 );
 
 -- CreateTable
-CREATE TABLE "Buildpack" (
+CREATE TABLE "Runpack" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
     "language" TEXT NOT NULL,
@@ -94,13 +95,13 @@ CREATE TABLE "Buildpack" (
     "runId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "Buildpack_fetchId_fkey" FOREIGN KEY ("fetchId") REFERENCES "BuildpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Buildpack_buildId_fkey" FOREIGN KEY ("buildId") REFERENCES "BuildpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Buildpack_runId_fkey" FOREIGN KEY ("runId") REFERENCES "BuildpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "Runpack_fetchId_fkey" FOREIGN KEY ("fetchId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Runpack_buildId_fkey" FOREIGN KEY ("buildId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Runpack_runId_fkey" FOREIGN KEY ("runId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
-CREATE TABLE "BuildpackPhase" (
+CREATE TABLE "RunpackPhase" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "repository" TEXT NOT NULL,
     "tag" TEXT NOT NULL,
@@ -109,7 +110,7 @@ CREATE TABLE "BuildpackPhase" (
     "securityContextId" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
-    CONSTRAINT "BuildpackPhase_securityContextId_fkey" FOREIGN KEY ("securityContextId") REFERENCES "SecurityContext" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+    CONSTRAINT "RunpackPhase_securityContextId_fkey" FOREIGN KEY ("securityContextId") REFERENCES "SecurityContext" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -182,9 +183,6 @@ CREATE UNIQUE INDEX "UserGroup_name_key" ON "UserGroup"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Token_token_key" ON "Token"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_UserToUserGroup_AB_unique" ON "_UserToUserGroup"("A", "B");

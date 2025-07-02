@@ -12,7 +12,6 @@ export class TokenService {
     return this.prisma.token.findMany({
       select: {
         id: true,
-        token: true,
         name: true,
         createdAt: true,
         expiresAt: true,
@@ -51,9 +50,13 @@ export class TokenService {
       role,
       userGroups,
     );
+
+    // transoform userGroups to a string 
+    const userGroupsString = userGroups.map((group: any) => group.name).join(',');
     const newToken = {
       name: name || '', // Optional name field
-      token: token, //TODO: Remove this, since we do not want to store the token in the database for security reasons
+      role: role || 'guest', // Default to 'user' if not provided
+      groups: userGroupsString || '', // Store user groups as a string
       expiresAt: new Date(expiresAt),
       user: {
         connect: { id: userId },

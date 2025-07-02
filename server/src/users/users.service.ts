@@ -30,7 +30,6 @@ export class UsersService {
         tokens: {
           select: {
             id: true,
-            token: true,
             createdAt: true,
             expiresAt: true,
           },
@@ -157,7 +156,6 @@ export class UsersService {
         tokens: {
           select: {
             id: true,
-            token: true,
             createdAt: true,
             expiresAt: true,
           },

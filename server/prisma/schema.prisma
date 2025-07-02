@@ -124,12 +124,14 @@ model Token {
   name        String?
   userId      String
   user        User      @relation(fields: [userId], references: [id])
-  token       String    @unique
   expiresAt   DateTime
   isActive    Boolean   @default(true)
   lastUsed    DateTime?
   lastIp      String? // Last known IP address used for this token
   description String? // Description of the token's purpose
+
+  role        String
+  groups      String
 
   permissions Permission[] // Permissions associated with this token
 
@@ -152,31 +154,31 @@ model Permission {
 
 
 // CONFIGURATION 
-model Buildpack {
+model Runpack {
   id          String         @id @default(cuid())
   name        String
   language    String
-  fetch       BuildpackPhase @relation("fetch", fields: [fetchId], references: [id])
+  fetch       RunpackPhase @relation("fetch", fields: [fetchId], references: [id])
   fetchId     String
-  build       BuildpackPhase @relation("build", fields: [buildId], references: [id])
+  build       RunpackPhase @relation("build", fields: [buildId], references: [id])
   buildId     String
-  run         BuildpackPhase @relation("run", fields: [runId], references: [id])
+  run         RunpackPhase @relation("run", fields: [runId], references: [id])
   runId       String
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
 }
 
-model BuildpackPhase {
+model RunpackPhase {
   id                   String                @id @default(cuid())
   repository           String
   tag                  String
   command              String?
   readOnlyAppStorage   Boolean
-  securityContext      SecurityContext       @relation("SecurityContextOnBuildpackPhase", fields: [securityContextId], references: [id])
+  securityContext      SecurityContext       @relation("SecurityContextOnRunpackPhase", fields: [securityContextId], references: [id])
   securityContextId    String
-  buildpacksFetch      Buildpack[]           @relation("fetch")
-  buildpacksBuild      Buildpack[]           @relation("build")
-  buildpacksRun        Buildpack[]           @relation("run")
+  RunpacksFetch        Runpack[]           @relation("fetch")
+  RunpacksBuild        Runpack[]           @relation("build")
+  RunpacksRun          Runpack[]           @relation("run")
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @updatedAt
 }
@@ -189,7 +191,7 @@ model SecurityContext {
   readOnlyRootFilesystem    Boolean
   allowPrivilegeEscalation  Boolean
   capabilities              Capability[]
-  buildpackPhases           BuildpackPhase[] @relation("SecurityContextOnBuildpackPhase")
+  RunpackPhases             RunpackPhase[] @relation("SecurityContextOnRunpackPhase")
   createdAt                 DateTime    @default(now())
   updatedAt                 DateTime    @updatedAt
 }
