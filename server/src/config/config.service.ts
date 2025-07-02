@@ -5,10 +5,11 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml';
 import { join } from 'path';
-import { Buildpack } from './buildpack/buildpack';
+import { Runpack } from './buildpack/runpack';
 import { PodSize } from './podsize/podsize';
 import { INotification } from '../notifications/notifications.interface';
 import { NotificationsService } from '../notifications/notifications.service';
+import { PrismaClient, User as PrismaUser } from '@prisma/client';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -16,6 +17,7 @@ dotenv.config();
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
+  private readonly prisma = new PrismaClient();
   private runningConfig: IKuberoConfig;
   private features: { [key: string]: boolean } = {
     sleep: false,
@@ -466,19 +468,11 @@ export class ConfigService {
     return kuberoes.spec.registry;
   }
 
-  public async getRunpacks(): Promise<Buildpack[]> {
-    //return this.runningConfig.buildpacks || [];
-    const buildpackList: Buildpack[] = [];
-
-    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
-    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
-
-    for (const buildpack of kuberoes.spec.kubero.config.buildpacks) {
-      const b = new Buildpack(buildpack);
-      buildpackList.push(b);
-    }
-
-    return buildpackList;
+  public async getRunpacks(): Promise<Runpack[]> {
+    const dbRunpacks = await this.prisma.runpack.findMany({
+      include: { fetch: true, build: true, run: true },
+    });
+    return dbRunpacks.map((rp: any) => new Runpack(rp));
   }
 
   public async getClusterIssuer(): Promise<{ clusterissuer: string }> {

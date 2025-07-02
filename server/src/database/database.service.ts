@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { runpacks } from './runpacks.seed'; // Assuming runpacks.seed.ts exports a Runpack type
+import * as yaml from 'yaml'; // Import yaml for parsing runpacks
 
 @Injectable()
 export class DatabaseService {
@@ -25,11 +27,14 @@ export class DatabaseService {
           this.createSystemUser();
           this.createAdminUser();
           this.migrateLegeacyUsers();
+
         });
       })
       .catch((error) => {
         this.logger.error('Error during database migrations.', error);
       });
+
+    this.seedRunpacks();
   }
 
   private async init() {
@@ -311,5 +316,77 @@ export class DatabaseService {
     }
 
     this.logger.log('Default data seeded successfully.');
+  }
+
+  private async seedRunpacks() {
+    /*
+    // Seed runpacks from ./runpacks.seed.yaml
+    const fs = await import('fs');
+    const yaml = await import('yaml');
+    const path = require('path');
+    const configPath = path.resolve(__dirname, '../runpacks.seed.yaml');
+    if (!fs.existsSync(configPath)) {
+      this.logger.warn('runpacks.seed.yaml not found, skipping runpack seed.');
+      return;
+    }
+    const file = fs.readFileSync(configPath, 'utf8');
+    const config = yaml.parse(file);
+    */
+
+    const config = yaml.parse(runpacks);
+
+    const buildpacks = config || [];
+    for (const bp of buildpacks) {
+      // Find existing by name
+      const existing = await this.prisma.runpack.findFirst({ where: { name: bp.name } });
+      const prisma = this.prisma;
+      const createPhase = async (phase: any) => {
+        // Create SecurityContext
+        const sec = await prisma.securityContext.create({
+          data: {
+            runAsUser: phase.securityContext.runAsUser,
+            runAsGroup: phase.securityContext.runAsGroup,
+            runAsNonRoot: phase.securityContext.runAsNonRoot,
+            readOnlyRootFilesystem: phase.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation: phase.securityContext.allowPrivilegeEscalation,
+            capabilities: {
+              create: [{
+                add: { create: (phase.securityContext.capabilities?.add || []).map((v: string) => ({ value: v })) },
+                drop: { create: (phase.securityContext.capabilities?.drop || []).map((v: string) => ({ value: v })) },
+              }],
+            },
+          },
+        });
+        // Create RunpackPhase
+        return await prisma.runpackPhase.create({
+          data: {
+            repository: phase.repository,
+            tag: phase.tag,
+            command: phase.command || '',
+            readOnlyAppStorage: phase.readOnlyAppStorage,
+            securityContextId: sec.id,
+          },
+        });
+      };
+      const fetchPhase = await createPhase(bp.fetch);
+      const buildPhase = await createPhase(bp.build);
+      const runPhase = await createPhase(bp.run);
+      if (existing) {
+        // Optionally update here
+        this.logger.log(`Runpack/Buildpack '${bp.name}' already exists. Skipping.`);
+        continue;
+      }
+      await this.prisma.runpack.create({
+        data: {
+          name: bp.name,
+          language: bp.language,
+          fetchId: fetchPhase.id,
+          buildId: buildPhase.id,
+          runId: runPhase.id,
+        },
+      });
+      this.logger.log(`Runpack/Buildpack '${bp.name}' seeded.`);
+    }
+    this.logger.log('Buildpacks/Runpacks seeded successfully.');
   }
 }

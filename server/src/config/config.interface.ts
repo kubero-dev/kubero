@@ -109,6 +109,29 @@ export interface IBuildpack {
   };
   tag: string;
 }
+export interface IRunpack {
+  name: string;
+  language: string;
+  fetch: {
+    repository: string;
+    tag: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  build: {
+    repository: string;
+    tag: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  run: {
+    repository: string;
+    tag: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  tag: string;
+}
 
 export interface ISecurityContext {
   readOnlyRootFilesystem: boolean;
