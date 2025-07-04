@@ -216,7 +216,7 @@
     <v-dialog v-model="editDialog" max-width="1000px">
       <v-card>
         <v-card-title>Edit Runpack</v-card-title>
-        <v-card-text>
+        <v-card-text v-if="editedRunpack">
           <v-text-field v-model="editedRunpack.name" label="Name"></v-text-field>
           <v-text-field v-model="editedRunpack.language" label="Language"></v-text-field>
           <v-divider class="my-4"></v-divider>
@@ -228,6 +228,11 @@
           <v-divider class="my-4"></v-divider>
           <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Run</v-header>
           <RunpacksItem :buildpackStage="editedRunpack.run" title="Run" :advanced="true"></RunpacksItem>
+        </v-card-text>
+        <v-card-text v-else>
+          <v-alert type="error" dismissible>
+            Error loading runpack details for editing. 
+          </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -403,7 +408,7 @@ export default defineComponent({
 
     const saveEdit = async () => {
       try {
-        await axios.put(`/api/config/runpacks/${editedRunpack.value.id}`, editedRunpack.value)
+        await axios.put(`/api/config/runpacks/${editedRunpack?.value?.id }`, editedRunpack.value)
         await loadRunpacks()
         editDialog.value = false
       } catch (e) {

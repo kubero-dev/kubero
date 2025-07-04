@@ -5,7 +5,7 @@
       permanent
       rail
   >
-    <v-list>
+    <v-list class="profile-dark-bg">
       <v-list-item
         link to="/profile"
       >
@@ -334,5 +334,9 @@ img.image-icon {
 .logout-primary-item:hover {
   background: rgb(var(--v-theme-primary-darken1)) !important;
   /*background: #444 !important;*/
+}
+/* Dark background for profile list item */
+.profile-dark-bg {
+  background: rgba(var(--v-theme-secondary), 0.5) !important;
 }
 </style>
