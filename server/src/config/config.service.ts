@@ -5,10 +5,11 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { readFileSync, writeFileSync } from 'fs';
 import YAML from 'yaml';
 import { join } from 'path';
-import { Buildpack } from './buildpack/buildpack';
+import { Runpack } from './buildpack/runpack';
 import { PodSize } from './podsize/podsize';
 import { INotification } from '../notifications/notifications.interface';
 import { NotificationsService } from '../notifications/notifications.service';
+import { PrismaClient, User as PrismaUser, Runpack as DBRunpack } from '@prisma/client';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -16,6 +17,7 @@ dotenv.config();
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
+  private readonly prisma = new PrismaClient();
   private runningConfig: IKuberoConfig;
   private features: { [key: string]: boolean } = {
     sleep: false,
@@ -466,20 +468,159 @@ export class ConfigService {
     return kuberoes.spec.registry;
   }
 
-  public async getRunpacks(): Promise<Buildpack[]> {
-    //return this.runningConfig.buildpacks || [];
-    const buildpackList: Buildpack[] = [];
-
-    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
-    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
-
-    for (const buildpack of kuberoes.spec.kubero.config.buildpacks) {
-      const b = new Buildpack(buildpack);
-      buildpackList.push(b);
-    }
-
-    return buildpackList;
+  public async getRunpacks(): Promise<Runpack[]> {
+    const dbRunpacks = await this.prisma.runpack.findMany({
+      include: { fetch: true, build: true, run: true },
+    });
+    return dbRunpacks.map((rp: any) => new Runpack(rp));
   }
+
+  public async deleteRunpack(id: string): Promise<void> {
+    const runpack = await this.prisma.runpack.findUnique({
+      where: { id: id },
+    });
+    if (!runpack) {
+      throw new Error(`Runpack with id ${id} not found`);
+    }
+    await this.prisma.runpack.delete({
+      where: { id: id },
+    });
+    this.logger.log(`Runpack with id ${id} deleted successfully`);
+    const m: INotification = {
+      name: 'deleteRunpack',
+      user: '',
+      resource: 'config',
+      action: 'delete',
+      severity: 'normal',
+      message: `Runpack ${runpack.name} deleted`,
+      pipelineName: '',
+      phaseName: '',
+      appName: '',
+      data: {
+        runpackId: id,
+        runpackName: runpack.name,
+      },
+    };
+    this.notification.send(m);
+  }
+
+  public async createRunpack(
+    runpack: any,
+  ): Promise<DBRunpack> {
+    // Create the fetch, build, and run stages first
+    const fetch = await this.prisma.runpackPhase.create({
+      data: {
+        repository: runpack.fetch.repository,
+        tag: runpack.fetch.tag,
+        command: runpack.fetch.command,
+        readOnlyAppStorage: runpack.fetch.readOnlyAppStorage,
+        securityContext: {
+          create: {
+            runAsUser: runpack.fetch.securityContext.runAsUser,
+            runAsGroup: runpack.fetch.securityContext.runAsGroup,
+            allowPrivilegeEscalation: runpack.fetch.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem: runpack.fetch.securityContext.readOnlyRootFilesystem,
+            runAsNonRoot: runpack.fetch.securityContext.runAsNonRoot,
+          },
+        },
+      },
+      include: { securityContext: { include: { capabilities: true } } },
+    });
+
+    this.prisma.capabilityAdd.createMany({
+      data: runpack.fetch.securityContext.capabilities.add.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: fetch.id,
+      })),
+    });
+
+    this.prisma.capabilityDrop.createMany({
+      data: runpack.fetch.securityContext.capabilities.drop.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: fetch.id,
+      })),
+    });
+
+    const build = await this.prisma.runpackPhase.create({
+      data: {
+        repository: runpack.build.repository,
+        tag: runpack.build.tag,
+        command: runpack.build.command,
+        readOnlyAppStorage: runpack.build.readOnlyAppStorage,
+        securityContext: {
+          create: {
+            runAsUser: runpack.build.securityContext.runAsUser,
+            runAsGroup: runpack.build.securityContext.runAsGroup,
+            allowPrivilegeEscalation: runpack.build.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem: runpack.build.securityContext.readOnlyRootFilesystem,
+            runAsNonRoot: runpack.build.securityContext.runAsNonRoot,
+          },
+        },
+      },
+      include: { securityContext: { include: { capabilities: true } } },
+    });
+
+    this.prisma.capabilityAdd.createMany({
+      data: runpack.build.securityContext.capabilities.add.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: build.id,
+      })),
+    });
+
+    this.prisma.capabilityDrop.createMany({
+      data: runpack.build.securityContext.capabilities.drop.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: build.id,
+      })),
+    });
+
+    const run = await this.prisma.runpackPhase.create({
+      data: {
+        repository: runpack.run.repository,
+        tag: runpack.run.tag,
+        command: runpack.run.command,
+        readOnlyAppStorage: runpack.run.readOnlyAppStorage,
+        securityContext: {
+          create: {
+            runAsUser: runpack.run.securityContext.runAsUser,
+            runAsGroup: runpack.run.securityContext.runAsGroup,
+            allowPrivilegeEscalation: runpack.run.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem: runpack.run.securityContext.readOnlyRootFilesystem,
+            runAsNonRoot: runpack.run.securityContext.runAsNonRoot,
+          },
+        },
+      },
+      include: { securityContext: { include: { capabilities: true } } },
+    });
+
+    this.prisma.capabilityAdd.createMany({
+      data: runpack.run.securityContext.capabilities.add.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: run.id,
+      })),
+    });
+
+    this.prisma.capabilityDrop.createMany({
+      data: runpack.run.securityContext.capabilities.drop.map((cap: string) => ({
+        capability: cap,
+        runpackPhaseId: run.id,
+      })),
+    });
+
+    // Now create the runpack and connect the phases
+    const dbRunpack = await this.prisma.runpack.create({
+      data: {
+        name: runpack.name,
+        language: runpack.language,
+        fetch: { connect: { id: fetch.id } },
+        build: { connect: { id: build.id } },
+        run: { connect: { id: run.id } },
+      },
+      include: { fetch: true, build: true, run: true },
+    });
+    return dbRunpack
+  }
+
 
   public async getClusterIssuer(): Promise<{ clusterissuer: string }> {
     const namespace = process.env.KUBERO_NAMESPACE || 'kubero';

@@ -92,18 +92,48 @@ export interface IBuildpack {
   fetch: {
     repository: string;
     tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };
   build: {
     repository: string;
     tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };
   run: {
     repository: string;
     tag: string;
+    command?: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  tag: string;
+}
+export interface IRunpack {
+  id?: string;
+  name: string;
+  language: string;
+  fetch: {
+    repository: string;
+    tag: string;
+    command?: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  build: {
+    repository: string;
+    tag: string;
+    command?: string;
+    readOnlyAppStorage: boolean;
+    securityContext: ISecurityContext;
+  };
+  run: {
+    repository: string;
+    tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };

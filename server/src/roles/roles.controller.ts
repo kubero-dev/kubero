@@ -1,4 +1,4 @@
-import { 
+import {
   Body,
   Controller,
   Delete,
@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   UseGuards,
-
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -19,10 +18,8 @@ import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { OKDTO } from '../common/dto/ok.dto';
 import { RolesService } from './roles.service';
 
-
 @Controller({ path: 'api/roles', version: '1' })
 export class RolesController {
-
   constructor(private rolesService: RolesService) {}
 
   @Get('/')

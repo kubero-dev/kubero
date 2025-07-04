@@ -27,10 +27,10 @@ if (ConfigService.getGithubEnabled()) {
     PassportModule,
     JwtModule.register({
       secret:
-        process.env.KUBERO_JWT_SECRET ||
+        process.env.JWT_SECRET ||
         'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
       signOptions: {
-        expiresIn: process.env.KUBERO_JWT_EXPIRESIN || '36000s',
+        expiresIn: process.env.JWT_EXPIRESIN || '36000s',
       },
     }),
   ],

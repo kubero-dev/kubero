@@ -107,6 +107,17 @@ const routes = [
     ],
   },
   {
+    path: '/runpacks',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/runpacks',
+        name: 'Runpacks',
+        component: () => import('@/views/Runpacks.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     component: () => import('@/layouts/login/Login.vue'),
     children: [

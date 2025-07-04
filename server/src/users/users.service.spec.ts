@@ -36,7 +36,9 @@ describe('UsersService', () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
     const user = await service.findOne('user1');
     expect(user).toBe(mockUser);
-    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({ where: { username: 'user1' } });
+    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+      where: { username: 'user1' },
+    });
   });
 
   it('should find a user by id', async () => {
@@ -44,7 +46,9 @@ describe('UsersService', () => {
     prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
     const user = await service.findById('1');
     expect(user).toBe(mockUser);
-    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({ where: { id: '1' } });
+    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+      where: { id: '1' },
+    });
   });
 
   it('should find all users', async () => {
@@ -59,16 +63,29 @@ describe('UsersService', () => {
   });
 
   it('should create a user', async () => {
-    const newUser = { username: 'user3', password: 'pass3' } as Partial<PrismaUser>;
-    const createdUser = { id: '3', username: 'user3', password: 'pass3' } as PrismaUser;
+    const newUser = {
+      username: 'user3',
+      password: 'pass3',
+    } as Partial<PrismaUser>;
+    const createdUser = {
+      id: '3',
+      username: 'user3',
+      password: 'pass3',
+    } as PrismaUser;
     prismaMock.user.create.mockResolvedValueOnce(createdUser);
     const user = await service.create(newUser);
     expect(user).toBe(createdUser);
-    expect(prismaMock.user.create).toHaveBeenCalledWith({ data: expect.objectContaining(newUser) });
+    expect(prismaMock.user.create).toHaveBeenCalledWith({
+      data: expect.objectContaining(newUser),
+    });
   });
 
   it('should update a user', async () => {
-    const updatedUser = { id: '1', username: 'user1', password: 'newpass' } as PrismaUser;
+    const updatedUser = {
+      id: '1',
+      username: 'user1',
+      password: 'newpass',
+    } as PrismaUser;
     prismaMock.user.update.mockResolvedValueOnce(updatedUser);
     const user = await service.update('1', { password: 'newpass' });
     expect(user).toBe(updatedUser);
@@ -85,7 +102,11 @@ describe('UsersService', () => {
   });
 
   it('should update password', async () => {
-    const updatedUser = { id: '1', username: 'user1', password: 'newpass' } as PrismaUser;
+    const updatedUser = {
+      id: '1',
+      username: 'user1',
+      password: 'newpass',
+    } as PrismaUser;
     prismaMock.user.update.mockResolvedValueOnce(updatedUser);
     const user = await service.updatePassword('1', 'newpass');
     expect(user).toBe(updatedUser);
@@ -115,7 +136,10 @@ describe('UsersService', () => {
   });
 
   it('should check if user exists', async () => {
-    prismaMock.user.findUnique.mockResolvedValueOnce({ id: '1', username: 'user1' } as PrismaUser);
+    prismaMock.user.findUnique.mockResolvedValueOnce({
+      id: '1',
+      username: 'user1',
+    } as PrismaUser);
     expect(await service.exists('user1')).toBe(true);
     prismaMock.user.findUnique.mockResolvedValueOnce(null);
     expect(await service.exists('notfound')).toBe(false);

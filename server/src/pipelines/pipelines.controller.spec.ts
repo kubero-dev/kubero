@@ -86,7 +86,9 @@ describe('PipelinesController', () => {
       buildstrategy: '',
     };
     const req = { user: mockJWT };
-    await expect(controller.createPipeline('notnew', dto, req)).rejects.toThrow();
+    await expect(
+      controller.createPipeline('notnew', dto, req),
+    ).rejects.toThrow();
   });
 
   it('should get a specific pipeline', async () => {
@@ -110,7 +112,7 @@ describe('PipelinesController', () => {
       resourceVersion: '1',
     };
     const req = { user: mockJWT };
-    const result = await controller.updatePipeline(dto, req, "pipeline1");
+    const result = await controller.updatePipeline(dto, req, 'pipeline1');
     expect(service.updatePipeline).toHaveBeenCalled();
     expect(result).toEqual({ ok: true });
   });

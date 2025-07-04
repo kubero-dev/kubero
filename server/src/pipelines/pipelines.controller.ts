@@ -20,7 +20,7 @@ import {
   ApiForbiddenResponse,
   ApiOkResponse,
   ApiOperation,
-} from '@nestjs/swagger'
+} from '@nestjs/swagger';
 import { CreatePipelineDTO } from './dto/replacePipeline.dto';
 import { GetPipelineDTO } from './dto/getPipeline.dto';
 import { OKDTO } from '../common/dto/ok.dto';

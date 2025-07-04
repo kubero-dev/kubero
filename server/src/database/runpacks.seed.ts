@@ -1,54 +1,4 @@
-kubero:
-  readonly: false
-  console:
-    enabled: true
-  admin:
-    disabled: false
-  banner:
-    show: false
-    message: "Welcome to Kubero!"
-    bgcolor: "#8560a963"
-    fontcolor: "#00000087"
-  defaultannotations:
-    apps:
-    pipelines:
-      - janitor/ttl=5m
-clusterissuer: letsencrypt-prod
-templates:
-  enabled: true
-  catalogs:
-  - name: "Kubero"
-    description: "Kubero templates"
-    templateBasePath: "https://raw.githubusercontent.com/kubero-dev/kubero/main/services/"
-    index: 
-      url: "https://raw.githubusercontent.com/kubero-dev/templates/main/index.json"
-      format: "json" # json or yaml # TODO has no effect yet. json is always used
-  - name: "Kubero Frameworks"
-    description: "Kubero templates"
-    templateBasePath: "https://raw.githubusercontent.com/kubero-dev/kubero/main/services/"
-    index: 
-      url: "https://raw.githubusercontent.com/kubero-dev/templates/main/index-frameworks.json"
-      format: "json" # json or yaml # TODO has no effect yet. json is always used
-notifications:
-  - name: "Slack"
-    enabled: false
-    type: "slack"
-    config:
-      url: "https://hooks.slack.com/services/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
-      channel: "#kubero"
-  - name: "Webhook"
-    enabled: false
-    type: "webhook"
-    config:
-      url: "https://example.com/webhook"
-      secret: "XXXXX"
-  - name: "Discord"
-    enabled: false
-    type: "discord"
-    config:
-      url: "https://discord.com/api/webhooks/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
-      channel: "#kubero"
-buildPacks:
+export const runpacks = `
   - name: NodeJS
     language: JavaScript
     fetch:
@@ -349,31 +299,4 @@ buildPacks:
         allowPrivilegeEscalation: false
         capabilities:
           add: []
-          drop: []
-podSizeList:
-  - name: small
-    description: 'Small (CPU: 0.25, Memory: 0.5Gi)'
-    default: true
-    resources:
-      requests:
-        memory: 0.5Gi
-        cpu: 250m
-      limits:
-        memory: 1Gi
-        cpu: 500m
-  - name: medium
-    description: 'Medium (CPU: 1, Memory: 2Gi)'
-    resources:
-      requests:
-        memory: 2Gi
-        cpu: 1000m
-      limits:
-        memory: 4Gi
-        cpu: 2000m
-  - name: large
-    description: 'Large (CPU: 2, Memory: 4Gi)'
-    active: false
-    resources:
-      requests:
-        memory: 4Gi
-        cpu: 2000m
+`

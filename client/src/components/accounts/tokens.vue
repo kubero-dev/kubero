@@ -25,7 +25,7 @@
         {{ item.id }}
       </template>
       <template v-slot:[`item.user.username`]="{ item }">
-        <span>{{ item.user.username }}</span>
+        <span>{{ item.user?.username }}</span>
       </template>
       <template v-slot:[`item.expiresAt`]="{ item }">
         <span v-if="item.expiresAt">{{ new Date(item.expiresAt).toLocaleString() }}</span>
@@ -47,7 +47,7 @@
       </template>
     </v-data-table>
 
-    <!-- Button to add a token -->
+    <!-- Button to add a token 
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn
         fab
@@ -60,12 +60,12 @@
       </v-btn>
     </div>
 
-    <!-- Dialog for a new Token -->
+    <!-- Dialog for a new Token 
     <v-dialog v-model="createDialog" max-width="500px">
       <v-card>
         <v-card-title>Create Token</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newToken.token" label="Token Value"></v-text-field>
+          <v-text-field v-model="newToken.name" label="Name"></v-text-field>
           <v-text-field
             v-model="newToken.expiresAt"
             label="Expires At (ISO)"
@@ -79,6 +79,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+  -->
   </v-container>
 </template>
 
@@ -91,18 +92,24 @@ export default defineComponent({
   setup() {
     interface Token {
       id?: string;
-      token: string;
+      token?: string;
+      name: string;
       expiresAt?: string;
       userId?: string;
+      user?: {
+        id: string;
+        username: string;
+      };
     }
     const tokens = ref<Token[]>([])
     const loading = ref(false)
     const search = ref('')
     const createDialog = ref(false)
-    const newToken = ref<Token>({ token: '', expiresAt: '', userId: '' })
+    const newToken = ref<Token>({ token: '', name: '', expiresAt: '', userId: '' })
 
     const headers = [
       { title: 'Token ID', value: 'token' },
+      { title: 'Name', value: 'name' },
       { title: 'Owner', value: 'user.username' },
       { title: 'Expires At', value: 'expiresAt' },
       { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
@@ -129,7 +136,7 @@ export default defineComponent({
     }
 
     const openCreateDialog = () => {
-      newToken.value = { token: '', expiresAt: '', userId: '' }
+      newToken.value = { token: '', name: '', expiresAt: '', userId: '' }
       createDialog.value = true
     }
 

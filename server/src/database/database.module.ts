@@ -16,4 +16,3 @@ import { PrismaClient } from '@prisma/client';
   exports: [DatabaseService, PrismaClient],
 })
 export class DatabaseModule {}
-

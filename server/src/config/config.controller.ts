@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
 //import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import {
@@ -95,6 +95,52 @@ export class ConfigController {
   async getRunpacks() {
     return this.configService.getRunpacks();
   }
+
+  @Delete('/runpacks/:id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Delete a runpack' })
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiParam({ name: 'id', description: 'Runpack ID to delete' })
+  async deleteRunpack(@Param('id') id: string) {
+    return this.configService.deleteRunpack(id);
+  }
+
+  @Post('/runpacks')
+  @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Add a new runpack' })
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Runpack name',
+        },
+        language: {
+          type: 'string',
+          description: 'Programming language of the runpack',
+        },
+      },
+      // Additional properties for fetch, build, and run phases
+    },
+  })
+  async addRunpack(@Body() body) {
+    return this.configService.createRunpack(body);
+  }
+
 
   @Get('/clusterissuer')
   @UseGuards(JwtAuthGuard)

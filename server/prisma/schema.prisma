@@ -121,15 +121,17 @@ model Role {
 
 model Token {
   id          String    @id @default(cuid())
-  name        String
+  name        String?
   userId      String
   user        User      @relation(fields: [userId], references: [id])
-  token       String    @unique
   expiresAt   DateTime
   isActive    Boolean   @default(true)
   lastUsed    DateTime?
   lastIp      String? // Last known IP address used for this token
   description String? // Description of the token's purpose
+
+  role        String
+  groups      String
 
   permissions Permission[] // Permissions associated with this token
 
@@ -148,4 +150,70 @@ model Permission {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+
+// CONFIGURATION 
+model Runpack {
+  id          String         @id @default(cuid())
+  name        String
+  language    String
+  fetch       RunpackPhase @relation("fetch", fields: [fetchId], references: [id])
+  fetchId     String
+  build       RunpackPhase @relation("build", fields: [buildId], references: [id])
+  buildId     String
+  run         RunpackPhase @relation("run", fields: [runId], references: [id])
+  runId       String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model RunpackPhase {
+  id                   String                @id @default(cuid())
+  repository           String
+  tag                  String
+  command              String?
+  readOnlyAppStorage   Boolean
+  securityContext      SecurityContext       @relation("SecurityContextOnRunpackPhase", fields: [securityContextId], references: [id])
+  securityContextId    String
+  RunpacksFetch        Runpack[]           @relation("fetch")
+  RunpacksBuild        Runpack[]           @relation("build")
+  RunpacksRun          Runpack[]           @relation("run")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+}
+
+model SecurityContext {
+  id                        String      @id @default(cuid())
+  runAsUser                 Int
+  runAsGroup                Int
+  runAsNonRoot              Boolean
+  readOnlyRootFilesystem    Boolean
+  allowPrivilegeEscalation  Boolean
+  capabilities              Capability[]
+  RunpackPhases             RunpackPhase[] @relation("SecurityContextOnRunpackPhase")
+  createdAt                 DateTime    @default(now())
+  updatedAt                 DateTime    @updatedAt
+}
+
+model Capability {
+  id            String   @id @default(cuid())
+  add           CapabilityAdd[]
+  drop          CapabilityDrop[]
+  securityCtxId String
+  securityCtx   SecurityContext @relation(fields: [securityCtxId], references: [id])
+}
+
+model CapabilityAdd {
+  id           String      @id @default(cuid())
+  value        String
+  capability   Capability  @relation(fields: [capabilityId], references: [id])
+  capabilityId String
+}
+
+model CapabilityDrop {
+  id           String      @id @default(cuid())
+  value        String
+  capability   Capability  @relation(fields: [capabilityId], references: [id])
+  capabilityId String
 }

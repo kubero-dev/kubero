@@ -12,7 +12,6 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 async function bootstrap() {
-
   const logLevels = process.env.LOGLEVEL?.split(',') ?? [
     'log',
     'fatal',
@@ -90,21 +89,16 @@ async function bootstrap() {
 
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup(
-    'api/docs', 
-    app, 
-    documentFactory,
-    {
-      customSiteTitle: 'Kubero API Documentation',
-      //customfavIcon: '/favicon.ico',
-      swaggerOptions: {
-        tagsSorter: 'alpha',
-        persistAuthorization: true,
-        displayRequestDuration: true,
-        //docExpansion: 'none', // 'none' to collapse all sections by default
-      },
+  SwaggerModule.setup('api/docs', app, documentFactory, {
+    customSiteTitle: 'Kubero API Documentation',
+    //customfavIcon: '/favicon.ico',
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      persistAuthorization: true,
+      displayRequestDuration: true,
+      //docExpansion: 'none', // 'none' to collapse all sections by default
     },
-  );
+  });
 
   await app.listen(process.env.PORT ?? 2000); // Use port 2000 for compatibility with kubero v2
 

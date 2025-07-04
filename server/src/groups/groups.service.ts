@@ -47,4 +47,4 @@ export class GroupsService {
       where: { id },
     });
   }
-} 
+}

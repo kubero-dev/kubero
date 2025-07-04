@@ -11,7 +11,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey:
-        process.env.KUBERO_JWT_SECRET ||
+        process.env.JWT_SECRET ||
         'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.', //randomBytes(32).toString('hex'),
     });
   }
@@ -23,6 +23,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (typeof payload.userId === 'number') {
       payload.userId = payload.userId.toString();
     }
-    return { userId: payload.userId, username: payload.username };
+    return {
+      userId: payload.userId,
+      username: payload.username,
+      role: payload.role,
+      userGroups: payload.userGroups,
+    };
   }
 }

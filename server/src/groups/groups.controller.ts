@@ -1,4 +1,4 @@
-import { 
+import {
   Body,
   Controller,
   Delete,
@@ -7,7 +7,6 @@ import {
   Post,
   Put,
   UseGuards,
-
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -21,7 +20,6 @@ import { GroupsService } from './groups.service';
 
 @Controller({ path: 'api/groups', version: '1' })
 export class GroupsController {
-
   constructor(private groupsService: GroupsService) {}
 
   @Get('/')
@@ -98,10 +96,7 @@ export class GroupsController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update a Group by ID' })
-  async updateGroup(
-    @Param('id') id: string,
-    @Body() groupData: any,
-  ) {
+  async updateGroup(@Param('id') id: string, @Body() groupData: any) {
     if (!id || !groupData || !groupData.name || !groupData.description) {
       throw new Error('Invalid group data provided');
     }

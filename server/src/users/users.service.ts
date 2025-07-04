@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 //import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import axios from 'axios';
 
 // This should be a real class/interface representing a user entity
 export type User = any;
@@ -20,10 +21,73 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
+  async findOneFull(username: string): Promise<PartialPrismaUser | null> {
+    return this.prisma.user.findUnique({
+      where: {
+        username,
+      },
+      include: {
+        tokens: {
+          select: {
+            id: true,
+            createdAt: true,
+            expiresAt: true,
+          },
+        },
+        role: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+        userGroups: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+      },
+    });
+  }
+
+  // Required for OAuth2 login
+  async findOneOrCreate(
+    username: string,
+    email: string,
+    provider: string,
+    image: string,
+  ): Promise<PartialPrismaUser> {
+    let user = await this.findOne(username);
+    if (!user) {
+      this.logger.debug(`User ${username} not found, creating new user.`);
+      const password = Math.random().toString(36).slice(-8); // Generate a random password
+      const imageData = image
+        ? await this.generateUserDataFromImageUrl(image)
+        : null;
+      user = await this.create({
+        username,
+        password,
+        email,
+        provider,
+        image: imageData,
+        //role: process.env.DEFAULT_USER_ROLE || 'guest', // Default role if not specified
+        //userGroups: process.env.DEFAULT_USER_GROUPS ? process.env.DEFAULT_USER_GROUPS.split(',') : [],
+        providerId: null, // Set providerId if needed
+        providerData: null, // Set providerData if needed
+      });
+      this.logger.debug(`User ${username} created successfully.`);
+    } else {
+      this.logger.debug(`User ${username} found.`);
+    }
+    return user;
+  }
+
   async findById(userId: string): Promise<PartialPrismaUser | null> {
     return this.prisma.user.findUnique({
       where: {
-        id: userId
+        id: userId,
       },
       select: {
         id: true,
@@ -44,17 +108,17 @@ export class UsersService {
           select: {
             id: true,
             name: true,
-            description: true
-          }
+            description: true,
+          },
         },
         userGroups: {
           select: {
             id: true,
             name: true,
-            description: true
-          }
+            description: true,
+          },
         },
-      } 
+      },
     });
   }
 
@@ -80,42 +144,39 @@ export class UsersService {
             id: true,
             name: true,
             description: true,
-          }
+          },
         },
         userGroups: {
           select: {
             id: true,
             name: true,
-            description: true
-          }
+            description: true,
+          },
         },
         tokens: {
           select: {
             id: true,
-            token: true,
             createdAt: true,
             expiresAt: true,
-          }
+          },
         },
       },
     });
   }
-  
+
   async findByUsername(username: string): Promise<PrismaUser | null> {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
   async create(user: any): Promise<PrismaUser> {
     this.logger.debug('Creating user with data:', user);
-    const {
-      role,
-      userGroups,
-      tokens,
-      ...cleanedData
-    } = user;
+    const { role, userGroups, tokens, ...cleanedData } = user;
 
-
-    if (cleanedData.password && typeof cleanedData.password === 'string' && cleanedData.password.length > 0) {
+    if (
+      cleanedData.password &&
+      typeof cleanedData.password === 'string' &&
+      cleanedData.password.length > 0
+    ) {
       cleanedData.password = bcrypt.hashSync(cleanedData.password, 10);
     } else {
       // If no password is provided, throw an error or handle accordingly
@@ -126,16 +187,21 @@ export class UsersService {
       data: {
         ...cleanedData,
         role: role && role ? { connect: { id: role } } : undefined,
-        userGroups: userGroups && Array.isArray(userGroups) ? {
-          connect: userGroups.map((g: any) => ({ id: g })),
-        } : undefined
+        userGroups:
+          userGroups && Array.isArray(userGroups)
+            ? {
+                connect: userGroups.map((g: any) => ({ id: g })),
+              }
+            : undefined,
       },
     });
   }
-  
-  async update(userId: string, user: any): Promise<PartialPrismaUser | undefined> {
-    
-    let {
+
+  async update(
+    userId: string,
+    user: any,
+  ): Promise<PartialPrismaUser | undefined> {
+    const {
       id,
       createdAt,
       updatedAt,
@@ -147,7 +213,7 @@ export class UsersService {
     } = user;
 
     // fix relations
-    if (role && typeof role === 'string' ) {
+    if (role && typeof role === 'string') {
       data.role = { connect: { id: role } };
     }
     if (userGroups && Array.isArray(userGroups)) {
@@ -158,14 +224,16 @@ export class UsersService {
     }
 
     if (Object.keys(data).length === 0) {
-      this.logger.warn(`No valid fields provided for update on user with ID ${userId}.`);
+      this.logger.warn(
+        `No valid fields provided for update on user with ID ${userId}.`,
+      );
       return undefined;
     }
 
     try {
       return await this.prisma.user.update({
         omit: {
-          password: true
+          password: true,
         },
         where: { id: userId },
         data,
@@ -177,8 +245,15 @@ export class UsersService {
     }
   }
 
-  async updatePassword(userId: string, newPassword: string): Promise<PrismaUser | undefined> {
-    if (!newPassword || typeof newPassword !== 'string' || newPassword.length === 0) {
+  async updatePassword(
+    userId: string,
+    newPassword: string,
+  ): Promise<PrismaUser | undefined> {
+    if (
+      !newPassword ||
+      typeof newPassword !== 'string' ||
+      newPassword.length === 0
+    ) {
       this.logger.warn('No valid new password provided for password update.');
       return undefined;
     }
@@ -191,7 +266,10 @@ export class UsersService {
       this.logger.debug(`Password updated for user with ID ${userId}.`);
       return user;
     } catch (error) {
-      this.logger.debug(`Error updating password for user with ID ${userId}:`, error);
+      this.logger.debug(
+        `Error updating password for user with ID ${userId}:`,
+        error,
+      );
       this.logger.warn(`User with ID ${userId} not found for password update.`);
       return undefined;
     }
@@ -222,7 +300,7 @@ export class UsersService {
             id: groupId,
           },
         },
-      }
+      },
     });
   }
   /*
@@ -253,7 +331,10 @@ export class UsersService {
     });
   }
 
-  async updateAvatar(userId: string, avatarFile: any): Promise<PrismaUser | undefined> {
+  async updateAvatar(
+    userId: string,
+    avatarFile: any,
+  ): Promise<PrismaUser | undefined> {
     if (!avatarFile || !avatarFile.buffer) {
       this.logger.warn('No avatar file buffer provided.');
       return undefined;
@@ -280,4 +361,21 @@ export class UsersService {
     return user ? user.image : null;
   }
 
+  private async generateUserDataFromImageUrl(
+    imageUrl: string,
+  ): Promise<string> {
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    if (response.status !== 200) {
+      throw new Error(`Failed to fetch image from URL: ${imageUrl}`);
+    }
+    const mimetype = response.headers['content-type'] || 'image/jpeg'; // Default to jpeg if not specified
+    if (!mimetype.startsWith('image/')) {
+      throw new Error(`Invalid image MIME type: ${mimetype}`);
+    }
+
+    console.debug(`Image MIME type: ${mimetype}`);
+    const buffer = Buffer.from(response.data, 'binary');
+    const base64Image = buffer.toString('base64');
+    return `data:${mimetype};base64,${base64Image}`;
+  }
 }

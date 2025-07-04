@@ -2,16 +2,18 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
+import { runpacks } from './runpacks.seed'; // Assuming runpacks.seed.ts exports a Runpack type
+import * as yaml from 'yaml'; // Import yaml for parsing runpacks
 
 @Injectable()
 export class DatabaseService {
-
   private logger = new Logger(DatabaseService.name);
   private readonly prisma = new PrismaClient();
 
   constructor() {
     // Initialize the Prisma client
-    this.prisma.$connect()
+    this.prisma
+      .$connect()
       .then(() => {
         this.logger.log('Connected to the database successfully.');
       })
@@ -21,36 +23,42 @@ export class DatabaseService {
     this.runMigrations()
       .then(() => {
         // create user after migrations
-        this.seedDefaultData()
-        .then(() => {
-          this.createSystemUser()
-          this.createAdminUser()
-          this.migrateLegeacyUsers()
-        })
+        this.seedDefaultData().then(() => {
+          this.createSystemUser();
+          this.createAdminUser();
+          this.migrateLegeacyUsers();
+
+        });
       })
       .catch((error) => {
         this.logger.error('Error during database migrations.', error);
       });
+
+    this.seedRunpacks();
   }
 
   private async init() {
-    if (process.env.DATABASE_URL === '' || process.env.DATABASE_URL === undefined) {
+    if (
+      process.env.DATABASE_URL === '' ||
+      process.env.DATABASE_URL === undefined
+    ) {
       process.env.DATABASE_URL = 'file:../db/kubero.sqlite';
       process.env.DATABASE_TYPE = 'sqlite';
       Logger.debug(
-        'DATABASE_URL is not set. Using SQLite database: ' + process.env.DATABASE_URL,
+        'DATABASE_URL is not set. Using SQLite database: ' +
+          process.env.DATABASE_URL,
         'DatabaseService',
       );
     }
   }
-  
+
   private async runMigrations() {
     const { execSync } = await import('child_process');
 
     await this.init();
-    
+
     const prisma = new PrismaClient();
-    
+
     try {
       this.logger.log('Running Prisma migrations...');
       // @ts-ignore
@@ -68,7 +76,7 @@ export class DatabaseService {
 
   private async createSystemUser() {
     const prisma = new PrismaClient();
-    
+
     // Check if the system user already exists
     const existingUser = await prisma.user.findUnique({
       where: { id: '1' },
@@ -89,9 +97,12 @@ export class DatabaseService {
           password: '', // No password for system user
           isActive: false,
           role: { connect: { name: role } },
-          userGroups: userGroups && Array.isArray(userGroups) ? {
-            connect: userGroups.map((g: any) => ({ name: g })),
-          } : undefined
+          userGroups:
+            userGroups && Array.isArray(userGroups)
+              ? {
+                  connect: userGroups.map((g: any) => ({ name: g })),
+                }
+              : undefined,
         },
       });
       this.logger.log('System user created successfully.');
@@ -102,7 +113,7 @@ export class DatabaseService {
 
   private async createAdminUser() {
     const prisma = new PrismaClient();
-    
+
     // Check if the admin user already exists
     const existingUser = await prisma.user.findUnique({
       where: { id: '2' },
@@ -118,9 +129,11 @@ export class DatabaseService {
     const userGroups = ['everyone'];
 
     try {
-
       // Generiere ein zufälliges Passwort
-      const plainPassword = crypto.randomBytes(25).toString('base64').slice(0, 19);
+      const plainPassword = crypto
+        .randomBytes(25)
+        .toString('base64')
+        .slice(0, 19);
       // Erstelle einen bcrypt-Hash
       const passwordHash = await bcrypt.hash(plainPassword, 10);
       console.log('\n\n\n', 'Admin account created since no user exists yet');
@@ -136,9 +149,12 @@ export class DatabaseService {
           password: passwordHash,
           isActive: true,
           role: { connect: { name: role } },
-          userGroups: userGroups && Array.isArray(userGroups) ? {
-            connect: userGroups.map((g: any) => ({ name: g })),
-          } : undefined,
+          userGroups:
+            userGroups && Array.isArray(userGroups)
+              ? {
+                  connect: userGroups.map((g: any) => ({ name: g })),
+                }
+              : undefined,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -152,7 +168,7 @@ export class DatabaseService {
   private async migrateLegeacyUsers() {
     const prisma = new PrismaClient();
 
-    const existingUsers = await prisma.user.count()
+    const existingUsers = await prisma.user.count();
     if (existingUsers > 2) {
       this.logger.log('Legacy users already migrated. Skipping migration.');
       return;
@@ -163,11 +179,9 @@ export class DatabaseService {
       return;
     }
 
-    const u = Buffer.from(process.env.KUBERO_USERS, 'base64').toString(
-      'utf-8',
-    );
+    const u = Buffer.from(process.env.KUBERO_USERS, 'base64').toString('utf-8');
     const users = JSON.parse(u);
-    
+
     for (const user of users) {
       let password = user.password;
       if (
@@ -198,85 +212,89 @@ export class DatabaseService {
             password: password,
             isActive: true,
             role: { connect: { name: role } },
-            userGroups: userGroups && Array.isArray(userGroups) ? {
-              connect: userGroups.map((g: any) => ({ name: g })),
-            } : undefined,
+            userGroups:
+              userGroups && Array.isArray(userGroups)
+                ? {
+                    connect: userGroups.map((g: any) => ({ name: g })),
+                  }
+                : undefined,
           },
         });
         this.logger.log(`Migrated user ${user.username} successfully.`);
-
       } catch (error) {
         this.logger.error(`Failed to migrate user ${user.username}.`, error);
       }
-    };
-    
+    }
+
     this.logger.log('Legacy users migrated successfully.');
   }
 
   private async seedDefaultData() {
-
     // Ensure the 'admin' role exists with permissions
-    this.prisma.role.upsert({
-      where: { name: 'admin' },
-      update: {},
-      create: {
-        name: 'admin',
-        description: 'Administrator role with full access',
-        permissions: {
-          create: [
-            { action: 'write', resource: 'user' },
-            { action: 'write', resource: 'pipeline' },
-            { action: 'write', resource: 'app' },
-            { action: 'write', resource: 'settings' },
-            { action: 'write', resource: 'templates' },
-          ],
+    this.prisma.role
+      .upsert({
+        where: { name: 'admin' },
+        update: {},
+        create: {
+          name: 'admin',
+          description: 'Administrator role with full access',
+          permissions: {
+            create: [
+              { action: 'write', resource: 'user' },
+              { action: 'write', resource: 'pipeline' },
+              { action: 'write', resource: 'app' },
+              { action: 'write', resource: 'settings' },
+              { action: 'write', resource: 'templates' },
+            ],
+          },
         },
-      },
-    })
-    .then(() => {
-      this.logger.log('Role "admin" seeded successfully.');
-    })
+      })
+      .then(() => {
+        this.logger.log('Role "admin" seeded successfully.');
+      });
 
     // Ensure the 'member' role exists with limited permissions
-    this.prisma.role.upsert({
-      where: { name: 'member' },
-      update: {},
-      create: {
-        name: 'member',
-        description: 'Member role with limited access',
-        permissions: {
-          create: [
-            { action: 'read', resource: 'user' },
-            { action: 'write', resource: 'pipeline' },
-            { action: 'write', resource: 'app' },
-            { action: 'write', resource: 'templates' },
-          ],
+    this.prisma.role
+      .upsert({
+        where: { name: 'member' },
+        update: {},
+        create: {
+          name: 'member',
+          description: 'Member role with limited access',
+          permissions: {
+            create: [
+              { action: 'read', resource: 'user' },
+              { action: 'write', resource: 'pipeline' },
+              { action: 'write', resource: 'app' },
+              { action: 'write', resource: 'templates' },
+            ],
+          },
         },
-      },
-    })
-    .then(() => {
-      this.logger.log('Role "member" seeded successfully.');
-    })
+      })
+      .then(() => {
+        this.logger.log('Role "member" seeded successfully.');
+      });
 
     // Ensure the 'guest' role exists with minimal permissions
-    this.prisma.role.upsert({
-      where: { name: 'guest' },
-      update: {},
-      create: {
-        name: 'guest',
-        description: 'Guest role with minimal access',
-        permissions: {
-          create: [
-            { action: 'read', resource: 'app' },
-            { action: 'read', resource: 'pipeline' },
-            { action: 'read', resource: 'templates' },
-          ],
+    this.prisma.role
+      .upsert({
+        where: { name: 'guest' },
+        update: {},
+        create: {
+          name: 'guest',
+          description: 'Guest role with minimal access',
+          permissions: {
+            create: [
+              { action: 'read', resource: 'app' },
+              { action: 'read', resource: 'pipeline' },
+              { action: 'read', resource: 'templates' },
+            ],
+          },
         },
-      },
-    })
-    .then(() => {
-      this.logger.log('Role "guest" seeded successfully.');
-    })
+      })
+      .then(() => {
+        this.logger.log('Role "guest" seeded successfully.');
+      });
 
     // Ensure the 'everyone' user group exists
     const existingGroup = await this.prisma.userGroup.findUnique({
@@ -292,9 +310,83 @@ export class DatabaseService {
       });
       this.logger.log('UserGroup "everyone" created successfully.');
     } else {
-      this.logger.log('UserGroup "everyone" already exists. Skipping creation.');
+      this.logger.log(
+        'UserGroup "everyone" already exists. Skipping creation.',
+      );
     }
 
     this.logger.log('Default data seeded successfully.');
+  }
+
+  private async seedRunpacks() {
+    /*
+    // Seed runpacks from ./runpacks.seed.yaml
+    const fs = await import('fs');
+    const yaml = await import('yaml');
+    const path = require('path');
+    const configPath = path.resolve(__dirname, '../runpacks.seed.yaml');
+    if (!fs.existsSync(configPath)) {
+      this.logger.warn('runpacks.seed.yaml not found, skipping runpack seed.');
+      return;
+    }
+    const file = fs.readFileSync(configPath, 'utf8');
+    const config = yaml.parse(file);
+    */
+
+    const config = yaml.parse(runpacks);
+
+    const buildpacks = config || [];
+    for (const bp of buildpacks) {
+      // Find existing by name
+      const existing = await this.prisma.runpack.findFirst({ where: { name: bp.name } });
+      const prisma = this.prisma;
+      const createPhase = async (phase: any) => {
+        // Create SecurityContext
+        const sec = await prisma.securityContext.create({
+          data: {
+            runAsUser: phase.securityContext.runAsUser,
+            runAsGroup: phase.securityContext.runAsGroup,
+            runAsNonRoot: phase.securityContext.runAsNonRoot,
+            readOnlyRootFilesystem: phase.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation: phase.securityContext.allowPrivilegeEscalation,
+            capabilities: {
+              create: [{
+                add: { create: (phase.securityContext.capabilities?.add || []).map((v: string) => ({ value: v })) },
+                drop: { create: (phase.securityContext.capabilities?.drop || []).map((v: string) => ({ value: v })) },
+              }],
+            },
+          },
+        });
+        // Create RunpackPhase
+        return await prisma.runpackPhase.create({
+          data: {
+            repository: phase.repository,
+            tag: phase.tag,
+            command: phase.command || '',
+            readOnlyAppStorage: phase.readOnlyAppStorage,
+            securityContextId: sec.id,
+          },
+        });
+      };
+      const fetchPhase = await createPhase(bp.fetch);
+      const buildPhase = await createPhase(bp.build);
+      const runPhase = await createPhase(bp.run);
+      if (existing) {
+        // Optionally update here
+        this.logger.log(`Runpack/Buildpack '${bp.name}' already exists. Skipping.`);
+        continue;
+      }
+      await this.prisma.runpack.create({
+        data: {
+          name: bp.name,
+          language: bp.language,
+          fetchId: fetchPhase.id,
+          buildId: buildPhase.id,
+          runId: runPhase.id,
+        },
+      });
+      this.logger.log(`Runpack/Buildpack '${bp.name}' seeded.`);
+    }
+    this.logger.log('Buildpacks/Runpacks seeded successfully.');
   }
 }

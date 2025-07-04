@@ -61,13 +61,15 @@ CREATE TABLE "Role" (
 -- CreateTable
 CREATE TABLE "Token" (
     "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT,
     "userId" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
     "expiresAt" DATETIME NOT NULL,
     "isActive" BOOLEAN NOT NULL DEFAULT true,
     "lastUsed" DATETIME,
     "lastIp" TEXT,
     "description" TEXT,
+    "role" TEXT NOT NULL,
+    "groups" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL,
     CONSTRAINT "Token_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -81,6 +83,69 @@ CREATE TABLE "Permission" (
     "namespace" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Runpack" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "language" TEXT NOT NULL,
+    "fetchId" TEXT NOT NULL,
+    "buildId" TEXT NOT NULL,
+    "runId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Runpack_fetchId_fkey" FOREIGN KEY ("fetchId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Runpack_buildId_fkey" FOREIGN KEY ("buildId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Runpack_runId_fkey" FOREIGN KEY ("runId") REFERENCES "RunpackPhase" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "RunpackPhase" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "repository" TEXT NOT NULL,
+    "tag" TEXT NOT NULL,
+    "command" TEXT,
+    "readOnlyAppStorage" BOOLEAN NOT NULL,
+    "securityContextId" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "RunpackPhase_securityContextId_fkey" FOREIGN KEY ("securityContextId") REFERENCES "SecurityContext" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "SecurityContext" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "runAsUser" INTEGER NOT NULL,
+    "runAsGroup" INTEGER NOT NULL,
+    "runAsNonRoot" BOOLEAN NOT NULL,
+    "readOnlyRootFilesystem" BOOLEAN NOT NULL,
+    "allowPrivilegeEscalation" BOOLEAN NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "Capability" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "securityCtxId" TEXT NOT NULL,
+    CONSTRAINT "Capability_securityCtxId_fkey" FOREIGN KEY ("securityCtxId") REFERENCES "SecurityContext" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "CapabilityAdd" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "value" TEXT NOT NULL,
+    "capabilityId" TEXT NOT NULL,
+    CONSTRAINT "CapabilityAdd_capabilityId_fkey" FOREIGN KEY ("capabilityId") REFERENCES "Capability" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "CapabilityDrop" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "value" TEXT NOT NULL,
+    "capabilityId" TEXT NOT NULL,
+    CONSTRAINT "CapabilityDrop_capabilityId_fkey" FOREIGN KEY ("capabilityId") REFERENCES "Capability" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -118,9 +183,6 @@ CREATE UNIQUE INDEX "UserGroup_name_key" ON "UserGroup"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Role_name_key" ON "Role"("name");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Token_token_key" ON "Token"("token");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_UserToUserGroup_AB_unique" ON "_UserToUserGroup"("A", "B");

@@ -141,7 +141,6 @@ export class AppsController {
     @Param('app') app: string,
     @Request() req: any,
   ) {
-
     const user: IUser = {
       id: req.user.userId,
       strategy: req.user.strategy,

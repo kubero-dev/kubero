@@ -11,7 +11,7 @@
       >
         <template #prepend>
           <v-avatar size="30">
-            <v-img :src="userAvatar || '/avatar.svg'" alt="User avatar" />
+            <v-img :src="userAvatar || '/img/icons/avatar.svg'" alt="User avatar" />
           </v-avatar>
         </template>
         <template #title>
@@ -24,6 +24,7 @@
     </v-list>
 
     <v-divider></v-divider>
+
     <v-list nav density="compact">
         <v-list-item 
             link to="/"
@@ -48,27 +49,30 @@
             title="Add-Ons">
         </v-list-item>
         <v-list-item 
-            link to="/settings" 
-            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
-            prepend-icon="mdi-cog-outline"
-            title="Settings">
-        </v-list-item>
-        <v-list-item 
             link to="/accounts" 
             v-if="kubero.isAuthenticated && !kubero.adminDisabled"
             prepend-icon="mdi-account-outline"
             title="Accounts">
         </v-list-item>
+        <!-- Posponed for later release
         <v-list-item 
-            @click="logout()" 
-            v-if="kubero.isAuthenticated"
-            prepend-icon="mdi-logout"
-            title="Logout">
+            link to="/runpacks" 
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            prepend-icon="mdi-cube-outline"
+            title="Runpacks">
+        </v-list-item>
+        -->
+        <v-list-item 
+            link to="/settings" 
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            prepend-icon="mdi-cog-outline"
+            title="Settings">
         </v-list-item>
     </v-list>
 
 
     <template v-slot:append>
+        <v-divider></v-divider>
         <v-list nav dense>
             <v-list-item 
                 @click="toggleTheme()"
@@ -120,6 +124,14 @@
                 @click="debugDialog = true"
                 prepend-icon="mdi-star"
                 :title="''+ kubero.version">
+            </v-list-item>
+            <v-list-item 
+                @click="logout()" 
+                v-if="kubero.isAuthenticated"
+                prepend-icon="mdi-logout"
+                title="Logout"
+                class="logout-primary-item"
+            >
             </v-list-item>
         </v-list>
     </template>
@@ -304,5 +316,23 @@ img.image-icon {
     filter: brightness(0) saturate(100%) invert(86%) sepia(6%) saturate(7%) hue-rotate(331deg) brightness(90%) contrast(86%);
     /*filter: invert(39%) sepia(47%) saturate(584%) hue-rotate(228deg) brightness(95%) contrast(80%);
     /*filter: invert(93%) sepia(49%) saturate(7411%) hue-rotate(184deg) brightness(87%) contrast(90%);*/
+}
+/* Make logout look like a primary nav item and stand out */
+.logout-primary-item {
+  color: #fff !important;
+  background: rgb(var(--v-theme-primary)) !important;
+  /*background: #333 !important;*/
+  font-weight: 600;
+  border-radius: 6px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  transition: background 0.2s;
+}
+.logout-primary-item .v-list-item__prepend > .v-icon {
+  color: #fff !important;
+}
+.logout-primary-item:hover {
+  background: rgb(var(--v-theme-primary-darken1)) !important;
+  /*background: #444 !important;*/
 }
 </style>
