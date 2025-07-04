@@ -1,29 +1,34 @@
 import { IRunpack, ISecurityContext } from '../config.interface';
 
 export class Runpack implements IRunpack {
+  public id: string;
   public name: string;
   public language: string;
   public fetch: {
     repository: string;
     tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };
   public build: {
     repository: string;
     tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };
   public run: {
     repository: string;
     tag: string;
+    command?: string;
     readOnlyAppStorage: boolean;
     securityContext: ISecurityContext;
   };
   public tag: string;
 
   constructor(bp: IRunpack) {
+    this.id = bp.id || '';
     this.name = bp.name;
     this.language = bp.language;
     this.fetch = bp.fetch;

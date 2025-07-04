@@ -24,6 +24,7 @@
     </v-list>
 
     <v-divider></v-divider>
+
     <v-list nav density="compact">
         <v-list-item 
             link to="/"
@@ -53,6 +54,14 @@
             prepend-icon="mdi-account-outline"
             title="Accounts">
         </v-list-item>
+        <!-- Posponed for later release
+        <v-list-item 
+            link to="/runpacks" 
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            prepend-icon="mdi-cube-outline"
+            title="Runpacks">
+        </v-list-item>
+        -->
         <v-list-item 
             link to="/settings" 
             v-if="kubero.isAuthenticated && !kubero.adminDisabled"
@@ -63,6 +72,7 @@
 
 
     <template v-slot:append>
+        <v-divider></v-divider>
         <v-list nav dense>
             <v-list-item 
                 @click="toggleTheme()"

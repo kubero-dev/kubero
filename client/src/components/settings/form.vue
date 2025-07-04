@@ -449,7 +449,7 @@ export default defineComponent({
               } as Oauth2,
             } as Auth,
             config: {
-              buildpacks: [] as Buildpack[],
+              buildPacks: [] as Buildpack[],
               clusterissuer: '' as string,
               notifications: [] as Notification[],
               kubero: {
@@ -523,7 +523,7 @@ export default defineComponent({
           delete podSize.editable;
         });
 
-        self.settings.settings.kubero.config.buildpacks.forEach((buildpack: Buildpack) => {
+        self.settings.settings.kubero.config.buildPacks.forEach((buildpack: Buildpack) => {
           delete buildpack.advanced;
         });
 
@@ -540,6 +540,7 @@ export default defineComponent({
         axios.get(`/api/config`)
         .then(response => {
             self.settings = response.data;
+            console.log('loadSettings', self.settings);
         })
         .catch(error => {
             console.log('loadSettings', error);

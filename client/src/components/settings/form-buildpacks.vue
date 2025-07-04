@@ -13,7 +13,7 @@
             multiple
         >
 
-            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(buildpack, index) in settings.kubero.config.buildpacks" :key="index">
+            <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))" v-for="(buildpack, index) in settings.kubero.config.buildPacks" :key="index">
             <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ buildpack.name }}</v-expansion-panel-title>
             <v-expansion-panel-text>
             <v-row>
@@ -112,7 +112,8 @@ export default defineComponent({
             type: Object as () => any,
             required: true,
             validator: (settings: any) => {
-                return settings.kubero.config.buildpacks.every((buildpack: Buildpack) => {
+                console.log('FormBuildpacks validator', settings)
+                return settings.kubero.config.buildPacks.every((buildpack: Buildpack) => {
                     return buildpack.name && buildpack.language && buildpack.fetch.repository && buildpack.fetch.tag && buildpack.build.repository && buildpack.build.tag && buildpack.run.repository && buildpack.run.tag
                 })
             }
@@ -130,10 +131,10 @@ export default defineComponent({
     methods: {
         deleteBuildpack(buildpack: Buildpack) {
             this.panel = -1
-            this.settings.kubero.config.buildpacks.splice(this.settings.kubero.config.buildpacks.indexOf(buildpack), 1)
+            this.settings.kubero.config.buildPacks.splice(this.settings.kubero.config.buildPacks.indexOf(buildpack), 1)
         },
         addBuildpack() {
-            this.settings.kubero.config.buildpacks.push({
+            this.settings.kubero.config.buildPacks.push({
                 name: '',
                 language: '',
                 advanced: true,
@@ -191,7 +192,7 @@ export default defineComponent({
             })
 
             // open panel 
-            this.panel = this.settings.kubero.config.buildpacks.length - 1
+            this.panel = this.settings.kubero.config.buildPacks.length - 1
         }
     }
 })

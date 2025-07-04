@@ -48,7 +48,7 @@ notifications:
     config:
       url: "https://discord.com/api/webhooks/XXXXXXXXX/XXXXXXXXX/XXXXXXXXXXXXXXXXXXXXXXXX"
       channel: "#kubero"
-buildpacks:
+buildPacks:
   - name: NodeJS
     language: JavaScript
     fetch:

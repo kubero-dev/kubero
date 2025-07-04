@@ -2,7 +2,7 @@
   <v-container class="py-8">
     <v-row>
       <v-col cols="12" md="6" lg="4">
-        <v-card class="pa-4">
+        <v-container class="pa-4">
           <div style="position: relative; display: inline-block;">
             <v-avatar size="150" class="mb-4">
               <v-img :src="user.image || defaultAvatar" alt="User avatar" />
@@ -42,12 +42,12 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-        </v-card>
+        </v-container>
       </v-col>
       <v-col cols="12" md="6" lg="8">
-        <v-card class="pa-4">
+        <v-card color="cardBackground" class="pa-4">
           <h3 class="mb-4">Profile Details</h3>
-          <v-table density="compact">
+          <v-table density="compact" class="profile-table">
             <tbody>
               <tr>
                 <td><strong>First Name</strong></td>
@@ -93,7 +93,7 @@
     </v-row>
     <v-row class="mt-6">
       <v-col cols="12">
-        <v-card class="pa-4">
+        <v-card color="cardBackground" class="pa-4">
           <h3 class="mb-4">API Tokens</h3>
           <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
             <v-btn
@@ -106,7 +106,7 @@
               <span class="sr-only">Create Token</span>
             </v-btn>
           </div>
-          <v-table density="compact">
+          <v-table density="compact" class="profile-table">
             <thead>
               <tr>
                 <th>Name</th>
@@ -181,8 +181,8 @@
                 </v-btn>
                 <v-snackbar v-model="textareaFlash" timeout="3000">
                   Token copied to clipboard!
-                  <template #action="{ attrs }">
-                    <v-btn text v-bind="attrs" @click="textareaFlash = false">
+                  <template #actions>
+                    <v-btn text @click="textareaFlash = false">
                       Close
                     </v-btn>
                   </template>
@@ -332,5 +332,9 @@ export default defineComponent({
 @keyframes flash-animation {
   0% { background-color: rgba(255, 255, 0, 0.3); }
   100% { background-color: transparent; }
+}
+
+.profile-table {
+  background-color: inherit;
 }
 </style>
