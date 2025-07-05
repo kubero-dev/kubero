@@ -73,7 +73,7 @@
 
     <template v-slot:append>
         <v-divider></v-divider>
-        <v-list nav dense>
+        <v-list nav dense class="profile-dark-bg">
             <v-list-item 
                 @click="toggleTheme()"
                 prepend-icon="mdi-theme-light-dark"

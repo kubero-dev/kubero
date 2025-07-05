@@ -61,7 +61,7 @@
           <v-icon
             color="primary"
           >
-            {{getResourcePermissions(item.permissions, 'account') }}
+            {{getResourcePermissions(item.permissions, 'user') }}
           </v-icon>
         </span>
       </template>

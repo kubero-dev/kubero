@@ -48,6 +48,8 @@ enum Severity {
 
 enum ResourceType {
   user
+  team
+  role
   namespace
   phase
   app
@@ -63,6 +65,7 @@ enum ResourceType {
   config
   addons
   kubernetes
+  audit
 }
 
 model User {

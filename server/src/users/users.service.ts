@@ -378,4 +378,32 @@ export class UsersService {
     const base64Image = buffer.toString('base64');
     return `data:${mimetype};base64,${base64Image}`;
   }
+/*
+  async getPermissions(userId: string,): Promise<{ action: string; resource: string }[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        role: {
+          select: {
+            permissions: {
+              select: {
+                action: true,
+                resource: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user || !user.role || !user.role.permissions) {
+      return [];
+    }
+
+    return user.role.permissions.map((p) => ({
+      action: p.action,
+      resource: p.resource,
+    }));
+  }
+*/
 }

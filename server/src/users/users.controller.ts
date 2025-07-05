@@ -12,7 +12,6 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
-  Response,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -25,17 +24,19 @@ import { OKDTO } from '../common/dto/ok.dto';
 import { User, UsersService } from './users.service';
 import { GetAllUsersDTO } from './dto/users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Response as ResType } from 'express';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/users', version: '1' })
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:read', 'user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
-    description: 'Error: Unauthorized',
+    description: 'Error: Unauthorized or Forbidden',
     type: OKDTO,
     isArray: false,
   })
@@ -50,7 +51,7 @@ export class UsersController {
   }
 
   @Get('/me')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -70,7 +71,8 @@ export class UsersController {
   }
 
   @Get('/username/:username')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:read', 'user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -88,8 +90,9 @@ export class UsersController {
   }
 
   @Get('/id/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
   @ApiBearerAuth('bearerAuth')
+  @Permissions('user:read', 'user:write')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
@@ -106,7 +109,8 @@ export class UsersController {
   }
 
   @Get('/count')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:read', 'user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -124,7 +128,8 @@ export class UsersController {
   }
 
   @Put('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -142,7 +147,8 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -160,7 +166,8 @@ export class UsersController {
   }
 
   @Put('/:id/password/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -206,6 +213,19 @@ export class UsersController {
   @ApiOperation({ summary: 'Update current User password' })
   async updateMyPassword(@Param('password') password: string) {
     const user = (this.usersService as any).request.user;
+    if (!user || !user.id) {
+      throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
+    }
+    if (
+      !password ||
+      typeof password !== 'string' ||
+      password.length === 0
+    ) {
+      throw new HttpException(
+        'Invalid password provided',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     return this.usersService.updatePassword(user.id, password);
   }
 

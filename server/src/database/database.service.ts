@@ -240,11 +240,10 @@ export class DatabaseService {
           description: 'Administrator role with full access',
           permissions: {
             create: [
-              { action: 'write', resource: 'user' },
-              { action: 'write', resource: 'pipeline' },
               { action: 'write', resource: 'app' },
-              { action: 'write', resource: 'settings' },
-              { action: 'write', resource: 'templates' },
+              { action: 'write', resource: 'pipeline' },
+              { action: 'write', resource: 'user' },
+              { action: 'write', resource: 'config' },
             ],
           },
         },
@@ -263,10 +262,10 @@ export class DatabaseService {
           description: 'Member role with limited access',
           permissions: {
             create: [
-              { action: 'read', resource: 'user' },
-              { action: 'write', resource: 'pipeline' },
               { action: 'write', resource: 'app' },
-              { action: 'write', resource: 'templates' },
+              { action: 'write', resource: 'pipeline' },
+              { action: 'read', resource: 'user' },
+              { action: 'none', resource: 'config' },
             ],
           },
         },
@@ -287,7 +286,8 @@ export class DatabaseService {
             create: [
               { action: 'read', resource: 'app' },
               { action: 'read', resource: 'pipeline' },
-              { action: 'read', resource: 'templates' },
+              { action: 'none', resource: 'user' },
+              { action: 'none', resource: 'config' },
             ],
           },
         },
