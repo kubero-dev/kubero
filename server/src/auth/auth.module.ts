@@ -11,9 +11,10 @@ import { AuditModule } from '../audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
 import * as dotenv from 'dotenv';
+import { RolesService } from 'src/roles/roles.service';
 dotenv.config();
 
-const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule];
+const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule, RolesService];
 if (ConfigService.getOauth2Enabled()) {
   providers.push(Oauth2Strategy);
 }

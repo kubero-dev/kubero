@@ -3,6 +3,7 @@ import { UsersService } from '../users/users.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { ConfigService } from '../config/config.service';
 import { AuditService } from '../audit/audit.service';
+import { RolesService } from '../roles/roles.service';
 import { JwtService } from '@nestjs/jwt';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
@@ -15,6 +16,7 @@ export class AuthService {
 
   constructor(
     private usersService: UsersService,
+    private rolesService: RolesService,
     private kubectl: KubernetesService,
     private configService: ConfigService,
     private auditService: AuditService,
@@ -67,6 +69,10 @@ export class AuthService {
     if (!user) {
       throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
     }
+
+    const permissions = await this.rolesService.getPermissions(user.roleId);
+    user.permissions = permissions.map((p) => `${p.resource}:${p.action}`);
+    
     // Defines the user object to be signed in the JWT
     // Add more fields if needed
     const u = {
@@ -74,6 +80,7 @@ export class AuthService {
       username: user.username,
       role: user.role ? user.role.name : 'none',
       userGroups: user.userGroups ? user.userGroups.map((g) => g.name) : [],
+      permissions: user.permissions ? user.permissions : [],
       strategy: 'local',
     };
 
@@ -107,11 +114,16 @@ export class AuthService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
+
+    const permissions = await this.rolesService.getPermissions(user.roleId);
+    user.permissions = permissions.map((p) => `${p.resource}:${p.action}`);
+
     const u = {
       userId: user.id,
       username: user.username,
       role: user.role ? user.role.name : 'none',
       userGroups: user.userGroups ? user.userGroups.map((g) => g.name) : [],
+      permissions: user.permissions ? user.permissions : [],
       strategy: 'oauth2',
     };
     return this.jwtService.sign(u);
@@ -137,6 +149,7 @@ export class AuthService {
       username: username,
       role: role,
       userGroups: userGroups,
+      permissions: [],
       strategy: 'token',
     };
     const token = this.jwtService.sign(u, {

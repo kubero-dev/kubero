@@ -26,4 +26,20 @@ export class RolesService {
       },
     });
   }
+
+  async getPermissions(roleId: string): Promise<any[]> {
+    this.logger.debug(`getPermissions for roleId: ${roleId}`);
+    return this.prisma.role.findUnique({
+      where: { id: roleId },
+      select: {
+        permissions: {
+          select: {
+            id: true,
+            resource: true,
+            action: true,
+          },
+        },
+      },
+    }).then(role => role?.permissions || []);
+  }
 }
