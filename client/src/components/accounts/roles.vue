@@ -74,6 +74,60 @@
           </v-icon>
         </span>
       </template>
+      <template v-slot:[`item.permissionsAudit`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'audit') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsSecurity`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'security') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsToken`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'token') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsConsole`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'console') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsLogs`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'logs') }}
+          </v-icon>
+        </span>
+      </template>
+      <template v-slot:[`item.permissionsReboot`]="{ item }">
+        <span>
+          <v-icon
+            color="primary"
+          >
+            {{getResourcePermissions(item.permissions, 'reboot') }}
+          </v-icon>
+        </span>
+      </template>
       <template v-slot:[`item.actions`]="{ item }">
         <v-btn
           elevation="0"
@@ -94,6 +148,7 @@
           class="ma-2"
           color="secondary"
           @click="deleteRole(item)"
+          :disabled="item.name === 'admin' || item.name === 'guest' || item.name === 'member' || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-delete
@@ -102,7 +157,7 @@
       </template>
     </v-data-table>
 
-    <!-- Button to add a role
+    <!-- Button to add a role -->
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn
         fab
@@ -114,7 +169,6 @@
         <span class="sr-only">Create Role</span>
       </v-btn>
     </div>
-    -->
 
     <!-- Dialog to edit a role -->
     <v-dialog v-model="editDialog" max-width="500px">
@@ -137,6 +191,78 @@
         <v-card-title>Create Role</v-card-title>
         <v-card-text>
           <v-text-field v-model="newRole.name" label="Role Name"></v-text-field>
+          <v-radio-group
+            label="App Permissions"
+            v-model="newRole.permissions[0].action"
+            inline
+          >
+            <v-radio
+              label="none"
+              value="none"
+            ></v-radio>
+            <v-radio
+              label="read"
+              value="read"
+            ></v-radio>
+            <v-radio
+              label="write"
+              value="write"
+            ></v-radio>
+          </v-radio-group>
+          <v-radio-group
+            label="Pipeline Permissions"
+            v-model="newRole.permissions[1].action"
+            inline
+          >
+            <v-radio
+              label="none"
+              value="none"
+            ></v-radio>
+            <v-radio
+              label="read"
+              value="read"
+            ></v-radio>
+            <v-radio
+              label="write"
+              value="write"
+            ></v-radio>
+          </v-radio-group>
+          <v-radio-group
+            label="User Permissions"
+            v-model="newRole.permissions[2].action"
+            inline
+          >
+            <v-radio
+              label="none"
+              value="none"
+            ></v-radio>
+            <v-radio
+              label="read"
+              value="read"
+            ></v-radio>
+            <v-radio
+              label="write"
+              value="write"
+            ></v-radio>
+          </v-radio-group>
+          <v-radio-group
+            label="Config Permissions"
+            v-model="newRole.permissions[3].action"
+            inline
+          >
+            <v-radio
+              label="none"
+              value="none"
+            ></v-radio>
+            <v-radio
+              label="read"
+              value="read"
+            ></v-radio>
+            <v-radio
+              label="write"
+              value="write"
+            ></v-radio>
+          </v-radio-group>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -151,6 +277,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
 
 export default defineComponent({
   name: 'RolesTable',
@@ -171,9 +298,23 @@ export default defineComponent({
     const editDialog = ref(false)
     const createDialog = ref(false)
     const editedRole = ref<Role | any>({})
-    const newRole = ref({
+    const newRole = ref<Role | any>({
       name: '',
+      permissions: [
+        { resource: 'app', action: 'none' },
+        { resource: 'pipeline', action: 'none' },
+        { resource: 'user', action: 'none' },
+        { resource: 'config', action: 'none' },
+        { resource: 'audit', action: 'none' },
+        { resource: 'security', action: 'none' },
+        { resource: 'token', action: 'none' },
+        { resource: 'console', action: 'none' },
+        { resource: 'logs', action: 'none' },
+        { resource: 'reboot', action: 'none' }
+      ]
     })
+    const authStore = useAuthStore();
+    const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
       { title: 'Role', value: 'name' },
@@ -182,7 +323,14 @@ export default defineComponent({
       { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' as const },
       { title: 'Accounts', value: 'permissionsAccount', align: 'center' as const},
       { title: 'Configuration', value: 'permissionsConfig', align: 'center' as const},
-      //{ title: 'Actions', value: 'actions', sortable: false, align: 'end' },
+      { title: 'Audit', value: 'permissionsAudit', align: 'center' as const},
+      { title: 'Security', value: 'permissionsSecurity', align: 'center' as const},
+      { title: 'Token', value: 'permissionsToken', align: 'center' as const},
+      { title: 'Console', value: 'permissionsConsole', align: 'center' as const},
+      { title: 'Logs', value: 'permissionsLogs', align: 'center' as const},
+      { title: 'Reboot', value: 'permissionsReboot', align: 'center' as const},
+
+      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadRoles = async () => {
@@ -221,7 +369,21 @@ export default defineComponent({
     }
 
     const openCreateDialog = () => {
-      newRole.value = { name: '' }
+      newRole.value = {
+        name: '',
+        permissions: [
+          { resource: 'app', action: 'none' },
+          { resource: 'pipeline', action: 'none' },
+          { resource: 'user', action: 'none' },
+          { resource: 'config', action: 'none' },
+          { resource: 'audit', action: 'none' },
+          { resource: 'security', action: 'none' },
+          { resource: 'token', action: 'none' },
+          { resource: 'console', action: 'none' },
+          { resource: 'logs', action: 'none' },
+          { resource: 'reboot', action: 'none' }
+        ]
+      }
       createDialog.value = true
     }
 
@@ -255,6 +417,11 @@ export default defineComponent({
             case 'read':
               return 'mdi-eye';
               break;
+            case 'ok':
+              return 'mdi-check';
+              break;
+            default:
+              return 'mdi-minus';
           }
           return 
         }
@@ -281,6 +448,7 @@ export default defineComponent({
       openCreateDialog,
       saveCreate,
       getResourcePermissions,
+      writeUserPermission,
     }
   },
 })

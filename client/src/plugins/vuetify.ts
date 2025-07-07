@@ -20,7 +20,7 @@ export default createVuetify({
       dark: {
         colors: {
           "on-background": "#BBB",
-          primary: '#563774',
+          primary: '#9965cc',
           "primary-darken1": '#563774',
           secondary: '#1B1B1B',
           cardBackground: '#212121',
@@ -58,3 +58,5 @@ export default createVuetify({
     },
   },
 })
+
+//rgb(153 101 204) !important

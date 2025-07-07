@@ -7,10 +7,10 @@
             <v-col class="text-right">
                 <v-btn
                 elevation="2"
-                :disabled="kubero.kubernetesVersion == 'unknown'"
+                :disabled="kubero.kubernetesVersion == 'unknown' || !authStore.hasPermission('pipeline:write')"
                 color="primary"
                 :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
-                >New Pipeline</v-btn>
+                >New Pipeline {{ authStore.hasPermission('pipeline:write') }}</v-btn>
             </v-col>
         </v-row>
 
@@ -127,6 +127,8 @@ import Breadcrumbs from "../breadcrumbs.vue";
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
 import Swal from 'sweetalert2';
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
 
 type Pipeline = {
     name: string,
@@ -166,6 +168,7 @@ export default defineComponent({
     name: 'Pipelines List',
     setup() {
         return {
+            authStore,
             pipelines,
             socket,
         }

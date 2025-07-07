@@ -15,6 +15,8 @@ import {
 } from '@nestjs/swagger';
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/audit', version: '1' })
 export class AuditController {
@@ -27,7 +29,8 @@ export class AuditController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('audit:read', 'audit:write')
   @ApiBearerAuth('bearerAuth')
   async getAudit(
     @Param('pipeline') pipeline: string,
@@ -50,7 +53,8 @@ export class AuditController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('audit:read', 'audit:write')
   @ApiBearerAuth('bearerAuth')
   async getAuditAll(
     @Query(

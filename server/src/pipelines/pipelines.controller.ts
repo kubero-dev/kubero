@@ -28,13 +28,16 @@ import { IUser } from '../auth/auth.interface';
 import { IPipeline } from './pipelines.interface';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { ReadonlyGuard } from '../common/guards/readonly.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/pipelines', version: '1' })
 export class PipelinesController {
   constructor(private pipelinesService: PipelinesService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -52,7 +55,8 @@ export class PipelinesController {
   }
 
   @Post('/:pipeline')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:write')
   @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -101,7 +105,8 @@ export class PipelinesController {
   }
 
   @Get('/:pipeline')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -114,7 +119,8 @@ export class PipelinesController {
   }
 
   @Put('/:pipeline')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:write')
   @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -154,7 +160,8 @@ export class PipelinesController {
   }
 
   @Delete('/:pipeline')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:write')
   @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -177,7 +184,8 @@ export class PipelinesController {
   }
 
   @Get('/:pipeline/apps')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

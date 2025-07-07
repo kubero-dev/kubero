@@ -20,13 +20,17 @@ import {
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { OKDTO } from '../common/dto/ok.dto';
 import { TokenService } from './token.service';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
+
 
 @Controller({ path: 'api/tokens', version: '1' })
 export class TokenController {
   constructor(private tokenService: TokenService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('token:write','token:read')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -64,8 +68,9 @@ export class TokenController {
         return this.tokenService.create(tokenData, userId);
     }
 */
-  @Post('/')
-  @UseGuards(JwtAuthGuard)
+  @Post('/my')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -102,7 +107,8 @@ export class TokenController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -123,7 +129,8 @@ export class TokenController {
   }
 
   @Get('/my')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -147,7 +154,8 @@ export class TokenController {
   }
 
   @Delete('/my/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

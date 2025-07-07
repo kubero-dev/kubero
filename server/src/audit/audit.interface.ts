@@ -3,22 +3,28 @@ export interface AuditEntry {
   severity: 'normal' | 'info' | 'warning' | 'critical' | 'error' | 'unknown';
   action: string;
   resource:
+    | 'user'
+    | 'team'
+    | 'role'
     | 'system'
     | 'app'
     | 'pipeline'
-    | 'phase'
     | 'namespace'
+    | 'phase'
+    | 'unknown'
     | 'build'
     | 'addon'
     | 'settings'
-    | 'user'
     | 'events'
     | 'security'
     | 'templates'
     | 'config'
     | 'addons'
-    | 'kubernetes'
-    | 'unknown';
+    | 'console'
+    | 'logs'
+    | 'reboot'
+    | 'audit'
+    | 'token';
   namespace: string;
   phase: string;
   app: string;

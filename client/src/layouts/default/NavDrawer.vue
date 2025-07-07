@@ -29,6 +29,7 @@
         <v-list-item 
             link to="/"
             prepend-icon="mdi-server"
+            v-if="authStore.hasPermission('pipeline:write') || authStore.hasPermission('pipeline:read')"
             title="Pipelines">
         </v-list-item>
         <v-list-item 
@@ -39,7 +40,7 @@
         </v-list-item>
         <v-list-item 
             link to="/activity"
-            v-if="kubero.auditEnabled"
+            v-if="kubero.auditEnabled && (authStore.hasPermission('audit:write') || authStore.hasPermission('audit:read'))"
             prepend-icon="mdi-bell-outline"
             title="Activity">
         </v-list-item>
@@ -50,7 +51,7 @@
         </v-list-item>
         <v-list-item 
             link to="/accounts" 
-            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('user:write') || authStore.hasPermission('user:read'))"
             prepend-icon="mdi-account-outline"
             title="Accounts">
         </v-list-item>
@@ -64,7 +65,7 @@
         -->
         <v-list-item 
             link to="/settings" 
-            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+            v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('config:write') || authStore.hasPermission('config:read'))"
             prepend-icon="mdi-cog-outline"
             title="Settings">
         </v-list-item>
@@ -260,7 +261,10 @@ import { useCookies } from "vue3-cookies";
 import router from "../../router"
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
+import { useAuthStore } from '../../stores/auth'
 import { mapState } from 'pinia'
+
+const authStore = useAuthStore();
 
 const { cookies } = useCookies();
 

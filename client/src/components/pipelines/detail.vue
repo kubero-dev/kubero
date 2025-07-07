@@ -7,6 +7,7 @@
             <v-btn
             elevation="2"
             color="primary"
+            :disabled="!authStore.hasPermission('pipeline:write')"
             :to="{ name: 'Pipeline Form', params: { pipeline: pipeline }}"
             >Edit Pipeline</v-btn>
         </v-col>
@@ -63,6 +64,8 @@ import Appcard from "./appcard.vue";
 import PRcard from "./prcard.vue";
 import Breadcrumbs from "../breadcrumbs.vue";
 import { useKuberoStore } from '../../stores/kubero'
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
 
 import { reactive, ref, defineComponent } from 'vue'
 
@@ -178,6 +181,7 @@ export default defineComponent({
             git,
             pullrequests,
             pipeline,
+            authStore,
         }
     },
     mounted() {

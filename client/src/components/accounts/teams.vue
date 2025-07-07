@@ -42,6 +42,7 @@
           class="ma-2"
           color="secondary"
           @click="openEditTeamDialog(item)"
+          :disabled="!writeUserPermission"
         >
           <v-icon color="primary">
             mdi-pencil
@@ -54,6 +55,7 @@
           class="ma-2"
           color="secondary"
           @click="deleteTeam(item)"
+          :disabled="!writeUserPermission"
         >
           <v-icon color="primary">
             mdi-delete
@@ -69,6 +71,7 @@
         color="primary"
         style="margin-right: 6px;"
         @click="openCreateDialog"
+        :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
         <span class="sr-only">Create Team</span>
@@ -124,6 +127,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
 
 export default defineComponent({
   name: 'TeamsTable',
@@ -140,6 +144,9 @@ export default defineComponent({
     const createDialog = ref(false)
     const editedTeam = ref<Team | any>({})
     const newTeam = ref(<Team>({ name: '', description: '' }))
+
+    const authStore = useAuthStore();
+    const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
       { title: 'Team', value: 'name' },
@@ -215,6 +222,7 @@ export default defineComponent({
       deleteTeam,
       openCreateDialog,
       saveCreate,
+      writeUserPermission,
     }
   },
 })

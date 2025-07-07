@@ -52,6 +52,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
     extensions: ['.js', '.json', '.jsx', '.mjs', '.ts', '.tsx', '.vue'],
+    //dedupe: ['pinia'],
   },
   build: {
     outDir: '../server/dist/public',

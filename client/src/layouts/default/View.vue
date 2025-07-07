@@ -7,17 +7,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useKuberoStore } from '../../stores/kubero'
+import { useAuthStore } from '../../stores/auth'
 import { mapWritableState } from 'pinia'
 
 
 import { useCookies } from "vue3-cookies";
 const { cookies } = useCookies();
+const authStore = useAuthStore();
 
 import axios from 'axios'
 //axios.defaults.headers.common['User-Agent'] = 'Kubero/3.x'
 //axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('kubero.JWT_TOKEN')
 const token = cookies.get("kubero.JWT_TOKEN")
 if (token) {
+    authStore.loadToken(token);
     axios.defaults.headers.common['Authorization'] = 'Bearer ' + token
 }
 //axios.defaults.headers.common['vary'] = 'Accept-Encoding'
@@ -63,11 +66,11 @@ export default defineComponent({
                         this.kubero.consoleEnabled = result.data.consoleEnabled;
                         this.kubero.metricsEnabled = result.data.metricsEnabled;
                         this.kubero.sleepEnabled = result.data.sleepEnabled;
-
                     })
                     .catch((err) => {
-                        if (err.response.status === 401) {
+                        if (err.response && err.response.status === 401) {
                             this.isAuthenticated = false;
+                            authStore.reset();
                             this.$router.push('/login')
                         } else {
                             console.log(err);
