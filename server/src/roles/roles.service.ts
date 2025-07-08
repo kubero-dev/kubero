@@ -44,7 +44,7 @@ export class RolesService {
   }
 
   async createRole(roleData: any): Promise<any> {
-    this.logger.debug(`createRole with data: ${JSON.stringify(roleData)}`);
+    //this.logger.debug(`createRole with data: ${JSON.stringify(roleData)}`);
     return this.prisma.role.create({
       data: {
         name: roleData.name,
@@ -73,7 +73,7 @@ export class RolesService {
   }
   
   async updateRole(roleId: string, roleData: any): Promise<any> {
-    this.logger.debug(`updateRole with roleId: ${roleId} and data: ${JSON.stringify(roleData)}`);
+    //this.logger.debug(`updateRole with roleId: ${roleId} and data: ${JSON.stringify(roleData)}`);
     if (!roleId) {
       throw new Error('Role ID is required');
     }
