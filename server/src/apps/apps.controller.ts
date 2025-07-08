@@ -50,8 +50,9 @@ export class AppsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    return this.appsService.getApp(pipeline, phase, app);
+    return this.appsService.getApp(pipeline, phase, app, req.user.userGroups);
   }
 
   @Post('/:pipeline/:phase/:app')
@@ -94,7 +95,7 @@ export class AppsController {
       strategy: req.user.strategy,
       username: req.user.username,
     };
-    return this.appsService.createApp(app, user);
+    return this.appsService.createApp(app, user, req.user.userGroups);
   }
 
   @Put('/:pipeline/:phase/:app/:resourceVersion')
@@ -128,7 +129,7 @@ export class AppsController {
       strategy: req.user.strategy,
       username: req.user.username,
     };
-    return this.appsService.updateApp(app, resourceVersion, user);
+    return this.appsService.updateApp(app, resourceVersion, user, req.user.userGroups);
   }
 
   @Delete('/:pipeline/:phase/:app')
@@ -153,7 +154,7 @@ export class AppsController {
       strategy: req.user.strategy,
       username: req.user.username,
     };
-    return this.appsService.deleteApp(pipeline, phase, app, user);
+    return this.appsService.deleteApp(pipeline, phase, app, user, req.user.userGroups);
   }
 
   @Post('/pullrequest')
@@ -166,12 +167,16 @@ export class AppsController {
     isArray: false,
   })
   @ApiBearerAuth('bearerAuth')
-  async startPullRequest(@Body() body: any) {
+  async startPullRequest(
+    @Body() body: any,
+    @Request() req: any,
+  ) {
     return this.appsService.createPRApp(
       body.branch,
       body.branch,
       body.ssh_url,
       body.pipelineName,
+      req.user.userGroups,
     );
   }
 
@@ -189,8 +194,9 @@ export class AppsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    return this.appsService.getTemplate(pipeline, phase, app);
+    return this.appsService.getTemplate(pipeline, phase, app, req.user.userGroups);
   }
 
   @Get('/:pipeline/:phase/:app/restart')
@@ -216,7 +222,7 @@ export class AppsController {
       username: req.user.username,
     };
 
-    return this.appsService.restartApp(pipeline, phase, app, user);
+    return this.appsService.restartApp(pipeline, phase, app, user, req.user.userGroups);
   }
 
   @Get('/:pipeline/:phase/:app/pods')
@@ -233,8 +239,9 @@ export class AppsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    return this.appsService.getPods(pipeline, phase, app);
+    return this.appsService.getPods(pipeline, phase, app, req.user.userGroups);
   }
 
   @Post('/:pipeline/:phase/:app/console')
@@ -294,6 +301,7 @@ export class AppsController {
       containerName,
       command,
       user,
+      req.user.userGroups,
     );
   }
 }

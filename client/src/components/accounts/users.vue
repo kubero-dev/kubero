@@ -26,9 +26,6 @@
           {{ item.isActive ? 'Aktive' : 'Disabled' }}
         </v-chip>
       </template>
-      <template v-slot:[`item.username`]="{ item }">
-        <span>{{ item.username }}</span>
-      </template>
       <template v-slot:[`item.name`]="{ item }">
         <span>{{ item.firstName }} {{ item.lastName }}</span>
       </template>
@@ -52,6 +49,7 @@
               class="ma-2"
               color="grey"
               size="small"
+              prepend-icon="mdi-account-group"
               closable-disabled
               @click:close="deleteGroupFromUser(team, item)"
             >
@@ -75,7 +73,7 @@
         <v-avatar size="32" class="mr-2">
           <v-img :src="`/api/users/${item.id}/avatar`" />
         </v-avatar>
-        <b><span>{{ item.username }}</span></b>
+        <b><span><nobr>{{ item.username }}</nobr></span></b>
       </template>
       <template v-slot:[`item.createdAt`]="{ item }">
         {{ formatDate(item.createdAt) }}

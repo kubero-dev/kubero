@@ -5,6 +5,7 @@ import { PipelinesService } from '../pipelines/pipelines.service';
 import { EventsGateway } from '../events/events.gateway';
 import { Stream } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
+import { userInfo } from 'os';
 
 @Injectable()
 export class LogsService {
@@ -36,6 +37,7 @@ export class LogsService {
     appName: string,
     podName: string,
     container: string,
+    userGroups: string[]
   ) {
     const logStream = new Stream.PassThrough();
 
@@ -61,6 +63,7 @@ export class LogsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 
@@ -95,10 +98,12 @@ export class LogsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
+    userGroups: string[],
   ) {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 
@@ -113,6 +118,7 @@ export class LogsService {
                 appName,
                 pod.metadata.name,
                 container.name,
+                userGroups,
               );
             }
             /* TODO needs some improvements since it wont load web anymore
@@ -131,10 +137,12 @@ export class LogsService {
     phaseName: string,
     appName: string,
     container: string,
+    userGroups: string[],
   ) {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 

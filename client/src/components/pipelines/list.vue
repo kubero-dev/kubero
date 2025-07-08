@@ -68,10 +68,30 @@
                         <h3>
                             <span class="text-h5">{{ item.name }}</span>
                         </h3>
+                        <!--
+                        <p v-if="item.domain">
+                            <v-icon start size="small" >mdi-domain</v-icon>
+                            <span>{{ item.domain }}</span>
+                        </p>
+                        -->
+                        <p v-if="item.access?.teams && item.access.teams.length > 0">
+                            <span>
+                                <v-chip
+                                    class="my-0 mx-1"
+                                    color="grey"
+                                    size="small"
+                                    prepend-icon="mdi-account-group"
+                                    v-for="team in item.access.teams" :key="team"
+                                    >
+                                    {{ team }}
+                                </v-chip>
+                            </span>
+                        </p>
                         <p v-if="item.git.repository.admin">
                             <v-icon start size="small" >mdi-link</v-icon>
                             <span>{{ item.git.repository.description }}</span>
                         </p>
+                        
                 </v-col>
                 <v-col cols="12" sm="12" md="5" style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
                         <v-chip
@@ -132,6 +152,13 @@ const authStore = useAuthStore();
 
 type Pipeline = {
     name: string,
+    domain: string,
+    buildpacks: any,
+    reviewapps?: boolean,
+    access?: {
+        teams: string[],
+        //users: string[],
+    },
     git: {
         repository: {
             admin: boolean,

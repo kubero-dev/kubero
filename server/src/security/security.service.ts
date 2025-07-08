@@ -19,8 +19,9 @@ export class SecurityService {
     phase: string,
     appName: string,
     logdetails: boolean,
+    userGroups: string[],
   ) {
-    const contextName = await this.pipelinesService.getContext(pipeline, phase);
+    const contextName = await this.pipelinesService.getContext(pipeline, phase, userGroups);
     const namespace = pipeline + '-' + phase;
 
     const scanResult = {
@@ -42,7 +43,7 @@ export class SecurityService {
       return scanResult;
     }
 
-    const appresult = await this.appsService.getApp(pipeline, phase, appName);
+    const appresult = await this.appsService.getApp(pipeline, phase, appName, userGroups);
 
     const app = appresult as IKubectlApp;
 
@@ -133,11 +134,11 @@ export class SecurityService {
     return summary;
   }
 
-  public async startScan(pipeline: string, phase: string, appName: string) {
-    const contextName = await this.pipelinesService.getContext(pipeline, phase);
+  public async startScan(pipeline: string, phase: string, appName: string, userGroups: string[]) {
+    const contextName = await this.pipelinesService.getContext(pipeline, phase, userGroups);
     const namespace = pipeline + '-' + phase;
 
-    const appresult = await this.appsService.getApp(pipeline, phase, appName);
+    const appresult = await this.appsService.getApp(pipeline, phase, appName, userGroups);
 
     const app = appresult as IKubectlApp;
 

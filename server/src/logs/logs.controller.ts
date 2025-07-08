@@ -1,4 +1,4 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Request, UseGuards } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -34,8 +34,9 @@ export class LogsController {
     @Param('phase') phase: string,
     @Param('app') app: string,
     @Param('container') container: string,
+    @Request() req: any,
   ) {
-    return this.logsService.getLogsHistory(pipeline, phase, app, container);
+    return this.logsService.getLogsHistory(pipeline, phase, app, container, req.user.userGroups);
   }
 
   @Get('/:pipeline/:phase/:app/')
@@ -55,7 +56,8 @@ export class LogsController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    return this.logsService.startLogging(pipeline, phase, app);
+    return this.logsService.startLogging(pipeline, phase, app, req.user.userGroups);
   }
 }

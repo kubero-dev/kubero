@@ -35,6 +35,7 @@ export class DeploymentsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
+    userGroups: string[]
   ): Promise<any> {
     const namespace = pipelineName + '-' + phaseName;
     const jobs = (await this.kubectl.getJobs(namespace)) as V1JobList;
@@ -42,6 +43,7 @@ export class DeploymentsService {
       pipelineName,
       phaseName,
       appName,
+      userGroups,
     );
 
     const app = appresult as IKubectlApp;
@@ -227,10 +229,12 @@ export class DeploymentsService {
     appName: string,
     buildName: string,
     containerName: string,
+    userGroups: string[],
   ): Promise<any> {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 
@@ -265,6 +269,7 @@ export class DeploymentsService {
     phaseName: string,
     appName: string,
     tag: string,
+    userGroups: string[],
   ) {
     this.logger.debug(
       'deploy App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName,
@@ -273,6 +278,7 @@ export class DeploymentsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 
