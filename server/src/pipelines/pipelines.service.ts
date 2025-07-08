@@ -100,7 +100,6 @@ export class PipelinesService {
 
     if (pipeline) {
       if (pipeline.spec.buildpack) {
-        console.log(pipeline.spec.buildpack);
         pipeline.spec.buildpack.fetch.securityContext =
           Buildpack.SetSecurityContext(
             pipeline.spec.buildpack.fetch.securityContext,
