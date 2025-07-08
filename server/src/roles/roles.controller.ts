@@ -42,4 +42,64 @@ export class RolesController {
   async getRoles() {
     return this.rolesService.findAll();
   }
+
+  @Post('/')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Role created successfully',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Create a new Role' })
+  async createRole(@Body() role: any) {
+    return this.rolesService.createRole(role);
+  }
+
+  @Delete('/:roleId')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Role deleted successfully',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Delete a Role' })
+  async deleteRole(@Param('roleId') roleId: string) {
+    return this.rolesService.deleteRole(roleId);
+  }
+
+  @Put('/:roleId')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Role updated successfully',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Update a Role' })
+  async updateRole(
+    @Param('roleId') roleId: string,
+    @Body() role: any,
+  ) {
+    return this.rolesService.updateRole(roleId, role);
+  }
 }

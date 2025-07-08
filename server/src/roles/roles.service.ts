@@ -42,4 +42,57 @@ export class RolesService {
       },
     }).then(role => role?.permissions || []);
   }
+
+  async createRole(roleData: any): Promise<any> {
+    this.logger.debug(`createRole with data: ${JSON.stringify(roleData)}`);
+    return this.prisma.role.create({
+      data: {
+        name: roleData.name,
+        description: roleData.description,
+        permissions: {
+          create: roleData.permissions.map((p: any) => ({
+            resource: p.resource,
+            action: p.action,
+          })),
+        },
+      },
+      include: {
+        permissions: true,
+      },
+    });
+  }
+
+  async deleteRole(roleId: string): Promise<any> {
+    this.logger.debug(`deleteRole with roleId: ${roleId}`);
+    if (!roleId) {
+      throw new Error('Role ID is required');
+    }
+    return this.prisma.role.delete({
+      where: { id: roleId },
+    });
+  }
+  
+  async updateRole(roleId: string, roleData: any): Promise<any> {
+    this.logger.debug(`updateRole with roleId: ${roleId} and data: ${JSON.stringify(roleData)}`);
+    if (!roleId) {
+      throw new Error('Role ID is required');
+    }
+    return this.prisma.role.update({
+      where: { id: roleId },
+      data: {
+        name: roleData.name,
+        description: roleData.description,
+        permissions: {
+          deleteMany: {},
+          create: roleData.permissions.map((p: any) => ({
+            resource: p.resource,
+            action: p.action,
+          })),
+        },
+      },
+      include: {
+        permissions: true,
+      },
+    });
+  }
 }

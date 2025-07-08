@@ -136,6 +136,7 @@
           class="ma-2"
           color="secondary"
           @click="openEditRoleDialog(item)"
+          :disabled="item.name === 'admin' || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-pencil
@@ -164,6 +165,7 @@
         color="primary"
         style="margin-right: 6px;"
         @click="openCreateDialog"
+        :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
         <span class="sr-only">Create Role</span>
@@ -176,6 +178,95 @@
         <v-card-title>Edit Role</v-card-title>
         <v-card-text>
           <v-text-field v-model="editedRole.name" label="Role Name"></v-text-field>
+          <v-text-field v-model="editedRole.description" label="Descrioption"></v-text-field>
+          <v-table density="compact" class="mb-4">
+            <tbody>
+              <tr>
+                <td>App Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[0].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="read" value="read"></v-radio>
+                    <v-radio label="write" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>Pipeline Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[1].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="read" value="read"></v-radio>
+                    <v-radio label="write" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>User Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[2].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="read" value="read"></v-radio>
+                    <v-radio label="write" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>Config Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[3].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="read" value="read"></v-radio>
+                    <v-radio label="write" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>Security Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[4].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="read" value="read"></v-radio>
+                    <v-radio label="write" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>Token Permissions</td>
+                <td>
+                  <v-radio-group v-model="editedRole.permissions[5].action" inline>
+                    <v-radio label="none" value="none"></v-radio>
+                    <v-radio label="own" value="ok"></v-radio>
+                    <v-radio label="all" value="write"></v-radio>
+                  </v-radio-group>
+                </td>
+              </tr>
+              <tr>
+                <td>Audit</td>
+                <td>
+                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[6].action" label=""></v-switch>
+                </td>
+              </tr>
+              <tr>
+                <td>Console</td>
+                <td>
+                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[7].action" label=""></v-switch>
+                </td>
+              </tr>
+              <tr>
+                <td>Logs</td>
+                <td>
+                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[8].action" label=""></v-switch>
+                </td>
+              </tr>
+              <tr>
+                <td>Reboot</td>
+                <td>
+                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[9].action" label=""></v-switch>
+                </td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
@@ -340,7 +431,7 @@ export default defineComponent({
       { title: 'App', value: 'permissionsApp', align: 'center' as const },
       { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' as const },
       { title: 'Accounts', value: 'permissionsAccount', align: 'center' as const},
-      { title: 'Configuration', value: 'permissionsConfig', align: 'center' as const},
+      { title: 'Settings', value: 'permissionsConfig', align: 'center' as const},
       { title: 'Security', value: 'permissionsSecurity', align: 'center' as const},
       { title: 'Token', value: 'permissionsToken', align: 'center' as const},
       { title: 'Audit', value: 'permissionsAudit', align: 'center' as const},
