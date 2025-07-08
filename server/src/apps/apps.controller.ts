@@ -272,11 +272,13 @@ export class AppsController {
       Logger.error(msg);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
+    /*
     if (!Array.isArray(body.command)) {
       const msg = 'Command must be an array';
-      Logger.error(msg);
+      Logger.error(msg, body.command);
       throw new HttpException(msg, HttpStatus.BAD_REQUEST);
     }
+    */
     if (body.command.length === 0) {
       const msg = 'Command array cannot be empty';
       Logger.error(msg);
