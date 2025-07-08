@@ -5,7 +5,6 @@ import { PipelinesService } from '../pipelines/pipelines.service';
 import { EventsGateway } from '../events/events.gateway';
 import { Stream } from 'stream';
 import { v4 as uuidv4 } from 'uuid';
-import { userInfo } from 'os';
 
 @Injectable()
 export class LogsService {
