@@ -7,13 +7,16 @@ import {
 } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { OKDTO } from '../common/dto/ok.dto';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/security', version: '1' })
 export class SecurityController {
   constructor(private securityService: SecurityService) {}
 
   @Get(':pipeline/:phase/:app/scan')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -30,7 +33,8 @@ export class SecurityController {
   }
 
   @Get(':pipeline/:phase/:app/scan/result')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write', 'security:read')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

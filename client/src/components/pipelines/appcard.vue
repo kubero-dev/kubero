@@ -109,6 +109,7 @@
             title="Restart App"
             color="deep-purple lighten-2"
             variant="text"
+            :disabled="!authStore.hasPermission('reboot:ok')"
             @click="restartApp()"
         >
             <v-icon>mdi-reload-alert</v-icon>
@@ -117,6 +118,7 @@
             title="Details"
             color="deep-purple lighten-2"
             variant="text"
+            :disabled="!authStore.hasPermission('app:read') && !authStore.hasPermission('app:write')"
             :to="{ name: 'App Dashboard', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
             <v-icon>mdi-page-next-outline</v-icon>
@@ -125,6 +127,7 @@
             title="Edit"
             color="deep-purple lighten-2"
             variant="text"
+            :disabled="!authStore.hasPermission('app:write')"
             :to="{ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: app.name }}"
         >
             <v-icon>mdi-pencil</v-icon>
@@ -143,6 +146,7 @@
             title="Delete App"
             depressed
             color="deep-purple lighten-2"
+            :disabled="!authStore.hasPermission('app:write')"
             @click="deleteApp()"
         >
             <v-icon>mdi-delete</v-icon>
@@ -155,6 +159,8 @@
 import axios from "axios";
 import {  defineComponent } from 'vue'
 import Swal from 'sweetalert2';
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
 
 type Metric = {
     name: string,
@@ -171,6 +177,11 @@ type Metric = {
 }
 
 export default defineComponent({
+    setup() {
+        return {
+            authStore,
+        }
+    },
     props: {
       pipeline: {
         type: String,

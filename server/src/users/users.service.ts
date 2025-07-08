@@ -61,19 +61,45 @@ export class UsersService {
   ): Promise<PartialPrismaUser> {
     let user = await this.findOne(username);
     if (!user) {
-      this.logger.debug(`User ${username} not found, creating new user.`);
+      this.logger.debug(`Oauth2 User ${username} not found, creating new user.`);
+
+      // Define default role
+      const role = await this.prisma.role.findFirst({
+        where: {
+          name: process.env.DEFAULT_USER_ROLE || 'guest', // Default role if not specified
+        },
+      });
+      if (!role) {
+        this.logger.warn(`Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`);
+        throw new Error(`Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`);
+      }
+      
+      // Define default user group
+      const defaultUserGroup = process.env.DEFAULT_USER_GROUP || 'everyone';
+      const userGroupsData = await this.prisma.userGroup.findFirst({
+        where: {
+          name: defaultUserGroup,
+        },
+      });
+      if (!userGroupsData) {
+        this.logger.warn(`Default user group not found: ${defaultUserGroup}`);
+        throw new Error(`Default user group not found: ${defaultUserGroup}`);
+      }
+
+      // Generate a random password (not most secure, but enough for a temporary password)
       const password = Math.random().toString(36).slice(-8); // Generate a random password
       const imageData = image
         ? await this.generateUserDataFromImageUrl(image)
         : null;
+
       user = await this.create({
         username,
         password,
         email,
         provider,
         image: imageData,
-        //role: process.env.DEFAULT_USER_ROLE || 'guest', // Default role if not specified
-        //userGroups: process.env.DEFAULT_USER_GROUPS ? process.env.DEFAULT_USER_GROUPS.split(',') : [],
+        role: role.id, 
+        userGroups: [userGroupsData.id],
         providerId: null, // Set providerId if needed
         providerData: null, // Set providerData if needed
       });
@@ -169,7 +195,7 @@ export class UsersService {
   }
 
   async create(user: any): Promise<PrismaUser> {
-    this.logger.debug('Creating user with data:', user);
+    //this.logger.debug('Creating user with data:', user);
     const { role, userGroups, tokens, ...cleanedData } = user;
 
     if (
@@ -183,6 +209,7 @@ export class UsersService {
       this.logger.warn('Password is required for user creation.');
       throw new Error('Password is required for user creation.');
     }
+    
     return this.prisma.user.create({
       data: {
         ...cleanedData,
@@ -372,10 +399,37 @@ export class UsersService {
     if (!mimetype.startsWith('image/')) {
       throw new Error(`Invalid image MIME type: ${mimetype}`);
     }
-
-    console.debug(`Image MIME type: ${mimetype}`);
+    
     const buffer = Buffer.from(response.data, 'binary');
     const base64Image = buffer.toString('base64');
     return `data:${mimetype};base64,${base64Image}`;
   }
+/*
+  async getPermissions(userId: string,): Promise<{ action: string; resource: string }[]> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        role: {
+          select: {
+            permissions: {
+              select: {
+                action: true,
+                resource: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!user || !user.role || !user.role.permissions) {
+      return [];
+    }
+
+    return user.role.permissions.map((p) => ({
+      action: p.action,
+      resource: p.resource,
+    }));
+  }
+*/
 }

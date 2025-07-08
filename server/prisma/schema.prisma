@@ -48,10 +48,12 @@ enum Severity {
 
 enum ResourceType {
   user
-  namespace
-  phase
+  team
+  role
   app
   pipeline
+  namespace
+  phase
   unknown
   system
   build
@@ -62,7 +64,11 @@ enum ResourceType {
   templates
   config
   addons
-  kubernetes
+  logs
+  console
+  reboot
+  audit
+  token
 }
 
 model User {

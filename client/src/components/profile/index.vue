@@ -76,7 +76,7 @@
                 </td>
               </tr>
               <tr>
-                <td><strong>Groups</strong></td>
+                <td><strong>Teams</strong></td>
                 <td>
                   <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey">{{ group.name }}</v-chip>
                   <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
@@ -91,7 +91,7 @@
         </v-card>
       </v-col>
     </v-row>
-    <v-row class="mt-6">
+    <v-row class="mt-6" >
       <v-col cols="12">
         <v-card color="cardBackground" class="pa-4">
           <h3 class="mb-4">API Tokens</h3>
@@ -101,6 +101,7 @@
               color="primary"
               style="margin-right: 6px;"
               @click="openCreateDialog"
+              :disabled="!authStore.hasPermission('token:ok') && !authStore.hasPermission('token:write')"
             >
               <v-icon>mdi-plus</v-icon>
               <span class="sr-only">Create Token</span>
@@ -125,6 +126,7 @@
                     size="small"
                     class="ma-2"
                     @click="deleteToken(token)"
+                    :disabled="!authStore.hasPermission('token:ok') && !authStore.hasPermission('token:write')"
                   >
                     <v-icon color="primary">
                       mdi-delete
@@ -203,6 +205,8 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
 
 export default defineComponent({
   name: 'ProfilePage',
@@ -238,6 +242,11 @@ export default defineComponent({
     }
 
     const loadTokens = async () => {
+      if (!authStore.hasPermission('token:ok') && !authStore.hasPermission('token:write')) {
+        tokens.value = []
+        return
+      }
+      
       try {
         const res = await axios.get('/api/tokens/my')
         tokens.value = res.data 
@@ -277,12 +286,12 @@ export default defineComponent({
 
     const saveCreate = async () => {
       try {
-        const response = await axios.post('/api/tokens', newToken.value)
+        const response = await axios.post('/api/tokens/my', newToken.value)
         generatedToken.value = response.data
         await loadTokens()
         createDialog.value = false
         tokenDialog.value = true
-        console.log('Token created:', newToken)
+        //console.log('Token created:', newToken)
       } catch (e) {
         // error handling
       }
@@ -319,6 +328,7 @@ export default defineComponent({
       saveCreate,
       copyToken,
       textareaFlash,
+      authStore,
     }
   },
 })

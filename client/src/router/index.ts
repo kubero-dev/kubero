@@ -1,5 +1,6 @@
 // Composables
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'    
+import { useAuthStore } from '@/stores/auth'
 
 const routes = [
   {
@@ -87,6 +88,7 @@ const routes = [
   {
     path: '/accounts',
     component: () => import('@/layouts/default/Default.vue'),
+    meta: { requiresUserWrite: true },
     children: [
       {
         path: '/accounts',
@@ -164,4 +166,16 @@ const router = createRouter({
   routes,
 })
 
+/* Forced Permission redirect
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  if (to.matched.some(record => record.meta.requiresUserWrite)) {
+    // If not logged in or missing permission, redirect to home
+    if (!authStore.hasPermission('user:write') && !authStore.hasPermission('user:read')) {
+      return next({ path: '/' })
+    }
+  }
+  next()
+})
+*/
 export default router

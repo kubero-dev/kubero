@@ -39,6 +39,7 @@
           class="ma-2"
           color="secondary"
           @click="deleteToken(item)"
+          :disabled="!writeUserPermission"
         >
           <v-icon color="primary">
             mdi-delete
@@ -86,6 +87,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
 
 export default defineComponent({
   name: 'TokensTable',
@@ -106,6 +108,9 @@ export default defineComponent({
     const search = ref('')
     const createDialog = ref(false)
     const newToken = ref<Token>({ token: '', name: '', expiresAt: '', userId: '' })
+
+    const authStore = useAuthStore()
+    const writeUserPermission = ref(authStore.hasPermission('user:write'))
 
     const headers = [
       { title: 'Token ID', value: 'token' },
@@ -164,6 +169,7 @@ export default defineComponent({
       deleteToken,
       openCreateDialog,
       saveCreate,
+      writeUserPermission,
     }
   },
 })

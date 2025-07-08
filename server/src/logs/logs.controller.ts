@@ -8,13 +8,16 @@ import {
 import { LogsService } from './logs.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { OKDTO } from '../common/dto/ok.dto';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/logs', version: '1' })
 export class LogsController {
   constructor(private readonly logsService: LogsService) {}
 
   @Get('/:pipeline/:phase/:app/:container/history')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('logs:ok')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -36,7 +39,8 @@ export class LogsController {
   }
 
   @Get('/:pipeline/:phase/:app/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('logs:ok')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

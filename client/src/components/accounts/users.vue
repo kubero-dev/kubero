@@ -91,7 +91,7 @@
           size="small"
           class="ma-2"
           @click="deleteUser(item)"
-          :disabled="item.username === 'admin' || item.username === 'system'"
+          :disabled="item.username === 'admin' || item.username === 'system' || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-delete
@@ -104,7 +104,7 @@
           size="small"
           class="ma-2"
           @click="openChangePasswordDialog(item)"
-          :disabled="item.username === 'system'"
+          :disabled="item.username === 'system' || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-lock-reset
@@ -117,7 +117,7 @@
           size="small"
           class="ma-2"
           @click="openEditUserDialog(item)"
-          :disabled="item.username === 'admin' || item.username === 'system'"
+          :disabled="item.username === 'admin' || item.username === 'system' || !writeUserPermission"
           >
             <v-icon color="primary">
               mdi-pencil
@@ -134,6 +134,7 @@
         color="primary"
         style="margin-right: 6px;"
         @click="openCreateDialog"
+        :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
         <span class="sr-only">Create User</span>
@@ -250,6 +251,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useAuthStore } from '../../stores/auth'
 
 export default defineComponent({
   name: 'UserList',
@@ -300,6 +302,8 @@ export default defineComponent({
 
     const teams = ref<Team[]>([])
     const roles = ref<Role[]>([])
+    const authStore = useAuthStore();
+    const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
       { title: 'Status', value: 'isActive' },
@@ -461,6 +465,7 @@ export default defineComponent({
       saveCreate,
       roles,
       teams,
+      writeUserPermission,
     }
   },
 })

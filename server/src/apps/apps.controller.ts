@@ -25,13 +25,17 @@ import { GetAppDTO } from './apps.dto';
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { ReadonlyGuard } from '../common/guards/readonly.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
+
 
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
 
   @Get('/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({
     summary: 'Get app informations from  a specific app',
@@ -51,7 +55,8 @@ export class AppsController {
   }
 
   @Post('/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:write')
   @UseGuards(ReadonlyGuard)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create an app' })
@@ -93,7 +98,8 @@ export class AppsController {
   }
 
   @Put('/:pipeline/:phase/:app/:resourceVersion')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:write')
   @UseGuards(ReadonlyGuard)
   @ApiOperation({ summary: 'Update an app' })
   @ApiForbiddenResponse({
@@ -126,7 +132,8 @@ export class AppsController {
   }
 
   @Delete('/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:write')
   @UseGuards(ReadonlyGuard)
   @ApiOperation({ summary: 'Delete an app' })
   @ApiForbiddenResponse({
@@ -169,7 +176,8 @@ export class AppsController {
   }
 
   @Get('/:pipeline/:phase/:app/download')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiOperation({ summary: 'Download the app templates' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -186,7 +194,8 @@ export class AppsController {
   }
 
   @Get('/:pipeline/:phase/:app/restart')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:write')
   @UseGuards(ReadonlyGuard)
   @ApiOperation({ summary: 'Restart/Reload an app' })
   @ApiForbiddenResponse({
@@ -211,7 +220,8 @@ export class AppsController {
   }
 
   @Get('/:pipeline/:phase/:app/pods')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiOperation({ summary: 'Get the app pods' })
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -228,7 +238,8 @@ export class AppsController {
   }
 
   @Post('/:pipeline/:phase/:app/console')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:write')
   @UseGuards(ReadonlyGuard)
   @ApiOperation({ summary: 'Start a container console' })
   @ApiForbiddenResponse({

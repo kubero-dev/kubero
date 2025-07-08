@@ -7,9 +7,9 @@
                 <v-tab class="background">Overview</v-tab>
                 <v-tab class="background" :disabled="!hasBuilds">Builds</v-tab>
                 <v-tab class="background">Metrics</v-tab>
-                <v-tab class="background">Logs</v-tab>
+                <v-tab class="background" :disabled="!authStore.hasPermission('logs:ok')">Logs</v-tab>
                 <v-tab class="background">Events</v-tab>
-                <v-tab class="background">Vulnerabilities</v-tab>
+                <v-tab class="background" :disabled="!authStore.hasPermission('security:read') && !authStore.hasPermission('security:write')">Vulnerabilities</v-tab>
                 <v-spacer  class="background"></v-spacer>
             </v-tabs>
 
@@ -29,6 +29,7 @@
                 <v-list-item
                     @click="ActionEditApp"
                     prepend-icon="mdi-pencil"
+                    :disabled="!authStore.hasPermission('app:write')"
                     title="Edit">
                 </v-list-item>
                 <v-list-item
@@ -39,6 +40,7 @@
                 <v-list-item 
                     @click="restartApp"
                     prepend-icon="mdi-reload-alert"
+                    :disabled="!authStore.hasPermission('reboot:ok')"
                     title="Restart">
                 </v-list-item>
                 <v-list-item 
@@ -50,13 +52,14 @@
                 <v-list-item 
                     @click="openConsole"
                     prepend-icon="mdi-console"
-                    :disabled="!kubero.consoleEnabled"
+                    :disabled="!kubero.consoleEnabled || !authStore.hasPermission('console:ok')"
                     title="Open Console">
                 </v-list-item>
                 <v-divider class="my-3"></v-divider>
                 <v-list-item 
                     @click="deleteApp"
                     prepend-icon="mdi-delete"
+                    :disabled="!authStore.hasPermission('app:write')"
                     title="Delete">
                 </v-list-item>
             </v-list>
@@ -99,9 +102,17 @@ import Vulnerabilities from "./vulnerabilities.vue";
 import Swal from 'sweetalert2';
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
 
 
 export default defineComponent({
+    name: 'AppDetail',
+    setup() {
+        return {
+            authStore,
+        }
+    },
     data () {
         return {
             loadingState: false,

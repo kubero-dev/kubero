@@ -9,7 +9,7 @@
                     block
                     @click="startVulnScan()"
                     color="secondary"
-                    :disabled="scanning"
+                    :disabled="scanning || !authStore.hasPermission('security:write')"
                     >
                     <v-icon v-if="scanning == false">mdi-refresh</v-icon>
 
@@ -195,6 +195,9 @@ import { defineComponent } from 'vue'
 import { Doughnut } from 'vue-chartjs'
 import { Chart as ChartJS,  Tooltip, Legend, ArcElement } from 'chart.js'
 
+import { useAuthStore } from '../../stores/auth'
+const authStore = useAuthStore();
+
 ChartJS.register( Tooltip, Legend, ArcElement)
 
 type ScanResult = {
@@ -253,6 +256,11 @@ type severityColors = {
 
 export default defineComponent({
     sockets: {
+    },
+    setup() {
+        return {
+            authStore,
+        }
     },
     mounted() {
         this.loadVulnerabilities();
