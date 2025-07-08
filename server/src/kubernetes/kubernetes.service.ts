@@ -230,16 +230,6 @@ export class KubernetesService {
         const accessGroups = pipeline.spec.access.teams || [];
         return accessGroups.some((group) => userGroups.includes(group));
       });
-      
-
-      /*
-      pipelines.items = pipelines.items.filter((pipeline) => {
-        if (!pipeline.metadata || !pipeline.metadata.labels|| !pipeline.metadata.labels['kubero.dev/teams']) return true; //true=keep, when no access defined for better backward compatibility
-        const accessGroups = pipeline.metadata.labels['kubero.dev/teams'].split('.').map((g: string) => g.trim());
-        console.log('Access Groups:', accessGroups, 'userGroups:', userGroups);
-        return accessGroups.some((group) => userGroups.includes(group));
-      });
-      */
     }
 
     return pipelines;
