@@ -10,7 +10,7 @@
                 :disabled="kubero.kubernetesVersion == 'unknown' || !authStore.hasPermission('pipeline:write')"
                 color="primary"
                 :to="{ name: 'Pipeline Form', params: { pipeline: 'new' }}"
-                >New Pipeline {{ authStore.hasPermission('pipeline:write') }}</v-btn>
+                >New Pipeline</v-btn>
             </v-col>
         </v-row>
 
