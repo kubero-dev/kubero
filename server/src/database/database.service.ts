@@ -126,7 +126,7 @@ export class DatabaseService {
     const adminUser = process.env.KUBERO_ADMIN_USERNAME || 'admin';
     const adminEmail = process.env.KUBERO_ADMIN_EMAIL || 'admin@kubero.dev';
     const role = process.env.KUBERO_SYSTEM_USER_ROLE || 'admin';
-    const userGroups = ['everyone'];
+    const userGroups = ['everyone', 'admin'];
 
     try {
       // Generiere ein zufälliges Passwort
@@ -331,6 +331,23 @@ export class DatabaseService {
       this.logger.log(
         'UserGroup "everyone" already exists. Skipping creation.',
       );
+    }
+
+    // Ensure the 'admin' user group exists
+    const adminGroup = await this.prisma.userGroup.findUnique({
+      where: { name: 'admin' },
+    });
+
+    if (!adminGroup) {
+      await this.prisma.userGroup.create({
+        data: {
+          name: 'admin',
+          description: 'Group for admin users',
+        },
+      });
+      this.logger.log('UserGroup "admin" created successfully.');
+    } else {
+      this.logger.log('UserGroup "admin" already exists. Skipping creation.');
     }
 
     this.logger.log('Default data seeded successfully.');
