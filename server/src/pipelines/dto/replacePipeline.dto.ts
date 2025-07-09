@@ -35,4 +35,10 @@ export class CreatePipelineDTO {
 
   @ApiProperty()
   resourceVersion?: string; // required to update resource, not part of spec
+
+  @ApiProperty({ required: false })
+  access?: {
+    teams?: string[];
+    //users?: string[]; //not yet implemented
+  };
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Query, Request, UseGuards } from '@nestjs/common';
 import { SecurityService } from './security.service';
 import {
   ApiBearerAuth,
@@ -28,8 +28,9 @@ export class SecurityController {
     @Param('pipeline') pipeline: string,
     @Param('phase') phase: string,
     @Param('app') app: string,
+    @Request() req: any,
   ) {
-    return this.securityService.startScan(pipeline, phase, app);
+    return this.securityService.startScan(pipeline, phase, app, req.user.userGroups);
   }
 
   @Get(':pipeline/:phase/:app/scan/result')
@@ -47,12 +48,14 @@ export class SecurityController {
     @Param('phase') phase: string,
     @Param('app') app: string,
     @Query('logdetails') logdetails: string,
+    @Request() req: any,
   ) {
     return this.securityService.getScanResult(
       pipeline,
       phase,
       app,
       logdetails === 'true',
+      req.user.userGroups,
     );
   }
 }

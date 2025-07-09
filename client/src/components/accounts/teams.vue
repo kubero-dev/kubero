@@ -26,6 +26,7 @@
           class="ma-2"
           color="grey"
           size="small"
+          prepend-icon="mdi-account-group"
         >
           {{ item.name }}
         </v-chip>

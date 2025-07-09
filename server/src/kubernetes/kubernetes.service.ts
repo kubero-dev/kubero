@@ -201,22 +201,37 @@ export class KubernetesService {
     return namespaces.body.items;
   }
 
-  public async getPipelinesList() {
+  public async getPipelinesList(userGroups: string[] = []): Promise<IKubectlPipelineList> {
     this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
+    let pipelines = {} as IKubectlPipelineList;
+    pipelines.items = [];
     try {
-      const pipelines = await this.customObjectsApi.listNamespacedCustomObject(
+      const ps = await this.customObjectsApi.listNamespacedCustomObject(
         'application.kubero.dev',
         'v1alpha1',
         process.env.KUBERO_NAMESPACE || 'kubero',
         'kuberopipelines',
       );
-      return pipelines.body as IKubectlPipelineList;
+      pipelines = ps.body as IKubectlPipelineList;
+      //return pipelines.body as IKubectlPipelineList;
     } catch (_error) {
       //this.logger.debug(error);
       this.logger.debug('❌ getPipelinesList: error getting pipelines');
     }
-    const pipelines = {} as IKubectlPipelineList;
-    pipelines.items = [];
+    if (pipelines.items.length > 0) {
+      // Filter pipelines based on user groups
+      
+      pipelines.items = pipelines.items.filter((pipeline) => {
+        if (!pipeline.spec || !pipeline.spec.access) return true; //true=keep, when no access defined for better backward compatibility
+        
+        // return all, when user is in admin group
+        if (userGroups.includes('admin')) return true;
+
+        const accessGroups = pipeline.spec.access.teams || [];
+        return accessGroups.some((group) => userGroups.includes(group));
+      });
+    }
+
     return pipelines;
   }
 

@@ -1,12 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IPipelineList, IPipeline } from './pipelines.interface';
+import { IPipelineList, IPipeline, IKubectlPipelineList } from './pipelines.interface';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { Buildpack } from '../config/buildpack/buildpack';
 import { IUser } from '../auth/auth.interface';
 import { NotificationsService } from '../notifications/notifications.service';
 import { INotification } from '../notifications/notifications.interface';
 import { IApp } from '../apps/apps.interface';
-
 @Injectable()
 export class PipelinesService {
   private readonly logger = new Logger(PipelinesService.name);
@@ -17,8 +16,10 @@ export class PipelinesService {
     private notificationsService: NotificationsService,
   ) {}
 
-  public async listPipelines(): Promise<IPipelineList> {
-    const pipelines = await this.kubectl.getPipelinesList();
+  public async listPipelines(userGroups: string[] = []): Promise<IPipelineList> {
+    //this.logger.debug('listPipelines for userGroups: ' + userGroups.join(', '));
+    let pipelines = await this.kubectl.getPipelinesList(userGroups);
+
     const ret: IPipelineList = {
       items: [],
     };
@@ -28,7 +29,7 @@ export class PipelinesService {
     return ret;
   }
 
-  public async getPipelineWithApps(pipelineName: string) {
+  public async getPipelineWithApps(pipelineName: string, userGroups: string[] = []): Promise<IPipeline | undefined> {
     this.logger.debug('listApps in ' + pipelineName);
 
     await this.kubectl.setCurrentContext(
@@ -48,7 +49,7 @@ export class PipelinesService {
     if (pipeline) {
       for (const phase of pipeline.phases) {
         if (phase.enabled == true) {
-          const contextName = await this.getContext(pipelineName, phase.name);
+          const contextName = await this.getContext(pipelineName, phase.name, userGroups);
           if (contextName) {
             const namespace = pipelineName + '-' + phase.name;
             const apps = await this.kubectl.getAppsList(namespace, contextName);
@@ -69,9 +70,10 @@ export class PipelinesService {
   public async getContext(
     pipelineName: string,
     phaseName: string,
+    userGroups: string[],
   ): Promise<string> {
     let context: string = 'missing-' + pipelineName + '-' + phaseName;
-    const pipelinesList = await this.listPipelines();
+    const pipelinesList = await this.listPipelines(userGroups);
 
     for (const pipeline of pipelinesList.items) {
       if (pipeline.name == pipelineName) {

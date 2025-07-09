@@ -14,6 +14,10 @@ export interface IPipeline {
   deploymentstrategy: 'git' | 'docker';
   buildstrategy: 'plain' | 'dockerfile' | 'nixpacks' | 'buildpacks';
   resourceVersion?: string; // required to update resource, not part of spec
+  access?: {
+    teams?: string[];
+    //users?: string[]; //not yet implemented
+  };
 }
 
 export interface IPipelineList {

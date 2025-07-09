@@ -31,6 +31,7 @@ export class AppsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
+    userGroups: string[]
   ) {
     this.logger.debug(
       'get App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName,
@@ -38,6 +39,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
 
     if (contextName) {
@@ -58,7 +60,7 @@ export class AppsService {
     }
   }
 
-  public async createApp(app: App, user: IUser) {
+  public async createApp(app: App, user: IUser, userGroups: string[]) {
     this.logger.debug(
       'create App: ' +
         app.name +
@@ -80,6 +82,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       app.pipeline,
       app.phase,
+      userGroups,
     );
     if (contextName) {
       await this.kubectl.createApp(app, contextName);
@@ -112,7 +115,7 @@ export class AppsService {
           app.buildstrategy == 'nixpacks' ||
           app.buildstrategy == 'buildpacks')
       ) {
-        this.triggerImageBuildDelayed(app.pipeline, app.phase, app.name);
+        this.triggerImageBuildDelayed(app.pipeline, app.phase, app.name, userGroups);
       }
     }
   }
@@ -121,21 +124,23 @@ export class AppsService {
     pipeline: string,
     phase: string,
     appName: string,
+    userGroups: string[]
   ) {
     // delay for 2 seconds to trigger the Image build
     await new Promise((resolve) => setTimeout(resolve, 2000));
-    return this.triggerImageBuild(pipeline, phase, appName);
+    return this.triggerImageBuild(pipeline, phase, appName, userGroups);
   }
 
   public async triggerImageBuild(
     pipeline: string,
     phase: string,
     appName: string,
+    userGroups: string[],
   ) {
-    const contextName = await this.pipelinesService.getContext(pipeline, phase);
+    const contextName = await this.pipelinesService.getContext(pipeline, phase, userGroups);
     const namespace = pipeline + '-' + phase;
 
-    const appresult = await this.getApp(pipeline, phase, appName);
+    const appresult = await this.getApp(pipeline, phase, appName, userGroups);
 
     const app = appresult as IKubectlApp;
     let repo = '';
@@ -190,6 +195,7 @@ export class AppsService {
     phaseName: string,
     appName: string,
     user: IUser,
+    userGroups: string[],
   ) {
     this.logger.debug(
       'delete App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName,
@@ -210,6 +216,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     if (contextName) {
       await this.kubectl.deleteApp(
@@ -247,6 +254,7 @@ export class AppsService {
     title: string,
     ssh_url: string,
     pipelineName: string | undefined,
+    userGroups: string[],
   ) {
     const podSizeList = await this.configService.getPodSizes();
 
@@ -384,7 +392,7 @@ export class AppsService {
           username: 'unknown',
         } as IUser;
 
-        this.createApp(app, user);
+        this.createApp(app, user, userGroups);
         return { status: 'ok', message: 'app created ' + app.name };
       }
     }
@@ -417,7 +425,7 @@ export class AppsService {
   }
 
   // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
-  public async deletePRApp(branch: string, title: string, ssh_url: string) {
+  public async deletePRApp(branch: string, title: string, ssh_url: string, userGroups: string[]) {
     this.logger.debug('destroyPRApp');
     const websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
 
@@ -436,12 +444,12 @@ export class AppsService {
           username: 'unknown',
         } as IUser;
 
-        this.deleteApp(app.pipeline, app.phase, websaveTitle, user);
+        this.deleteApp(app.pipeline, app.phase, websaveTitle, user, userGroups);
       }
     }
   }
 
-  public async rebuildApp(app: IApp) {
+  public async rebuildApp(app: IApp, userGroups: string[]) {
     this.logger.debug(
       'rebuild App: ' +
         app.name +
@@ -454,6 +462,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       app.pipeline,
       app.phase,
+      userGroups,
     );
 
     if (contextName) {
@@ -478,7 +487,7 @@ export class AppsService {
         );
       } else {
         // rebuild for buildstrategy git/dockerfile or git/nixpacks
-        this.triggerImageBuild(app.pipeline, app.phase, app.name);
+        this.triggerImageBuild(app.pipeline, app.phase, app.name, userGroups);
       }
 
       const m = {
@@ -507,8 +516,9 @@ export class AppsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
+    userGroups: string[],
   ) {
-    const app = await this.getApp(pipelineName, phaseName, appName);
+    const app = await this.getApp(pipelineName, phaseName, appName, userGroups);
 
     const a = app as IKubectlApp;
     const t = new KubectlTemplate(a.spec);
@@ -527,6 +537,7 @@ export class AppsService {
     phaseName: string,
     appName: string,
     user: IUser,
+    userGroups: string[],
   ) {
     if (process.env.KUBERO_READONLY == 'true') {
       console.log(
@@ -551,6 +562,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     if (contextName) {
       this.kubectl.restartApp(
@@ -591,7 +603,7 @@ export class AppsService {
   }
 
   // update an app in a pipeline and phase
-  public async updateApp(app: App, resourceVersion: string, user: IUser) {
+  public async updateApp(app: App, resourceVersion: string, user: IUser, userGroups: string[]) {
     this.logger.debug(
       'update App: ' +
         app.name +
@@ -612,6 +624,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       app.pipeline,
       app.phase,
+      userGroups,
     );
 
     if (
@@ -620,7 +633,7 @@ export class AppsService {
         app.buildstrategy == 'nixpacks' ||
         app.buildstrategy == 'buildpacks')
     ) {
-      this.triggerImageBuild(app.pipeline, app.phase, app.name);
+      this.triggerImageBuild(app.pipeline, app.phase, app.name, userGroups);
     }
 
     if (contextName) {
@@ -655,10 +668,12 @@ export class AppsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
+    userGroups: string[],
   ): Promise<Workload[]> {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     const namespace = pipelineName + '-' + phaseName;
 
@@ -711,6 +726,7 @@ export class AppsService {
     containerName: string,
     command: string,
     user: IUser,
+    userGroups: string[],
   ) {
     /*TODO: Fails. Needs to be loaded somewhere
     const settings = await this.settingsService.getSettings();
@@ -724,6 +740,7 @@ export class AppsService {
     const contextName = await this.pipelinesService.getContext(
       pipelineName,
       phaseName,
+      userGroups,
     );
     if (contextName) {
       const streamname = `${pipelineName}-${phaseName}-${appName}-${podName}-${containerName}-terminal`;

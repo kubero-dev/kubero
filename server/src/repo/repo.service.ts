@@ -346,7 +346,7 @@ export class RepoService {
       } as INotification;
       this.notificationsService.send(m);
 
-      this.appsService.rebuildApp(app);
+      this.appsService.rebuildApp(app, ['admin']); // return all pipelines to search for the app
     }
   }
 
@@ -361,6 +361,7 @@ export class RepoService {
           webhook.branch,
           webhook.repo.ssh_url,
           undefined,
+          ['admin'] // return all pipelines to search for the app
         ); // "undefined" will create the app in all pipelines
         break;
       case 'closed':
@@ -368,6 +369,7 @@ export class RepoService {
           webhook.branch,
           webhook.branch,
           webhook.repo.ssh_url,
+          ['admin'] // return all pipelines to search for the app
         );
         break;
       default:
