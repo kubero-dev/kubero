@@ -16,6 +16,7 @@ export const useAuthStore = defineStore('auth', {
     permissions: [] as string[],
     userId: '' as string,
     username: '' as string,
+    userGroups: [] as string[],
   }),
 
   actions: {
@@ -26,6 +27,7 @@ export const useAuthStore = defineStore('auth', {
         this.permissions = decoded.permissions || []
         this.userId = decoded.userId
         this.username = decoded.username || ''
+        this.userGroups = decoded.userGroups || []
       } catch (e) {
         console.error('Failed to decode JWT Token', e)
         this.reset()

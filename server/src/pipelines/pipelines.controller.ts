@@ -99,6 +99,7 @@ export class PipelinesController {
       registry: pl.registry as any,
       deploymentstrategy: pl.deploymentstrategy,
       buildstrategy: pl.buildstrategy,
+      access: pl.access,
     };
     return this.pipelinesService.createPipeline(
       pipeline,
@@ -153,6 +154,7 @@ export class PipelinesController {
       registry: pl.registry as any,
       deploymentstrategy: pl.deploymentstrategy,
       buildstrategy: pl.buildstrategy,
+      access: pl.access,
     };
     return this.pipelinesService.updatePipeline(
       pipeline,

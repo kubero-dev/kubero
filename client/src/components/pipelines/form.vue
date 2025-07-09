@@ -55,6 +55,21 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-row>
+        <v-col
+          cols="12"
+          md="6"
+        >
+        <v-combobox
+            chips
+            multiple
+            v-model="access.teams"
+            label="Team Access"
+            hint="Select teams that have access to this pipeline"
+            :items="authStore.userGroups"
+          ></v-combobox>
+        </v-col>
+      </v-row>
 
       <v-row>
         <v-col
@@ -537,6 +552,9 @@ import axios from "axios";
 import { defineComponent } from 'vue'
 import Breadcrumbs from "../breadcrumbs.vue";
 import { EnvVar } from '../apps/form.vue'
+import { useAuthStore } from '../../stores/auth';
+
+const authStore = useAuthStore();
 
 type Buildpack = {
   name?: string,
@@ -572,6 +590,10 @@ export default defineComponent({
     },
     data () {
     return {
+      access: {
+        teams: [] as string[],
+      },
+      authStore,
       breadcrumbItems: [
           {
               title: 'Dashboard.Pipelines',
@@ -893,6 +915,7 @@ export default defineComponent({
               this.repository_status.connected = true
             }
 
+            this.access.teams = p.access?.teams || [];
             this.resourceVersion = p.resourceVersion;
             this.pipelineName = p.name;
             this.domain = p.domain;
@@ -940,6 +963,7 @@ export default defineComponent({
         }
 
         axios.post(`/api/pipelines/${this.pipeline}`, {
+          access: this.access,
           pipelineName: this.pipelineName,
           domain: this.domain,
           gitrepo: this.gitrepo,
@@ -963,6 +987,7 @@ export default defineComponent({
       },
       updatePipeline() {
         axios.put(`/api/pipelines/${this.pipeline}`, {
+          access: this.access,
           resourceVersion: this.resourceVersion,
           pipelineName: this.pipelineName,
           domain: this.domain,

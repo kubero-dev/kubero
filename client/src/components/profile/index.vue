@@ -78,7 +78,7 @@
               <tr>
                 <td><strong>Teams</strong></td>
                 <td>
-                  <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey">{{ group.name }}</v-chip>
+                  <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey" prepend-icon="mdi-account-group">{{ group.name }}</v-chip>
                   <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
                 </td>
               </tr>
