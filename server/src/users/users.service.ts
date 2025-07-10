@@ -59,7 +59,7 @@ export class UsersService {
     provider: string,
     image: string,
   ): Promise<PartialPrismaUser> {
-    let user = await this.findOne(username);
+    let user = await this.findOneFull(username);
     if (!user) {
       this.logger.debug(`Oauth2 User ${username} not found, creating new user.`);
 
