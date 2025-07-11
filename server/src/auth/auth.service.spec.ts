@@ -2,12 +2,14 @@ import { AuthService } from './auth.service';
 import { ConfigService } from '../config/config.service';
 import * as bcrypt from 'bcrypt';
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { Strategy } from 'passport-oauth2';
 
 jest.mock('bcrypt');
 
 describe('AuthService', () => {
   let service: AuthService;
   let usersService: any;
+  let rolesService: any;
   let kubectl: any;
   let configService: any;
   let auditService: any;
@@ -15,7 +17,18 @@ describe('AuthService', () => {
 
   beforeEach(() => {
     usersService = {
-      findOne: jest.fn(),
+      findOneFull: jest.fn(),
+      findOneOrCreate: jest.fn().mockResolvedValue({
+        userId: 3,
+        username: 'oauthuser',
+        emails: [{ value: 'undefined@kubero.dev'  }],
+      }),
+    };
+    rolesService = {
+      getPermissions: jest.fn().mockResolvedValue([
+        { resource: 'app', action: 'read' },
+        { resource: 'app', action: 'write' }
+      ]),
     };
     kubectl = {
       getKubernetesVersion: jest.fn().mockReturnValue('1.25'),
@@ -40,6 +53,7 @@ describe('AuthService', () => {
 
     service = new AuthService(
       usersService,
+      rolesService,
       kubectl,
       configService,
       auditService,
@@ -54,7 +68,7 @@ describe('AuthService', () => {
 
   describe('validateUser', () => {
     it('should return user without password if password matches (sha256)', async () => {
-      usersService.findOne.mockResolvedValue({
+      usersService.findOneFull.mockResolvedValue({
         userId: 1,
         username: 'test',
         password: 'hashed',
@@ -65,7 +79,7 @@ describe('AuthService', () => {
         .createHmac('sha256', process.env.KUBERO_SESSION_KEY)
         .update('pass')
         .digest('hex');
-      usersService.findOne.mockResolvedValueOnce({
+      usersService.findOneFull.mockResolvedValueOnce({
         userId: 1,
         username: 'test',
         password: hash,
@@ -75,7 +89,7 @@ describe('AuthService', () => {
     });
 
     it('should return user if bcrypt matches', async () => {
-      usersService.findOne.mockResolvedValueOnce({
+      usersService.findOneFull.mockResolvedValueOnce({
         userId: 2,
         username: 'test2',
         password: 'bcrypt-hash',
@@ -86,14 +100,14 @@ describe('AuthService', () => {
     });
 
     it('should return null if user not found', async () => {
-      usersService.findOne.mockResolvedValueOnce(undefined);
+      usersService.findOneFull.mockResolvedValueOnce(undefined);
       const result = await service.validateUser('nouser', 'pass');
       expect(result).toBeNull();
     });
 
     it('should throw if KUBERO_SESSION_KEY is not set', async () => {
       delete process.env.KUBERO_SESSION_KEY;
-      usersService.findOne.mockResolvedValueOnce({
+      usersService.findOneFull.mockResolvedValueOnce({
         userId: 1,
         username: 'test',
         password: 'hashed',
@@ -115,6 +129,9 @@ describe('AuthService', () => {
         userId: 1,
         username: 'test',
         strategy: 'local',
+        role: 'none',
+        userGroups: [],
+        permissions: ['app:read', 'app:write'],
       });
     });
 
@@ -128,16 +145,24 @@ describe('AuthService', () => {
 
   describe('loginOAuth2', () => {
     it('should sign and return token for OAuth2 user', async () => {
-      usersService.findOne.mockResolvedValueOnce({
+      usersService.findOneFull.mockResolvedValueOnce({
         id: 3,
         username: 'oauthuser',
       });
-      const result = await service.loginOAuth2('oauthuser');
+      const reqUser = {
+        username: 'oauthuser',
+        emails: [{ value: 'undefined@kubero.dev' }],
+        strategy: 'github',
+      };
+      const result = await service.loginOAuth2(reqUser);
       expect(result).toBe('signed-token');
       expect(jwtService.sign).toHaveBeenCalledWith({
-        userId: 3,
+        userId: undefined,
         username: 'oauthuser',
-        strategy: 'github',
+        strategy: 'oauth2',
+        role: 'none',
+        userGroups: [],
+        permissions: ['app:read', 'app:write'],
       });
     });
   });
