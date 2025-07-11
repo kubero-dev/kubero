@@ -106,6 +106,8 @@ const mockApp = {
   },
 } as IApp;
 
+const mockUSerGroups = ['group1', 'group2'];
+
 export const mockKubectlApp = {
   apiVersion: 'kubero.io/v1',
   kind: 'KuberoApp',
@@ -173,13 +175,13 @@ describe('AppsService', () => {
         metadata: {},
         status: {},
       });
-      const result = await service.getApp('p', 'ph', 'a');
+      const result = await service.getApp('p', 'ph', 'a', mockUSerGroups);
       expect(result).toBeDefined();
       expect(kubectl.getApp).toHaveBeenCalled();
     });
     it('should return null if context does not exist', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue(null);
-      const result = await service.getApp('p', 'ph', 'a');
+      const result = await service.getApp('p', 'ph', 'a', mockUSerGroups);
       expect(result).toBeUndefined();
     });
   });
@@ -191,14 +193,14 @@ describe('AppsService', () => {
     it('should call createApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
       const app = new App(mockApp);
-      await service.createApp(app, { username: 'u' } as any);
+      await service.createApp(app, { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.createApp).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
     it('should not call createApp if readonly', async () => {
       process.env.KUBERO_READONLY = 'true';
       const app = new App(mockApp);
-      await service.createApp(app, { username: 'u' } as any);
+      await service.createApp(app, { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.createApp).not.toHaveBeenCalled();
     });
   });
@@ -209,13 +211,13 @@ describe('AppsService', () => {
     });
     it('should call deleteApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
-      await service.deleteApp('p', 'ph', 'a', { username: 'u' } as any);
+      await service.deleteApp('p', 'ph', 'a', { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.deleteApp).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
     it('should not call deleteApp if readonly', async () => {
       process.env.KUBERO_READONLY = 'true';
-      await service.deleteApp('p', 'ph', 'a', { username: 'u' } as any);
+      await service.deleteApp('p', 'ph', 'a', { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.deleteApp).not.toHaveBeenCalled();
     });
   });
@@ -230,7 +232,7 @@ describe('AppsService', () => {
           branch: 'main',
         },
       } as any);
-      await service.triggerImageBuild('p', 'ph', 'a');
+      await service.triggerImageBuild('p', 'ph', 'a', mockUSerGroups);
       expect(kubectl.createBuildJob).toHaveBeenCalled();
     });
   });
@@ -267,7 +269,7 @@ describe('AppsService', () => {
         deploymentstrategy: 'docker',
         buildstrategy: 'plain',
       } as any;
-      await service.rebuildApp(app);
+      await service.rebuildApp(app, mockUSerGroups);
       expect(kubectl.restartApp).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
@@ -283,7 +285,7 @@ describe('AppsService', () => {
       const spy = jest
         .spyOn(service, 'triggerImageBuild')
         .mockResolvedValue({} as any);
-      await service.rebuildApp(app);
+      await service.rebuildApp(app, mockUSerGroups);
       expect(spy).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
@@ -296,14 +298,14 @@ describe('AppsService', () => {
     it('should call updateApp and send notification', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
       const app = new App(mockApp);
-      await service.updateApp(app, 'rv', { username: 'u' } as any);
+      await service.updateApp(app, 'rv', { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.updateApp).toHaveBeenCalled();
       expect(notificationsService.send).toHaveBeenCalled();
     });
     it('should not call updateApp if readonly', async () => {
       process.env.KUBERO_READONLY = 'true';
       const app = new App(mockApp);
-      await service.updateApp(app, 'rv', { username: 'u' } as any);
+      await service.updateApp(app, 'rv', { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.updateApp).not.toHaveBeenCalled();
     });
   });
@@ -346,6 +348,7 @@ describe('AppsService', () => {
           'cont',
           'ls',
           user,
+          mockUSerGroups,
         ),
       ).resolves.toBeUndefined();
     });
@@ -361,6 +364,7 @@ describe('AppsService', () => {
           'cont',
           'ls',
           user,
+          mockUSerGroups,
         ),
       ).resolves.toBeUndefined();
       delete process.env.KUBERO_READONLY;
@@ -380,29 +384,10 @@ describe('AppsService', () => {
           'cont',
           'ls',
           user,
+          mockUSerGroups,
         ),
       ).resolves.toBeUndefined();
     });
-
-    /* Long running test.
-    thrown: "Exceeded timeout of 5000 ms for a test.
-    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
-    it('should delete closed execStream and continue', async () => {
-      jest.useFakeTimers();
-      const wsMock = { readyState: 0, OPEN: 1, CLOSED: 0, on: jest.fn() };
-      mockEventsGateway.execStreams['pipe-dev-app-pod-cont-terminal'] = {
-        websocket: { readyState: 0, OPEN: 1, CLOSED: 0 },
-        stream: {},
-      };
-      mockKubernetesService.execInContainer.mockResolvedValue(wsMock);
-
-      await service.execInContainer('pipe', 'dev', 'app', 'pod', 'cont', 'ls', user);
-      // Fast-forward timers to resolve setTimeout
-      jest.runAllTimers();
-      expect(mockKubernetesService.execInContainer).toHaveBeenCalled();
-      jest.useRealTimers();
-    });
-    */
 
     it('should not set execStream if ws is undefined or not open', async () => {
       mockKubernetesService.execInContainer.mockResolvedValue(undefined);
@@ -415,10 +400,10 @@ describe('AppsService', () => {
           'cont',
           'ls',
           user,
+          mockUSerGroups,
         ),
       ).resolves.toBeUndefined();
     });
-
     it('should set execStream and handle ws message', async () => {
       const wsOnMock = jest.fn((event, cb) => {
         if (event === 'message') {
@@ -436,6 +421,7 @@ describe('AppsService', () => {
         'cont',
         'ls',
         user,
+        mockUSerGroups,
       );
 
       const streamname = 'pipe-dev-app-pod-cont-terminal';
@@ -525,6 +511,7 @@ describe('AppsService', () => {
         'pipe',
         'dev',
         'app1',
+        mockUSerGroups
       );
       // Fast-forward time by 2 seconds
       jest.advanceTimersByTime(2000);
@@ -533,6 +520,7 @@ describe('AppsService', () => {
         'pipe',
         'dev',
         'app1',
+        ["group1", "group2"]
       );
       expect(result).toEqual({
         app: 'app1',
@@ -595,6 +583,7 @@ describe('AppsService', () => {
         'feature-1',
         'My PR Title',
         'git@github.com:foo/bar.git',
+        mockUSerGroups
       );
 
       // Erwartet: Nur das erste App-Objekt passt auf alle Kriterien
@@ -604,6 +593,7 @@ describe('AppsService', () => {
         'review',
         'my-pr-title', // websaveTitle
         { username: 'unknown' },
+        ["group1", "group2"],
       );
     });
 
@@ -620,6 +610,7 @@ describe('AppsService', () => {
         'feature-2',
         'Other Title',
         'git@github.com:foo/bar.git',
+        mockUSerGroups
       );
       expect(mockDeleteApp).not.toHaveBeenCalled();
     });
@@ -631,6 +622,7 @@ describe('AppsService', () => {
         'feature-1',
         'My PR Title',
         'git@github.com:foo/bar.git',
+        mockUSerGroups
       );
       expect(mockGetAllAppsList).toHaveBeenCalledWith('my-context');
       delete process.env.KUBERO_CONTEXT;
@@ -642,6 +634,7 @@ describe('AppsService', () => {
         'feature-1',
         'My PR Title',
         'git@github.com:foo/bar.git',
+        mockUSerGroups
       );
       expect(mockLogger.debug).toHaveBeenCalledWith('destroyPRApp');
     });
@@ -693,6 +686,7 @@ describe('AppsService', () => {
         'PR Title',
         'git@github.com:org/repo.git',
         undefined,
+        mockUSerGroups,
       );
 
       expect(result).toBeUndefined();
@@ -739,6 +733,7 @@ describe('AppsService', () => {
         'PR Title',
         'git@github.com:org/repo.git',
         undefined,
+        mockUSerGroups
       );
 
       expect(result).toEqual({ status: 'ok', message: 'app created pr-title' });
@@ -760,6 +755,7 @@ describe('AppsService', () => {
           }),
         }),
         expect.objectContaining({ username: 'unknown' }),
+        ["group1", "group2"],
       );
     });
 
@@ -798,6 +794,7 @@ describe('AppsService', () => {
         'PR Title',
         'git@github.com:org/repo.git',
         'pipeline2',
+        mockUSerGroups
       );
 
       expect(service.createApp).toHaveBeenCalledWith(
@@ -806,6 +803,7 @@ describe('AppsService', () => {
           pipeline: 'pipeline2',
         }),
         expect.anything(),
+        ["group1", "group2"],
       );
     });
 
@@ -834,6 +832,7 @@ describe('AppsService', () => {
         'PR Title',
         'git@github.com:org/repo.git',
         undefined,
+        mockUSerGroups
       );
 
       expect(result).toBeUndefined();
@@ -864,6 +863,7 @@ describe('AppsService', () => {
         'Complex PR Title with 123 Special @#$ Characters!',
         'git@github.com:org/repo.git',
         undefined,
+        mockUSerGroups
       );
 
       expect(service.createApp).toHaveBeenCalledWith(
@@ -871,6 +871,7 @@ describe('AppsService', () => {
           name: 'complex-pr-title-with-123-special-----characters-',
         }),
         expect.anything(),
+        ["group1", "group2"],
       );
     });
   });
@@ -902,9 +903,9 @@ describe('AppsService', () => {
     it('should return a YAML template for an app', async () => {
       mockGetApp.mockResolvedValue(mockKubectlApp);
 
-      const result = await service.getTemplate('pipeline1', 'dev', 'test-app');
+      const result = await service.getTemplate('pipeline1', 'dev', 'test-app', mockUSerGroups);
 
-      expect(mockGetApp).toHaveBeenCalledWith('pipeline1', 'dev', 'test-app');
+      expect(mockGetApp).toHaveBeenCalledWith('pipeline1', 'dev', 'test-app', ["group1", "group2"]);
       expect(mockYAML.stringify).toHaveBeenCalledWith(expect.any(Object), {
         indent: 4,
         resolveKnownTags: true,
@@ -951,7 +952,7 @@ describe('AppsService', () => {
       process.env.KUBERO_READONLY = 'true';
       const user = { id: '1', username: 'testuser' };
       const logSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-      await service.restartApp('pipe', 'dev', 'app1', user as any);
+      await service.restartApp('pipe', 'dev', 'app1', user as any, mockUSerGroups);
       expect(mockKubectl.restartApp).not.toHaveBeenCalled();
       expect(mockNotificationsService.send).not.toHaveBeenCalled();
       logSpy.mockRestore();
@@ -959,7 +960,7 @@ describe('AppsService', () => {
 
     it('should call restartApp for web and worker and send notification', async () => {
       const user = { id: '1', username: 'testuser' };
-      await service.restartApp('pipe', 'dev', 'app1', user as any);
+      await service.restartApp('pipe', 'dev', 'app1', user as any, mockUSerGroups);
 
       expect(mockLogger.debug).toHaveBeenCalledWith(
         'restart App: app1 in pipe phase: dev',
@@ -967,6 +968,7 @@ describe('AppsService', () => {
       expect(mockPipelinesService.getContext).toHaveBeenCalledWith(
         'pipe',
         'dev',
+        ["group1", "group2"],
       );
       expect(mockKubectl.restartApp).toHaveBeenCalledWith(
         'pipe',
@@ -998,7 +1000,7 @@ describe('AppsService', () => {
     it('should do nothing if getContext returns undefined', async () => {
       mockPipelinesService.getContext.mockResolvedValueOnce(undefined);
       const user = { id: '1', username: 'testuser' };
-      await service.restartApp('pipe', 'dev', 'app1', user as any);
+      await service.restartApp('pipe', 'dev', 'app1', user as any, mockUSerGroups);
       expect(mockKubectl.restartApp).not.toHaveBeenCalled();
       expect(mockNotificationsService.send).not.toHaveBeenCalled();
     });
@@ -1029,7 +1031,7 @@ describe('AppsService', () => {
 
     it('should return empty array if no context is found', async () => {
       mockPipelinesService.getContext.mockResolvedValue(undefined);
-      const result = await service.getPods('pipe', 'dev', 'app1');
+      const result = await service.getPods('pipe', 'dev', 'app1', mockUSerGroups);
       expect(result).toEqual([]);
       expect(mockKubectl.setCurrentContext).not.toHaveBeenCalled();
       expect(mockKubectl.getPods).not.toHaveBeenCalled();
@@ -1078,10 +1080,11 @@ describe('AppsService', () => {
         },
       ]);
 
-      const result = await service.getPods('pipe', 'dev', 'app1');
+      const result = await service.getPods('pipe', 'dev', 'app1', mockUSerGroups);
       expect(mockPipelinesService.getContext).toHaveBeenCalledWith(
         'pipe',
         'dev',
+        ["group1", "group2"],
       );
       expect(mockKubectl.setCurrentContext).toHaveBeenCalledWith(
         'test-context',
@@ -1138,7 +1141,7 @@ describe('AppsService', () => {
           },
         },
       ]);
-      const result = await service.getPods('pipe', 'dev', 'app1');
+      const result = await service.getPods('pipe', 'dev', 'app1', mockUSerGroups);
       expect(result).toEqual([]);
     });
   });

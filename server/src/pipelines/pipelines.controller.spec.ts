@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PipelinesController } from './pipelines.controller';
 import { PipelinesService } from './pipelines.service';
 
+const mockUserGroups = ['group1', 'group2'];
 const mockUser = {
   id: 1,
   strategy: 'local',
@@ -13,6 +14,7 @@ const mockJWT = {
   strategy: 'local',
   username: 'admin',
   apitoken: '1234567890',
+  userGroups: mockUserGroups,
 };
 
 describe('PipelinesController', () => {
@@ -47,7 +49,8 @@ describe('PipelinesController', () => {
   });
 
   it('should get all pipelines', async () => {
-    const result = await controller.getPipelines();
+    const req = { user: mockJWT };
+    const result = await controller.getPipelines(req);
     expect(service.listPipelines).toHaveBeenCalled();
     expect(result).toEqual(['pipeline1', 'pipeline2']);
   });
@@ -128,8 +131,9 @@ describe('PipelinesController', () => {
   });
 
   it('should get all apps for a pipeline', async () => {
-    const result = await controller.getPipelineApps('pipeline1');
-    expect(service.getPipelineWithApps).toHaveBeenCalledWith('pipeline1');
+    const req = { user: mockJWT };
+    const result = await controller.getPipelineApps('pipeline1', req);
+    expect(service.getPipelineWithApps).toHaveBeenCalledWith('pipeline1', ["group1", "group2"]);
     expect(result).toEqual([{ name: 'app1' }]);
   });
 });

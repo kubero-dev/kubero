@@ -8,6 +8,16 @@ import { IUser } from '../auth/auth.interface';
 import { ILoglines } from 'src/logs/logs.interface';
 import { mockKubectlApp as app } from '../apps/apps.controller.spec';
 
+const mockUserGroups = ['group1', 'group2'];
+
+const mockUser: IUser = {
+  username: 'testuser',
+  userId: 'testuser',
+  role: 'user',
+  userGroups: mockUserGroups,
+} as any;
+
+
 describe('DeploymentsService', () => {
   let service: DeploymentsService;
   let kubectl: jest.Mocked<KubernetesService>;
@@ -71,7 +81,7 @@ describe('DeploymentsService', () => {
     it('should return empty items if no jobs', async () => {
       kubectl.getJobs.mockResolvedValue(undefined);
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app');
+      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
       expect(result).toEqual({ items: [] });
     });
 
@@ -123,7 +133,7 @@ describe('DeploymentsService', () => {
         ],
       });
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app');
+      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
       expect(Array.isArray(result)).toBe(true);
       expect(result[0].name).toBe('job1');
       expect(result[0].app).toBe('app');
@@ -171,7 +181,7 @@ describe('DeploymentsService', () => {
         ],
       });
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app');
+      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
       expect(result).toEqual([]);
     });
   });
@@ -257,6 +267,7 @@ describe('DeploymentsService', () => {
         'app',
         'build1',
         'web',
+        mockUserGroups,
       );
       expect(Array.isArray(result)).toBe(true);
       expect(result[0].log).toBe('line1');

@@ -111,17 +111,18 @@ export const mockKubectlApp = {
   spec: mockApp,
 } as IKubectlApp;
 
+const mockUserGroups = ['group1', 'group2'];
 const mockUser = {
   id: 1,
   strategy: 'local',
   username: 'admin',
 };
-
 const mockJWT = {
   userId: 1,
   strategy: 'local',
   username: 'admin',
   apitoken: '1234567890',
+  userGroups: mockUserGroups,
 };
 
 describe('AppsController', () => {
@@ -170,12 +171,14 @@ describe('AppsController', () => {
       const mockApp = { name: 'test-app' };
       mockAppsService.getApp.mockResolvedValue(mockApp);
 
-      const result = await controller.getApp('pipeline', 'phase', 'app');
+      const req = { user: mockJWT };
+      const result = await controller.getApp('pipeline', 'phase', 'app', req);
       expect(result).toEqual(mockApp);
       expect(mockAppsService.getApp).toHaveBeenCalledWith(
         'pipeline',
         'phase',
         'app',
+        mockUserGroups,
       );
     });
   });
@@ -211,7 +214,7 @@ describe('AppsController', () => {
         req,
       );
       expect(result).toEqual(mockApp);
-      expect(mockAppsService.createApp).toHaveBeenCalledWith(mockApp, mockUser);
+      expect(mockAppsService.createApp).toHaveBeenCalledWith(mockApp, mockUser, mockUserGroups);
     });
   });
 
@@ -249,6 +252,7 @@ describe('AppsController', () => {
         mockApp,
         'resourceVersion',
         mockUser,
+        mockUserGroups,
       );
     });
   });
@@ -271,6 +275,7 @@ describe('AppsController', () => {
         'phase',
         'app',
         mockUser,
+        mockUserGroups,
       );
     });
   });
@@ -293,6 +298,7 @@ describe('AppsController', () => {
         'phase',
         'app',
         mockUser,
+        mockUserGroups,
       );
     });
   });
@@ -324,6 +330,7 @@ describe('AppsController', () => {
         'container',
         ['ls'],
         mockUser,
+        mockUserGroups,
       );
     });
   });
