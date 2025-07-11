@@ -1,5 +1,7 @@
 import { LogsService } from './logs.service';
 
+const mockUserGroups = ['group1', 'group2'];
+
 describe('LogsService', () => {
   let service: LogsService;
   let kubectl: any;
@@ -52,6 +54,7 @@ describe('LogsService', () => {
         'app',
         'pod-foo-bar-123-456',
         'web',
+        ['group1', 'group2'],
       );
       // Simuliere das Eintreffen von Logdaten
       await new Promise((r) => setTimeout(r, 20));
@@ -68,6 +71,7 @@ describe('LogsService', () => {
         'app',
         'pod-foo-bar-123-456',
         'web',
+        ['group1', 'group2'],
       );
       expect(spy).not.toHaveBeenCalled();
     });
@@ -83,13 +87,14 @@ describe('LogsService', () => {
         },
       ]);
       const spy = jest.spyOn(service, 'emitLogs').mockResolvedValue(undefined);
-      await service.startLogging('pipe', 'phase', 'app');
+      await service.startLogging('pipe', 'phase', 'app', mockUserGroups);
       expect(spy).toHaveBeenCalledWith(
         'pipe',
         'phase',
         'app',
         'app-kuberoapp-123',
         'web',
+        ['group1', 'group2'],
       );
     });
   });
@@ -122,6 +127,7 @@ describe('LogsService', () => {
         'phase',
         'app',
         'web',
+        ['group1', 'group2'],
       );
       expect(Array.isArray(result)).toBe(true);
       expect(result[0].container).toBe('web');
@@ -140,6 +146,7 @@ describe('LogsService', () => {
         'phase',
         'app',
         'unknown',
+        ['group1', 'group2'],
       );
       expect(result).toEqual([]);
     });
