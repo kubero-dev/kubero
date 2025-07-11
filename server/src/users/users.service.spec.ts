@@ -48,6 +48,36 @@ describe('UsersService', () => {
     expect(user).toBe(mockUser);
     expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
       where: { id: '1' },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        image: true,
+        provider: true,
+        providerId: true,
+        providerData: true,
+        isActive: true,
+        lastLogin: true,
+        lastIp: true,
+        createdAt: true,
+        updatedAt: true,
+        role: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+        userGroups: {
+          select: {
+            id: true,
+            name: true,
+            description: true,
+          },
+        },
+      },
     });
   });
 
@@ -76,7 +106,10 @@ describe('UsersService', () => {
     const user = await service.create(newUser);
     expect(user).toBe(createdUser);
     expect(prismaMock.user.create).toHaveBeenCalledWith({
-      data: expect.objectContaining(newUser),
+      data: expect.objectContaining({
+        username: 'user3',
+        password: expect.any(String), // password will be hashed
+      }),
     });
   });
 
@@ -87,11 +120,12 @@ describe('UsersService', () => {
       password: 'newpass',
     } as PrismaUser;
     prismaMock.user.update.mockResolvedValueOnce(updatedUser);
-    const user = await service.update('1', { password: 'newpass' });
-    expect(user).toBe(updatedUser);
+    const user = await service.update('1', { username: 'user2' });
+    expect(user).toEqual(updatedUser); // Use toEqual instead of toBe
     expect(prismaMock.user.update).toHaveBeenCalledWith({
       where: { id: '1' },
-      data: { password: 'newpass' },
+      data: { username: 'user2' },
+      omit: { password: true },
     });
   });
 
@@ -112,7 +146,7 @@ describe('UsersService', () => {
     expect(user).toBe(updatedUser);
     expect(prismaMock.user.update).toHaveBeenCalledWith({
       where: { id: '1' },
-      data: { password: 'newpass' },
+      data: { password: expect.any(String) }, // password will be hashed
     });
   });
 
