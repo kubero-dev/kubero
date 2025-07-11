@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DeploymentsController } from './deployments.controller';
 import { DeploymentsService } from './deployments.service';
+import { mock } from 'node:test';
 
 const mockUser = {
   id: 1,
@@ -8,12 +9,17 @@ const mockUser = {
   username: 'admin',
 };
 
+const mockUserGroups = ['group1', 'group2'];
+
 const mockJWT = {
   userId: 1,
   strategy: 'local',
   username: 'admin',
   apitoken: '1234567890',
+  userGroups: mockUserGroups,
 };
+
+const mockReq =  { user: mockJWT };
 
 describe('DeploymentsController', () => {
   let controller: DeploymentsController;
@@ -45,8 +51,8 @@ describe('DeploymentsController', () => {
   });
 
   it('should get deployments', async () => {
-    const result = await controller.getDeployments('pipe', 'phase', 'app');
-    expect(service.listBuildjobs).toHaveBeenCalledWith('pipe', 'phase', 'app');
+    const result = await controller.getDeployments('pipe', 'phase', 'app', mockReq);
+    expect(service.listBuildjobs).toHaveBeenCalledWith('pipe', 'phase', 'app', mockUserGroups);
     expect(result).toEqual([{ name: 'build1' }]);
   });
 
@@ -104,6 +110,7 @@ describe('DeploymentsController', () => {
       'app',
       'build1',
       'web',
+      mockReq,
     );
     expect(service.getBuildLogs).toHaveBeenCalledWith(
       'pipe',
@@ -111,6 +118,7 @@ describe('DeploymentsController', () => {
       'app',
       'build1',
       'web',
+      mockUserGroups,
     );
     expect(result).toEqual([{ log: 'line1' }]);
   });
@@ -119,13 +127,14 @@ describe('DeploymentsController', () => {
     // Add deployApp mock to the service
     service.deployApp = jest.fn();
 
-    const result = await controller.deployTag('pipe', 'phase', 'app', 'v1.0.0');
+    const result = await controller.deployTag('pipe', 'phase', 'app', 'v1.0.0', mockReq);
 
     expect(service.deployApp).toHaveBeenCalledWith(
       'pipe',
       'phase',
       'app',
       'v1.0.0',
+      mockUserGroups,
     );
 
     expect(result).toEqual({
