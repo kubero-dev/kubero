@@ -1824,7 +1824,7 @@ export default defineComponent({
       domainRules: [
         (v: any) => !!v || 'Domain is required',
         (v: any) => v.length <= 253 || 'Name must be less than 253 characters',
-        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || 'Not a domain',
+        (v: any) => /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$/.test(v) || v === 'localhost' || 'Not a domain',
         (v: any) => this.checkDomainAvailability(v) || 'Domain already taken',
       ],
       cronjobScheduleRules: [

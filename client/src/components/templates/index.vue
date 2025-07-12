@@ -248,6 +248,7 @@ type TemplatesList = {
 //Axios instance without Auth headers to load templates
 const templates = axios.create();
 templates.defaults.headers.common = {};
+const router = useRouter();
 
 export default defineComponent({
     sockets: {
@@ -298,10 +299,20 @@ export default defineComponent({
             this.dialog = false;
         },
         openInstall(templateurl: string, pipeline: string, phase: string) {
-            const router = useRouter();
             // redirect to install page
             const templateurlB64 = btoa(templateurl);
-            router.push({ name: 'App Form', params: { pipeline: pipeline, phase: phase, app: 'new'}, query: { template: templateurlB64 }})
+            // Use this.$router instead of useRouter()
+            this.$router.push({
+                name: 'App Form',
+                params: {
+                    pipeline: pipeline,
+                    phase: phase,
+                    app: 'new'
+                },
+                query: {
+                    template: templateurlB64
+                }
+            })
         },
         openInstallDialog(template: Template) {
             this.clickedTemplate = template;
