@@ -17,6 +17,18 @@
             max-width="100"
             class="mx-auto"
         ></v-img>
+
+
+        <!-- Show info panel if domain is demo.kubero.dev -->
+        <v-alert
+            v-if="isDemoDomain"
+            type="info"
+            border="start"
+            class="mt-5"
+        >
+            User: <b>demo</b><br>
+            Pass: <b>demo</b>
+        </v-alert>
         <div v-if="authMethods.local" class="py-5">
             <v-alert
                 v-show="error"
@@ -28,11 +40,13 @@
             </v-alert>
             <form v-on:submit="login">
                 <v-text-field
+                    v-model="username"
                     label="username"
                     name="username"
                     required
                 ></v-text-field>
                 <v-text-field
+                    v-model="password"
                     label="password"
                     type="password"
                     name="password"
@@ -95,12 +109,29 @@ export default defineComponent({
     data: () => ({
         error: false,
         errorshake: false,
+        username: '',
+        password: '',
         authMethods : {
             "local": false,
             "github": false,
             "oauth2": false
         }
     }),
+    computed: {
+        isDemoDomain(): boolean {
+            const demoDomains = [
+                'demo.kubero.dev',
+                //'kubero.localhost',
+                //'localhost'
+            ];
+            const demoDomain = demoDomains.includes(window.location.hostname)
+            if (demoDomain) {
+                this.username = 'demo';
+                this.password = 'demo';
+            }
+            return demoDomain;
+        }
+    },
     mounted() {
         this.getAuthMethods();
     },

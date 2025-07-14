@@ -19,6 +19,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
 
   handleRequest(err, user, info) {
     // Disabling authentication when no auth method is defined
+
+    /* Disabling for RBAC
     if (
       !process.env.KUBERO_USERS &&
       !process.env.GITHUB_CLIENT_SECRET &&
@@ -26,6 +28,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     ) {
       return true;
     }
+    */
 
     if (err || !user) {
       //this.logger.debug('JwtAuthGuard.handleRequest Error', err, user, info);

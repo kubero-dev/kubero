@@ -19,6 +19,7 @@ import { OKDTO } from '../common/dto/ok.dto';
 import { RolesService } from './roles.service';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/permissions.decorator';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/roles', version: '1' })
 export class RolesController {
@@ -46,6 +47,7 @@ export class RolesController {
   @Post('/')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -65,6 +67,7 @@ export class RolesController {
   @Delete('/:roleId')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -84,6 +87,7 @@ export class RolesController {
   @Put('/:roleId')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

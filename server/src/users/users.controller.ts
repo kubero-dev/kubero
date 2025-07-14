@@ -26,6 +26,7 @@ import { GetAllUsersDTO } from './dto/users.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/permissions.decorator';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/users', version: '1' })
 export class UsersController {
@@ -130,6 +131,7 @@ export class UsersController {
   @Put('/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -149,6 +151,7 @@ export class UsersController {
   @Delete('/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -168,6 +171,7 @@ export class UsersController {
   @Put('/:id/password/')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:write')
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -199,6 +203,7 @@ export class UsersController {
 
   @Put('/update-my-password')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -231,6 +236,7 @@ export class UsersController {
 
   @Post('/')
   @UseGuards(JwtAuthGuard)
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -276,6 +282,7 @@ export class UsersController {
   @Post('/profile/avatar')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('avatar'))
+  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
