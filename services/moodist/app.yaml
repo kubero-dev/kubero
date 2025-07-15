@@ -4,7 +4,7 @@ metadata:
   annotations:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: Ambient sounds for focus and calm.
-    kubero.dev/template.icon: https://moodist.app/logo.svg
+    kubero.dev/template.icon: https://moodist.mvze.net/favicon.svg
     kubero.dev/template.installation: ''
     kubero.dev/template.links: 'null'
     kubero.dev/template.screenshots: 'null'

@@ -5,7 +5,7 @@ metadata:
     kubero.dev/template.architecture: '[]'
     kubero.dev/template.description: 'Trilium Notes is a hierarchical note taking
       application with focus on building large personal knowledge bases. '
-    kubero.dev/template.icon: https://raw.githubusercontent.com/zadam/trilium/master/images/app-icons/png/256x256.png
+    kubero.dev/template.icon: https://avatars.githubusercontent.com/u/160046342
     kubero.dev/template.installation: ''
     kubero.dev/template.links: '[]'
     kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/wiki/zadam/trilium/images/screenshot.png"]'
