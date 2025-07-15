@@ -19,6 +19,7 @@ import { OKDTO } from '../common/dto/ok.dto';
 import { GroupsService } from './groups.service';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/permissions.decorator';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/groups', version: '1' })
 export class GroupsController {
@@ -44,7 +45,7 @@ export class GroupsController {
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -66,7 +67,7 @@ export class GroupsController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -88,7 +89,7 @@ export class GroupsController {
   }
 
   @Put('/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({

@@ -22,7 +22,7 @@ import { OKDTO } from '../common/dto/ok.dto';
 import { TokenService } from './token.service';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/permissions.decorator';
-
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/tokens', version: '1' })
 export class TokenController {
@@ -69,7 +69,7 @@ export class TokenController {
     }
 */
   @Post('/my')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -107,7 +107,7 @@ export class TokenController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -154,7 +154,7 @@ export class TokenController {
   }
 
   @Delete('/my/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('token:ok', 'token:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({

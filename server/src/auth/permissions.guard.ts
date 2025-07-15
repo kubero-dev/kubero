@@ -11,6 +11,16 @@ export class PermissionsGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+    /* Disabling for RBAC
+    if (
+      !process.env.KUBERO_USERS &&
+      !process.env.GITHUB_CLIENT_SECRET &&
+      !process.env.OAUTH2_CLIENT_SECRET
+    ) {
+      return true;
+    }
+    */
+
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
     }
