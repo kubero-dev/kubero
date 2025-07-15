@@ -111,7 +111,7 @@ export class UsersController {
 
   @Get('/count')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
-  @Permissions('user:read', 'user:write')
+  @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -129,9 +129,8 @@ export class UsersController {
   }
 
   @Put('/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
-  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -149,9 +148,8 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
-  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -169,9 +167,8 @@ export class UsersController {
   }
 
   @Put('/:id/password/')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
-  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -202,8 +199,7 @@ export class UsersController {
   }
 
   @Put('/update-my-password')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(ReadonlyGuard)
+  @UseGuards(JwtAuthGuard, ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -235,8 +231,8 @@ export class UsersController {
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(ReadonlyGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -280,9 +276,8 @@ export class UsersController {
   }
 
   @Post('/profile/avatar')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, ReadonlyGuard)
   @UseInterceptors(FileInterceptor('avatar'))
-  @UseGuards(ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -312,39 +307,4 @@ export class UsersController {
     }
     return this.usersService.updateAvatar(user.userId, file);
   }
-  /*
-  @Get('/profile/avatar')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('bearerAuth')
-  @ApiForbiddenResponse({
-    description: 'Error: Unauthorized',
-    type: OKDTO,
-    isArray: false,
-  })
-  @ApiOkResponse({
-    description: 'Get current User avatar',
-    type: GetAllUsersDTO,
-    isArray: false,
-  })
-  @ApiOperation({ summary: 'Get current User avatar' })
-  async getProfileAvatar(@Request() req: any, @Response() res: ResType) {
-    const user = req.user;
-    const avatarImage = await this.usersService.getAvatar(user.userId);
-
-    if (!avatarImage) {
-      throw new HttpException('No avatar image found', HttpStatus.NOT_FOUND);
-    }
-
-    // Parse data URL: data:[<mediatype>][;base64],<data>
-    const matches = avatarImage.match(/^data:(.+);base64,(.+)$/);
-    if (!matches || matches.length !== 3) {
-      throw new HttpException('Invalid avatar image format', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    const contentType = matches[1];
-    const imageBuffer = Buffer.from(matches[2], 'base64');
-    res.setHeader('Content-Type', contentType);
-    res.setHeader('Content-Length', imageBuffer.length);
-    return res.end(imageBuffer);
-  }
-*/
 }
