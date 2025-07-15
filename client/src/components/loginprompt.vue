@@ -26,8 +26,8 @@
             border="start"
             class="mt-5"
         >
-            User: <b>demo</b><br>
-            Pass: <b>demo</b>
+            User: <b>demo/reader</b><br>
+            Pass: <b>123456</b>
         </v-alert>
         <div v-if="authMethods.local" class="py-5">
             <v-alert
@@ -97,7 +97,6 @@
 </template>
 
 <script lang="ts">
-import router from "../router"
 import axios from "axios"
 import { defineComponent } from 'vue'
 
@@ -122,12 +121,12 @@ export default defineComponent({
             const demoDomains = [
                 'demo.kubero.dev',
                 //'kubero.localhost',
-                //'localhost'
+                'localhost'
             ];
             const demoDomain = demoDomains.includes(window.location.hostname)
             if (demoDomain) {
                 this.username = 'demo';
-                this.password = 'demo';
+                this.password = '123456';
             }
             return demoDomain;
         }
