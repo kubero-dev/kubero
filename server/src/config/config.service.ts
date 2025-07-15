@@ -635,17 +635,23 @@ export class ConfigService {
   }
 
   public async getPodSizes() {
-    const podSizeList: PodSize[] = [];
-
-    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
-    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
-
-    for (const podSize of kuberoes.spec.kubero.config.podSizeList) {
-      const p = new PodSize(podSize);
-      podSizeList.push(p);
-    }
-
-    return podSizeList;
+    // Fetch PodSizes from the database using Prisma
+    const dbPodSizes = await this.prisma.podSize.findMany();
+    // Map DB results to PodSize class
+    return dbPodSizes.map((ps: any) => new PodSize({
+      name: ps.name,
+      description: ps.description,
+      resources: {
+        requests: {
+          memory: ps.memoryRequest || '',
+          cpu: ps.cpuLimit || '',
+        },
+        limits: {
+          memory: ps.memoryLimit || '',
+          cpu: ps.cpuLimit || '',
+        },
+      },
+    }));
   }
 
   public static getLocalauthEnabled(): boolean {

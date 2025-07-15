@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { runpacks } from './runpacks.seed'; // Assuming runpacks.seed.ts exports a Runpack type
+import { podsizes } from './podsizes.seed'; // Assuming podsizes.seed.ts exports a PodSize type
 import * as yaml from 'yaml'; // Import yaml for parsing runpacks
 
 @Injectable()
@@ -35,6 +36,7 @@ export class DatabaseService {
       });
 
     this.seedRunpacks();
+    this.seedPodSizes();
   }
 
   private async init() {
@@ -354,20 +356,6 @@ export class DatabaseService {
   }
 
   private async seedRunpacks() {
-    /*
-    // Seed runpacks from ./runpacks.seed.yaml
-    const fs = await import('fs');
-    const yaml = await import('yaml');
-    const path = require('path');
-    const configPath = path.resolve(__dirname, '../runpacks.seed.yaml');
-    if (!fs.existsSync(configPath)) {
-      this.logger.warn('runpacks.seed.yaml not found, skipping runpack seed.');
-      return;
-    }
-    const file = fs.readFileSync(configPath, 'utf8');
-    const config = yaml.parse(file);
-    */
-
     const config = yaml.parse(runpacks);
 
     const buildpacks = config || [];
@@ -423,5 +411,29 @@ export class DatabaseService {
       this.logger.log(`Runpack/Buildpack '${bp.name}' seeded.`);
     }
     this.logger.log('Buildpacks/Runpacks seeded successfully.');
+  }
+
+  private async seedPodSizes() {
+    const config = yaml.parse(podsizes);
+    // seed pod sizes if the table is empty
+    const existingSizes = await this.prisma.podSize.count();
+    if (existingSizes > 0) {
+      this.logger.log('Pod sizes already exist. Skipping seeding.');
+      return;
+    }
+    for (const size of config) {
+      await this.prisma.podSize.create({
+        data: {
+          name: size.name,
+          description: size.description,
+          cpuLimit: size.resources.limits.cpu,
+          memoryLimit: size.resources.limits.memory,
+          cpuRequest: size.resources.requests.cpu,
+          memoryRequest: size.resources.requests.memory,
+        },
+      });
+      this.logger.log(`Pod size '${size.name}' seeded successfully.`);
+    }
+    this.logger.log('Pod sizes seeded successfully.');
   }
 }

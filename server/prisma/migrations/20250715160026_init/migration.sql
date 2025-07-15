@@ -101,6 +101,19 @@ CREATE TABLE "Runpack" (
 );
 
 -- CreateTable
+CREATE TABLE "PodSize" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "cpuLimit" TEXT NOT NULL,
+    "memoryLimit" TEXT NOT NULL,
+    "cpuRequest" TEXT NOT NULL,
+    "memoryRequest" TEXT NOT NULL,
+    "description" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
 CREATE TABLE "RunpackPhase" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "repository" TEXT NOT NULL,
