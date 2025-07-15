@@ -639,6 +639,7 @@ export class ConfigService {
     const dbPodSizes = await this.prisma.podSize.findMany();
     // Map DB results to PodSize class
     return dbPodSizes.map((ps: any) => new PodSize({
+      id: ps.id,
       name: ps.name,
       description: ps.description,
       resources: {
@@ -652,6 +653,79 @@ export class ConfigService {
         },
       },
     }));
+  }
+
+  public async addPodSize(podSize: PodSize): Promise<PodSize> {
+    // Create a new PodSize in the database using Prisma
+    const dbPodSize = await this.prisma.podSize.create({
+      data: {
+        name: podSize.name,
+        description: podSize.description,
+        memoryLimit: podSize?.resources?.limits?.memory || '',
+        cpuLimit: podSize?.resources?.limits?.cpu || '',
+        memoryRequest: podSize?.resources?.requests?.memory || '',
+        cpuRequest: podSize?.resources?.requests?.cpu || '',
+      },
+    });
+    // Return the created PodSize as an instance of the PodSize class
+    return new PodSize({
+      name: dbPodSize.name,
+      description: dbPodSize.description || '',
+      resources: {
+        requests: {
+          memory: dbPodSize.memoryRequest,
+          cpu: dbPodSize.cpuRequest,
+        },
+        limits: {
+          memory: dbPodSize.memoryLimit,
+          cpu: dbPodSize.cpuLimit,
+        },
+      },
+    });
+  }
+
+  public async deletePodSize(id: string): Promise<void> {
+    // Delete a PodSize from the database using Prisma
+    const podSize = await this.prisma.podSize.findUnique({
+      where: { id: id },
+    });
+    if (!podSize) {
+      throw new Error(`PodSize with id ${id} not found`);
+    }
+    await this.prisma.podSize.delete({
+      where: { id: id },
+    });
+    this.logger.log(`PodSize with id ${id} deleted successfully`);
+  }
+
+  public async updatePodSize(id: string, podSize: PodSize): Promise<PodSize> {
+    // Update an existing PodSize in the database using Prisma
+    const updatedPodSize = await this.prisma.podSize.update({
+      where: { id: id },
+      data: {
+        name: podSize.name,
+        description: podSize.description,
+        memoryLimit: podSize?.resources?.limits?.memory || '',
+        cpuLimit: podSize?.resources?.limits?.cpu || '',
+        memoryRequest: podSize?.resources?.requests?.memory || '',
+        cpuRequest: podSize?.resources?.requests?.cpu || '',
+      },
+    });
+    // Return the updated PodSize as an instance of the PodSize class
+    return new PodSize({
+      name: updatedPodSize.name,
+      description: updatedPodSize.description || '',
+      resources: {
+        requests: {
+          memory: updatedPodSize.memoryRequest,
+          cpu: updatedPodSize.cpuRequest,
+        },
+        limits: {
+          memory: updatedPodSize.memoryLimit,
+          cpu: updatedPodSize.cpuLimit,
+        },
+      },
+    });
   }
 
   public static getLocalauthEnabled(): boolean {

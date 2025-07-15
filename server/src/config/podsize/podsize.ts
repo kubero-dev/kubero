@@ -1,6 +1,7 @@
 import { IPodSize } from '../config.interface';
 
 export class PodSize implements IPodSize {
+  public id?: string | undefined;
   public name: string;
   public description: string;
   public default?: boolean | undefined;
@@ -19,6 +20,7 @@ export class PodSize implements IPodSize {
       | undefined;
   };
   constructor(ps: IPodSize) {
+    this.id = ps.id;
     this.name = ps.name;
     this.description = ps.description;
     this.default = ps.default;
