@@ -131,6 +131,17 @@ const routes = [
     ],
   },
   {
+    path: '/notifications',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/notifications',
+        name: 'Notifications',
+        component: () => import('@/views/Notifications.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     component: () => import('@/layouts/login/Login.vue'),
     children: [

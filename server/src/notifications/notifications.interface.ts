@@ -34,6 +34,7 @@ export interface INotification {
 }
 
 export interface INotificationConfig {
+  id?: string;
   enabled: boolean;
   name: string;
   type: 'slack' | 'webhook' | 'discord';

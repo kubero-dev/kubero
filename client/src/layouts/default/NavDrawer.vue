@@ -56,19 +56,43 @@
             title="Accounts">
         </v-list-item>
         <!-- Posponed for later release
-        <v-list-item 
-            link to="/runpacks" 
-            v-if="kubero.isAuthenticated && !kubero.adminDisabled"
-            prepend-icon="mdi-cube-outline"
-            title="Runpacks">
-        </v-list-item>
         -->
-        <v-list-item 
-            link to="/settings" 
-            v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('config:write') || authStore.hasPermission('config:read'))"
-            prepend-icon="mdi-cog-outline"
-            title="Settings">
-        </v-list-item>
+        <!-- Settings subsection -->
+        <v-list-group
+          v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('config:write') || authStore.hasPermission('config:read'))"
+          v-model="settingsOpen"
+          prepend-icon="mdi-cog-outline"
+          value="settings"
+          title="Settings"
+        >
+          <template #activator="{ props }">
+            <v-list-item v-bind="props" title="Settings"></v-list-item>
+          </template>
+          <v-list-item 
+            link to="/settings"
+            title="General"
+            prepend-icon="mdi-tune"
+            density="compact"
+          ></v-list-item>
+          <v-list-item 
+              link to="/runpacks" 
+              v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+              prepend-icon="mdi-cube-outline"
+              title="Runpacks">
+          </v-list-item>
+          <v-list-item 
+              link to="/podsizes" 
+              v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+              prepend-icon="mdi-arrow-expand-vertical"
+              title="Pod Sizes">
+          </v-list-item>
+          <v-list-item 
+              link to="/notifications" 
+              v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+              prepend-icon="mdi-email-fast-outline"
+              title="Notifications">
+          </v-list-item>
+        </v-list-group>
     </v-list>
 
 
@@ -275,7 +299,8 @@ export default defineComponent({
         version: '0.0.1',
         templatesEnabled: false,
         session: false,
-        debugDialog: false
+        debugDialog: false,
+        settingsOpen: false // Controls collapse state
         }
     },
     computed: {

@@ -2,6 +2,7 @@ import { NotificationsService } from './notifications.service';
 import { EventsGateway } from '../events/events.gateway';
 import { AuditService } from '../audit/audit.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
+import { NotificationsDbService } from './notifications-db.service';
 import { INotification, INotificationConfig } from './notifications.interface';
 
 jest.mock('node-fetch', () => ({
@@ -14,13 +15,17 @@ describe('NotificationsService', () => {
   let eventsGateway: jest.Mocked<EventsGateway>;
   let auditService: jest.Mocked<AuditService>;
   let kubectl: jest.Mocked<KubernetesService>;
+  let notificationsDbService: jest.Mocked<NotificationsDbService>;
 
   beforeEach(() => {
     eventsGateway = { sendEvent: jest.fn() } as any;
     auditService = { log: jest.fn() } as any;
     kubectl = { createEvent: jest.fn() } as any;
+    notificationsDbService = { 
+      getNotificationConfigs: jest.fn().mockResolvedValue([])
+    } as any;
 
-    service = new NotificationsService(eventsGateway, auditService, kubectl);
+    service = new NotificationsService(eventsGateway, auditService, kubectl, notificationsDbService);
     service.setConfig({
       notifications: [],
     } as any);
@@ -30,7 +35,7 @@ describe('NotificationsService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should call sendWebsocketMessage, createKubernetesEvent, writeAuditLog, and sendAllCustomNotification on send', () => {
+  it('should call sendWebsocketMessage, createKubernetesEvent, writeAuditLog, and sendAllCustomNotification on send', async () => {
     const message: INotification = {
       name: 'test',
       user: 'user',
@@ -47,10 +52,11 @@ describe('NotificationsService', () => {
       service as any,
       'sendAllCustomNotification',
     );
-    service.send(message);
+    await service.send(message);
     expect(eventsGateway.sendEvent).toHaveBeenCalled();
     expect(kubectl.createEvent).toHaveBeenCalled();
     expect(auditService.log).toHaveBeenCalled();
+    expect(notificationsDbService.getNotificationConfigs).toHaveBeenCalled();
     expect(spy).toHaveBeenCalled();
   });
 
