@@ -70,6 +70,7 @@ export type IKuberoCRD = {
 };
 
 export interface IPodSize {
+  id?: string;
   name: string;
   description: string;
   default?: boolean;
