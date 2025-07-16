@@ -51,26 +51,6 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get('/me')
-  @UseGuards(JwtAuthGuard, PermissionsGuard)
-  @ApiBearerAuth('bearerAuth')
-  @ApiForbiddenResponse({
-    description: 'Error: Unauthorized',
-    type: OKDTO,
-    isArray: false,
-  })
-  @ApiOkResponse({
-    description: 'The current User',
-    type: GetAllUsersDTO,
-    isArray: false,
-  })
-  @ApiOperation({ summary: 'Get current User' })
-  async getMe() {
-    return this.usersService.findByUsername(
-      (this.usersService as any).request.user.username,
-    );
-  }
-
   @Get('/username/:username')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('user:read', 'user:write')
@@ -128,7 +108,7 @@ export class UsersController {
     return this.usersService.count();
   }
 
-  @Put('/:id')
+  @Put('/id/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
@@ -147,7 +127,7 @@ export class UsersController {
     return this.usersService.update(id, body);
   }
 
-  @Delete('/:id')
+  @Delete('/id/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
@@ -166,7 +146,7 @@ export class UsersController {
     return this.usersService.delete(id);
   }
 
-  @Put('/:id/password/')
+  @Put('/id/:id/password/')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
   @Permissions('user:write')
   @ApiBearerAuth('bearerAuth')
@@ -198,7 +178,7 @@ export class UsersController {
     return this.usersService.updatePassword(id, body.password);
   }
 
-  @Put('/update-my-password')
+  @Put('/profile/password')
   @UseGuards(JwtAuthGuard, ReadonlyGuard)
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
@@ -212,22 +192,24 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update current User password' })
-  async updateMyPassword(@Param('password') password: string) {
-    const user = (this.usersService as any).request.user;
-    if (!user || !user.id) {
+  async updateMyPassword(@Request() req: any, @Body() body: { currentPassword: string; newPassword: string }) {
+    const user = req.user;
+    if (!user || !user.userId) {
       throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
     }
     if (
-      !password ||
-      typeof password !== 'string' ||
-      password.length === 0
+      !body.currentPassword ||
+      !body.newPassword ||
+      typeof body.currentPassword !== 'string' ||
+      typeof body.newPassword !== 'string' ||
+      body.newPassword.length < 8
     ) {
       throw new HttpException(
-        'Invalid password provided',
+        'Invalid password provided. New password must be at least 8 characters.',
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.usersService.updatePassword(user.id, password);
+    return this.usersService.updateMyPassword(user.userId, body.currentPassword, body.newPassword);
   }
 
   @Post('/')
@@ -273,6 +255,34 @@ export class UsersController {
   async getProfile(@Request() req: any) {
     const user = req.user;
     return this.usersService.findById(user.userId);
+  }
+
+  @Put('/profile')
+  @UseGuards(JwtAuthGuard, ReadonlyGuard)
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOkResponse({
+    description: 'Update current User profile',
+    type: GetAllUsersDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Update current User profile' })
+  async updateProfile(@Request() req: any, @Body() body: Partial<User>) {
+    const user = req.user;
+    if (!body || Object.keys(body).length === 0) {
+      throw new HttpException('No data provided to update', HttpStatus.BAD_REQUEST);
+    }
+    // sanitize input
+    const data: Partial<User> = {};
+    data.firstName = body.firstName;
+    data.lastName = body.lastName;
+    data.email = body.email;
+    
+    return this.usersService.update(user.userId, data);
   }
 
   @Post('/profile/avatar')

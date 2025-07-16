@@ -20,7 +20,7 @@
           <h2 class="mb-1">{{ user.firstName }} {{ user.lastName }}</h2>
           <div class="text-h5 font-weight-bold mb-2">{{ user.username }}</div>
           <div class="mb-2">{{ user.email }}</div>
-          <div class="text--secondary">Last login: <span v-if="user.lastLogin">{{ new Date(user.lastLogin).toLocaleString() }}</span><span v-else>-</span></div>
+          <!--<div class="text--secondary">Last login: <span v-if="user.lastLogin">{{ new Date(user.lastLogin).toLocaleString() }}</span><span v-else>-</span></div>-->
           <v-dialog v-model="editAvatarDialog" max-width="400px">
             <v-card>
               <v-card-title>Edit Avatar</v-card-title>
@@ -46,7 +46,29 @@
       </v-col>
       <v-col cols="12" md="6" lg="8">
         <v-card color="cardBackground" class="pa-4">
-          <h3 class="mb-4">Profile Details</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3>Profile Details</h3>
+            <div>
+              <v-btn
+                icon
+                size="small"
+                color="primary"
+                @click="openEditProfileDialog"
+                class="mr-2"
+              >
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn
+                icon
+                size="small"
+                color="primary"
+                @click="openChangePasswordDialog"
+                v-if="user.provider === 'local' || !user.provider"
+              >
+                <v-icon>mdi-lock-reset</v-icon>
+              </v-btn>
+            </div>
+          </div>
           <v-table density="compact" class="profile-table">
             <tbody>
               <tr>
@@ -88,6 +110,93 @@
               </tr>
             </tbody>
           </v-table>
+          <v-dialog v-model="editProfileDialog" max-width="500px">
+            <v-card>
+              <v-card-title>Edit Profile</v-card-title>
+              <v-card-text>
+                <v-alert
+                  v-show="profileError"
+                  type="warning"
+                  border="start"
+                  class="mb-3"
+                  :class="{ 'shaking': profileErrorShake }"
+                >
+                  {{ profileErrorMessage }}
+                </v-alert>
+                <v-text-field
+                  v-model="editedUser.firstName"
+                  label="First Name"
+                  :rules="[v => !!v || 'First name is required']"
+                ></v-text-field>
+                <v-text-field
+                  v-model="editedUser.lastName"
+                  label="Last Name"
+                  :rules="[v => !!v || 'Last name is required']"
+                ></v-text-field>
+                <v-text-field
+                  v-model="editedUser.email"
+                  label="Email"
+                  type="email"
+                  :rules="[
+                    v => !!v || 'Email is required',
+                    v => /.+@.+\..+/.test(v) || 'Email must be valid'
+                  ]"
+                ></v-text-field>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="editProfileDialog = false">Cancel</v-btn>
+                <v-btn color="primary" @click="saveProfile">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="changePasswordDialog" max-width="500px">
+            <v-card>
+              <v-card-title>Change Password</v-card-title>
+              <v-card-text>
+                <v-alert
+                  v-show="passwordError"
+                  type="warning"
+                  border="start"
+                  class="mb-3"
+                  :class="{ 'shaking': passwordErrorShake }"
+                >
+                  {{ passwordErrorMessage }}
+                </v-alert>
+                <v-text-field
+                  v-model="passwordForm.currentPassword"
+                  label="Current Password"
+                  type="password"
+                  :rules="[v => !!v || 'Current password is required']"
+                  class="mb-2"
+                ></v-text-field>
+                <v-text-field
+                  v-model="passwordForm.newPassword"
+                  label="New Password"
+                  type="password"
+                  :rules="[
+                    v => !!v || 'New password is required',
+                    v => v.length >= 8 || 'Password must be at least 8 characters'
+                  ]"
+                  class="mb-2"
+                ></v-text-field>
+                <v-text-field
+                  v-model="passwordForm.confirmPassword"
+                  label="Confirm New Password"
+                  type="password"
+                  :rules="[
+                    v => !!v || 'Please confirm your password',
+                    v => v === passwordForm.newPassword || 'Passwords do not match'
+                  ]"
+                ></v-text-field>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="changePasswordDialog = false">Cancel</v-btn>
+                <v-btn color="primary" @click="savePassword">Change Password</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
         </v-card>
       </v-col>
     </v-row>
@@ -226,6 +335,16 @@ export default defineComponent({
     const tokens = ref<any[]>([])
     const editAvatarDialog = ref(false)
     const avatarFile = ref<File | null>(null)
+    const editProfileDialog = ref(false)
+    const editedUser = ref<any>({ firstName: '', lastName: '', email: '' })
+    const changePasswordDialog = ref(false)
+    const passwordForm = ref<any>({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    const profileError = ref(false)
+    const profileErrorMessage = ref('')
+    const profileErrorShake = ref(false)
+    const passwordError = ref(false)
+    const passwordErrorMessage = ref('')
+    const passwordErrorShake = ref(false)
     const createDialog = ref(false)
     const tokenDialog = ref(false)
     const generatedToken = ref<any>({ name: '', expiresAt: '', token: '' })
@@ -279,6 +398,61 @@ export default defineComponent({
       }
     }
 
+    const openEditProfileDialog = () => {
+      editedUser.value = {
+        firstName: user.value.firstName,
+        lastName: user.value.lastName,
+        email: user.value.email
+      }
+      profileError.value = false
+      editProfileDialog.value = true
+    }
+
+    const saveProfile = async () => {
+      try {
+        await axios.put('/api/users/profile', editedUser.value)
+        editProfileDialog.value = false
+        profileError.value = false
+        await loadProfile()
+      } catch (e: any) {
+        profileError.value = true
+        profileErrorMessage.value = e.response?.data?.message || 'Failed to update profile'
+        profileErrorShake.value = true
+        setTimeout(() => {
+          profileErrorShake.value = false
+        }, 300)
+      }
+    }
+
+    const openChangePasswordDialog = () => {
+      passwordForm.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
+      passwordError.value = false
+      changePasswordDialog.value = true
+    }
+
+    const savePassword = async () => {
+      if (passwordForm.value.newPassword !== passwordForm.value.confirmPassword) {
+        return // validation will handle this
+      }
+      
+      try {
+        await axios.put('/api/users/profile/password', {
+          currentPassword: passwordForm.value.currentPassword,
+          newPassword: passwordForm.value.newPassword
+        })
+        changePasswordDialog.value = false
+        passwordError.value = false
+        passwordForm.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
+      } catch (e: any) {
+        passwordError.value = true
+        passwordErrorMessage.value = e.response?.data?.message || 'Failed to change password'
+        passwordErrorShake.value = true
+        setTimeout(() => {
+          passwordErrorShake.value = false
+        }, 300)
+      }
+    }
+
     const openCreateDialog = () => {
       newToken.value = { name: '', expiresAt: '', token: '' }
       createDialog.value = true
@@ -320,6 +494,14 @@ export default defineComponent({
       editAvatarDialog,
       avatarFile,
       saveAvatar,
+      editProfileDialog,
+      editedUser,
+      openEditProfileDialog,
+      saveProfile,
+      changePasswordDialog,
+      passwordForm,
+      openChangePasswordDialog,
+      savePassword,
       createDialog,
       tokenDialog,
       generatedToken,
@@ -329,12 +511,30 @@ export default defineComponent({
       copyToken,
       textareaFlash,
       authStore,
+      profileError,
+      profileErrorMessage,
+      profileErrorShake,
+      passwordError,
+      passwordErrorMessage,
+      passwordErrorShake,
     }
   },
 })
 </script>
 
 <style scoped>
+/* https://unused-css.com/blog/css-shake-animation/ */
+@keyframes horizontal-shaking {
+ 0% { transform: translateX(0) }
+ 25% { transform: translateX(5px) }
+ 50% { transform: translateX(-5px) }
+ 75% { transform: translateX(5px) }
+ 100% { transform: translateX(0) }
+}
+.shaking {
+    animation: horizontal-shaking 0.3s ease-in-out;
+}
+
 .flash {
   animation: flash-animation 3s ease-in-out;
 }
