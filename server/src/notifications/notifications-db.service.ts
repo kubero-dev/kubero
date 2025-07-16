@@ -163,6 +163,7 @@ export class NotificationsDbService {
     }
 
     return {
+      id: notification.id,
       enabled: notification.enabled,
       name: notification.name,
       type: notification.type as 'slack' | 'webhook' | 'discord',
