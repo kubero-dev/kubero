@@ -50,7 +50,6 @@
             v-for="pipeline in item.pipelines"
             :key="pipeline"
             size="x-small"
-            variant="outlined"
           >
             {{ pipeline }}
           </v-chip>
@@ -62,7 +61,6 @@
             v-for="event in item.events"
             :key="event"
             size="x-small"
-            variant="outlined"
           >
             {{ event }}
           </v-chip>
@@ -111,7 +109,6 @@
                           v-for="pipeline in item.pipelines"
                           :key="pipeline"
                           size="small"
-                          variant="outlined"
                         >
                           {{ pipeline }}
                         </v-chip>
@@ -126,7 +123,6 @@
                           v-for="event in item.events"
                           :key="event"
                           size="small"
-                          variant="outlined"
                         >
                           {{ event }}
                         </v-chip>
@@ -315,6 +311,7 @@
               <v-col cols="12" md="6">
                 <v-combobox
                   v-model="newNotification.pipelines"
+                  :items="availablePipelines"
                   label="Pipelines"
                   multiple
                   chips
@@ -326,6 +323,7 @@
               <v-col cols="12" md="6">
                 <v-combobox
                   v-model="newNotification.events"
+                  :items="availableEvents"
                   label="Events"
                   multiple
                   chips
@@ -383,6 +381,21 @@ export default defineComponent({
       events: [],
       config: {},
     })
+
+    const availablePipelines = ['all'] as string[]
+    const availableEvents = [
+                'updatePipeline',
+                'deletePipeline',
+                'newPipeline',
+                'newApp',
+                'updateApp',
+                'deleteApp',
+                'restartApp',
+                'rebuildApp',
+                'deployApp',
+                'updateSettings',
+                'handleWebhookPush',
+            ]
 
     const notificationTypes = [
       { title: 'Slack', value: 'slack' },
@@ -492,8 +505,21 @@ export default defineComponent({
       }
     }
 
+    const loadPipelinesList = async () => {
+        const self = this;
+        const response = await axios.get(`/api/pipelines`)
+        .catch(error => {
+            console.log(error);
+        });
+        if (!response) return;
+        response.data.items.forEach((item: any) => {
+            availablePipelines.push(item.name);
+        });
+    }
+
     onMounted(() => {
       loadNotifications()
+      loadPipelinesList()
     })
 
     return {
@@ -514,6 +540,8 @@ export default defineComponent({
       newNotification,
       openCreateDialog,
       saveCreate,
+      availablePipelines,
+      availableEvents,
     }
   },
 })
