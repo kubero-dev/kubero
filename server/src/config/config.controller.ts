@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 //import { ApiTags } from '@nestjs/swagger';
 import { ConfigService } from './config.service';
 import {
@@ -11,6 +11,9 @@ import {
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
 import { ReadonlyGuard } from '../common/guards/readonly.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
+import { PodSize } from './podsize/podsize';
 
 @Controller({ path: 'api/config', version: '1' })
 export class ConfigController {
@@ -173,6 +176,153 @@ export class ConfigController {
   @ApiOperation({ summary: 'List available pod sizes' })
   async getPodSizes() {
     return this.configService.getPodSizes();
+  }
+
+  @Post('/podsizes')
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('user:read', 'user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Add a new pod size' })
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Pod size name',
+        },
+        description: {
+          type: 'string',
+          description: 'Description of the pod size',
+        },
+        cpuLimit: {
+          type: 'string',
+          description: 'CPU limit for the pod size (e.g., "2")',
+        },
+        memoryLimit: {
+          type: 'string',
+          description: 'Memory limit for the pod size (e.g., "4Gi")',
+        },
+        cpuRequest: {
+          type: 'string',
+          description: 'CPU request for the pod size (e.g., "1")',
+        },
+        memoryRequest: {
+          type: 'string',
+          description: 'Memory request for the pod size (e.g., "2Gi")',
+        },
+      },
+    },
+  })
+  async addPodSize(@Body() body) {
+    const { name, description, resources } = body;
+    if (!name || !description || !resources.limits || !resources.requests) {
+      throw new Error('Invalid pod size data provided');
+    }
+    const podsize = new PodSize({
+      name: name,
+      description: description,
+      resources: {
+        requests: {
+          memory: resources.requests.memory,
+          cpu: resources.requests.cpu,
+        },
+        limits: {
+          memory: resources.limits.memory,
+          cpu: resources.limits.cpu,
+        },
+      },
+    });
+    return this.configService.addPodSize(podsize);
+  }
+
+  @Delete('/podsizes/:id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('user:read', 'user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Delete a pod size' })
+  @ApiParam({ name: 'id', description: 'Pod size ID to delete' })
+  async deletePodSize(@Param('id') id: string) {
+    if (!id) {
+      throw new Error('Pod size ID is required');
+    }
+    return this.configService.deletePodSize(id);
+  }
+
+  @Put('/podsizes/:id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('user:read', 'user:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({
+    description: 'Error: Unauthorized',
+    type: OKDTO,
+    isArray: false,
+  })
+  @ApiOperation({ summary: 'Update a pod size' })
+  @ApiParam({ name: 'id', description: 'Pod size ID to update' })
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        name: {
+          type: 'string',
+          description: 'Pod size name',
+        },
+        description: {
+          type: 'string',
+          description: 'Description of the pod size',
+        },
+        cpuLimit: {
+          type: 'string',
+          description: 'CPU limit for the pod size (e.g., "2")',
+        },
+        memoryLimit: {
+          type: 'string',
+          description: 'Memory limit for the pod size (e.g., "4Gi")',
+        },
+        cpuRequest: {
+          type: 'string',
+          description: 'CPU request for the pod size (e.g., "1")',
+        },
+        memoryRequest: {
+          type: 'string',
+          description: 'Memory request for the pod size (e.g., "2Gi")',
+        },
+      },
+    },
+  })
+  async updatePodSize(@Param('id') id: string, @Body() body) {
+    const { name, description, resources } = body;
+    if (!name || !description || !resources.limits || !resources.requests) {
+      throw new Error('Invalid pod size data provided');
+    }
+    const podsize = new PodSize({
+      name: name,
+      description: description,
+      resources: {
+        requests: {
+          memory: resources.requests.memory,
+          cpu: resources.requests.cpu,
+        },
+        limits: {
+          memory: resources.limits.memory,
+          cpu: resources.limits.cpu,
+        },
+      },
+    });
+    return this.configService.updatePodSize(id, podsize);
   }
 
   @Get('/setup/check/:component')
