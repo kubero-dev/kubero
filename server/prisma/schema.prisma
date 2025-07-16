@@ -235,3 +235,29 @@ model CapabilityDrop {
   capability   Capability  @relation(fields: [capabilityId], references: [id])
   capabilityId String
 }
+
+// NOTIFICATIONS
+model Notification {
+  id          String   @id @default(cuid())
+  name        String
+  enabled     Boolean  @default(true)
+  type        NotificationType
+  pipelines   String   // JSON string array of pipeline names or "all"
+  events      String   // JSON string array of event names
+  
+  // Configuration fields for different notification types
+  webhookUrl     String?
+  webhookSecret  String?
+  slackUrl       String?
+  slackChannel   String?
+  discordUrl     String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum NotificationType {
+  slack
+  webhook
+  discord
+}

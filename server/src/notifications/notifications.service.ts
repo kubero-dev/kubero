@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { AuditService } from '../audit/audit.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
+import { NotificationsDbService } from './notifications-db.service';
 import {
   INotificationConfig,
   INotification,
@@ -23,6 +24,7 @@ export class NotificationsService {
     private eventsGateway: EventsGateway,
     private auditService: AuditService,
     private kubectl: KubernetesService,
+    private notificationsDbService: NotificationsDbService,
   ) {
     this.config = {} as IKuberoConfig;
     this.logger.log('NotificationsService initialized');
@@ -32,12 +34,22 @@ export class NotificationsService {
     this.config = config;
   }
 
-  public send(message: INotification) {
+  public async send(message: INotification) {
     this.sendWebsocketMessage(message);
     this.createKubernetesEvent(message);
     this.writeAuditLog(message);
 
-    this.sendAllCustomNotification(this.config.notifications, message);
+    // Load notifications from database instead of config
+    try {
+      const notifications = await this.notificationsDbService.getNotificationConfigs();
+      this.sendAllCustomNotification(notifications, message);
+    } catch (error) {
+      this.logger.error('Failed to load notifications from database', error);
+      // Fallback to config notifications if database fails
+      if (this.config.notifications) {
+        this.sendAllCustomNotification(this.config.notifications, message);
+      }
+    }
 
     /* requires configuration in pipeline and app form 
       if (message.data && message.data.app && message.data.app.notifications) {
@@ -221,5 +233,22 @@ export class NotificationsService {
           'Discord notification failed to ' + config.url + ' with error ' + err,
         ),
       );
+  }
+
+  // Migration method to move notifications from config to database
+  public async migrateNotificationsToDatabase(): Promise<void> {
+    if (!this.config.notifications || this.config.notifications.length === 0) {
+      this.logger.log('No notifications found in config to migrate');
+      return;
+    }
+
+    this.logger.log('Starting migration of notifications from config to database');
+    await this.notificationsDbService.migrateFromConfig(this.config.notifications);
+    this.logger.log('Completed migration of notifications from config to database');
+  }
+
+  // Method to get notifications from database (for admin interface)
+  public async getNotifications(): Promise<INotificationConfig[]> {
+    return await this.notificationsDbService.getNotificationConfigs();
   }
 }
