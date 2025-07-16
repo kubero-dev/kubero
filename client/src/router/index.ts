@@ -120,6 +120,17 @@ const routes = [
     ],
   },
   {
+    path: '/podsizes',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/podsizes',
+        name: 'Pod Sizes',
+        component: () => import('@/views/Podsizes.vue'),
+      },
+    ],
+  },
+  {
     path: '/login',
     component: () => import('@/layouts/login/Login.vue'),
     children: [
