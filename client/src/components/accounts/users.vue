@@ -356,7 +356,7 @@ export default defineComponent({
 
     const saveEdit = async () => {
       try {
-        await axios.put(`/api/users/${editedUser.value.id}`, editedUser.value)
+        await axios.put(`/api/users/id/${editedUser.value.id}`, editedUser.value)
         await loadUsers()
         editDialog.value = false
       } catch (e) {
@@ -366,7 +366,7 @@ export default defineComponent({
 
     const deleteUser = async (user: User) => {
       try {
-        await axios.delete(`/api/users/${user.id}`)
+        await axios.delete(`/api/users/id/${user.id}`)
         await loadUsers()
       } catch (e) {
         console.error('Error deleting user:', e)
@@ -420,7 +420,7 @@ export default defineComponent({
         return
       }
       try {
-        await axios.put(`/api/users/${editedUser.value.id}/password`, {
+        await axios.put(`/api/users/id/${editedUser.value.id}/password`, {
           password: editedUser.value.password,
         })
         changePasswordDialog.value = false

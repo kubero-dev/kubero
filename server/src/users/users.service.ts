@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PrismaClient, User as PrismaUser } from '@prisma/client';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -302,6 +302,63 @@ export class UsersService {
     }
   }
 
+  async updateMyPassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<PrismaUser | undefined> {
+    if (
+      !currentPassword ||
+      !newPassword ||
+      typeof currentPassword !== 'string' ||
+      typeof newPassword !== 'string' ||
+      newPassword.length < 8
+    ) {
+      this.logger.warn('Invalid current or new password provided for password update.');
+      return undefined;
+    }
+
+    try {
+      // First, get the user with their current password
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { id: true, password: true }
+      });
+
+      if (!user) {
+        this.logger.warn(`User with ID ${userId} not found for password update.`);
+        return undefined;
+      }
+
+      // Verify current password
+      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isCurrentPasswordValid) {
+        this.logger.warn(`Invalid current password provided for user ${userId}.`);
+        //throw new Error('Current password is incorrect');
+        throw new HttpException(
+          `Error updating password: Current password is incorrect`,
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      // Hash and update new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+      const updatedUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { password: hashedNewPassword },
+      });
+
+      this.logger.debug(`Password updated for user with ID ${userId}.`);
+      return updatedUser;
+    } catch (error) {
+      this.logger.debug(
+        `Error updating password for user with ID ${userId}:`,
+        error,
+      );
+      throw error;
+    }
+  }
+
   async delete(userId: string): Promise<void> {
     try {
       await this.prisma.user.delete({ where: { id: userId } });
@@ -330,21 +387,6 @@ export class UsersService {
       },
     });
   }
-  /*
-  async generatePasswordHash(password: string): Promise<string> {
-    const salt = crypto.randomBytes(16).toString('hex');
-    const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return `${salt}:${hash}`;
-  }
-  async verifyPassword(password: string, hash: string): Promise<boolean> {
-    const [salt, key] = hash.split(':');
-    const hashVerify = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return key === hashVerify;
-  }
-  async getUserByEmail(email: string): Promise<PrismaUser | null> {
-    return this.prisma.user.findUnique({ where: { email } });
-  }
-    */
 
   async findAllRoles(): Promise<any[]> {
     return this.prisma.role.findMany({
