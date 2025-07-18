@@ -2,7 +2,7 @@
 
   <v-container>
     <v-row>
-      <v-col cols="12" md="12" lg="8">
+      <v-col cols="12" md="12" lg="12" xl="6">
         <v-expansion-panels multiple elevation="0" class="mb-6">
           <v-expansion-panel>
             <v-expansion-panel-title class="text-h6 font-weight-bold">What are Runpacks?</v-expansion-panel-title>

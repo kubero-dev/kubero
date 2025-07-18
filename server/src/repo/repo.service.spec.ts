@@ -135,41 +135,241 @@ describe('RepoService', () => {
     expect(notificationsService.send).toHaveBeenCalled();
     expect(appsService.rebuildApp).toHaveBeenCalled();
   });
-  /*
-  it('should handle github webhook pull_request', async () => {
-    service['githubApi'].getWebhook = jest.fn(() => ({
-      event: 'pull_request',
-      action: 'opened',
-      branch: 'feature',
-      repo: { ssh_url: 'ssh://repo' },
-    }));
-    const headers = {
-      'x-github-event': 'pull_request',
-      'x-github-delivery': 'delivery',
-      'x-hub-signature-256': 'sig',
-    };
-    const body = {};
-    await service.handleWebhook('github', headers, body);
-    expect(appsService.createPRApp).toHaveBeenCalled();
+
+  describe('handleWebhookPullRequest', () => {
+    let originalConsoleLog: any;
+
+    beforeEach(() => {
+      // Mock console.log to avoid output during tests
+      originalConsoleLog = console.log;
+      console.log = jest.fn();
+    });
+
+    afterEach(() => {
+      // Restore console.log
+      console.log = originalConsoleLog;
+      jest.clearAllMocks();
+    });
+
+    it('should create PR app when pull request is opened', async () => {
+      // Mock the webhook response for pull request opened
+      service['githubApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: 'opened',
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github',
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      }));
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+      const body = { action: 'opened' };
+
+      await service.handleWebhook('github', headers, body);
+
+      expect(appsService.createPRApp).toHaveBeenCalledWith(
+        'feature-branch',
+        'feature-branch',
+        'git@github.com:user/repo.git',
+        undefined,
+        ['admin']
+      );
+    });
+
+    it('should create PR app when pull request is reopened', async () => {
+      // Mock the webhook response for pull request reopened
+      service['githubApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: 'reopened',
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github',
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      }));
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+      const body = { action: 'reopened' };
+
+      await service.handleWebhook('github', headers, body);
+
+      expect(appsService.createPRApp).toHaveBeenCalledWith(
+        'feature-branch',
+        'feature-branch',
+        'git@github.com:user/repo.git',
+        undefined,
+        ['admin']
+      );
+    });
+
+    it('should delete PR app when pull request is closed', async () => {
+      // Mock the webhook response for pull request closed
+      service['githubApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: 'closed',
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github',
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      }));
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+      const body = { action: 'closed' };
+
+      await service.handleWebhook('github', headers, body);
+
+      expect(appsService.deletePRApp).toHaveBeenCalledWith(
+        'feature-branch',
+        'feature-branch',
+        'git@github.com:user/repo.git',
+        ['admin']
+      );
+    });
+
+    it('should log unhandled pull request actions', async () => {
+      // Mock the webhook response for an unhandled action (using undefined as it's allowed)
+      service['githubApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: undefined,
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github',
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      }));
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+      const body = { action: 'synchronize' };
+
+      await service.handleWebhook('github', headers, body);
+
+      expect(console.log).toHaveBeenCalledWith(
+        'webhook pull request action not handled: undefined'
+      );
+      expect(appsService.createPRApp).not.toHaveBeenCalled();
+      expect(appsService.deletePRApp).not.toHaveBeenCalled();
+    });
+
+    it('should handle pull request webhook from different providers', async () => {
+      // Test with Gitea
+      service['giteaApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: 'opened',
+        branch: 'pr-branch',
+        repo: { ssh_url: 'git@gitea.example.com:user/repo.git' },
+        repoprovider: 'gitea',
+        delivery: 'gitea-delivery',
+        verified: true,
+        body: {},
+      }));
+
+      const giteaHeaders = {
+        'x-gitea-event': 'pull_request',
+        'x-gitea-delivery': 'gitea-delivery',
+        'x-hub-signature-256': 'gitea-signature',
+      };
+
+      await service.handleWebhook('gitea', giteaHeaders, {});
+
+      expect(appsService.createPRApp).toHaveBeenCalledWith(
+        'pr-branch',
+        'pr-branch',
+        'git@gitea.example.com:user/repo.git',
+        undefined,
+        ['admin']
+      );
+    });
+
+    it('should handle undefined action gracefully', async () => {
+      // Mock webhook with undefined action
+      service['githubApi'].getWebhook = jest.fn(() => ({
+        event: 'pull_request',
+        action: undefined,
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github',
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      }));
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+
+      await service.handleWebhook('github', headers, {});
+
+      expect(console.log).toHaveBeenCalledWith(
+        'webhook pull request action not handled: undefined'
+      );
+      expect(appsService.createPRApp).not.toHaveBeenCalled();
+      expect(appsService.deletePRApp).not.toHaveBeenCalled();
+    });
+
+    it('should not call appsService methods when webhook is boolean false', async () => {
+      // Mock webhook returning false (invalid webhook)
+      service['githubApi'].getWebhook = jest.fn(() => false);
+
+      const headers = {
+        'x-github-event': 'pull_request',
+        'x-github-delivery': 'delivery-id',
+        'x-hub-signature-256': 'signature',
+      };
+
+      await service.handleWebhook('github', headers, {});
+
+      expect(appsService.createPRApp).not.toHaveBeenCalled();
+      expect(appsService.deletePRApp).not.toHaveBeenCalled();
+    });
+
+    it('should log unhandled pull request actions with direct function call', async () => {
+      // Test the private method directly with an action not in the enum
+      const mockWebhook = {
+        event: 'pull_request',
+        action: 'synchronize' as any, // Force a non-standard action
+        branch: 'feature-branch',
+        repo: { ssh_url: 'git@github.com:user/repo.git' },
+        repoprovider: 'github' as const,
+        delivery: 'delivery-id',
+        verified: true,
+        body: {},
+      };
+
+      // Call the private method directly
+      await (service as any).handleWebhookPullRequest(mockWebhook);
+
+      expect(console.log).toHaveBeenCalledWith(
+        'webhook pull request action not handled: synchronize'
+      );
+      expect(appsService.createPRApp).not.toHaveBeenCalled();
+      expect(appsService.deletePRApp).not.toHaveBeenCalled();
+    });
   });
 
-  it('should handle github webhook pull_request closed', async () => {
-    service['githubApi'].getWebhook = jest.fn(() => ({
-      event: 'pull_request',
-      action: 'closed',
-      branch: 'feature',
-      repo: { ssh_url: 'ssh://repo' },
-    }));
-    const headers = {
-      'x-github-event': 'pull_request',
-      'x-github-delivery': 'delivery',
-      'x-hub-signature-256': 'sig',
-    };
-    const body = {};
-    await service.handleWebhook('github', headers, body);
-    expect(appsService.deletePRApp).toHaveBeenCalled();
-  });
-*/
   it('should handle unknown repo provider', async () => {
     const spy = jest.spyOn(service['logger'], 'debug');
     await service.handleWebhook('unknown', {}, {});
