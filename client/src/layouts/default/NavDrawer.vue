@@ -3,7 +3,7 @@
       color="navBG"
       expand-on-hover
       permanent
-      rail
+      :rail="rail"
   >
     <v-list class="profile-dark-bg">
       <v-list-item
@@ -19,6 +19,20 @@
         </template>
         <template #subtitle>
           {{ userEmail }}
+        </template>
+        <template v-slot:append>
+          <v-btn
+            v-if="rail"
+            icon="mdi-chevron-right"
+            variant="text"
+            @click="rail = false"
+          ></v-btn>
+          <v-btn
+            v-else
+            icon="mdi-chevron-left"
+            variant="text"
+            @click="rail = true"
+          ></v-btn>
         </template>
       </v-list-item>
     </v-list>
@@ -73,23 +87,27 @@
             title="General"
             prepend-icon="mdi-tune"
             density="compact"
+            style="transform: scale(0.9);"
           ></v-list-item>
           <v-list-item 
               link to="/runpacks" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-cube-outline"
+              style="transform: scale(0.9);"
               title="Runpacks">
           </v-list-item>
           <v-list-item 
               link to="/podsizes" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-arrow-expand-vertical"
+              style="transform: scale(0.9);"
               title="Pod Sizes">
           </v-list-item>
           <v-list-item 
               link to="/notifications" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-email-fast-outline"
+              style="transform: scale(0.9);"
               title="Notifications">
           </v-list-item>
         </v-list-group>
@@ -253,6 +271,7 @@ const theme = useTheme()
 const userAvatar = ref<string>('')
 const userName = ref<string>('')
 const userEmail = ref<string>('')
+const rail = ref(true)
 
 async function loadUserProfile() {
   try {
@@ -367,5 +386,11 @@ img.image-icon {
 /* Dark background for profile list item */
 .profile-dark-bg {
   background: rgba(var(--v-theme-secondary), 0.5) !important;
+}
+</style>
+
+<style>
+.v-list-group__items {
+  --indent-padding: inherit;
 }
 </style>
