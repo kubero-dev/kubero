@@ -36,7 +36,7 @@
             v-model="pipelineName"
             :rules="nameRules"
             :counter="60"
-            label="Name *"
+            :label="$t('pipeline.form.label.name') + ' *'"
             :disabled="!newPipeline"
             required
           ></v-text-field>
@@ -50,7 +50,7 @@
           <v-text-field
             v-model="domain"
             :rules="domainRules"
-            label="FQDN domain"
+            :label="$t('pipeline.form.label.fqdnDomain')"
             hint="This Wildcard Domain should point to the IP of your clusters IP defined in 'Cluster Context'. It will be used as a base domain when creating a new app."
           ></v-text-field>
         </v-col>
@@ -64,7 +64,7 @@
             chips
             multiple
             v-model="access.teams"
-            label="Team Access"
+            :label="$t('pipeline.form.label.teamAccess')"
             hint="Select teams that have access to this pipeline"
             :items="authStore.userGroups"
           ></v-combobox>
@@ -80,14 +80,14 @@
           <v-switch
             v-model="gitops"
             v-if="pipeline=='new'"
-            label="Enable Pipeline to build from Source"
+            :label="$t('pipeline.form.label.enableBuilds')"
             color="primary"
           ></v-switch>
         </v-col>
       </v-row>
 
       <v-card elevation="2" color="cardBackground" v-if="gitops" style="margin-bottom: 20px">
-        <v-card-title>Continuous Deployment</v-card-title>
+        <v-card-title>{{ $t('pipeline.form.title.continuousDeployment') }}</v-card-title>
         <v-card-text>
           <v-row>
             <v-col
@@ -192,14 +192,14 @@
                     :disabled="gitrepo == ''"
                     v-if="!repository_status.connected"
                     @click="connectRepo()"
-                    >Connect</v-btn>
+                    >{{ $t('pipeline.buttons.connect') }}</v-btn>
                 <v-btn
                     color="secondary"
                     elevation="2"
                     :disabled="gitrepo == ''"
                     v-if="repository_status.connected"
                     @click="reconnectRepo()"
-                    >Reconnect</v-btn>
+                    >{{ $t('pipeline.buttons.reconnect') }}</v-btn>
             </v-col>
             <v-col
               cols="12"
@@ -210,7 +210,7 @@
                     elevation="2"
                     v-if="repository_status.connected"
                     @click="disconnectRepo()"
-                    >Disconnect</v-btn>
+                    >{{ $t('pipeline.buttons.disconnect') }}</v-btn>
             </v-col>
           </v-row>
         </v-card-text>
@@ -533,14 +533,14 @@
                 elevation="2"
                 @click="createPipeline()"
                 :disabled="!valid"
-                >Create</v-btn>
+                >{{ $t('pipeline.buttons.create') }}</v-btn>
             <v-btn
                 color="primary"
                 v-if="!newPipeline"
                 elevation="2"
                 @click="updatePipeline()"
                 :disabled="!valid"
-                >Update</v-btn>
+                >{{ $t('pipeline.buttons.update') }}</v-btn>
         </v-col>
       </v-row>
     </v-container>

@@ -25,6 +25,7 @@
     "sweetalert2": "^11.10.2",
     "vue": "^3.4.0",
     "vue-chartjs": "^5.3.1",
+    "vue-i18n": "11",
     "vue-router": "^4.2.0",
     "vue-socket.io-extended": "^4.2.0",
     "vue3-apexcharts": "^1.5.2",
