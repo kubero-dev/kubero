@@ -44,7 +44,7 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
-          platforms: 'amd64'
+          platforms: 'amd64,arm64'
 
       # Workaround: https://github.com/docker/build-push-action/issues/461
       - name: Setup Docker buildx
@@ -80,7 +80,7 @@ jobs:
           push: true
           tags: ${{ steps.kubero-meta.outputs.tags }}
           build-args: VERSION=${{ inputs.version }}
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64/v8
           labels: ${{ steps.kubero-meta.outputs.labels }}
 
       # Sign the resulting Docker image digest except on PRs.
