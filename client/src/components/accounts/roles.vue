@@ -244,25 +244,25 @@
               <tr>
                 <td>Audit</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[6].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[6].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Console</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[7].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[7].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Logs</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[8].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[8].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Reboot</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="editedRole.permissions[9].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[9].action" label=""></v-switch>
                 </td>
               </tr>
             </tbody>
@@ -348,25 +348,25 @@
               <tr>
                 <td>Audit</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="newRole.permissions[6].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[6].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Console</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="newRole.permissions[7].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[7].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Logs</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="newRole.permissions[8].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[8].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
                 <td>Reboot</td>
                 <td>
-                  <v-switch color="primary" value="ok" v-model="newRole.permissions[9].action" label=""></v-switch>
+                  <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[9].action" label=""></v-switch>
                 </td>
               </tr>
             </tbody>
