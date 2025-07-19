@@ -4,12 +4,12 @@
 
         <v-container class="d-flex justify-space-between align-center mb-2 pt-0">
             <v-tabs v-model="tab"  class="background">
-                <v-tab class="background">Overview</v-tab>
-                <v-tab class="background" :disabled="!hasBuilds">Builds</v-tab>
-                <v-tab class="background">Metrics</v-tab>
-                <v-tab class="background" :disabled="!authStore.hasPermission('logs:ok')">Logs</v-tab>
-                <v-tab class="background">Events</v-tab>
-                <v-tab class="background" :disabled="!authStore.hasPermission('security:read') && !authStore.hasPermission('security:write')">Vulnerabilities</v-tab>
+                <v-tab class="background">{{ $t('app.nav.overview') }}</v-tab>
+                <v-tab class="background" :disabled="!hasBuilds">{{ $t('app.nav.builds') }}</v-tab>
+                <v-tab class="background">{{ $t('app.nav.metrics') }}</v-tab>
+                <v-tab class="background" :disabled="!authStore.hasPermission('logs:ok')">{{ $t('app.nav.logs') }}</v-tab>
+                <v-tab class="background">{{ $t('app.nav.events') }}</v-tab>
+                <v-tab class="background" :disabled="!authStore.hasPermission('security:read') && !authStore.hasPermission('security:write')">{{ $t('app.nav.vulnerabilities') }}</v-tab>
                 <v-spacer  class="background"></v-spacer>
             </v-tabs>
 
@@ -22,7 +22,7 @@
                 v-bind="props"
                 >
                     <v-icon color="white">mdi-menu-open</v-icon>
-                    Actions
+                    {{ $t('app.actions.name') }}
                 </v-btn>
             </template>
             <v-list>
@@ -30,37 +30,37 @@
                     @click="ActionEditApp"
                     prepend-icon="mdi-pencil"
                     :disabled="!authStore.hasPermission('app:write')"
-                    title="Edit">
+                    :title="$t('app.actions.edit')">
                 </v-list-item>
                 <v-list-item
                     @click="ActionOpenApp"
                     prepend-icon="mdi-open-in-new"
-                    title="Open App">
+                    :title="$t('app.actions.openApp')">
                 </v-list-item>
                 <v-list-item 
                     @click="restartApp"
                     prepend-icon="mdi-reload-alert"
                     :disabled="!authStore.hasPermission('reboot:ok')"
-                    title="Restart">
+                    :title="$t('app.actions.restart')">
                 </v-list-item>
                 <v-list-item 
                     :disabled="appData.spec.deploymentstrategy != 'docker'"
                     @click="ActionStartDownload"
                     prepend-icon="mdi-download"
-                    title="Download Template">
+                    :title="$t('app.actions.downloadTemplate')">
                 </v-list-item>
                 <v-list-item 
                     @click="openConsole"
                     prepend-icon="mdi-console"
                     :disabled="!kubero.consoleEnabled || !authStore.hasPermission('console:ok')"
-                    title="Open Console">
+                    :title="$t('app.actions.openConsole')">
                 </v-list-item>
                 <v-divider class="my-3"></v-divider>
                 <v-list-item 
                     @click="deleteApp"
                     prepend-icon="mdi-delete"
                     :disabled="!authStore.hasPermission('app:write')"
-                    title="Delete">
+                    :title="$t('app.actions.delete')">
                 </v-list-item>
             </v-list>
             </v-menu>

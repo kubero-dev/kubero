@@ -24,7 +24,7 @@ export function registerPlugins (app: App) {
     .use(pinia)
     // @ts-ignore: Type missmatch
     .use(vCodeBlock)
-    .use(vuetify)
     .use(i18n)
+    .use(vuetify)
     .use(router)
 }

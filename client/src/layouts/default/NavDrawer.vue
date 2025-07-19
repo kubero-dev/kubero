@@ -44,43 +44,40 @@
             link to="/"
             prepend-icon="mdi-server"
             v-if="authStore.hasPermission('pipeline:write') || authStore.hasPermission('pipeline:read')"
-            title="Pipelines">
+            :title="$t('navigation.pipelines')">
         </v-list-item>
         <v-list-item 
             link to="/templates" 
             v-if="kubero.templatesEnabled"
             prepend-icon="mdi-list-box-outline"
-            title="Templates">
+            :title="$t('navigation.templates')">
         </v-list-item>
         <v-list-item 
             link to="/activity"
             v-if="kubero.auditEnabled && (authStore.hasPermission('audit:write') || authStore.hasPermission('audit:read'))"
             prepend-icon="mdi-bell-outline"
-            title="Activity">
+            :title="$t('navigation.activity')">
         </v-list-item>
         <v-list-item 
             link to="/addons"
             prepend-icon="mdi-bookshelf"
-            title="Add-Ons">
+            :title="$t('navigation.addOns')">
         </v-list-item>
         <v-list-item 
             link to="/accounts" 
             v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('user:write') || authStore.hasPermission('user:read'))"
             prepend-icon="mdi-account-outline"
-            title="Accounts">
+            :title="$t('navigation.accounts')">
         </v-list-item>
-        <!-- Posponed for later release
-        -->
         <!-- Settings subsection -->
         <v-list-group
           v-if="kubero.isAuthenticated && !kubero.adminDisabled && (authStore.hasPermission('config:write') || authStore.hasPermission('config:read'))"
           v-model="settingsOpen"
           prepend-icon="mdi-cog-outline"
           value="settings"
-          title="Settings"
         >
           <template #activator="{ props }">
-            <v-list-item v-bind="props" title="Settings"></v-list-item>
+            <v-list-item v-bind="props" :title="$t('navigation.settings')"></v-list-item>
           </template>
           <v-list-item 
             link to="/settings"
@@ -120,7 +117,7 @@
             <v-list-item 
                 @click="toggleTheme()"
                 prepend-icon="mdi-theme-light-dark"
-                title="Theme">
+                :title="$t('navigation.theme')">
             </v-list-item>
             <v-list-item 
                 link href="/api/docs" 
@@ -132,7 +129,7 @@
                 link href="https://docs.kubero.dev/" 
                 target="_blank"
                 prepend-icon="mdi-book-open-variant"
-                title="Documentation">
+                :title="$t('navigation.documentation')">
             </v-list-item>
             <v-list-item 
                 link href="https://github.com/kubero-dev/kubero" 
@@ -172,7 +169,7 @@
                 @click="logout()" 
                 v-if="kubero.isAuthenticated"
                 prepend-icon="mdi-logout"
-                title="Logout"
+                :title="$t('navigation.logout')"
                 class="logout-primary-item"
             >
             </v-list-item>

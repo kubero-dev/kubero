@@ -113,7 +113,7 @@
                 v-model="gitrepo"
                 :rules="repositoryRules"
                 :items="gitrepoItems"
-                label="Repository *"
+                :label="$t('global.repository') + ' *'"
                 :disabled="repository_status.connected"
                 required
               ></v-combobox>
@@ -126,9 +126,9 @@
             
               <v-alert variant="tonal" color="#8560a9" border="start">
                 <h3>
-                  Repository
+                  {{ $t('global.repository') }}
                 </h3>
-                <div>When connected, webhooks and deployment keys are stored in the repository. This means that the apps configured in this project can be automatically redeployed with a 'git push' and opening a PR starts a new instance in the "review" phase.</div>
+                <div>{{ $t('pipeline.form.help.gitrepo') }}</div>
               </v-alert>
             </v-col>
           </v-row>
@@ -368,7 +368,7 @@
 
 
       <v-card elevation="2" color="cardBackground">
-        <v-card-title>Environments</v-card-title>
+        <v-card-title>{{ $t('pipeline.form.title.environments') }}</v-card-title>
         <v-card-text>
           <div v-for="phase in phases" :key="phase.name" class="my-0">
           <v-row>
@@ -394,7 +394,7 @@
               <v-select
                 v-model="phase.context"
                 :items="contextList"
-                label="Cluster"
+                :label="$t('pipeline.form.label.cluster')"
                 v-if="phase.enabled && phase.name != 'review'"
                 dense
               ></v-select>
@@ -410,7 +410,7 @@
                   <v-select
                     v-model="phase.context"
                     :items="contextList"
-                    label="Cluster Context *"
+                    :label="$t('pipeline.form.label.clusterContext') + ' *'"
                     v-if="phase.enabled"
                     dense
                   ></v-select>
@@ -455,7 +455,7 @@
                 >
                   <v-text-field
                     v-model="envvar.name"
-                    label="Name"
+                    :label="$t('global.name')"
                     density="compact"
                     :counter="60"
                   ></v-text-field>
@@ -467,7 +467,7 @@
                 >
                   <v-text-field
                     v-model="envvar.value"
-                    label="Value"
+                    :label="$t('global.value')"
                     density="compact"
                   ></v-text-field>
                 </v-col>
