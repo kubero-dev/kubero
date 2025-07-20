@@ -260,7 +260,63 @@ const messages = {
           edit: 'Edit User',
           search: 'Search User',
         }
-      }, 
+      },
+      accounts: {
+        users: 'Users',
+        teams: 'Teams',
+        roles: 'Roles',
+        tokens: 'Tokens',
+      },
+      teams: {
+        name: 'Teams',
+        search: 'Search for a team',
+        actions: {
+          create: 'Create Team',
+          edit: 'Edit Team',
+        },
+        form: {
+          name: 'Team Name',
+          description: 'Description',
+        },
+      },
+      roles: {
+        name: 'Roles',
+        search: 'Search for a Role',
+        permission: 'Permission',
+        actions: {
+          create: 'Create Role',
+          edit: 'Edit Role',
+        },
+        form: {
+          name: 'Role Name',
+          description: 'Description',
+          permissionsRead: 'Read',
+          permissionsWrite: 'Write',
+          permissions: {
+            apps: 'Apps',
+            name: 'Permissions',
+            pipelines: 'Pipelines',
+            accounts: 'Accounts',
+            settings: 'Settings',
+            security: 'Security',
+            tokens: 'Tokens',
+            audit: 'Audit',
+            console: 'Console',
+            logs: 'Logs',
+            reboot: 'Reboot',
+          },
+        },
+      },
+      tokens: {
+        name: 'Tokens',
+        search: 'Search for a Token',
+        form: {
+          id: 'Token ID',
+          name: 'Token Name',
+          expiresAt: 'Expires At',
+          owner: 'Owner',
+        },
+      },
       $vuetify: {
         ...en,
       },

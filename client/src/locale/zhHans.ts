@@ -12,6 +12,62 @@ const messages = {
     theme: '深色/浅色模式',
     documentation: '文档',
   },
+  accounts: {
+    users: '用户',
+    teams: '团队',
+    roles: '角色',
+    tokens: '令牌',
+  },
+  teams: {
+    name: '团队',
+    search: '搜索团队',
+    actions: {
+      create: '创建团队',
+      edit: '编辑团队',
+    },
+    form: {
+      name: '团队名称',
+      description: '描述',
+    },
+  },
+  roles: {
+    name: '角色',
+    search: '搜索角色',
+    permission: '权限',
+    actions: {
+      create: '创建角色',
+      edit: '编辑角色',
+    },
+    form: {
+      name: '角色名称',
+      description: '描述',
+      permissionsRead: '读取',
+      permissionsWrite: '写入',
+      permissions: {
+        apps: '应用',
+        name: '权限',
+        pipelines: '流水线',
+        accounts: '账户',
+        settings: '设置',
+        security: '安全',
+        tokens: '令牌',
+        audit: '审计',
+        console: '控制台',
+        logs: '日志',
+        reboot: '重启',
+      },
+    },
+  },
+  tokens: {
+    name: '令牌',
+    search: '搜索令牌',
+    form: {
+      id: '令牌ID',
+      name: '令牌名称',
+      expiresAt: '过期时间',
+      owner: '所有者',
+    },
+  },
   global: {
     name: "名称",
     value: "值",

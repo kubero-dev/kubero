@@ -13,6 +13,62 @@ const messages = {
     theme: 'ダーク/ライトモード',
     documentation: 'ドキュメント',
   },
+  accounts: {
+    users: 'ユーザー',
+    teams: 'チーム',
+    roles: 'ロール',
+    tokens: 'トークン',
+  },
+  teams: {
+    name: 'チーム',
+    search: 'チームを検索',
+    actions: {
+      create: 'チームを作成',
+      edit: 'チームを編集',
+    },
+    form: {
+      name: 'チーム名',
+      description: '説明',
+    },
+  },
+  roles: {
+    name: 'ロール',
+    search: 'ロールを検索',
+    permission: '権限',
+    actions: {
+      create: 'ロールを作成',
+      edit: 'ロールを編集',
+    },
+    form: {
+      name: 'ロール名',
+      description: '説明',
+      permissionsRead: '読み取り',
+      permissionsWrite: '書き込み',
+      permissions: {
+        apps: 'アプリ',
+        name: '権限',
+        pipelines: 'パイプライン',
+        accounts: 'アカウント',
+        settings: '設定',
+        security: 'セキュリティ',
+        tokens: 'トークン',
+        audit: '監査',
+        console: 'コンソール',
+        logs: 'ログ',
+        reboot: '再起動',
+      },
+    },
+  },
+  tokens: {
+    name: 'トークン',
+    search: 'トークンを検索',
+    form: {
+      id: 'トークンID',
+      name: 'トークン名',
+      expiresAt: '有効期限',
+      owner: '所有者',
+    },
+  },
   global: {
     name: "名前",
     value: "値",

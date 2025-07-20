@@ -11,7 +11,7 @@
       <template #top>
         <v-text-field
           v-model="search"
-          label="Search Teams"
+          :label="$t('teams.search')"
           prepend-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -75,19 +75,19 @@
         :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create Team</span>
+        <span class="sr-only">{{ $t('teams.actions.create') }}</span>
       </v-btn>
     </div>
 
     <!-- Dialog to edit a group -->
     <v-dialog v-model="editDialog" max-width="500px">
       <v-card>
-        <v-card-title>Edit Team</v-card-title>
+        <v-card-title>{{ $t('teams.actions.edit') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="editedTeam.name" label="Team Name"></v-text-field>
+          <v-text-field v-model="editedTeam.name" :label="$t('teams.form.name')"></v-text-field>
           <v-text-field
             v-model="editedTeam.description"
-            label="Description"
+            :label="$t('teams.form.description')"
             type="text"
             multiline
             rows="2"
@@ -95,8 +95,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="editDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+          <v-btn text @click="editDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{ $t('global.save') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -104,12 +104,12 @@
     <!-- Dialog for a new Team -->
     <v-dialog v-model="createDialog" max-width="500px">
       <v-card>
-        <v-card-title>Create Team</v-card-title>
+        <v-card-title>{{ $t('teams.actions.create') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newTeam.name" label="Team Name"></v-text-field>
+          <v-text-field v-model="newTeam.name" :label="$t('teams.form.name')"></v-text-field>
           <v-text-field
             v-model="newTeam.description"
-            label="Description"
+            :label="$t('teams.form.description')"
             type="text"
             multiline
             rows="2"
@@ -117,8 +117,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="createDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveCreate">Create</v-btn>
+          <v-btn text @click="createDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveCreate">{{ $t('global.create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -129,10 +129,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../../stores/auth'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'TeamsTable',
   setup() {
+    const { t } = useI18n() 
     interface Team {
       id?: string;
       name: string;
@@ -150,9 +152,9 @@ export default defineComponent({
     const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
-      { title: 'Team', value: 'name' },
-      { title: 'Description', value: 'description' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: t('teams.name'), value: 'name' },
+      { title: t('teams.form.description'), value: 'description' },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadTeams = async () => {

@@ -321,7 +321,7 @@ export default defineComponent({
       { text: 'Updated', value: 'updatedAt' },
       */
       { title: t('user.status'), value: 'isActive' },
-      { title: t('user.actions.name'), value: 'actions', sortable: false, align: 'end' as const },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadUsers = async () => {

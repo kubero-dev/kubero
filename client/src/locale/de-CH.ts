@@ -12,6 +12,62 @@ const messages = {
     theme: 'Dunkel/Hell Modus',
     documentation: 'Dokumentation',
   },
+  accounts: {
+    users: 'Benutzer',
+    teams: 'Teams',
+    roles: 'Rolle',
+    tokens: 'Token',
+  },
+  teams: {
+    name: 'Teams',
+    search: 'Team sueche',
+    actions: {
+      create: 'Team erstelle',
+      edit: 'Team bearbeite',
+    },
+    form: {
+      name: 'Teamname',
+      description: 'Beschrieb',
+    },
+  },
+  roles: {
+    name: 'Rolle',
+    search: 'Rolle sueche',
+    permission: 'Berächtigung',
+    actions: {
+      create: 'Rolle erstelle',
+      edit: 'Rolle bearbeite',
+    },
+    form: {
+      name: 'Rollename',
+      description: 'Beschrieb',
+      permissionsRead: 'Läse',
+      permissionsWrite: 'Schriebe',
+      permissions: {
+        apps: 'Apps',
+        name: 'Berächtigung',
+        pipelines: 'Pipeline',
+        accounts: 'Konti',
+        settings: 'Iistellige',
+        security: 'Sicherheit',
+        tokens: 'Token',
+        audit: 'Audit',
+        console: 'Konsole',
+        logs: 'Logs',
+        reboot: 'Neustart',
+      },
+    },
+  },
+  tokens: {
+    name: 'Token',
+    search: 'Token sueche',
+    form: {
+      id: 'Token-ID',
+      name: 'Token-Name',
+      expiresAt: 'Lauft ab',
+      owner: 'Bsitzer',
+    },
+  },
   global: {
     name: "Name",
     value: "Wert",

@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-tabs v-model="tab" background-color="primary" dark>
-      <v-tab>Users</v-tab>
-      <v-tab>Teams</v-tab>
-      <v-tab>Roles</v-tab>
-      <v-tab>Tokens</v-tab>
+      <v-tab>{{ $t('accounts.users') }}</v-tab>
+      <v-tab>{{ $t('accounts.teams') }}</v-tab>
+      <v-tab>{{ $t('accounts.roles') }}</v-tab>
+      <v-tab>{{ $t('accounts.tokens') }}</v-tab>
     </v-tabs>
     <v-tabs-window v-model="tab">
       <v-tabs-window-item :value="0">

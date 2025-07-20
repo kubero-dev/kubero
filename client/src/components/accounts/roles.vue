@@ -11,7 +11,7 @@
       <template #top>
         <v-text-field
           v-model="search"
-          label="Search Roles"
+          :label="$t('roles.search')"
           prepend-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -168,21 +168,21 @@
         :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create Role</span>
+        <span class="sr-only">{{ $t('roles.actions.edit') }}</span>
       </v-btn>
     </div>
 
     <!-- Dialog to edit a role -->
     <v-dialog v-model="editDialog" max-width="500px">
       <v-card>
-        <v-card-title>Edit Role</v-card-title>
+        <v-card-title>{{ $t('roles.actions.edit') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="editedRole.name" label="Role Name"></v-text-field>
           <v-text-field v-model="editedRole.description" label="Descrioption"></v-text-field>
           <v-table density="compact" class="mb-4">
             <tbody>
               <tr>
-                <td>App Permissions</td>
+                <td>{{ $t('roles.form.permissions.apps') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[0].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -192,7 +192,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Pipeline Permissions</td>
+                <td>{{ $t('roles.form.permissions.pipelines') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[1].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -202,7 +202,7 @@
                 </td>
               </tr>
               <tr>
-                <td>User Permissions</td>
+                <td>{{ $t('roles.form.permissions.accounts') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[2].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -212,7 +212,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Config Permissions</td>
+                <td>{{ $t('roles.form.permissions.settings') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[3].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -222,7 +222,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Security Permissions</td>
+                <td>{{ $t('roles.form.permissions.security') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[4].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -232,7 +232,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Token Permissions</td>
+                <td>{{ $t('roles.form.permissions.tokens') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="editedRole.permissions[5].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -242,25 +242,25 @@
                 </td>
               </tr>
               <tr>
-                <td>Audit</td>
+                <td>{{ $t('roles.form.permissions.audit') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[6].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Console</td>
+                <td>{{ $t('roles.form.permissions.console') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[7].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Logs</td>
+                <td>{{ $t('roles.form.permissions.logs') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[8].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Reboot</td>
+                <td>{{ $t('roles.form.permissions.reboot') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="editedRole.permissions[9].action" label=""></v-switch>
                 </td>
@@ -286,7 +286,7 @@
           <v-table density="compact" class="mb-4">
             <tbody>
               <tr>
-                <td>App Permissions</td>
+                <td>{{ $t('roles.form.permissions.apps') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[0].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -296,7 +296,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Pipeline Permissions</td>
+                <td>{{ $t('roles.form.permissions.pipelines') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[1].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -306,7 +306,7 @@
                 </td>
               </tr>
               <tr>
-                <td>User Permissions</td>
+                <td>{{ $t('roles.form.permissions.accounts') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[2].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -316,7 +316,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Config Permissions</td>
+                <td>{{ $t('roles.form.permissions.settings') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[3].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -326,7 +326,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Security Permissions</td>
+                <td>{{ $t('roles.form.permissions.security') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[4].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -336,7 +336,7 @@
                 </td>
               </tr>
               <tr>
-                <td>Token Permissions</td>
+                <td>{{ $t('roles.form.permissions.tokens') }} {{ $t('roles.permission') }}</td>
                 <td>
                   <v-radio-group v-model="newRole.permissions[5].action" inline>
                     <v-radio label="none" value="none"></v-radio>
@@ -346,25 +346,25 @@
                 </td>
               </tr>
               <tr>
-                <td>Audit</td>
+                <td>{{ $t('roles.form.permissions.audit') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[6].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Console</td>
+                <td>{{ $t('roles.form.permissions.console') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[7].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Logs</td>
+                <td>{{ $t('roles.form.permissions.logs') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[8].action" label=""></v-switch>
                 </td>
               </tr>
               <tr>
-                <td>Reboot</td>
+                <td>{{ $t('roles.form.permissions.reboot') }}</td>
                 <td>
                   <v-switch color="primary" value="ok" false-value="none" v-model="newRole.permissions[9].action" label=""></v-switch>
                 </td>
@@ -386,10 +386,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../../stores/auth'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'RolesTable',
   setup() {
+    const { t } = useI18n() 
     interface Role {
       id: string | number;
       name: string;
@@ -426,20 +428,20 @@ export default defineComponent({
     const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
-      { title: 'Role', value: 'name' },
+      { title: t('roles.name'), value: 'name' },
       //{ title: 'Permissions', value: 'permissions' },
-      { title: 'App', value: 'permissionsApp', align: 'center' as const },
-      { title: 'Pipeline', value: 'permissionsPipeline', align: 'center' as const },
-      { title: 'Accounts', value: 'permissionsAccount', align: 'center' as const},
-      { title: 'Settings', value: 'permissionsConfig', align: 'center' as const},
-      { title: 'Security', value: 'permissionsSecurity', align: 'center' as const},
-      { title: 'Token', value: 'permissionsToken', align: 'center' as const},
-      { title: 'Audit', value: 'permissionsAudit', align: 'center' as const},
-      { title: 'Console', value: 'permissionsConsole', align: 'center' as const},
-      { title: 'Logs', value: 'permissionsLogs', align: 'center' as const},
-      { title: 'Reboot', value: 'permissionsReboot', align: 'center' as const},
+      { title: t('roles.form.permissions.apps'), value: 'permissionsApp', align: 'center' as const },
+      { title: t('roles.form.permissions.pipelines'), value: 'permissionsPipeline', align: 'center' as const },
+      { title: t('roles.form.permissions.accounts'), value: 'permissionsAccount', align: 'center' as const},
+      { title: t('roles.form.permissions.settings'), value: 'permissionsConfig', align: 'center' as const},
+      { title: t('roles.form.permissions.security'), value: 'permissionsSecurity', align: 'center' as const},
+      { title: t('roles.form.permissions.tokens'), value: 'permissionsToken', align: 'center' as const},
+      { title: t('roles.form.permissions.audit'), value: 'permissionsAudit', align: 'center' as const},
+      { title: t('roles.form.permissions.console'), value: 'permissionsConsole', align: 'center' as const},
+      { title: t('roles.form.permissions.logs'), value: 'permissionsLogs', align: 'center' as const},
+      { title: t('roles.form.permissions.reboot'), value: 'permissionsReboot', align: 'center' as const},
 
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadRoles = async () => {
