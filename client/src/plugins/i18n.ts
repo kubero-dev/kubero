@@ -1,7 +1,9 @@
+import { profile } from 'console'
 import { access } from 'fs'
-import { size, update } from 'lodash'
+import { create, size, update } from 'lodash'
+import { abort } from 'process'
 import { createI18n } from 'vue-i18n'
-import { en, de, ja } from 'vuetify/locale'
+import { en, de, ja, ca } from 'vuetify/locale'
 
 export default createI18n({
   legacy: false,
@@ -28,6 +30,9 @@ export default createI18n({
         size: "Size",
         create: "Create",
         update: "Update",
+        abort: "Abort",
+        cancel: "Cancel",
+        save: "Save",
       },
       pipeline: {
         name: 'Pipeline',
@@ -218,6 +223,23 @@ export default createI18n({
             rescan: 'Rescan',
           }
         },
+      },
+      profile: {
+        titles: {
+          apiTokens: 'API Tokens',
+          profileDetails: 'Profile Details',
+        },
+        avatar: {
+          edit: 'Edit Avatar',
+          limitMessage: 'The image must not exceed 100KB.',
+          uploadAvatar: 'Upload new Avatar',
+        },
+        token: {
+          create: 'Create Token',
+          expiresAt: 'Expires At',
+          noTokens: 'No tokens found.',
+          details: 'Token Details',
+        }
       },
       $vuetify: {
         ...en,
@@ -466,6 +488,23 @@ export default createI18n({
             rescan: 'Erneut scannen',
           }
         },
+      },
+      profile: {
+        titles: {
+          apiTokens: 'API Tokens',
+          profileDetails: 'Profil Details',
+        },
+        avatar: {
+          edit: 'Avatar bearbeiten',
+          limitMessage: 'Das Bild darf 100KB nicht überschreiten.',
+          uploadAvatar: 'Neuen Avatar hochladen',
+        },
+        token: {
+          create: 'Token erstellen',
+          expiresAt: 'Läuft ab am',
+          noTokens: 'Keine Tokens gefunden.',
+          details: 'Token Details',
+        }
       },
       $vuetify: {
         ...de,

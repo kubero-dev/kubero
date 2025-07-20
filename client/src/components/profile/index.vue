@@ -23,28 +23,41 @@
           <!--<div class="text--secondary">Last login: <span v-if="user.lastLogin">{{ new Date(user.lastLogin).toLocaleString() }}</span><span v-else>-</span></div>-->
 
           <div class="locale-changer">
+            <!--
             <select v-model="$i18n.locale">
               <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}</option>
             </select>
+            -->
+            <v-select
+              v-model="$i18n.locale"
+              :items="$i18n.availableLocales"
+              item-text="name"
+              item-value="code"
+              variant="underlined"
+              label-disabled="Select Language"
+              class="mt-2"
+              style="max-width: 200px;"
+              density="compact"
+            ></v-select>
           </div>
           <v-dialog v-model="editAvatarDialog" max-width="400px">
             <v-card>
-              <v-card-title>Edit Avatar</v-card-title>
+              <v-card-title>{{ $t('profile.avatar.edit') }}</v-card-title>
               <v-card-text>
                 <v-alert type="warning" density="compact" class="mb-2">
-                  The image must not exceed 100KB.
+                  {{ $t('profile.avatar.limitMessage') }}
                 </v-alert>
                 <v-file-input
                   v-model="avatarFile"
-                  label="Upload new avatar"
+                  :label="$t('profile.avatar.uploadAvatar')"
                   accept="image/*"
                   prepend-icon="mdi-image"
                 ></v-file-input>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="editAvatarDialog = false">Cancel</v-btn>
-                <v-btn color="primary" @click="saveAvatar">Save</v-btn>
+                <v-btn text @click="editAvatarDialog = false">{{ $t('global.cancel') }}</v-btn>
+                <v-btn color="primary" @click="saveAvatar">{{ $t('global.save') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -53,7 +66,7 @@
       <v-col cols="12" md="6" lg="8">
         <v-card color="cardBackground" class="pa-4">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-            <h3>Profile Details</h3>
+            <h3>{{ $t('profile.titles.profileDetails') }}</h3>
             <div>
               <v-btn
                 icon
@@ -151,8 +164,8 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="editProfileDialog = false">Cancel</v-btn>
-                <v-btn color="primary" @click="saveProfile">Save</v-btn>
+                <v-btn text @click="editProfileDialog = false">{{ $t('global.cancel') }}</v-btn>
+                <v-btn color="primary" @click="saveProfile">{{ $t('global.save') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -219,14 +232,14 @@
               :disabled="!authStore.hasPermission('token:ok') && !authStore.hasPermission('token:write')"
             >
               <v-icon>mdi-plus</v-icon>
-              <span class="sr-only">Create Token</span>
+              <span class="sr-only">{{ $t('profile.token.create') }}</span>
             </v-btn>
           </div>
           <v-table density="compact" class="profile-table">
             <thead>
               <tr>
-                <th>Name</th>
-                <th>Expires At</th>
+                <th>{{ $t('global.name') }}</th>
+                <th>{{ $t('profile.token.expiresAt') }}</th>
                 <th class="text-end">Actions</th>
               </tr>
             </thead>
@@ -250,31 +263,31 @@
                 </td>
               </tr>
               <tr v-if="tokens.length === 0">
-                <td colspan="3" class="text-center">No tokens found.</td>
+                <td colspan="3" class="text-center">{{ $t('profile.token.noTokens') }}</td>
               </tr>
             </tbody>
           </v-table>
           <v-dialog v-model="createDialog" max-width="500px">
             <v-card>
-              <v-card-title>Create Token</v-card-title>
+              <v-card-title>{{ $t('profile.token.create') }}</v-card-title>
               <v-card-text>
-                <v-text-field v-model="newToken.name" label="Name"></v-text-field>
+                <v-text-field v-model="newToken.name" :label="$t('global.name')"></v-text-field>
                 <v-text-field
                   v-model="newToken.expiresAt"
-                  label="Expires At (ISO)"
+                  :label="$t('profile.token.expiresAt')"
                   type="datetime-local"
                 ></v-text-field>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="createDialog = false">Abort</v-btn>
-                <v-btn color="primary" @click="saveCreate">Create</v-btn>
+                <v-btn text @click="createDialog = false">{{ $t('global.abort') }}</v-btn>
+                <v-btn color="primary" @click="saveCreate">{{ $t('global.create') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
           <v-dialog v-model="tokenDialog" max-width="500px">
             <v-card>
-              <v-card-title>Token Details</v-card-title>
+              <v-card-title>{{ $t('profile.token.details') }}</v-card-title>
               <v-card-text>
                 <v-alert type="warning" density="compact" class="mb-2">
                   This token will <strong>not be shown again</strong>. Please copy and store it securely now.
