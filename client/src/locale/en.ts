@@ -1,4 +1,5 @@
-import { en } from 'vuetify/locale'
+import { errorMessages } from 'vue/compiler-sfc'
+import { en, he } from 'vuetify/locale'
 
 const messages = {
       navigation: {
@@ -315,6 +316,28 @@ const messages = {
           name: 'Token Name',
           expiresAt: 'Expires At',
           owner: 'Owner',
+        },
+      },
+      podsizes: {
+        name: 'Pod Sizes',
+        helpTitle: 'What are PodSizes?',
+        helpText: '<p><strong>PodSizes</strong> define the resource requests and limits for your application\'s pods in Kubero. You can create, edit, and delete pod sizes to match your workload requirements.</p><p class="mt-2"><a href="https://www.kubero.dev/docs/usermanual/podsizes/" target="_blank" rel="noopener">Read more in the Kubero documentation</a></p>',
+        form: {
+          name: 'Pod Size Name',
+          description: 'Description',
+          cpuRequest: 'CPU Request (m)',
+          cpuLimit: 'CPU Limit (m)',
+          memoryRequest: 'Memory Request (Gi)',
+          memoryLimit: 'Memory Limit (Gi)',
+          cpu: 'CPU',
+          memory: 'Memory',
+        },
+        actions: {
+          create: 'Create Pod Size',
+          edit: 'Edit Pod Size',
+        },
+        errors: {
+          loadinPodsize: 'Error loading Pod Sizes',
         },
       },
       $vuetify: {
