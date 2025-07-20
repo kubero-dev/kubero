@@ -21,6 +21,12 @@
           <div class="text-h5 font-weight-bold mb-2">{{ user.username }}</div>
           <div class="mb-2">{{ user.email }}</div>
           <!--<div class="text--secondary">Last login: <span v-if="user.lastLogin">{{ new Date(user.lastLogin).toLocaleString() }}</span><span v-else>-</span></div>-->
+
+          <div class="locale-changer">
+            <select v-model="$i18n.locale">
+              <option v-for="locale in $i18n.availableLocales" :key="`locale-${locale}`" :value="locale">{{ locale }}</option>
+            </select>
+          </div>
           <v-dialog v-model="editAvatarDialog" max-width="400px">
             <v-card>
               <v-card-title>Edit Avatar</v-card-title>
