@@ -1,5 +1,10 @@
+
 import { createI18n } from 'vue-i18n'
-import { de, en, ja, zhHans } from '../locale/locale'
+import en from '../locale/en'
+import ja from '../locale/ja'
+import de from '../locale/de'
+import zhHans from '../locale/zhHans'
+import deCH from '../locale/de-CH'
 
 export default createI18n({
   legacy: false,
@@ -10,5 +15,6 @@ export default createI18n({
     ja: ja,
     de: de,
     zhHans: zhHans,
+    'de-CH': deCH,
   },
 })
