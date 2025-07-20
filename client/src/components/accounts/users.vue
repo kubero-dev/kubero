@@ -11,7 +11,7 @@
       <template #top>
         <v-text-field
           v-model="search"
-          label="Search Users"
+          :label="$t('user.actions.search')"
           prepend-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -136,14 +136,14 @@
         :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create User</span>
+        <span class="sr-only">{{ $t('user.actions.create') }}</span>
       </v-btn>
     </div>
 
     <!-- Dialog to edit a user -->
     <v-dialog v-model="editDialog" max-width="500px">
       <v-card>
-        <v-card-title>Edit User</v-card-title>
+        <v-card-title>{{ $t('user.actions.edit') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="editedUser.username" label="Username"></v-text-field>
           <v-text-field v-model="editedUser.firstName" label="First Name"></v-text-field>
@@ -174,8 +174,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="editDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+          <v-btn text @click="editDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{ $t('global.save') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -183,7 +183,7 @@
     <!-- Dialog for a new User -->
     <v-dialog v-model="createDialog" max-width="500px">
       <v-card>
-        <v-card-title>Create User</v-card-title>
+        <v-card-title>{{ $t('user.actions.create') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="newUser.username" label="Username"></v-text-field>
           <v-text-field v-model="newUser.firstName" label="First Name"></v-text-field>
@@ -215,8 +215,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="createDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveCreate">Create</v-btn>
+          <v-btn text @click="createDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveCreate">{{ $t('global.create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -224,23 +224,23 @@
     <!-- Dialog to change password -->
     <v-dialog v-model="changePasswordDialog" max-width="500px">
       <v-card>
-        <v-card-title>Change Password for {{ editedUser.username }}</v-card-title>
+        <v-card-title>{{ $t('user.changePasswordFor', {user: editedUser.username}) }}</v-card-title>
         <v-card-text>
           <v-text-field
             v-model="editedUser.password"
-            label="New Password"
+            :label="$t('user.newPassword')"
             type="password"
           ></v-text-field>
           <v-text-field
             v-model="editedUser.confirmPassword"
-            label="Confirm Password"
+            :label="$t('user.confirmPassword')"
             type="password"
           ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="changePasswordDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveChangePassword">Change Password</v-btn>
+          <v-btn text @click="changePasswordDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveChangePassword">{{ $t('user.changePassword') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -251,10 +251,13 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../../stores/auth'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'UserList',
   setup() {
+
+    const { t } = useI18n() 
     interface User {
       id: string | number;
       username: string;
@@ -306,19 +309,19 @@ export default defineComponent({
     const writeUserPermission = authStore.hasPermission('user:write')
 
     const headers = [
-      { title: 'Username', value: 'username' },
-      { title: 'Name', value: 'name' },
+      { title: t('user.username'), value: 'username' },
+      { title: t('global.name'), value: 'name' },
       //{ title: 'First Name', value: 'firstName' },
       //{ title: 'Last Name', value: 'lastName' },
-      { title: 'E-Mail', value: 'email' },
-      { title: 'Role', value: 'role', sortable: false },
-      { title: 'Teams', value: 'userGroups', sortable: false },
+      { title: t('user.email'), value: 'email' },
+      { title: t('user.role'), value: 'role', sortable: false },
+      { title: t('user.teams'), value: 'userGroups', sortable: false },
       /*
       { text: 'Created', value: 'createdAt' },
       { text: 'Updated', value: 'updatedAt' },
       */
-      { title: 'Status', value: 'isActive' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: t('user.status'), value: 'isActive' },
+      { title: t('user.actions.name'), value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadUsers = async () => {

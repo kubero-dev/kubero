@@ -239,8 +239,38 @@ export default createI18n({
           expiresAt: 'Expires At',
           noTokens: 'No tokens found.',
           details: 'Token Details',
-        }
+        },
+        actions: {
+          editProfile: 'Edit Profile',
+        },
       },
+      user: {
+        name: 'User',
+        email: 'E-Mail',
+        username: 'Username',
+        firstName: 'First Name',
+        lastName: 'Last Name',
+        role: 'Role',
+        teams: 'Teams',
+        provider: 'Provider',
+        status: 'Status',
+        password: 'Password',
+        changePassword: 'Change Password',
+        changePasswordFor: 'Change Password for {user}',
+        currentPassword: 'Current Password',
+        newPassword: 'New Password',
+        confirmPassword: 'Confirm Password',
+        errors: {
+          passwordMismatch: 'Passwords do not match',
+          passwordConfirm: 'Please confirm your password',
+        },
+        actions: {
+          name: 'Actions',
+          create: 'Create User',
+          edit: 'Edit User',
+          search: 'Search User',
+        }
+      }, 
       $vuetify: {
         ...en,
       },
@@ -504,6 +534,36 @@ export default createI18n({
           expiresAt: 'Läuft ab am',
           noTokens: 'Keine Tokens gefunden.',
           details: 'Token Details',
+        },
+        actions: {
+          editProfile: 'Profil bearbeiten',
+        }
+      },
+      user: {
+        name: 'Benutzer',
+        email: 'E-Mail',
+        username: 'Benutzername',
+        firstName: 'Vorname',
+        lastName: 'Nachname',
+        role: 'Rolle',
+        teams: 'Teams',
+        provider: 'Provider',
+        status: 'Status',
+        password: 'Passwort',
+        changePassword: 'Password ändern',
+        changePasswordFor: 'Passwort für {user} ändern',
+        currentPassword: 'Aktuelles Passwort',
+        newPassword: 'Neues Passwort',
+        confirmPassword: 'Passwort bestätigen',
+        errors: {
+          passwordMismatch: 'Passwörter stimmen nicht überein',
+          passwordConfirm: 'Bitte bestätige dein Passwort',
+        },
+        actions: {
+          name: 'Aktionen',
+          create: 'Benutzer erstellen',
+          edit: 'Benutzer bearbeiten',
+          search: 'Nach Benutzer suchen',
         }
       },
       $vuetify: {

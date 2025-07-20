@@ -91,23 +91,23 @@
           <v-table density="compact" class="profile-table">
             <tbody>
               <tr>
-                <td><strong>First Name</strong></td>
+                <td><strong>{{ $t('user.firstName') }}</strong></td>
                 <td>{{ user.firstName }}</td>
               </tr>
               <tr>
-                <td><strong>Last Name</strong></td>
+                <td><strong>{{ $t('user.lastName') }}</strong></td>
                 <td>{{ user.lastName }}</td>
               </tr>
               <tr>
-                <td><strong>Email</strong></td>
+                <td><strong>{{ $t('user.email') }}</strong></td>
                 <td>{{ user.email }}</td>
               </tr>
               <tr>
-                <td><strong>Username</strong></td>
+                <td><strong>{{ $t('user.username') }}</strong></td>
                 <td>{{ user.username }}</td>
               </tr>
               <tr>
-                <td><strong>Role</strong></td>
+                <td><strong>{{ $t('user.role') }}</strong></td>
                 <td>
                   <v-chip class="ma-2" color="primary" label v-if="user.role">
                     <v-icon icon="mdi-account-circle-outline" start></v-icon>
@@ -117,21 +117,21 @@
                 </td>
               </tr>
               <tr>
-                <td><strong>Teams</strong></td>
+                <td><strong>{{ $t('user.teams') }}</strong></td>
                 <td>
                   <v-chip v-for="group in user.userGroups" :key="group.id" class="ma-1" color="grey" prepend-icon="mdi-account-group">{{ group.name }}</v-chip>
                   <span v-if="!user.userGroups || user.userGroups.length === 0">-</span>
                 </td>
               </tr>
               <tr>
-                <td><strong>Provider</strong></td>
+                <td><strong>{{ $t('user.provider') }}</strong></td>
                 <td>{{ user.provider || 'local' }}</td>
               </tr>
             </tbody>
           </v-table>
           <v-dialog v-model="editProfileDialog" max-width="500px">
             <v-card>
-              <v-card-title>Edit Profile</v-card-title>
+              <v-card-title>{{ $t('profile.actions.editProfile') }}</v-card-title>
               <v-card-text>
                 <v-alert
                   v-show="profileError"
@@ -144,17 +144,17 @@
                 </v-alert>
                 <v-text-field
                   v-model="editedUser.firstName"
-                  label="First Name"
+                  :label="$t('user.firstName')"
                   :rules="[v => !!v || 'First name is required']"
                 ></v-text-field>
                 <v-text-field
                   v-model="editedUser.lastName"
-                  label="Last Name"
+                  :label="$t('user.lastName')"
                   :rules="[v => !!v || 'Last name is required']"
                 ></v-text-field>
                 <v-text-field
                   v-model="editedUser.email"
-                  label="Email"
+                  :label="$t('user.email')"
                   type="email"
                   :rules="[
                     v => !!v || 'Email is required',
@@ -171,7 +171,7 @@
           </v-dialog>
           <v-dialog v-model="changePasswordDialog" max-width="500px">
             <v-card>
-              <v-card-title>Change Password</v-card-title>
+              <v-card-title>{{ $t('user.actions.changePassword') }}</v-card-title>
               <v-card-text>
                 <v-alert
                   v-show="passwordError"
@@ -184,14 +184,14 @@
                 </v-alert>
                 <v-text-field
                   v-model="passwordForm.currentPassword"
-                  label="Current Password"
+                  :label="$t('user.currentPassword')"
                   type="password"
                   :rules="[v => !!v || 'Current password is required']"
                   class="mb-2"
                 ></v-text-field>
                 <v-text-field
                   v-model="passwordForm.newPassword"
-                  label="New Password"
+                  :label="$t('user.newPassword')"
                   type="password"
                   :rules="[
                     v => !!v || 'New password is required',
@@ -201,18 +201,18 @@
                 ></v-text-field>
                 <v-text-field
                   v-model="passwordForm.confirmPassword"
-                  label="Confirm New Password"
+                  :label="$t('user.confirmPassword')"
                   type="password"
                   :rules="[
-                    v => !!v || 'Please confirm your password',
-                    v => v === passwordForm.newPassword || 'Passwords do not match'
+                    v => !!v || $t('user.errors.passwordConfirm'),
+                    v => v === passwordForm.newPassword || $t('user.errors.passwordMismatch')
                   ]"
                 ></v-text-field>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="changePasswordDialog = false">Cancel</v-btn>
-                <v-btn color="primary" @click="savePassword">Change Password</v-btn>
+                <v-btn text @click="changePasswordDialog = false">{{ $t('global.cancel') }}</v-btn>
+                <v-btn color="primary" @click="savePassword">{{ $t('user.changePassword') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -240,7 +240,7 @@
               <tr>
                 <th>{{ $t('global.name') }}</th>
                 <th>{{ $t('profile.token.expiresAt') }}</th>
-                <th class="text-end">Actions</th>
+                <th class="text-end">{{ $t('user.actions.name') }}</th>
               </tr>
             </thead>
             <tbody>
