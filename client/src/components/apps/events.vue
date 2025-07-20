@@ -1,10 +1,5 @@
 <template>
     <v-container>
-        <v-row class="justify-space-between">
-            <v-col cols="6" sm="6" md="6" lg="6" xl="6">
-                Kubernetes event stream for <strong>{{ app }}</strong>
-            </v-col>
-        </v-row>
         <v-layout class="flex-column">
             <!--
                     <v-row  v-for="event in events" :key="event.uid">
@@ -65,10 +60,10 @@
                             variant="tonal"
                             border="start"
                         >
-                            <h3>No events found</h3>
-                            The default TTL for events in the Kube-API is 1 hour. If you want to 
-                            see older events, you have to increase the TTL in the 
-                            <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">Kube-apiserver</a>.
+                            <h3>{{ $t('app.events.empty.title', { app: app }) }}</h3>
+                            <p>{{ $t('app.events.empty.message') }}</p>
+                            <br>
+                            <a href="https://kubernetes.io/docs/reference/command-line-tools-reference/kube-apiserver/" target="_blank">{{ $t('app.events.empty.link') }}</a>
 
                         </v-alert>
                     </v-col>

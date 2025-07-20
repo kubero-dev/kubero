@@ -13,7 +13,7 @@
                     class="ma-2"
                     @click="openInWindow"
                     color="secondary"
-                    >Open Logs
+                    >{{ $t('app.actions.openLogs') }}
                     <v-icon right dark >mdi-open-in-new</v-icon>
                 </v-btn>
                 <p></p>

@@ -17,13 +17,13 @@
         </v-col>
         <v-col cols="12" sm="11" md="11" lg="11" xl="11">
             <h1 v-if="app=='new'">
-                Create a new App in {{ pipeline }}
+                {{ $t('app.form.createNewApp', { pipeline: pipeline }) }}
             </h1>
             <h1 v-if="app!='new'">
-                Edit {{ app }} in {{ pipeline }}
+                {{ $t('app.form.editApp', { app: app, pipeline: pipeline }) }}
             </h1>
             <p class="text-justify">
-                in phase {{ phase }}
+                {{ phase }}
             </p>
         </v-col>
       </v-row>
@@ -40,7 +40,7 @@
             prominent
             border="start"
           >
-            Please change all passwords, tokens and select the correct storageClass for your cluster.
+            {{ $t('app.form.warning') }}
           </v-alert>
         </v-col>
       </v-row>
@@ -55,7 +55,7 @@
             :rules="nameRules"
             :counter="60"
             :disabled="app!='new'"
-            label="App name"
+            :label="$t('app.form.appName')"
             v-on:input="changeName(name)"
             required
           ></v-text-field>
@@ -90,7 +90,7 @@
             v-model="host.host"
             :rules="domainRules"
             :counter="60"
-            label="Domain"
+            :label="$t('app.form.domain')"
             required
           ></v-text-field>
         </v-col>
@@ -148,7 +148,7 @@
         >
             <v-text-field
               v-model="containerPort"
-              label="Container Port"
+              :label="$t('app.form.containerPort')"
             ></v-text-field>
         </v-col>
       </v-row>
@@ -184,7 +184,7 @@
             <v-radio-group
               v-model="deploymentstrategy"
               row
-              label="Strategy"
+              :label="$t('app.form.strategy')"
             >
               <v-radio
                 label="Container Image"

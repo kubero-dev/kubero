@@ -11,7 +11,7 @@
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))" v-if="appData.spec.gitrepo != undefined">
                         <tbody>
                         <tr>
-                            <th>Domains</th>
+                            <th>{{ $t('app.domains') }}</th>
                             <td>
                                 <ul style="list-style-type: none; padding: 0;">
                                     <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
@@ -22,39 +22,39 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>Deployment Strategy</th>
+                            <th>{{ $t('app.deploymentStrategy') }}</th>
                             <td>{{ appData.spec.deploymentstrategy }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git' && appData.spec.deploymentstrategy == 'plain'">
-                            <th>Runpack</th>
+                            <th>{{ $t('app.runpack') }}</th>
                             <td>{{ appData.spec.buildpack }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">
-                            <th>Build Strategy</th>
+                            <th>{{ $t('app.buildStrategy') }}</th>
                             <td>{{ appData.spec.buildstrategy }}</td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">
-                            <th>Git Repo</th>
+                            <th>{{ $t('app.gitRepo') }}</th>
                             <td><a :href="appData.spec.gitrepo.clone_url" target="_blank">{{ appData.spec.gitrepo.clone_url }}:{{ appData.spec.branch }}</a></td>
                         </tr>
                         <tr v-if="appData.spec.deploymentstrategy == 'git'">
-                            <th>Autodeploy</th>
+                            <th>{{ $t('app.autodeploy') }}</th>
                             <td>{{ appData.spec.autodeploy }}</td>
                         </tr>
                         <tr>
-                            <th>Pod Size</th>
+                            <th>{{ $t('app.podSize') }}</th>
                             <td>{{ appData.spec.podsize.description }}</td>
                         </tr>
                         <tr>
-                            <th>Autoscale</th>
+                            <th>{{ $t('app.autoscale') }}</th>
                             <td>{{ appData.spec.autoscale }}</td>
                         </tr>
                         <tr>
-                            <th>Web Replicas</th>
+                            <th>{{ $t('app.webReplicas') }}</th>
                             <td>{{ appData.spec.web.replicaCount }}</td>
                         </tr>
                         <tr>
-                            <th>Worker Replicas</th>
+                            <th>{{ $t('app.workerReplicas') }}</th>
                             <td>{{ appData.spec.worker.replicaCount }}</td>
                         </tr>
                         </tbody>
@@ -69,7 +69,7 @@
                     -->
                 </div>
                 <div class="mb-3">
-                    <h3>Consumption</h3>
+                    <h3>{{ $t('app.titles.consumption') }}</h3>
                 </div>
                 <div class="px-5" v-if="metricsDisplay == 'bars'">
                     <v-row>
@@ -96,15 +96,15 @@
                     </v-row>
                 </div>
                 <div class="mb-5 mt-10">
-                    <h3>Environment Variables</h3>
+                    <h3>{{ $t('app.titles.environmentVariables') }}</h3>
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
                         <tr>
                             <th class="text-left">
-                            Name
+                            {{ $t('global.name') }}
                             </th>
                             <th class="text-left">
-                            Value
+                            {{ $t('global.value') }}
                             </th>
                         </tr>
                         </thead>
@@ -118,15 +118,15 @@
                     </v-table>
                 </div>
                 <div class="mb-5 mt-10" v-if="appData.spec.saAnnotations?.length > 0">
-                    <h3>Service Acccount Annotations</h3>
+                    <h3>{{ $t('app.titles.serviceAccountAnnotations') }}</h3>
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
                         <tr>
                             <th class="text-left">
-                            Name
+                            {{ $t('global.name') }}
                             </th>
                             <th class="text-left">
-                            Value
+                            {{ $t('global.value') }}
                             </th>
                         </tr>
                         </thead>
@@ -140,7 +140,7 @@
                     </v-table>
                 </div>
                 <div class="mb-5" v-if="appData.spec?.extraVolumes?.length > 0">
-                    <h3>Volumes</h3>
+                    <h3>{{ $t('app.title.volumes') }}</h3>
                     <!--{{ appData.spec.extraVolumes }}-->
                     <v-row class="pt-5">
                         <v-col 
@@ -160,8 +160,8 @@
                                     </v-col>
                                     <v-col>
                                         <v-card-text class="pt-0">
-                                            <div><b>Size: </b>{{ volume.size }}</div>
-                                            <div><b>Access Mode: </b>{{ volume.accessMode }}</div>
+                                            <div><b>{{ $t('app.volumes.size') }}: </b>{{ volume.size }}</div>
+                                            <div><b>{{ $t('app.volumes.accessMode') }}: </b>{{ volume.accessMode }}</div>
                                         </v-card-text>
                                     </v-col>
                                 </v-row>
@@ -170,18 +170,18 @@
                     </v-row>
                 </div>
                 <div class="mb-5">
-                    <h3>Cronjobs</h3>
+                    <h3>{{ $t('app.titles.cronjobs') }}</h3>
                     <v-table density="compact" style="background:rgb(var(--v-theme-background))">
                         <thead>
                         <tr>
                             <th class="text-left">
-                            Name
+                            {{ $t('app.cronjobs.name') }}
                             </th>
                             <th class="text-left">
-                            Schedule
+                            {{ $t('app.cronjobs.schedule') }}
                             </th>
                             <th class="text-left">
-                            Command
+                            {{ $t('app.cronjobs.command') }}
                             </th>
                         </tr>
                         </thead>
@@ -196,7 +196,7 @@
                     </v-table>
                 </div>
                 <div class="mb-5" v-if="appData.spec?.addons?.length > 0">
-                    <h3>Addons</h3>
+                    <h3>{{ $t('app.titles.addOns') }}</h3>
                     <Addons :addons="appData.spec.addons" :showButtons="false"/>
                 </div>
             </v-sheet>

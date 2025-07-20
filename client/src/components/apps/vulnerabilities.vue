@@ -21,7 +21,7 @@
                         color="#8560A9"
                         class="mr-1"
                     ></v-progress-circular>
-                    <span>Rescan</span>
+                    <span>{{ $t('app.vulnerabilities.actions.rescan') }}</span>
                 </v-btn>
             </v-col>
         </v-row>
@@ -37,7 +37,7 @@
                                 <v-table density="compact" style="background:rgb(var(--v-theme-cardBackground))">
                                     <tbody>
                                         <tr>
-                                            <th>Last Scan</th>
+                                            <th>{{ $t('app.vulnerabilities.lastScan') }}</th>
                                             <td>{{ vulnScanResult.logPod.startTime }}</td>
                                         </tr>
                                         <tr>
@@ -58,27 +58,27 @@
                                                 {{ vulnScanResult.logs.ArtifactName }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Arch</th>
+                                            <th>{{ $t('app.vulnerabilities.arch') }}</th>
                                             <td>{{ vulnScanResult.logs.Metadata.ImageConfig.architecture }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Created</th>
+                                            <th>{{ $t('app.vulnerabilities.created') }}</th>
                                             <td>{{ vulnScanResult.logs.Metadata.ImageConfig.created }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>OS</th>
+                                            <th>{{ $t('app.vulnerabilities.os') }}</th>
                                             <td>{{ vulnScanResult.logs.Metadata.OS.Family }} {{ vulnScanResult.logs.Metadata.OS.Name }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Layers</th>
+                                            <th>{{ $t('app.vulnerabilities.layers') }}</th>
                                             <td>{{ vulnScanResult.logs.Metadata.ImageConfig.rootfs.diff_ids.length }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Working Dir</th>
+                                            <th>{{ $t('app.vulnerabilities.workingDir') }}</th>
                                             <td>{{ vulnScanResult.logs.Metadata.ImageConfig.config.WorkingDir }}</td>
                                         </tr>
                                         <tr v-if="vulnScanResult.logs.ArtifactType == 'container_image'">
-                                            <th>Exposed Ports</th>
+                                            <th>{{ $t('app.vulnerabilities.exposedPorts') }}</th>
                                             <td>
                                                 <v-chip
                                                     v-for="(item, key) in vulnScanResult.logs.Metadata.ImageConfig.config.ExposedPorts" :key="key"
@@ -100,7 +100,7 @@
                     <v-col cols="6" sm="6" md="6" lg="3" xl="3" v-if="renderVulnerabilities" >
                         <v-card elevation="2" outlined color="cardBackground">
                             <v-card-title>
-                                <h3 class="headline mb-0">Summary</h3>
+                                <h3 class="headline mb-0">{{ $t('app.vulnerabilities.summary') }}</h3>
                             </v-card-title>
                             <v-card-text>
 
@@ -177,8 +177,8 @@
                             variant="tonal"
                             border="start"
                         >
-                            <h3>No vulnerabilityscans available</h3>
-                            To scan this app for vulnerabilities, please trigger a rescan.
+                            <h3>{{ $t('app.vulnerabilities.empty.title', {app: app}) }}</h3>
+                            {{ $t('app.vulnerabilities.empty.message') }}
 
                         </v-alert>
                     </v-col>
