@@ -1,5 +1,5 @@
 import { createI18n } from 'vue-i18n'
-import { de, en, ja } from '../locale/locale'
+import { de, en, ja, zhHans } from '../locale/locale'
 
 export default createI18n({
   legacy: false,
@@ -8,6 +8,7 @@ export default createI18n({
   messages: {
     en: en,
     ja: ja,
-    de: de
-  }
+    de: de,
+    zhHans: zhHans,
+  },
 })
