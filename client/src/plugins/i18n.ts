@@ -7,7 +7,7 @@ import zhHans from '../locale/zhHans'
 import deCH from '../locale/de-CH'
 
 // Get saved locale from localStorage or default to 'de'
-const savedLocale = localStorage.getItem('kubero.locale') || 'de'
+const savedLocale = localStorage.getItem('kubero.locale') || process.env.KUBERO_DEFAULT_LOCALE || 'en'
 
 const i18n = createI18n({
   legacy: false,

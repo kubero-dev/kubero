@@ -11,6 +11,13 @@ const messages = {
     logout: 'ログアウト',
     theme: 'ダーク/ライトモード',
     documentation: 'ドキュメント',
+    general: '一般',
+    runpacks: 'ランパック',
+    podSizes: 'Podサイズ',
+    notifications: '通知',
+    kuberoAPI: 'Kubero API',
+    github: 'GitHub',
+    discord: 'Discord',
   },
   accounts: {
     users: 'ユーザー',
@@ -284,6 +291,10 @@ const messages = {
       expiresAt: '有効期限',
       noTokens: 'トークンが見つかりません。',
       details: 'トークン詳細',
+      warningMessage: 'このトークンは<strong>二度と表示されません</strong>。今すぐコピーして安全に保存してください。',
+      copyToken: 'トークンをコピー',
+      copiedMessage: 'トークンがクリップボードにコピーされました！',
+      close: '閉じる',
     },
     actions: {
       editProfile: 'プロフィールを編集',
@@ -495,6 +506,28 @@ const messages = {
         limit: '制限',
         size: 'サイズ',
       },
+    },
+  },
+  podsizes: {
+    name: 'Podサイズ',
+    helpTitle: 'Podサイズとは？',
+    helpText: '<p><strong>Podサイズ</strong>は、KuberoでアプリケーションのPodに割り当てるリソース要求と制限を定義します。ワークロード要件に合わせてPodサイズを作成、編集、削除できます。</p><p class="mt-2"><a href="https://www.kubero.dev/docs/usermanual/podsizes/" target="_blank" rel="noopener">Kuberoドキュメントで詳細を読む</a></p>',
+    form: {
+      name: 'Podサイズ名',
+      description: '説明',
+      cpuRequest: 'CPUリクエスト (m)',
+      cpuLimit: 'CPUリミット (m)',
+      memoryRequest: 'メモリリクエスト (Gi)',
+      memoryLimit: 'メモリリミット (Gi)',
+      cpu: 'CPU',
+      memory: 'メモリ',
+    },
+    actions: {
+      create: 'Podサイズを作成',
+      edit: 'Podサイズを編集',
+    },
+    errors: {
+      loadinPodsize: 'Podサイズの読み込みエラー',
     },
   },
   $vuetify: {
