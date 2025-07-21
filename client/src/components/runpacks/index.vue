@@ -5,22 +5,9 @@
       <v-col cols="12" md="12" lg="12" xl="6">
         <v-expansion-panels multiple elevation="0" class="mb-6">
           <v-expansion-panel>
-            <v-expansion-panel-title class="text-h6 font-weight-bold">What are Runpacks?</v-expansion-panel-title>
+            <v-expansion-panel-title class="text-h6 font-weight-bold">{{ $t('runpacks.helpTitle') }}</v-expansion-panel-title>
             <v-expansion-panel-text>
-              <p>
-                <strong>Runpacks</strong> in Kubero define how your application is fetched, built, and run inside the Kubernetes cluster. Each runpack consists of three stages:
-              </p>
-              <ul class="ma-4">
-                <li><strong>Fetch</strong>: Retrieves your code from a Git repository using a container image. You can use the default or customize it.</li>
-                <li><strong>Build</strong>: Runs build commands in a container of your choice (any Docker image). This is where dependencies are installed or your app is compiled.</li>
-                <li><strong>Run</strong>: Starts the final container. The <em>web</em> pod is exposed to the internet, while <em>worker</em> pods are for background jobs.</li>
-              </ul>
-              <p>
-                Runpacks are highly flexible and can be customized for different languages and frameworks. They rely on publicly available container images. You can find example runpacks at <a href="https://github.com/kubero-dev/runpacks/tree/main/packs" target="_blank" rel="noopener">kubero-dev/runpacks</a>.
-              </p>
-              <p class="mt-2">
-                <a href="https://www.kubero.dev/docs/usermanual/runpacks/" target="_blank" rel="noopener">Read more in the Kubero documentation</a>
-              </p>
+              <div v-html="$t('runpacks.helpText')"></div>
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
@@ -93,102 +80,102 @@
             <table style="width:100%; border-collapse:separate; border-spacing:0 12px;">
               <tbody>
                 <tr style="background:rgba(0,0,0,0.03);">
-                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:12px 8px 4px 8px;"><strong>Fetch</strong></th>
+                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:12px 8px 4px 8px;"><strong>{{ $t('runpacks.stages.fetch') }}</strong></th>
                 </tr>
                 <tr>
-                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>Repository:</strong></td>
+                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.repository') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.fetch?.repository }}<span v-if="item.fetch?.tag">:{{ item.fetch?.tag }}</span></td>
                 </tr>
                 <tr v-if="item.fetch?.command">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Command:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.command') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.fetch.command }}</td>
                 </tr>
                 <tr>
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>ReadOnly App Storage:</strong></td>
-                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.fetch?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.fetch?.readOnlyAppStorage ? 'Yes' : 'No' }}</span></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.readOnlyAppStorage') }}:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.fetch?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.fetch?.readOnlyAppStorage ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</span></td>
                 </tr>
                 <tr v-if="item.fetch?.securityContext">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Security Context:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.securityContext') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">
                     <details>
-                      <summary style="cursor:pointer;">Show Details</summary>
+                      <summary style="cursor:pointer;">{{ $t('runpacks.details.showDetails') }}</summary>
                       <div style="font-size:0.95em; margin-left:8px;">
-                        <div>runAsUser: {{ item.fetch.securityContext.runAsUser }}</div>
-                        <div>runAsGroup: {{ item.fetch.securityContext.runAsGroup }}</div>
-                        <div>allowPrivilegeEscalation: {{ item.fetch.securityContext.allowPrivilegeEscalation ? 'Yes' : 'No' }}</div>
-                        <div>readOnlyRootFilesystem: {{ item.fetch.securityContext.readOnlyRootFilesystem ? 'Yes' : 'No' }}</div>
-                        <div>runAsNonRoot: {{ item.fetch.securityContext.runAsNonRoot ? 'Yes' : 'No' }}</div>
-                        <div>Capabilities:
-                          <div style="margin-left:8px;">Add: <span v-if="item.fetch.securityContext.capabilities.add.length">{{ item.fetch.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
-                          <div style="margin-left:8px;">Drop: <span v-if="item.fetch.securityContext.capabilities.drop.length">{{ item.fetch.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
+                        <div>{{ $t('runpacks.details.runAsUser') }}: {{ item.fetch.securityContext.runAsUser }}</div>
+                        <div>{{ $t('runpacks.details.runAsGroup') }}: {{ item.fetch.securityContext.runAsGroup }}</div>
+                        <div>{{ $t('runpacks.details.allowPrivilegeEscalation') }}: {{ item.fetch.securityContext.allowPrivilegeEscalation ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.readOnlyRootFilesystem') }}: {{ item.fetch.securityContext.readOnlyRootFilesystem ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.runAsNonRoot') }}: {{ item.fetch.securityContext.runAsNonRoot ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.capabilities') }}:
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.add') }}: <span v-if="item.fetch.securityContext.capabilities.add.length">{{ item.fetch.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.drop') }}: <span v-if="item.fetch.securityContext.capabilities.drop.length">{{ item.fetch.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
                         </div>
                       </div>
                     </details>
                   </td>
                 </tr>
                 <tr style="background:rgba(0,0,0,0.03);">
-                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:18px 8px 4px 8px;"><strong>Build</strong></th>
+                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:18px 8px 4px 8px;"><strong>{{ $t('runpacks.stages.build') }}</strong></th>
                 </tr>
                 <tr>
-                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>Repository:</strong></td>
+                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.repository') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.build?.repository }}<span v-if="item.build?.tag">:{{ item.build?.tag }}</span></td>
                 </tr>
                 <tr v-if="item.build?.command">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Command:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.command') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.build.command }}</td>
                 </tr>
                 <tr>
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>ReadOnly App Storage:</strong></td>
-                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.build?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.build?.readOnlyAppStorage ? 'Yes' : 'No' }}</span></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.readOnlyAppStorage') }}:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.build?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.build?.readOnlyAppStorage ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</span></td>
                 </tr>
                 <tr v-if="item.build?.securityContext">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Security Context:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.securityContext') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">
                     <details>
-                      <summary style="cursor:pointer;">Show Details</summary>
+                      <summary style="cursor:pointer;">{{ $t('runpacks.details.showDetails') }}</summary>
                       <div style="font-size:0.95em; margin-left:8px;">
-                        <div>runAsUser: {{ item.build.securityContext.runAsUser }}</div>
-                        <div>runAsGroup: {{ item.build.securityContext.runAsGroup }}</div>
-                        <div>allowPrivilegeEscalation: {{ item.build.securityContext.allowPrivilegeEscalation ? 'Yes' : 'No' }}</div>
-                        <div>readOnlyRootFilesystem: {{ item.build.securityContext.readOnlyRootFilesystem ? 'Yes' : 'No' }}</div>
-                        <div>runAsNonRoot: {{ item.build.securityContext.runAsNonRoot ? 'Yes' : 'No' }}</div>
-                        <div>Capabilities:
-                          <div style="margin-left:8px;">Add: <span v-if="item.build.securityContext.capabilities.add.length">{{ item.build.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
-                          <div style="margin-left:8px;">Drop: <span v-if="item.build.securityContext.capabilities.drop.length">{{ item.build.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
+                        <div>{{ $t('runpacks.details.runAsUser') }}: {{ item.build.securityContext.runAsUser }}</div>
+                        <div>{{ $t('runpacks.details.runAsGroup') }}: {{ item.build.securityContext.runAsGroup }}</div>
+                        <div>{{ $t('runpacks.details.allowPrivilegeEscalation') }}: {{ item.build.securityContext.allowPrivilegeEscalation ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.readOnlyRootFilesystem') }}: {{ item.build.securityContext.readOnlyRootFilesystem ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.runAsNonRoot') }}: {{ item.build.securityContext.runAsNonRoot ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.capabilities') }}:
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.add') }}: <span v-if="item.build.securityContext.capabilities.add.length">{{ item.build.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.drop') }}: <span v-if="item.build.securityContext.capabilities.drop.length">{{ item.build.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
                         </div>
                       </div>
                     </details>
                   </td>
                 </tr>
                 <tr style="background:rgba(0,0,0,0.03);">
-                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:18px 8px 4px 8px;"><strong>Run</strong></th>
+                  <th colspan="2" style="text-align:left; font-size:1.1em; padding:18px 8px 4px 8px;"><strong>{{ $t('runpacks.stages.run') }}</strong></th>
                 </tr>
                 <tr>
-                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>Repository:</strong></td>
+                  <td style="width:160px; vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.repository') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.run?.repository }}<span v-if="item.run?.tag">:{{ item.run?.tag }}</span></td>
                 </tr>
                 <tr v-if="item.run?.command">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Command:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.command') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">{{ item.run.command }}</td>
                 </tr>
                 <tr>
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>ReadOnly App Storage:</strong></td>
-                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.run?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.run?.readOnlyAppStorage ? 'Yes' : 'No' }}</span></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.readOnlyAppStorage') }}:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><span :style="{color: item.run?.readOnlyAppStorage ? 'green' : 'inherit'}">{{ item.run?.readOnlyAppStorage ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</span></td>
                 </tr>
                 <tr v-if="item.run?.securityContext">
-                  <td style="vertical-align:top; padding:4px 8px;"><strong>Security Context:</strong></td>
+                  <td style="vertical-align:top; padding:4px 8px;"><strong>{{ $t('runpacks.details.securityContext') }}:</strong></td>
                   <td style="vertical-align:top; padding:4px 8px;">
                     <details>
-                      <summary style="cursor:pointer;">Show Details</summary>
+                      <summary style="cursor:pointer;">{{ $t('runpacks.details.showDetails') }}</summary>
                       <div style="font-size:0.95em; margin-left:8px;">
-                        <div>runAsUser: {{ item.run.securityContext.runAsUser }}</div>
-                        <div>runAsGroup: {{ item.run.securityContext.runAsGroup }}</div>
-                        <div>allowPrivilegeEscalation: {{ item.run.securityContext.allowPrivilegeEscalation ? 'Yes' : 'No' }}</div>
-                        <div>readOnlyRootFilesystem: {{ item.run.securityContext.readOnlyRootFilesystem ? 'Yes' : 'No' }}</div>
-                        <div>runAsNonRoot: {{ item.run.securityContext.runAsNonRoot ? 'Yes' : 'No' }}</div>
-                        <div>Capabilities:
-                          <div style="margin-left:8px;">Add: <span v-if="item.run.securityContext.capabilities.add.length">{{ item.run.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
-                          <div style="margin-left:8px;">Drop: <span v-if="item.run.securityContext.capabilities.drop.length">{{ item.run.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
+                        <div>{{ $t('runpacks.details.runAsUser') }}: {{ item.run.securityContext.runAsUser }}</div>
+                        <div>{{ $t('runpacks.details.runAsGroup') }}: {{ item.run.securityContext.runAsGroup }}</div>
+                        <div>{{ $t('runpacks.details.allowPrivilegeEscalation') }}: {{ item.run.securityContext.allowPrivilegeEscalation ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.readOnlyRootFilesystem') }}: {{ item.run.securityContext.readOnlyRootFilesystem ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.runAsNonRoot') }}: {{ item.run.securityContext.runAsNonRoot ? $t('runpacks.details.yes') : $t('runpacks.details.no') }}</div>
+                        <div>{{ $t('runpacks.details.capabilities') }}:
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.add') }}: <span v-if="item.run.securityContext.capabilities.add.length">{{ item.run.securityContext.capabilities.add.join(', ') }}</span><span v-else>-</span></div>
+                          <div style="margin-left:8px;">{{ $t('runpacks.details.drop') }}: <span v-if="item.run.securityContext.capabilities.drop.length">{{ item.run.securityContext.capabilities.drop.join(', ') }}</span><span v-else>-</span></div>
                         </div>
                       </div>
                     </details>
@@ -209,59 +196,59 @@
         @click="openCreateDialog"
       >
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create Runpack</span>
+        <span class="sr-only">{{ $t('runpacks.actions.create') }}</span>
       </v-btn>
     </div>
 
     <v-dialog v-model="editDialog" max-width="1000px">
       <v-card>
-        <v-card-title>Edit Runpack</v-card-title>
+        <v-card-title>{{ $t('runpacks.actions.edit') }}</v-card-title>
         <v-card-text v-if="editedRunpack">
-          <v-text-field v-model="editedRunpack.name" label="Name"></v-text-field>
-          <v-text-field v-model="editedRunpack.language" label="Language"></v-text-field>
+          <v-text-field v-model="editedRunpack.name" :label="$t('runpacks.form.name')"></v-text-field>
+          <v-text-field v-model="editedRunpack.language" :label="$t('runpacks.form.language')"></v-text-field>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Fetch</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.fetch') }}</v-header>
           <RunpacksItem :buildpackStage="editedRunpack.fetch" title="Fetch" :advanced="true"></RunpacksItem>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Build</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.build') }}</v-header>
           <RunpacksItem :buildpackStage="editedRunpack.build" title="Build" :advanced="true"></RunpacksItem>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Run</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.run') }}</v-header>
           <RunpacksItem :buildpackStage="editedRunpack.run" title="Run" :advanced="true"></RunpacksItem>
         </v-card-text>
         <v-card-text v-else>
           <v-alert type="error" dismissible>
-            Error loading runpack details for editing. 
+            {{ $t('runpacks.errors.load') }}
           </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="editDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+          <v-btn text @click="editDialog = false">{{ $t('runpacks.actions.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{ $t('runpacks.actions.save') }}</v-btn>
         </v-card-actions>
       </v-card>      
     </v-dialog>
 
     <v-dialog v-model="createDialog" max-width="1000px">
       <v-card>
-        <v-card-title>Create Runpack</v-card-title>
+        <v-card-title>{{ $t('runpacks.actions.create') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newRunpack.name" label="Name"></v-text-field>
-          <v-text-field v-model="newRunpack.language" label="Language"></v-text-field>
+          <v-text-field v-model="newRunpack.name" :label="$t('runpacks.form.name')"></v-text-field>
+          <v-text-field v-model="newRunpack.language" :label="$t('runpacks.form.language')"></v-text-field>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Fetch</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.fetch') }}</v-header>
           <RunpacksItem :buildpackStage="newRunpack.fetch" title="Fetch" :advanced="true"></RunpacksItem>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Build</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.build') }}</v-header>
           <RunpacksItem :buildpackStage="newRunpack.build" title="Build" :advanced="true"></RunpacksItem>
           <v-divider class="my-4"></v-divider>
-          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Run</v-header>
+          <v-header class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('runpacks.stages.run') }}</v-header>
           <RunpacksItem :buildpackStage="newRunpack.run" title="Run" :advanced="true"></RunpacksItem>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="createDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveCreate">Create</v-btn>
+          <v-btn text @click="createDialog = false">{{ $t('runpacks.actions.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveCreate">{{ $t('runpacks.actions.create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -269,13 +256,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import axios from 'axios'
 import RunpacksItem from './runpacks-item.vue'
 
 export default defineComponent({
   name: 'RunpackList',
   setup() {
+    const { t } = useI18n()
 
     // Types for Runpack
     type RunpackCapability = {
@@ -379,16 +368,16 @@ export default defineComponent({
       },
     })
 
-    const headers = [
-      { title: 'Name', value: 'name' },
-      { title: 'Language', value: 'language' },
+    const headers = computed(() => [
+      { title: t('runpacks.table.name'), value: 'name' },
+      { title: t('runpacks.table.language'), value: 'language' },
       /*
-      { title: 'Fetch', value: 'fetch' },
-      { title: 'Build', value: 'build' },
-      { title: 'Run', value: 'run' },
+      { title: t('runpacks.table.fetch'), value: 'fetch' },
+      { title: t('runpacks.table.build'), value: 'build' },
+      { title: t('runpacks.table.run'), value: 'run' },
       */
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
-    ]
+      { title: t('runpacks.table.actions'), value: 'actions', sortable: false, align: 'end' as const },
+    ])
 
     const loadRunpacks = async () => {
       loading.value = true
