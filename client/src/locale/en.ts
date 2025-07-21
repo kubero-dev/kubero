@@ -1,5 +1,4 @@
-import { errorMessages } from 'vue/compiler-sfc'
-import { en, he } from 'vuetify/locale'
+import { en } from 'vuetify/locale'
 
 const messages = {
       navigation: {
@@ -316,6 +315,39 @@ const messages = {
           name: 'Token Name',
           expiresAt: 'Expires At',
           owner: 'Owner',
+        },
+      },
+      notifications: {
+        name: 'Notifications',
+        helpTitle: 'What are Notifications?',
+        helpText: '<p><strong>Notifications</strong> allow you to receive alerts about events in your Kubero applications. You can configure Slack, Discord, or webhook notifications to stay informed about deployments, errors, and other important events.</p><p class="mt-2"><a href="https://www.kubero.dev/docs/usermanual/notifications/" target="_blank" rel="noopener">Read more in the Kubero documentation</a></p>',
+        form: {
+          name: 'Name',
+          type: 'Type',
+          enabled: 'Enabled',
+          pipelines: 'Pipelines',
+          events: 'Events',
+          config: 'Configuration',
+          url: 'URL',
+          channel: 'Channel',
+          secret: 'Secret',
+          slackWebhookUrl: 'Slack Webhook URL',
+          discordWebhookUrl: 'Discord Webhook URL',
+          webhookUrl: 'Webhook URL',
+          pipelinesHint: 'Enter pipeline names or \'all\' for all pipelines',
+          eventsHint: 'Enter event names to listen for',
+        },
+        actions: {
+          create: 'Create Notification',
+          edit: 'Edit Notification',
+          delete: 'Delete Notification',
+        },
+        errors: {
+          load: 'Error loading notifications',
+          edit: 'Error loading notification details for editing.',
+          create: 'Error creating notification',
+          save: 'Error saving notification',
+          delete: 'Error deleting notification',
         },
       },
       podsizes: {
