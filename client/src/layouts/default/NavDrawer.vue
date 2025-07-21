@@ -81,7 +81,7 @@
           </template>
           <v-list-item 
             link to="/settings"
-            title="General"
+            :title="$t('navigation.general')"
             prepend-icon="mdi-tune"
             density="compact"
             style="transform: scale(0.9);"
@@ -91,21 +91,21 @@
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-cube-outline"
               style="transform: scale(0.9);"
-              title="Runpacks">
+              :title="$t('navigation.runpacks')">
           </v-list-item>
           <v-list-item 
               link to="/podsizes" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-arrow-expand-vertical"
               style="transform: scale(0.9);"
-              title="Pod Sizes">
+              :title="$t('navigation.podSizes')">
           </v-list-item>
           <v-list-item 
               link to="/notifications" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
               prepend-icon="mdi-email-fast-outline"
               style="transform: scale(0.9);"
-              title="Notifications">
+              :title="$t('navigation.notifications')">
           </v-list-item>
         </v-list-group>
     </v-list>
@@ -123,7 +123,7 @@
                 link href="/api/docs" 
                 target="_blank"
                 prepend-icon="mdi-api"
-                title="Kubero API">
+                :title="$t('navigation.kuberoAPI')">
             </v-list-item>
             <v-list-item 
                 link href="https://docs.kubero.dev/" 
@@ -135,7 +135,7 @@
                 link href="https://github.com/kubero-dev/kubero" 
                 target="_blank"
                 prepend-icon="mdi-github"
-                title="Github">
+                :title="$t('navigation.github')">
             </v-list-item>
             <!--
             <v-list-item 
@@ -149,7 +149,7 @@
                 link href="https://discord.gg/tafRPMWS4r" 
                 target="_blank"
                 prepend-icon="mdi-discord"
-                title="Discord">
+                :title="$t('navigation.discord')">
                 <img src="./../../../public/img/icons/discord.svg" class="image-icon"/>
             </v-list-item>
             <!--
