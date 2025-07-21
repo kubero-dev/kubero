@@ -11,7 +11,7 @@
       <template #top>
         <v-text-field
           v-model="search"
-          label="Search Tokens"
+          :label="$t('tokens.search')"
           prepend-inner-icon="mdi-magnify"
           single-line
           hide-details
@@ -88,10 +88,12 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../../stores/auth'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'TokensTable',
   setup() {
+    const { t } = useI18n() 
     interface Token {
       id?: string;
       token?: string;
@@ -113,11 +115,11 @@ export default defineComponent({
     const writeUserPermission = ref(authStore.hasPermission('user:write'))
 
     const headers = [
-      { title: 'Token ID', value: 'token' },
-      { title: 'Name', value: 'name' },
-      { title: 'Owner', value: 'user.username' },
-      { title: 'Expires At', value: 'expiresAt' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: t('tokens.form.id'), value: 'token' },
+      { title: t('tokens.form.name'), value: 'name' },
+      { title: t('tokens.form.owner'), value: 'user.username' },
+      { title: t('tokens.form.expiresAt'), value: 'expiresAt' },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const loadTokens = async () => {

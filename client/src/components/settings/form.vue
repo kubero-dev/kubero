@@ -8,11 +8,8 @@
         style="margin-bottom: 30px;"
       >
         <v-tab value="general">General</v-tab>
-        <v-tab value="podsizes">Podsizes</v-tab>
-        <v-tab value="runpacks">Runpacks</v-tab>
         <v-tab value="deployment">Deployment</v-tab>
         <v-tab value="templates">Templates</v-tab>
-        <v-tab value="notifications">Notifications</v-tab>
       </v-tabs>
 
 
@@ -21,24 +18,12 @@
           <FormGeneral :settings="settings.settings" :secrets="settings.secrets"></FormGeneral>
         </v-window-item>
 
-        <v-window-item value="podsizes">
-          <FormPodsizes :settings="settings.settings"></FormPodsizes>
-        </v-window-item>
-
-        <v-window-item value="runpacks">
-          <FormBuildpacks :settings="settings.settings"></FormBuildpacks>
-        </v-window-item>
-
         <v-window-item value="deployment">
           <FormDeployment :settings="settings"></FormDeployment>
         </v-window-item>
 
         <v-window-item value="templates">
           <FormTemplates :settings="settings.settings"></FormTemplates>
-        </v-window-item>
-
-        <v-window-item value="notifications">
-          <FormNotifications :settings="settings.settings"></FormNotifications>
         </v-window-item>
       </v-window>
 
@@ -57,11 +42,8 @@
 import axios from "axios";
 import { defineComponent } from 'vue'
 import FormGeneral from './form-general.vue'
-import FormPodsizes from './form-podsizes.vue'
-import FormBuildpacks from './form-buildpacks.vue'
 import FormDeployment from './form-deployment.vue'
 import FormTemplates from './form-templates.vue'
-import FormNotifications from './form-notifications.vue'
 
 // types & interfaces
 export interface Secrets {
@@ -509,11 +491,8 @@ export default defineComponent({
     }),
     components: {
       FormGeneral,
-      FormPodsizes,
-      FormBuildpacks,
       FormDeployment,
       FormTemplates,
-      FormNotifications,
     },
     methods: {
       saveSettings() {

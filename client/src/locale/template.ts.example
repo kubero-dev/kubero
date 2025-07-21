@@ -1,0 +1,12 @@
+import { de } from 'vuetify/locale'
+
+const messages = {
+  global: {
+    name: "Name",
+  },
+  $vuetify: {
+    ...de,
+  },
+}
+
+export default messages

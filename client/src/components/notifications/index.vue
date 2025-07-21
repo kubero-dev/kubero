@@ -4,15 +4,12 @@
       <v-col cols="12" md="12" lg="12" xl="6">
         <v-expansion-panels multiple elevation="0" class="mb-6">
           <v-expansion-panel>
-            <v-expansion-panel-title class="text-h6 font-weight-bold">What are Notifications?</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <p>
-                <strong>Notifications</strong> allow you to receive alerts about events in your Kubero applications. You can configure Slack, Discord, or webhook notifications to stay informed about deployments, errors, and other important events.
-              </p>
-              <p class="mt-2">
-                <a href="https://www.kubero.dev/docs/usermanual/notifications/" target="_blank" rel="noopener">Read more in the Kubero documentation</a>
-              </p>
-            </v-expansion-panel-text>
+          <v-expansion-panel-title class="text-h6 font-weight-bold">
+            {{ $t('notifications.helpTitle') }}
+          </v-expansion-panel-title>
+          <v-expansion-panel-text>
+            <div v-html="$t('notifications.helpText')"></div>
+          </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
@@ -82,18 +79,18 @@
                 <v-col cols="12" md="6">
                   <v-list density="compact" style="background: inherit;">
                     <v-list-item>
-                      <v-list-item-title class="font-weight-bold">Configuration</v-list-item-title>
+                      <v-list-item-title class="font-weight-bold">{{$t('notifications.form.config')}}</v-list-item-title>
                     </v-list-item>
                     <v-list-item v-if="item.config.url">
-                      <v-list-item-subtitle>URL</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{$t('notifications.form.url')}}</v-list-item-subtitle>
                       <v-list-item-title class="text-truncate" style="max-width: 300px;">{{ item.config.url }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item v-if="item.config.channel">
-                      <v-list-item-subtitle>Channel</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{$t('notifications.form.channel')}}</v-list-item-subtitle>
                       <v-list-item-title>{{ item.config.channel }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item v-if="item.config.secret">
-                      <v-list-item-subtitle>Secret</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{$t('notifications.form.secret')}}</v-list-item-subtitle>
                       <v-list-item-title>***hidden***</v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -101,7 +98,7 @@
                 <v-col cols="12" md="6">
                   <v-list density="compact" style="background: inherit;">
                     <v-list-item>
-                      <v-list-item-title class="font-weight-bold">Pipelines</v-list-item-title>
+                      <v-list-item-title class="font-weight-bold">{{$t('notifications.form.pipelines')}}</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
                       <v-chip-group>
@@ -115,7 +112,7 @@
                       </v-chip-group>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-title class="font-weight-bold">Events</v-list-item-title>
+                      <v-list-item-title class="font-weight-bold">{{$t('notifications.form.events')}}</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
                       <v-chip-group>
@@ -139,21 +136,21 @@
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn fab color="primary" style="margin-right: 6px;" @click="openCreateDialog">
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create Notification</span>
+        <span class="sr-only">{{ $t('notifications.actions.create') }}</span>
       </v-btn>
     </div>
 
     <!-- Edit Dialog -->
     <v-dialog v-model="editDialog" max-width="800px">
       <v-card>
-        <v-card-title>Edit Notification</v-card-title>
+        <v-card-title>{{$t('notifications.actions.edit')}}</v-card-title>
         <v-card-text v-if="editedNotification">
           <v-form ref="editForm">
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field
                   v-model="editedNotification.name"
-                  label="Name"
+                  :label="$t('notifications.form.name')"
                   required
                 ></v-text-field>
               </v-col>
@@ -161,14 +158,14 @@
                 <v-select
                   v-model="editedNotification.type"
                   :items="notificationTypes"
-                  label="Type"
+                  :label="$t('notifications.form.type')"
                   required
                 ></v-select>
               </v-col>
               <v-col cols="12">
                 <v-switch
                   v-model="editedNotification.enabled"
-                  label="Enabled"
+                  :label="$t('notifications.form.enabled')"
                   color="primary"
                 ></v-switch>
               </v-col>
@@ -177,19 +174,19 @@
               <v-col cols="12" v-if="editedNotification.type === 'slack'">
                 <v-text-field
                   v-model="editedNotification.config.url"
-                  label="Slack Webhook URL"
+                  :label="$t('notifications.form.slackWebhookUrl')"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="editedNotification.config.channel"
-                  label="Channel"
+                  :label="$t('notifications.form.channel')"
                 ></v-text-field>
               </v-col>
               
               <v-col cols="12" v-if="editedNotification.type === 'discord'">
                 <v-text-field
                   v-model="editedNotification.config.url"
-                  label="Discord Webhook URL"
+                  :label="$t('notifications.form.discordWebhookUrl')"
                   required
                 ></v-text-field>
               </v-col>
@@ -197,12 +194,12 @@
               <v-col cols="12" v-if="editedNotification.type === 'webhook'">
                 <v-text-field
                   v-model="editedNotification.config.url"
-                  label="Webhook URL"
+                  :label="$t('notifications.form.webhookUrl')"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="editedNotification.config.secret"
-                  label="Secret"
+                  :label="$t('notifications.form.secret')"
                   type="password"
                 ></v-text-field>
               </v-col>
@@ -210,22 +207,22 @@
               <v-col cols="12" md="6">
                 <v-combobox
                   v-model="editedNotification.pipelines"
-                  label="Pipelines"
+                  :label="$t('notifications.form.pipelines')"
                   multiple
                   chips
                   clearable
-                  hint="Enter pipeline names or 'all' for all pipelines"
+                  :hint="$t('notifications.form.pipelinesHint')"
                 ></v-combobox>
               </v-col>
               
               <v-col cols="12" md="6">
                 <v-combobox
                   v-model="editedNotification.events"
-                  label="Events"
+                  :label="$t('notifications.form.events')"
                   multiple
                   chips
                   clearable
-                  hint="Enter event names to listen for"
+                  :hint="$t('notifications.form.eventsHint')"
                 ></v-combobox>
               </v-col>
             </v-row>
@@ -233,13 +230,13 @@
         </v-card-text>
         <v-card-text v-else>
           <v-alert type="error" dismissible>
-            Error loading notification details for editing.
+            {{$t('notifications.errors.edit')}}
           </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="editDialog = false">Cancel</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+          <v-btn text @click="editDialog = false">{{$t('global.cancel')}}</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{$t('global.save')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -247,14 +244,14 @@
     <!-- Create Dialog -->
     <v-dialog v-model="createDialog" max-width="800px">
       <v-card>
-        <v-card-title>Create Notification</v-card-title>
+        <v-card-title>{{$t('notifications.actions.create')}}</v-card-title>
         <v-card-text>
           <v-form ref="createForm">
             <v-row>
               <v-col cols="12" md="6">
                 <v-text-field
                   v-model="newNotification.name"
-                  label="Name"
+                  :label="$t('notifications.form.name')"
                   required
                 ></v-text-field>
               </v-col>
@@ -262,14 +259,14 @@
                 <v-select
                   v-model="newNotification.type"
                   :items="notificationTypes"
-                  label="Type"
+                  :label="$t('notifications.form.type')"
                   required
                 ></v-select>
               </v-col>
               <v-col cols="12">
                 <v-switch
                   v-model="newNotification.enabled"
-                  label="Enabled"
+                  :label="$t('notifications.form.enabled')"
                   color="primary"
                 ></v-switch>
               </v-col>
@@ -278,19 +275,19 @@
               <v-col cols="12" v-if="newNotification.type === 'slack'">
                 <v-text-field
                   v-model="newNotification.config.url"
-                  label="Slack Webhook URL"
+                  :label="$t('notifications.form.slackWebhookUrl')"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="newNotification.config.channel"
-                  label="Channel"
+                  :label="$t('notifications.form.channel')"
                 ></v-text-field>
               </v-col>
               
               <v-col cols="12" v-if="newNotification.type === 'discord'">
                 <v-text-field
                   v-model="newNotification.config.url"
-                  label="Discord Webhook URL"
+                  :label="$t('notifications.form.discordWebhookUrl')"
                   required
                 ></v-text-field>
               </v-col>
@@ -298,12 +295,12 @@
               <v-col cols="12" v-if="newNotification.type === 'webhook'">
                 <v-text-field
                   v-model="newNotification.config.url"
-                  label="Webhook URL"
+                  :label="$t('notifications.form.webhookUrl')"
                   required
                 ></v-text-field>
                 <v-text-field
                   v-model="newNotification.config.secret"
-                  label="Secret"
+                  :label="$t('notifications.form.secret')"
                   type="password"
                 ></v-text-field>
               </v-col>
@@ -312,11 +309,11 @@
                 <v-combobox
                   v-model="newNotification.pipelines"
                   :items="availablePipelines"
-                  label="Pipelines"
+                  :label="$t('notifications.form.pipelines')"
                   multiple
                   chips
                   clearable
-                  hint="Enter pipeline names or 'all' for all pipelines"
+                  :hint="$t('notifications.form.pipelinesHint')"
                 ></v-combobox>
               </v-col>
               
@@ -324,11 +321,11 @@
                 <v-combobox
                   v-model="newNotification.events"
                   :items="availableEvents"
-                  label="Events"
+                  :label="$t('notifications.form.events')"
                   multiple
                   chips
                   clearable
-                  hint="Enter event names to listen for"
+                  :hint="$t('notifications.form.eventsHint')"
                 ></v-combobox>
               </v-col>
             </v-row>
@@ -336,8 +333,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="createDialog = false">Cancel</v-btn>
-          <v-btn color="primary" @click="saveCreate">Create</v-btn>
+          <v-btn text @click="createDialog = false">{{$t('global.cancel')}}</v-btn>
+          <v-btn color="primary" @click="saveCreate">{{$t('global.create')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -347,10 +344,12 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'NotificationsList',
   setup() {
+    const { t } = useI18n() 
     type NotificationConfig = {
       url?: string
       secret?: string
@@ -404,12 +403,12 @@ export default defineComponent({
     ]
 
     const headers = [
-      { title: 'Name', value: 'name' },
-      { title: 'Type', value: 'type' },
-      { title: 'Enabled', value: 'enabled' },
-      { title: 'Pipelines', value: 'pipelines' },
-      { title: 'Events', value: 'events' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: t('notifications.form.name'), value: 'name' },
+      { title: t('notifications.form.type'), value: 'type' },
+      { title: t('notifications.form.enabled'), value: 'enabled' },
+      { title: t('notifications.form.pipelines'), value: 'pipelines' },
+      { title: t('notifications.form.events'), value: 'events' },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
 
     const getTypeColor = (type: string) => {

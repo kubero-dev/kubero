@@ -4,15 +4,8 @@
       <v-col cols="12" md="12" lg="12" xl="6">
         <v-expansion-panels multiple elevation="0" class="mb-6">
           <v-expansion-panel>
-            <v-expansion-panel-title class="text-h6 font-weight-bold">What are PodSizes?</v-expansion-panel-title>
-            <v-expansion-panel-text>
-              <p>
-                <strong>PodSizes</strong> define the resource requests and limits for your application's pods in Kubero. You can create, edit, and delete pod sizes to match your workload requirements.
-              </p>
-              <p class="mt-2">
-                <a href="https://www.kubero.dev/docs/usermanual/podsizes/" target="_blank" rel="noopener">Read more in the Kubero documentation</a>
-              </p>
-            </v-expansion-panel-text>
+            <v-expansion-panel-title class="text-h6 font-weight-bold">{{ $t('podsizes.helpTitle') }}</v-expansion-panel-title>
+            <v-expansion-panel-text><div v-html="$t('podsizes.helpText')"></div></v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-col>
@@ -58,11 +51,11 @@
                       <v-list-item-title class="font-weight-bold">Requests</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-subtitle>CPU</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{ $t('podsizes.form.cpu') }}</v-list-item-subtitle>
                       <v-list-item-title>{{ item.resources.requests.cpu }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-subtitle>Memory</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{ $t('podsizes.form.memory') }}</v-list-item-subtitle>
                       <v-list-item-title>{{ item.resources.requests.memory }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -73,11 +66,11 @@
                       <v-list-item-title class="font-weight-bold">Limits</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-subtitle>CPU</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{ $t('podsizes.form.cpu') }}</v-list-item-subtitle>
                       <v-list-item-title>{{ item.resources.limits.cpu }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
-                      <v-list-item-subtitle>Memory</v-list-item-subtitle>
+                      <v-list-item-subtitle>{{ $t('podsizes.form.memory') }}</v-list-item-subtitle>
                       <v-list-item-title>{{ item.resources.limits.memory }}</v-list-item-title>
                     </v-list-item>
                   </v-list>
@@ -88,7 +81,7 @@
                 <v-col cols="12">
                   <v-list density="compact" style="background: inherit;">
                     <v-list-item>
-                      <v-list-item-title class="font-weight-bold">Description</v-list-item-title>
+                      <v-list-item-title class="font-weight-bold">{{ $t('podsizes.form.description') }}</v-list-item-title>
                     </v-list-item>
                     <v-list-item>
                       <v-list-item-title>{{ item.description }}</v-list-item-title>
@@ -104,47 +97,47 @@
     <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
       <v-btn fab color="primary" style="margin-right: 6px;" @click="openCreateDialog">
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">Create PodSize</span>
+        <span class="sr-only">{{ $t('podsizes.actions.create') }}</span>
       </v-btn>
     </div>
     <v-dialog v-model="editDialog" max-width="600px">
       <v-card>
-        <v-card-title>Edit PodSize</v-card-title>
+        <v-card-title>{{ $t('podsizes.actions.edit') }}</v-card-title>
         <v-card-text v-if="editedPodsize">
-          <v-text-field v-model="editedPodsize.name" label="Name"></v-text-field>
-          <v-text-field v-model="editedPodsize.description" label="Description"></v-text-field>
-          <v-text-field v-model="editedPodsize.resources.requests.cpu" label="Requests CPU"></v-text-field>
-          <v-text-field v-model="editedPodsize.resources.requests.memory" label="Requests Memory"></v-text-field>
-          <v-text-field v-model="editedPodsize.resources.limits.cpu" label="Limits CPU"></v-text-field>
-          <v-text-field v-model="editedPodsize.resources.limits.memory" label="Limits Memory"></v-text-field>
+          <v-text-field v-model="editedPodsize.name" :label="$t('podsizes.form.name')"></v-text-field>
+          <v-text-field v-model="editedPodsize.description" :label="$t('podsizes.form.description')"></v-text-field>
+          <v-text-field v-model="editedPodsize.resources.requests.cpu" :label="$t('podsizes.form.cpuRequest')"></v-text-field>
+          <v-text-field v-model="editedPodsize.resources.requests.memory" :label="$t('podsizes.form.memoryRequest')"></v-text-field>
+          <v-text-field v-model="editedPodsize.resources.limits.cpu" :label="$t('podsizes.form.cpuLimit')"></v-text-field>
+          <v-text-field v-model="editedPodsize.resources.limits.memory" :label="$t('podsizes.form.memoryLimit')"></v-text-field>
         </v-card-text>
         <v-card-text v-else>
           <v-alert type="error" dismissible>
-            Error loading podsize details for editing.
+            {{ $t('podsizes.errors.loadingPodsize') }}
           </v-alert>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="editDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveEdit">Save</v-btn>
+          <v-btn text @click="editDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveEdit">{{ $t('global.save') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <v-dialog v-model="createDialog" max-width="600px">
       <v-card>
-        <v-card-title>Create PodSize</v-card-title>
+        <v-card-title>{{ $t('podsizes.actions.create') }}</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newPodsize.name" label="Name"></v-text-field>
-          <v-text-field v-model="newPodsize.description" label="Description"></v-text-field>
-          <v-text-field v-model="newPodsize.resources.requests.cpu" label="Requests CPU"></v-text-field>
-          <v-text-field v-model="newPodsize.resources.requests.memory" label="Requests Memory"></v-text-field>
-          <v-text-field v-model="newPodsize.resources.limits.cpu" label="Limits CPU"></v-text-field>
-          <v-text-field v-model="newPodsize.resources.limits.memory" label="Limits Memory"></v-text-field>
+          <v-text-field v-model="newPodsize.name" :label="$t('podsizes.form.name')"></v-text-field>
+          <v-text-field v-model="newPodsize.description" :label="$t('podsizes.form.name')"></v-text-field>
+          <v-text-field v-model="newPodsize.resources.requests.cpu" :label="$t('podsizes.form.cpuRequest')"></v-text-field>
+          <v-text-field v-model="newPodsize.resources.requests.memory" :label="$t('podsizes.form.memoryRequest')"></v-text-field>
+          <v-text-field v-model="newPodsize.resources.limits.cpu" :label="$t('podsizes.form.cpuLimit')"></v-text-field>
+          <v-text-field v-model="newPodsize.resources.limits.memory" :label="$t('podsizes.form.memoryLimit')"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn text @click="createDialog = false">Abort</v-btn>
-          <v-btn color="primary" @click="saveCreate">Create</v-btn>
+          <v-btn text @click="createDialog = false">{{ $t('global.abort') }}</v-btn>
+          <v-btn color="primary" @click="saveCreate">{{ $t('global.create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -154,10 +147,13 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
 import axios from 'axios'
+import { useI18n } from 'vue-i18n'
+
 
 export default defineComponent({
   name: 'PodsizeList',
   setup() {
+    const { t } = useI18n() 
     type PodsizeResources = {
       requests: { cpu: string; memory: string }
       limits: { cpu: string; memory: string }
@@ -183,10 +179,10 @@ export default defineComponent({
       },
     })
     const headers = [
-      { title: 'Name', value: 'name' },
-      { title: 'Description', value: 'description' },
+      { title: t('podsizes.name'), value: 'name' },
+      { title: t('podsizes.form.description'), value: 'description' },
       //{ title: 'Resources', value: 'resources' },
-      { title: 'Actions', value: 'actions', sortable: false, align: 'end' as const },
+      { title: '', value: 'actions', sortable: false, align: 'end' as const },
     ]
     const loadPodsizes = async () => {
       loading.value = true

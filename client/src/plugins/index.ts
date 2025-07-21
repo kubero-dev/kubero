@@ -9,6 +9,8 @@ import vuetify from './vuetify'
 import router from '../router'
 import pinia from './pinia'
 import vCodeBlock from './code-block'
+import i18n from './i18n'
+
 /*
 import axios from 'axios'
 axios.defaults.headers.common['User-Agent'] = 'Kubero/3.x'
@@ -22,6 +24,7 @@ export function registerPlugins (app: App) {
     .use(pinia)
     // @ts-ignore: Type missmatch
     .use(vCodeBlock)
+    .use(i18n)
     .use(vuetify)
     .use(router)
 }

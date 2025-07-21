@@ -17,13 +17,13 @@
         </v-col>
         <v-col cols="12" sm="11" md="11" lg="11" xl="11">
             <h1 v-if="app=='new'">
-                Create a new App in {{ pipeline }}
+                {{ $t('app.form.createNewApp', { pipeline: pipeline }) }}
             </h1>
             <h1 v-if="app!='new'">
-                Edit {{ app }} in {{ pipeline }}
+                {{ $t('app.form.editApp', { app: app, pipeline: pipeline }) }}
             </h1>
             <p class="text-justify">
-                in phase {{ phase }}
+                {{ phase }}
             </p>
         </v-col>
       </v-row>
@@ -40,7 +40,7 @@
             prominent
             border="start"
           >
-            Please change all passwords, tokens and select the correct storageClass for your cluster.
+            {{ $t('app.form.warning') }}
           </v-alert>
         </v-col>
       </v-row>
@@ -55,7 +55,7 @@
             :rules="nameRules"
             :counter="60"
             :disabled="app!='new'"
-            label="App name"
+            :label="$t('app.form.appName')"
             v-on:input="changeName(name)"
             required
           ></v-text-field>
@@ -90,7 +90,7 @@
             v-model="host.host"
             :rules="domainRules"
             :counter="60"
-            label="Domain"
+            :label="$t('app.form.domain')"
             required
           ></v-text-field>
         </v-col>
@@ -148,7 +148,7 @@
         >
             <v-text-field
               v-model="containerPort"
-              label="Container Port"
+              :label="$t('app.form.containerPort')"
             ></v-text-field>
         </v-col>
       </v-row>
@@ -160,7 +160,7 @@
         >
         <v-switch
             v-model="advanced"
-            label="Advanced App Configuration"
+            :label="$t('app.form.advancedAppConfig')"
             color="primary"
             inset
           ></v-switch>
@@ -173,7 +173,7 @@
       >
       <!-- DEPLOYMENT -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Deployment</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('app.titles.deployment') }}</v-expansion-panel-title>
         <v-expansion-panel-text>
 
           <v-row>
@@ -184,14 +184,14 @@
             <v-radio-group
               v-model="deploymentstrategy"
               row
-              label="Strategy"
+              :label="$t('app.strategy.name')"
             >
               <v-radio
-                label="Container Image"
+                :label="$t('app.strategy.containerImage')"
                 value="docker"
               ></v-radio>
               <v-radio
-                label="From Source"
+                :label="$t('app.strategy.fromSource')"
                 value="git"
               ></v-radio>
               <!--
@@ -216,29 +216,29 @@
               <v-radio-group v-model="buildstrategy">
                 <v-radio
                   key="0"
-                  label="Runpacks"
+                  :label="$t('app.strategy.runpacks')"
                   value="plain"
                 ></v-radio>
                 <v-radio
                   key="2"
-                  label="External CI/CD"
+                  :label="$t('app.strategy.externalCICD')"
                   value="external"
                 ></v-radio>
                 <v-radio
                   key="1"
-                  label="Nixpacks"
+                  :label="$t('app.strategy.nixpacks')"
                   value="nixpacks"
                   :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="1"
-                  label="Buildpacks"
+                  :label="$t('app.strategy.buildpacks')"
                   value="buildpacks"
                   :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
                 <v-radio
                   key="2"
-                  label="Dockerfile"
+                  :label="$t('app.strategy.dockerfile')"
                   value="dockerfile"
                   :disabled="!kuberoConfig.buildPipeline"
                 ></v-radio>
@@ -251,48 +251,44 @@
             
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'plain'">
                 <h3>
-                  Runpacks
+                  {{ $t('app.strategy.runpacks') }}
                 </h3>
-                <div>Your code is build and running on official images. The code will be built for every pod in a init container. This is the fastes way, to run your code, but becomes more inefficient with every replica.</div>
+                <div>{{ $t('app.strategy.runpackExplanation') }}</div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'nixpacks'">
                 <h3>
-                  Nixpacks
+                  {{ $t('app.strategy.nixpacks') }}
                 </h3>
-                <div>
-                  <a href="https://nixpacks.com/" target="_blank" style="text-decoration: underline;">Nixpacks</a> is a open source project to build docker images with nix. It is a good way to build images without a Dockerfile, if you want to have a reproducable build process.
-                </div>
+                <div v-html="$t('app.strategy.nixpacksExplanation')"></div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'buildpacks'">
                 <h3>
-                  Buildpacks
+                  {{ $t('app.strategy.buildpacks') }}
                 </h3>
-                <div>
-                  <a href="https://buildpacks.io/" target="_blank" style="text-decoration: underline;">Buildpacks</a> are a set of scripts and binaries used to transform application source code into a deployable image, automating the process of compiling, building, and configuring the app for deployment.
-                </div>
+                <div v-html="$t('app.strategy.buildpacksExplanation')"></div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'dockerfile'">
                 <h3>
-                  Dockerfile
+                  {{ $t('app.strategy.dockerfile') }}
                 </h3>
-                <div>Builds the image based on the Dockerfile in your git root directory. This allows for the highest level of customization.</div>
+                <div>{{ $t('app.strategy.dockerfileExplanation') }}</div>
               </v-alert>
 
               <v-alert variant="tonal" color="#8560a9" border="start" v-if="buildstrategy == 'external'">
                 <h3>
-                  External CI/CD
+                  {{ $t('app.strategy.externalCICD') }}
                 </h3>
-                <div>You are building your image on a external CI/CD and deploy it by changing the image tag thrue the API</div>
+                <div>{{ $t('app.strategy.externalCICDExplanation') }}</div>
               </v-alert>
 
               <v-alert variant="tonal" type="info" border="start" v-if="!kuberoConfig.buildPipeline" style="margin-top: 20px;">
                 <h3>
-                  Buildpipeline not configured
+                  {{ $t('app.strategy.noBuildPipeline') }}
                 </h3>
-                <div>Configure the registry to use Buildpacks, Nickspacks and Dockerfile build pipeline</div>
+                <div>{{ $t('app.strategy.noBuildPipelineExplanation') }}</div>
               </v-alert>
 
             </v-col>
@@ -322,7 +318,7 @@
               <v-text-field
                 v-model="gitrepo.ssh_url"
                 :rules="repositoryRules"
-                label="Repository"
+                :label="$t('app.form.repository')"
                 required
               ></v-text-field>
             </v-col>
@@ -335,7 +331,7 @@
               <v-combobox
                 v-model="branch"
                 :items="branchesList"
-                label="Branch"
+                :label="$t('app.form.branch')"
                 required
               ></v-combobox>
             </v-col>
@@ -347,7 +343,7 @@
             >
               <v-switch
                 v-model="autodeploy"
-                label="Autodeploy"
+                :label="$t('app.form.autodeploy')"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -362,7 +358,7 @@
               <v-select
                 v-model="buildpack"
                 :items="buildpacks"
-                label="Runpack"
+                :label="$t('app.form.runpack')"
                 @update:modelValue="updateBuildpack(buildpack)"
               ></v-select>
             </v-col>
@@ -376,7 +372,7 @@
             >
               <v-text-field
                 v-model="buildpack.build.command"
-                label="Build Command"
+                :label="$t('app.form.buildCommand')"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -388,7 +384,7 @@
             >
               <v-text-field
                 v-model="buildpack.run.command"
-                label="Run Command"
+                :label="$t('app.form.runCommand')"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -405,7 +401,7 @@
               <v-text-field
                 v-model="docker.image"
                 :counter="60"
-                label="Docker image"
+                :label="$t('app.form.containerImage')"
                 required
               ></v-text-field>
             </v-col>
@@ -418,7 +414,7 @@
               <v-text-field
                 v-model="docker.tag"
                 :counter="60"
-                label="Tag"
+                :label="$t('app.form.tag')"
                 required
               ></v-text-field>
             </v-col>
@@ -432,7 +428,7 @@
               <v-text-field
                 v-model="docker.command"
                 :counter="60"
-                label="Command"
+                :label="$t('app.form.command')"
                 required
                 bg-color="secondary"
               ></v-text-field>
@@ -444,7 +440,7 @@
 
       <!-- BASIC AUTH -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Basic Auth</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">{{ $t('app.titles.basicAuth') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
 
@@ -455,7 +451,7 @@
             >
               <v-switch
                 v-model="basicAuth.enabled"
-                label="Basic Auth Enabled"
+                :label="$t('app.form.basicAuthEnabled')"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -465,7 +461,7 @@
             >
                 <v-text-field
                   v-model="basicAuth.realm"
-                  label="name"
+                  :label="$t('app.form.basicAuthRealm')"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -479,7 +475,7 @@
               >
                 <v-text-field
                   v-model="account.user"
-                  label="Username"
+                  :label="$t('app.form.basicAuthUser')"
                   :counter="60"
                 ></v-text-field>
               </v-col>
@@ -489,7 +485,7 @@
               >
                 <v-text-field
                   v-model="account.pass"
-                  label="Password"
+                  :label="$t('app.form.basicAuthPass')"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -531,7 +527,7 @@
 
       <!-- SECURITY -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Security</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">{{ $t('app.titles.security') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
           <v-row  v-if="deploymentstrategy == 'git'">
@@ -541,7 +537,7 @@
             >
               <v-switch
                 v-model="buildpack.run.readOnlyAppStorage"
-                label="Read only app volume"
+                :label="$t('app.form.readOnlyAppStorage')"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -559,7 +555,7 @@
             >
               <v-switch
                 v-model="buildpack.run.securityContext.readOnlyRootFilesystem"
-                label="Read only root filesystem"
+                :label="$t('app.form.readOnlyRootFilesystem')"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -569,7 +565,7 @@
             >
               <v-switch
                 v-model="vulnerabilityscan.enabled"
-                label="Enable Trivy vulnerabfility scans"
+                :label="$t('app.form.vulnerabililityScan')"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -582,7 +578,7 @@
             >
               <v-switch
                 v-model="buildpack.run.securityContext.allowPrivilegeEscalation"
-                label="Allow privilege escalation"
+                :label="$t('app.form.privilegeEscalation')"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -592,7 +588,7 @@
             >
               <v-switch
                 v-model="buildpack.run.securityContext.runAsNonRoot"
-                label="Run as non root"
+                :label="$t('app.form.runAsNonRoot')"
                 color="primary"
             ></v-switch>
             </v-col>
@@ -606,7 +602,7 @@
               <v-text-field
                 v-model="buildpack.run.securityContext.runAsUser"
                 :rules="uidRules"
-                label="Run as user"
+                :label="$t('app.form.runAsUser')"
             ></v-text-field>
             </v-col>
             <v-col
@@ -616,7 +612,7 @@
               <v-text-field
                 v-model="buildpack.run.securityContext.runAsGroup"
                 :rules="uidRules"
-                label="Run as group"
+                :label="$t('app.form.runAsGroup')"
             ></v-text-field>
             </v-col>
           </v-row>
@@ -630,7 +626,7 @@
               v-model="buildpack.run.securityContext.capabilities.add"
               :items="capabilities"
               :menu-props="{ maxHeight: '400' }"
-              label="Capabilities add"
+              :label="$t('app.form.capabilitiesAdd')"
               multiple
               hint="Select one or more"
               persistent-hint
@@ -646,7 +642,7 @@
               v-model="buildpack.run.securityContext.capabilities.drop"
               :items="capabilities"
               :menu-props="{ maxHeight: '400' }"
-              label="Capabilities drop"
+              :label="$t('app.form.capabilitiesDrop')"
               multiple
               hint="Select one or more"
               persistent-hint
@@ -662,7 +658,7 @@
 
       <!-- NETWORKING -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Networking</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">{{ $t('app.titles.networking') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
           <v-row>
@@ -672,7 +668,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/whitelist-source-range']"
-                label="Whitelist Source Range"
+                :label="$t('app.form.whitelistSourceRange')"
               ></v-text-field>
             </v-col>
             <v-col
@@ -681,7 +677,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/denylist-source-range']"
-                label="Denylist Source Range"
+                :label="$t('app.form.denylistSourceRange')"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -693,7 +689,7 @@
             >
               <v-switch
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/force-ssl-redirect']"
-                label="Force SSL Redirect"
+                :label="$t('app.form.forceSSLRedirect')"
                 color="primary"
                 :disabled="ingress.tls && ingress.tls.length > 0"
               ></v-switch>
@@ -704,7 +700,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/proxy-buffer-size']"
-                label="Proxy Buffer Size"
+                :label="$t('app.form.proxyBufferSize')"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -715,7 +711,7 @@
                 <v-select
                   v-model="ingress.className"
                   :items="ingressClasses"
-                  label="Ingress Class"
+                  :label="$t('app.form.ingressClassName')"
                 ></v-select>
               </v-col>
             </v-row>
@@ -735,7 +731,7 @@
             >
               <v-switch
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors']"
-                label="Enable CORS"
+                :label="$t('app.form.corsEnable')"
                 color="primary"
                 false-value="false"
                 true-value="true"
@@ -751,7 +747,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-origin']"
-                label="CORS Allow Origin"
+                :label="$t('app.form.corsAllowOrigin')"
                 :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
@@ -761,7 +757,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-headers']"
-                label="CORS Allow Headers"
+                :label="$t('app.form.corsAllowHeaders')"
                 :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
@@ -771,7 +767,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-expose-headers']"
-                label="CORS Expose Headers"
+                :label="$t('app.form.corsExposeHeaders')"
                 :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
@@ -784,7 +780,7 @@
             >
               <v-switch
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-credentials']"
-                label="CORS Allow Credentials"
+                :label="$t('app.form.corsAllowCredentials')"
                 color="primary"
                 false-value="false"
                 true-value="true"
@@ -797,7 +793,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-max-age']"
-                label="CORS Max Age"
+                :label="$t('app.form.corsMaxAge')"
                 :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
@@ -807,7 +803,7 @@
             >
               <v-text-field
                 v-model="ingress.annotations['nginx.ingress.kubernetes.io/cors-allow-methods']"
-                label="CORS Allow Methods"
+                :label="$t('app.form.corsAllowMethods')"
                 :disabled="ingress.annotations['nginx.ingress.kubernetes.io/enable-cors'] == 'false'"
               ></v-text-field>
             </v-col>
@@ -820,10 +816,10 @@
 
       <!-- KUBERNETES --> 
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Kubernetes</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">{{ $t('app.titles.kubernetes') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
-          <h4 class="mb-5">Serviceaccount Annotation</h4>
+          <h4 class="mb-5">{{ $t('app.titles.serviceAccountAnnotations') }}</h4>
           <v-row v-for="(annotation, index) in sAAnnotations" :key="index">
             <v-col
               cols="12"
@@ -831,7 +827,7 @@
             >
               <v-text-field
                 v-model="annotation.annotation"
-                label="annotation"
+                :label="$t('global.annotation')"
                 :counter="120"
               ></v-text-field>
             </v-col>
@@ -841,7 +837,7 @@
             >
               <v-text-field
                 v-model="annotation.value"
-                label="value"
+                :label="$t('global.value')"
               ></v-text-field>
             </v-col>
             <v-col
@@ -881,7 +877,7 @@
 
       <!-- ENVIRONMENT VARS -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Environment Variables</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('app.titles.environmentVariables') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
             <v-row v-for="(envvar, index) in envVars" :key="index">
               <v-col
@@ -890,7 +886,7 @@
               >
                 <v-text-field
                   v-model="envvar.name"
-                  label="name"
+                  :label="$t('global.name')"
                   :counter="60"
                 ></v-text-field>
               </v-col>
@@ -900,7 +896,7 @@
               >
                 <v-text-field
                   v-model="envvar.value"
-                  label="value"
+                  :label="$t('global.value')"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -945,7 +941,7 @@
 
       <!-- RESOURCES -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Resources</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('app.titles.resources') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
           <v-row>
             <v-col
@@ -955,7 +951,7 @@
               <v-select
                 v-model="podsize"
                 :items="podsizes"
-                label="Podsize"
+                :label="$t('app.podSize')"
                 item-title="text"
                 item-value="value"
                 @update:modelValue="updatePodsize"
@@ -970,7 +966,7 @@
             >
               <v-switch
                 v-model="autoscale"
-                label="Autoscale"
+                :label="$t('app.autoscale')"
                 hint="Scale pod replicas based on CPU and Memory usage"
                 color="primary"
               ></v-switch>
@@ -984,7 +980,7 @@
             >
               <v-slider
                 v-model="webreplicas"
-                label="Web Pods"
+                :label="$t('app.webReplicas')"
                 max="10"
                 min="0"
                 step="1"
@@ -999,7 +995,7 @@
             >
               <v-slider
                 v-model="workerreplicas"
-                label="Worker Pods"
+                :label="$t('app.workerReplicas')"
                 max="10"
                 min="0"
                 step="1"
@@ -1015,7 +1011,7 @@
             >
               <v-range-slider
                 v-model="webreplicasrange"
-                label="Web Pods"
+                :label="$t('app.webReplicas')"
                 max="10"
                 min="0"
                 step="1"
@@ -1032,7 +1028,7 @@
             >
               <v-range-slider
                 v-model="workerreplicasrange"
-                label="Worker Pods"
+                :label="$t('app.workerReplicas')"
                 max="10"
                 min="0"
                 step="1"
@@ -1056,7 +1052,7 @@
               >
                 <v-text-field
                   v-model="volume.name"
-                  label="name"
+                  :label="$t('global.name')"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -1065,7 +1061,8 @@
               >
                 <v-text-field
                   v-model="volume.size"
-                  label="size"
+                  :label="$t('global.size')"
+                  placeholder="1G"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -1093,7 +1090,7 @@
                 <v-select
                   v-model="volume.storageClass"
                   :items="storageclasses"
-                  label="Storage Class"
+                  :label="$t('app.form.storageClass')"
                 ></v-select>
               </v-col>
               <v-col
@@ -1102,7 +1099,7 @@
               >
                 <v-text-field
                   v-model="volume.mountPath"
-                  label="Mount Path"
+                  :label="$t('app.form.mountPath')"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -1112,7 +1109,7 @@
                 <v-select
                   v-model="volume.accessModes[0]"
                   :items="['ReadWriteOnce', 'ReadWriteMany', 'ReadOnlyMany']"
-                  label="Access Mode"
+                  :label="$t('app.form.accessMode')"
                 ></v-select>
               </v-col>
             </v-row>
@@ -1139,7 +1136,7 @@
 
       <!-- CRONJOBS -->
       <v-expansion-panel bg-color="rgb(var(--v-theme-cardBackground))">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">Cronjobs</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="cardBackground">{{ $t('app.titles.cronjobs') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="cardBackground">
           <div v-for="(cronjob, index) in cronjobs" :key="index">
             <v-row>
@@ -1149,7 +1146,7 @@
               >
                 <v-text-field
                   v-model="cronjob.name"
-                  label="name"
+                  :label="$t('global.name')"
                   :readonly="app!='new'"
                 ></v-text-field>
               </v-col>
@@ -1159,7 +1156,8 @@
               >
                 <v-text-field
                   v-model="cronjob.schedule"
-                  label="schedule"
+                  :label="$t('app.cronjobs.schedule')"
+                  placeholder="* * * * *"
                   :rules="cronjobScheduleRules"
                 ></v-text-field>
               </v-col>
@@ -1187,7 +1185,7 @@
               >
                 <v-text-field
                   v-model="cronjob.image"
-                  label="image"
+                  :label="$t('app.cronjobs.image')"
                 ></v-text-field>
               </v-col>
               <v-col
@@ -1196,7 +1194,7 @@
               >
                 <v-text-field
                   v-model="cronjob.command"
-                  label="command"
+                  :label="$t('app.cronjobs.command')"
                 ></v-text-field>
               </v-col>
             </v-row>
@@ -1223,7 +1221,7 @@
 
       <!-- HEALTHCHECK --> 
       <v-expansion-panel bg-color="rgb(var(--v-theme-on-surface-variant))" :style="advanced ? 'display: block;' : 'display: none;'">
-        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">Health check</v-expansion-panel-title>
+        <v-expansion-panel-title class="text-uppercase text-caption-2 font-weight-medium" color="secondary">{{ $t('app.titles.healthChecks') }}</v-expansion-panel-title>
         <v-expansion-panel-text color="secondary">
 
           <v-row>
@@ -1233,7 +1231,7 @@
             >
               <v-switch
                 v-model="healthcheck.enabled"
-                label="Health Check Enabled"
+                :label="$t('app.form.healthCheckEnabled')"
                 color="primary"
               ></v-switch>
             </v-col>
@@ -1245,7 +1243,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.path"
-                  label="Path"
+                  :label="$t('app.form.healthCheckPath')"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1255,7 +1253,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.startupSeconds"
-                  label="Startup Seconds"
+                  :label="$t('app.form.healthCheckStartupSeconds')"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1265,7 +1263,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.timeoutSeconds"
-                  label="Timeout Seconds"
+                  :label="$t('app.form.healthcheckTimeoutSeconds')"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1275,7 +1273,7 @@
             >
                 <v-text-field
                   v-model="healthcheck.periodSeconds"
-                  label="Interval Seconds"
+                  :label="$t('app.form.healthCheckIntervalSeconds')"
                   :counter="60"
                 ></v-text-field>
             </v-col>
@@ -1285,7 +1283,7 @@
     </v-expansion-panels>
 
       <!-- ADDONS -->
-      <div class="text-uppercase text-caption-2 font-weight-medium pt-5">Addons</div>
+      <div class="text-uppercase text-caption-2 font-weight-medium pt-5">{{ $t('app.titles.addOns') }}</div>
       <Addons :addons="addons" :appname="name"/>
 
       <!-- SUBMIT -->
@@ -1300,28 +1298,15 @@
                 elevation="2"
                 @click="createApp()"
                 :disabled="!valid"
-                >Create</v-btn>
+                >{{ $t('global.create') }}</v-btn>
             <v-btn
                 color="primary"
                 v-if="app!='new'"
                 elevation="2"
                 @click="updateApp()"
                 :disabled="!valid"
-                >Update</v-btn>
+                >{{ $t('global.update') }}</v-btn>
         </v-col>
-        <!--
-        <v-col
-          cols="12"
-          md="4"
-        >
-            <v-btn
-                color="error"
-                v-if="app!='new'"
-                elevation="2"
-                @click="deleteApp()"
-                >Delete</v-btn>
-        </v-col>
-        -->
       </v-row>
     </v-container>
   </v-form>

@@ -9,7 +9,7 @@
             color="primary"
             :disabled="!authStore.hasPermission('pipeline:write')"
             :to="{ name: 'Pipeline Form', params: { pipeline: pipeline }}"
-            >Edit Pipeline</v-btn>
+            >{{ $t('pipeline.buttons.edit') }}</v-btn>
         </v-col>
     </v-container>
     <v-container :fluid="true">

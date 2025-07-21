@@ -7,7 +7,7 @@
             >
                 <v-text-field
                 v-model="buildpackStage.repository"
-                :label="title + ' Repository'"
+                :label="$t('runpacks.details.repository')"
                 required
                 density="compact"
                 ></v-text-field>
@@ -18,7 +18,7 @@
             >
                 <v-text-field
                 v-model="buildpackStage.tag"
-                label="Tag"
+                :label="$t('runpacks.form.tag')"
                 required
                 density="compact"
                 ></v-text-field>
@@ -32,7 +32,7 @@
                     v-model="buildpackStage.securityContext.runAsUser"
                     :rules="uidRules"
                     density="compact"
-                    label="Run as user"
+                    :label="$t('runpacks.form.runAsUser')"
                 ></v-text-field>
             </v-col>
             <v-col
@@ -44,7 +44,7 @@
                     v-model="buildpackStage.securityContext.runAsGroup"
                     :rules="uidRules"
                     density="compact"
-                    label="Run as group"
+                    :label="$t('runpacks.form.runAsGroup')"
                 ></v-text-field>
             </v-col>
         </v-row>
@@ -56,7 +56,7 @@
             >
                 <v-switch
                     v-model="buildpackStage.readOnlyAppStorage"
-                    label="Read only app volume"
+                    :label="$t('runpacks.form.readOnlyAppVolume')"
                     density="compact"
                     color="primary"
                 ></v-switch>
@@ -67,7 +67,7 @@
             >
                 <v-switch
                     v-model="buildpackStage.securityContext.readOnlyRootFilesystem"
-                    label="Read only root filesystem"
+                    :label="$t('runpacks.form.readOnlyRootFilesystem')"
                     density="compact"
                     color="primary"
                 ></v-switch>
@@ -78,7 +78,7 @@
             >
                 <v-switch
                     v-model="buildpackStage.securityContext.allowPrivilegeEscalation"
-                    label="Allow privilege escalation"
+                    :label="$t('runpacks.form.allowPrivilegeEscalation')"
                     density="compact"
                     color="primary"
                 ></v-switch>
@@ -89,7 +89,7 @@
             >
                 <v-switch
                     v-model="buildpackStage.securityContext.runAsNonRoot"
-                    label="Run as non root"
+                    :label="$t('runpacks.form.runAsNonRoot')"
                     density="compact"
                     color="primary"
                 ></v-switch>
@@ -105,9 +105,9 @@
                     v-model="buildpackStage.securityContext.capabilities.add"
                     :items="capabilities"
                     :menu-props="{ maxHeight: '400' }"
-                    label="Capabilities add"
+                    :label="$t('runpacks.form.capabilitiesAdd')"
                     multiple
-                    hint="Select one or more"
+                    :hint="$t('runpacks.form.selectOneOrMore')"
                     persistent-hint
                     chips
                     class="capability"
@@ -121,9 +121,9 @@
                     v-model="buildpackStage.securityContext.capabilities.drop"
                     :items="capabilities"
                     :menu-props="{ maxHeight: '400' }"
-                    label="Capabilities drop"
+                    :label="$t('runpacks.form.capabilitiesDrop')"
                     multiple
-                    hint="Select one or more"
+                    :hint="$t('runpacks.form.selectOneOrMore')"
                     persistent-hint
                     chips
                     class="capability"
@@ -135,8 +135,8 @@
 
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-
+import { defineComponent, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
     name: 'RunpacksItem',
@@ -155,11 +155,19 @@ export default defineComponent({
         }
     },
     setup(props) {
+        const { t } = useI18n()
+        
+        const uidRules = computed(() => [
+            (v: string) => !!v || t('runpacks.form.required'),
+            (v: string) => /^\d+$/.test(v) || t('runpacks.form.mustBeNumber')
+        ])
+        
         console.log('RunpacksItem props:', props.buildpackStage)
         return {
             buildpackStage: props.buildpackStage,
             title: props.title,
-            advanced: props.advanced
+            advanced: props.advanced,
+            uidRules
         }
     },
     data () {
@@ -203,10 +211,6 @@ export default defineComponent({
                 'SYS_TTY_CONFIG',
                 'SYSLOG',
                 'WAKE_ALARM',
-            ],
-            uidRules: [
-                (v: string) => !!v || 'Required',
-                (v: string) => /^\d+$/.test(v) || 'Must be a number'
             ]
         }
     }

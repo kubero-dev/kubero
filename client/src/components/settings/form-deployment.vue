@@ -4,7 +4,7 @@
         <v-row>
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <h2>
-                    Connecting repositories
+                    {{ $t('settings.deployment.title') }}
                 </h2>
                 <!--
                 <p class="text-justify">
@@ -16,13 +16,13 @@
                     type="info"
                     variant="tonal"
                     style="margin-bottom: 20px; margin-top: 20px;"
-                    text="Configuration changes won't take effect until the Kubero UI container is restarted manually.">
+                    :text="$t('settings.deployment.configAlert')">
                 </v-alert>
             </v-col>
         </v-row>
 
         <v-divider class="ma-5"></v-divider>
-        <h4 class="text-uppercase">Webhook Endpoint</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.webhookEndpoint') }}</h4>
         <v-row>
             <v-col
                 cols="12"
@@ -30,7 +30,7 @@
             >
                 <v-text-field
                 v-model="settings.settings.kubero.webhook_url"
-                label="URL"
+                :label="$t('settings.deployment.url')"
                 required
                 ></v-text-field>
             </v-col>
@@ -42,7 +42,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.KUBERO_WEBHOOK_SECRET"
-                label="Secret"
+                :label="$t('settings.deployment.secret')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
@@ -52,7 +52,7 @@
         </v-row>
         <v-divider class="ma-5"></v-divider>
 
-        <h4 class="text-uppercase">Github</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.github.title') }}</h4>
         <v-row>
             <v-col 
                 cols="12"
@@ -60,7 +60,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITHUB_BASEURL"
-                label="github Base Url" 
+                :label="$t('settings.deployment.github.baseUrl')" 
                 required
                 ></v-text-field>  
             </v-col>
@@ -70,7 +70,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITHUB_PERSONAL_ACCESS_TOKEN"
-                label="github personal access token"
+                :label="$t('settings.deployment.github.personalAccessToken')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
@@ -80,11 +80,11 @@
             <v-col
                 cols="12"
                 md="6"
-            >Instructions on how to get a Personal access token from <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank">Github</a>
+            >{{ $t('settings.deployment.github.instructions') }} <a href="https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token" target="_blank">Github</a>
             </v-col>
         </v-row>
 
-        <h4 class="text-uppercase">Gitea</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.gitea.title') }}</h4>
         <v-row>
             <v-col
                 cols="12"
@@ -92,7 +92,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITEA_BASEURL"
-                label="Gitea Base URL"
+                :label="$t('settings.deployment.gitea.baseUrl')"
                 required
                 ></v-text-field>
             </v-col>
@@ -102,7 +102,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITEA_PERSONAL_ACCESS_TOKEN"
-                label="Gitea Personal Access Token"
+                :label="$t('settings.deployment.gitea.personalAccessToken')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
@@ -112,11 +112,11 @@
             <v-col
                 cols="12"
                 md="6"
-            >Instructions on how to get a Personal access token for <a href="https://www.jetbrains.com/help/youtrack/cloud/integration-with-gitea.html#enable-youtrack-integration-gitea" target="_blank">Gitea</a>
+            >{{ $t('settings.deployment.gitea.instructions') }} <a href="https://www.jetbrains.com/help/youtrack/cloud/integration-with-gitea.html#enable-youtrack-integration-gitea" target="_blank">Gitea</a>
             </v-col>
         </v-row>
 
-        <h4 class="text-uppercase">Gogs</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.gogs.title') }}</h4>
         <v-row>
             <v-col
                 cols="12"
@@ -124,7 +124,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GOGS_BASEURL"
-                label="Gogs Base URL"
+                :label="$t('settings.deployment.gogs.baseUrl')"
                 required
                 ></v-text-field>
             </v-col>
@@ -134,7 +134,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GOGS_PERSONAL_ACCESS_TOKEN"
-                label="Gogs Personal Access Token"
+                :label="$t('settings.deployment.gogs.personalAccessToken')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
@@ -143,7 +143,7 @@
             </v-col>
         </v-row>
 
-        <h4 class="text-uppercase">Gitlab</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.gitlab.title') }}</h4>
         <v-row>
             <v-col
                 cols="12"
@@ -151,7 +151,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITLAB_BASEURL"
-                label="Gitlab Base URL"
+                :label="$t('settings.deployment.gitlab.baseUrl')"
                 required
                 ></v-text-field>
             </v-col>
@@ -161,7 +161,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.GITLAB_PERSONAL_ACCESS_TOKEN"
-                label="Gitlab Personal Access Token"
+                :label="$t('settings.deployment.gitlab.personalAccessToken')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
@@ -170,7 +170,7 @@
             </v-col>
         </v-row>
 
-        <h4 class="text-uppercase">Bitbucket</h4>
+        <h4 class="text-uppercase">{{ $t('settings.deployment.bitbucket.title') }}</h4>
         <v-row>
             <v-col
                 cols="12"
@@ -178,7 +178,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.BITBUCKET_USERNAME"
-                label="Bitbucket Username"
+                :label="$t('settings.deployment.bitbucket.username')"
                 required
                 ></v-text-field>
             </v-col>
@@ -188,7 +188,7 @@
             >
                 <v-text-field
                 v-model="settings.secrets.BITBUCKET_APP_PASSWORD"
-                label="Bitbucket App Password"
+                :label="$t('settings.deployment.bitbucket.appPassword')"
                 required
                 :append-icon="show ? 'mdi-eye' : 'mdi-eye-off'"
                 :type="show ? 'text' : 'password'"
