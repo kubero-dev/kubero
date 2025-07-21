@@ -308,6 +308,13 @@ const messages = {
     errors: {
       passwordMismatch: 'Passwörter stimme nöd überii',
       passwordConfirm: 'Bitte bestätig dis Passwort',
+      firstNameRequired: 'Vorname isch erforderlich',
+      lastNameRequired: 'Nachname isch erforderlich',
+      emailRequired: 'E-Mail isch erforderlich',
+      emailValid: 'E-Mail muess gültig sii',
+      currentPasswordRequired: 'Aktuells Passwort isch erforderlich',
+      newPasswordRequired: 'Neus Passwort isch erforderlich',
+      passwordMinLength: 'Passwort muess mindestens 8 Zeiche lang sii',
     },
     actions: {
       name: 'Aktione',

@@ -6,9 +6,12 @@ import de from '../locale/de'
 import zhHans from '../locale/zhHans'
 import deCH from '../locale/de-CH'
 
-export default createI18n({
+// Get saved locale from localStorage or default to 'de'
+const savedLocale = localStorage.getItem('kubero.locale') || 'de'
+
+const i18n = createI18n({
   legacy: false,
-  locale: 'de',
+  locale: savedLocale,
   fallbackLocale: 'en',
   messages: {
     en: en,
@@ -18,3 +21,5 @@ export default createI18n({
     'de-CH': deCH,
   },
 })
+
+export default i18n

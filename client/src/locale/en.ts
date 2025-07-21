@@ -236,6 +236,10 @@ const messages = {
           expiresAt: 'Expires At',
           noTokens: 'No tokens found.',
           details: 'Token Details',
+          warningMessage: 'This token will <strong>not be shown again</strong>. Please copy and store it securely now.',
+          copyToken: 'Copy Token',
+          copiedMessage: 'Token copied to clipboard!',
+          close: 'Close',
         },
         actions: {
           editProfile: 'Edit Profile',
@@ -260,6 +264,13 @@ const messages = {
         errors: {
           passwordMismatch: 'Passwords do not match',
           passwordConfirm: 'Please confirm your password',
+          firstNameRequired: 'First name is required',
+          lastNameRequired: 'Last name is required',
+          emailRequired: 'Email is required',
+          emailValid: 'Email must be valid',
+          currentPasswordRequired: 'Current password is required',
+          newPasswordRequired: 'New password is required',
+          passwordMinLength: 'Password must be at least 8 characters',
         },
         actions: {
           name: 'Actions',

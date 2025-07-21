@@ -310,6 +310,13 @@ const messages = {
     errors: {
       passwordMismatch: 'Passwörter stimmen nicht überein',
       passwordConfirm: 'Bitte bestätige dein Passwort',
+      firstNameRequired: 'Vorname ist erforderlich',
+      lastNameRequired: 'Nachname ist erforderlich',
+      emailRequired: 'E-Mail ist erforderlich',
+      emailValid: 'E-Mail muss gültig sein',
+      currentPasswordRequired: 'Aktuelles Passwort ist erforderlich',
+      newPasswordRequired: 'Neues Passwort ist erforderlich',
+      passwordMinLength: 'Passwort muss mindestens 8 Zeichen lang sein',
     },
     actions: {
       name: 'Aktionen',

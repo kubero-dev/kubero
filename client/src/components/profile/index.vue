@@ -29,7 +29,7 @@
             </select>
             -->
             <v-select
-              v-model="$i18n.locale"
+              v-model="locale"
               :items="$i18n.availableLocales"
               item-text="name"
               item-value="code"
@@ -145,20 +145,20 @@
                 <v-text-field
                   v-model="editedUser.firstName"
                   :label="$t('user.firstName')"
-                  :rules="[v => !!v || 'First name is required']"
+                  :rules="[v => !!v || $t('user.errors.firstNameRequired')]"
                 ></v-text-field>
                 <v-text-field
                   v-model="editedUser.lastName"
                   :label="$t('user.lastName')"
-                  :rules="[v => !!v || 'Last name is required']"
+                  :rules="[v => !!v || $t('user.errors.lastNameRequired')]"
                 ></v-text-field>
                 <v-text-field
                   v-model="editedUser.email"
                   :label="$t('user.email')"
                   type="email"
                   :rules="[
-                    v => !!v || 'Email is required',
-                    v => /.+@.+\..+/.test(v) || 'Email must be valid'
+                    v => !!v || $t('user.errors.emailRequired'),
+                    v => /.+@.+\..+/.test(v) || $t('user.errors.emailValid')
                   ]"
                 ></v-text-field>
               </v-card-text>
@@ -186,7 +186,7 @@
                   v-model="passwordForm.currentPassword"
                   :label="$t('user.currentPassword')"
                   type="password"
-                  :rules="[v => !!v || 'Current password is required']"
+                  :rules="[v => !!v || $t('user.errors.currentPasswordRequired')]"
                   class="mb-2"
                 ></v-text-field>
                 <v-text-field
@@ -194,8 +194,8 @@
                   :label="$t('user.newPassword')"
                   type="password"
                   :rules="[
-                    v => !!v || 'New password is required',
-                    v => v.length >= 8 || 'Password must be at least 8 characters'
+                    v => !!v || $t('user.errors.newPasswordRequired'),
+                    v => v.length >= 8 || $t('user.errors.passwordMinLength')
                   ]"
                   class="mb-2"
                 ></v-text-field>
@@ -289,8 +289,7 @@
             <v-card>
               <v-card-title>{{ $t('profile.token.details') }}</v-card-title>
               <v-card-text>
-                <v-alert type="warning" density="compact" class="mb-2">
-                  This token will <strong>not be shown again</strong>. Please copy and store it securely now.
+                <v-alert type="warning" density="compact" class="mb-2" v-html="$t('profile.token.warningMessage')">
                 </v-alert>
                 <v-textarea
                   v-model="generatedToken.token"
@@ -307,20 +306,20 @@
                   class="mb-2"
                 >
                   <v-icon left>mdi-content-copy</v-icon>
-                  Copy Token
+                  {{ $t('profile.token.copyToken') }}
                 </v-btn>
                 <v-snackbar v-model="textareaFlash" timeout="3000">
-                  Token copied to clipboard!
+                  {{ $t('profile.token.copiedMessage') }}
                   <template #actions>
                     <v-btn text @click="textareaFlash = false">
-                      Close
+                      {{ $t('profile.token.close') }}
                     </v-btn>
                   </template>
                 </v-snackbar>
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn text @click="tokenDialog = false">Close</v-btn>
+                <v-btn text @click="tokenDialog = false">{{ $t('profile.token.close') }}</v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
@@ -331,14 +330,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue'
+import { defineComponent, ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '../../stores/auth'
+import { useI18n } from 'vue-i18n'
 const authStore = useAuthStore();
 
 export default defineComponent({
   name: 'ProfilePage',
   setup() {
+    const { locale, t } = useI18n()
+    
     const user = ref<any>({
       firstName: '',
       lastName: '',
@@ -500,12 +502,18 @@ export default defineComponent({
       }
     }
 
+    // Watch for locale changes and save to localStorage
+    watch(locale, (newLocale) => {
+      localStorage.setItem('kubero.locale', newLocale)
+    })
+
     onMounted(() => {
       loadProfile()
       loadTokens()
     })
 
     return {
+      locale,
       user,
       defaultAvatar,
       tokens,

@@ -308,6 +308,13 @@ const messages = {
     errors: {
       passwordMismatch: '密码不匹配',
       passwordConfirm: '请确认您的密码',
+      firstNameRequired: '名字是必需的',
+      lastNameRequired: '姓氏是必需的',
+      emailRequired: '电子邮件是必需的',
+      emailValid: '电子邮件必须有效',
+      currentPasswordRequired: '当前密码是必需的',
+      newPasswordRequired: '新密码是必需的',
+      passwordMinLength: '密码必须至少8个字符',
     },
     actions: {
       name: '操作',

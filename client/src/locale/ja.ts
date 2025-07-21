@@ -308,6 +308,13 @@ const messages = {
     errors: {
       passwordMismatch: 'パスワードが一致しません',
       passwordConfirm: 'パスワードを確認してください',
+      firstNameRequired: '名が必要です',
+      lastNameRequired: '姓が必要です',
+      emailRequired: 'メールアドレスが必要です',
+      emailValid: '有効なメールアドレスである必要があります',
+      currentPasswordRequired: '現在のパスワードが必要です',
+      newPasswordRequired: '新しいパスワードが必要です',
+      passwordMinLength: 'パスワードは8文字以上である必要があります',
     },
     actions: {
       name: 'アクション',
