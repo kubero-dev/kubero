@@ -4,10 +4,10 @@
         <v-row>
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
                 <h2>
-                    General Kubero Settings
+                    {{ $t('settings.general.title') }}
                 </h2>
                 <p class="text-justify">
-                    Some of the configuration values require a browser refresh(*) or pod restart(**) to take effect.
+                    {{ $t('settings.general.description') }}
                 </p>
             </v-col>
         </v-row>
@@ -20,7 +20,7 @@
             >
             <v-text-field
                 v-model="settings.kubero.namespace"
-                label="Kubero Namespace"
+                :label="$t('settings.general.namespace')"
                 required
                 disabled
             ></v-text-field>
@@ -34,7 +34,7 @@
             >
             <v-switch
                 v-model="settings.kubero.config.kubero.readonly"
-                label="Readonly Mode (**)"
+                :label="$t('settings.general.readonlyMode')"
                 required
                 color="primary"
             ></v-switch>
@@ -45,7 +45,7 @@
             >
             <v-switch
                 v-model="settings.kubero.config.kubero.admin.disabled"
-                label="Admin disabled"
+                :label="$t('settings.general.adminDisabled')"
                 required
                 color="primary"
             ></v-switch>
@@ -59,7 +59,7 @@
             >
             <v-switch
                 v-model="settings.kubero.config.kubero.console.enabled"
-                label="TTY Console enabled"
+                :label="$t('settings.general.ttyConsoleEnabled')"
                 required
                 color="primary"
             ></v-switch>
@@ -67,7 +67,7 @@
         </v-row>
 
         <v-divider class="ma-5"></v-divider>
-        <h4 class="text-uppercase">Banner</h4>
+        <h4 class="text-uppercase">{{ $t('settings.general.banner.title') }}</h4>
 
         <v-row>
             <v-col
@@ -76,7 +76,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.config.kubero.banner.show"
-                label="Enabled (*)"
+                :label="$t('settings.general.banner.enabled')"
                 color="primary"
                 required
                 ></v-switch>
@@ -88,7 +88,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.config.kubero.banner.bgcolor"
-                label="Background Color"
+                :label="$t('settings.general.banner.backgroundColor')"
                 required
                 ></v-text-field>
             </v-col>
@@ -99,7 +99,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.config.kubero.banner.fontcolor"
-                label="Font Color"
+                :label="$t('settings.general.banner.fontColor')"
                 required
                 ></v-text-field>
             </v-col>
@@ -111,14 +111,14 @@
             >
                 <v-text-field
                 v-model="settings.kubero.config.kubero.banner.message"
-                label="Message"
+                :label="$t('settings.general.banner.message')"
                 required
                 ></v-text-field>
             </v-col>
         </v-row>
 
         <v-divider class="ma-5"></v-divider>
-        <h4 class="text-uppercase">Authentication</h4>
+        <h4 class="text-uppercase">{{ $t('settings.general.authentication.title') }}</h4>
 
         <v-row>
             <v-col
@@ -127,7 +127,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.auth.github.enabled"
-                label="Github"
+                :label="$t('settings.general.authentication.github.enabled')"
                 color="primary"
                 density="compact"
                 required
@@ -140,7 +140,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.github.id"
-                label="ID"
+                :label="$t('settings.general.authentication.github.id')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -152,7 +152,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.github.org"
-                label="Organization"
+                :label="$t('settings.general.authentication.github.organization')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -165,7 +165,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.github.callbackUrl"
-                label="Callback URL"
+                :label="$t('settings.general.authentication.github.callbackUrl')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -179,7 +179,7 @@
             >
                 <v-text-field
                 v-model="secrets.GITHUB_CLIENT_SECRET"
-                label="Secret"
+                :label="$t('settings.general.authentication.github.secret')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -193,7 +193,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.auth.oauth2.enabled"
-                label="Oauth2"
+                :label="$t('settings.general.authentication.oauth2.enabled')"
                 color="primary"
                 density="compact"
                 required
@@ -206,7 +206,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.name"
-                label="Name"
+                :label="$t('settings.general.authentication.oauth2.name')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -218,7 +218,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.id"
-                label="ID"
+                :label="$t('settings.general.authentication.oauth2.id')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -231,7 +231,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.authUrl"
-                label="Auth URL"
+                :label="$t('settings.general.authentication.oauth2.authUrl')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -244,7 +244,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.tokenUrl"
-                label="Token URL"
+                :label="$t('settings.general.authentication.oauth2.tokenUrl')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -257,7 +257,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.callbackUrl"
-                label="Callback URL"
+                :label="$t('settings.general.authentication.oauth2.callbackUrl')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -270,7 +270,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auth.oauth2.scopes"
-                label="Scopes"
+                :label="$t('settings.general.authentication.oauth2.scopes')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -283,7 +283,7 @@
             >
                 <v-text-field
                 v-model="secrets.OAUTH2_CLIENT_SECRET"
-                label="Secret"
+                :label="$t('settings.general.authentication.oauth2.secret')"
                 density="compact"
                 required
                 ></v-text-field>
@@ -292,7 +292,7 @@
 
 
         <v-divider class="ma-5"></v-divider>
-        <h4 class="text-uppercase">Audit Logs</h4>
+        <h4 class="text-uppercase">{{ $t('settings.general.auditLogs.title') }}</h4>
 
         <v-row>
             <v-col
@@ -301,7 +301,7 @@
             >
                 <v-switch
                 v-model="settings.kubero.auditLogs.enabled"
-                label="Enabled (**)"
+                :label="$t('settings.general.auditLogs.enabled')"
                 color="primary"
                 required
                 ></v-switch>
@@ -316,7 +316,7 @@
                 <v-select
                   v-model="settings.kubero.auditLogs.storageClassName"
                   :items="storageclasses"
-                  label="Storage Class"
+                  :label="$t('settings.general.auditLogs.storageClass')"
                 ></v-select>
             </v-col>
             <v-col
@@ -325,7 +325,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auditLogs.limit"
-                label="Limit"
+                :label="$t('settings.general.auditLogs.limit')"
                 required
                 ></v-text-field>
             </v-col>
@@ -335,7 +335,7 @@
             >
                 <v-text-field
                 v-model="settings.kubero.auditLogs.size"
-                label="Size"
+                :label="$t('settings.general.auditLogs.size')"
                 required
                 ></v-text-field>
             </v-col>
