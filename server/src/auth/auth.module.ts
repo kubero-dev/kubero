@@ -37,6 +37,6 @@ if (ConfigService.getGithubEnabled()) {
   ],
   providers: providers,
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule, UsersModule],
 })
 export class AuthModule {}

@@ -7,12 +7,15 @@ import {
   WsResponse,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtGuard } from 'src/auth/strategies/ws-jwt.guard';
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
+@UseGuards(WsJwtGuard)
 export class EventsGateway {
   @WebSocketServer()
   server: Server;
