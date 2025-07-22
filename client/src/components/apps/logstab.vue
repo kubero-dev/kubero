@@ -20,7 +20,7 @@
             </v-col>
         </v-row>
         <v-row>
-            <v-col cols="12" sm="12" md="12">
+            <v-col cols="12" sm="12" md="12" style="height: calc(100vh - 400px);">
                 <Logs :pipeline=pipeline :phase=phase :app=app :deploymentstrategy=deploymentstrategy :buildstrategy=buildstrategy logType="runlogs" height="600px"/>
             </v-col>
         </v-row>

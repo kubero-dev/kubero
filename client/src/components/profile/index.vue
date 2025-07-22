@@ -30,8 +30,8 @@
             -->
             <v-select
               v-model="locale"
-              :items="$i18n.availableLocales"
-              item-text="name"
+              :items="availableLanguages"
+              item-title="name"
               item-value="code"
               variant="underlined"
               label-disabled="Select Language"
@@ -340,6 +340,18 @@ export default defineComponent({
   name: 'ProfilePage',
   setup() {
     const { locale, t } = useI18n()
+
+    
+    const availableLanguages = ref([
+      { code: 'en', name: 'English' },
+      { code: 'de', name: 'Deutsch' },
+      //{ code: 'es', name: 'Español' },
+      //{ code: 'fr', name: 'Français' },
+      { code: 'de-CH', name: 'Schwizerdütsch' },
+      { code: 'ja', name: '日本語' },
+      { code: 'zhHans', name: '简体中文' },
+      { code: 'pt', name: 'Português' },
+    ])
     
     const user = ref<any>({
       firstName: '',
@@ -514,6 +526,7 @@ export default defineComponent({
 
     return {
       locale,
+      availableLanguages,
       user,
       defaultAvatar,
       tokens,
