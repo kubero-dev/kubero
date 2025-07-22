@@ -295,7 +295,7 @@ const messages = {
       warningMessage: 'Dä Token wird <strong>nümme aazeigt</strong>. Bitte kopier und speicher ihn jetzt sicher ab.',
       copyToken: 'Token kopiere',
       copiedMessage: 'Token i Zwüschealag kopiert!',
-      close: 'Zueche',
+      close: 'Zue',
     },
     actions: {
       editProfile: 'Profil bearbeite',
@@ -448,7 +448,7 @@ const messages = {
         title: 'Gitea',
         baseUrl: 'Gitea Basis-URL',
         personalAccessToken: 'Gitea Personal Access Token',
-        instructions: 'Aleitig zum Erhalte von eme Personal Access Token für',
+        instructions: 'Aleitig zum Erhalte vomene Personal Access Token für',
       },
       gogs: {
         title: 'Gogs',
@@ -468,7 +468,7 @@ const messages = {
     },
     general: {
       title: 'Allgemäini Kubero-Istellige',
-      description: 'Einigi Konfigurationswärt bruche es Browser-Update(*) oder en Pod-Neustart(**), zum wirksam z wärde.',
+      description: 'Einigi Konfigurationswärt bruched es Browser-Update(*) oder en Pod-Neustart(**), zum wirksam z wärde.',
       namespace: 'Kubero Namespace',
       readonlyMode: 'Nur-Läse-Modus (**)',
       adminDisabled: 'Admin deaktiviert',
@@ -510,25 +510,25 @@ const messages = {
     },
   },
   podsizes: {
-    name: 'Pod-Grössen',
-    helpTitle: 'Was sind Pod-Grössen?',
-    helpText: '<p><strong>Pod-Grössen</strong> definieren die Ressourcenanforderungen und -limits für die Pods Ihrer Anwendung in Kubero. Sie können Pod-Grössen erstellen, bearbeiten und löschen, um sie an Ihre Workload-Anforderungen anzupassen.</p><p class="mt-2"><a href="https://www.kubero.dev/docs/usermanual/podsizes/" target="_blank" rel="noopener">Mehr in der Kubero-Dokumentation</a></p>',
+    name: 'Pod-Grössene',
+    helpTitle: 'Was sind Pod-Grössene?',
+    helpText: '<p><strong>Pod-Grössene</strong> definieren die Ressourcenanforderige und -limits für die Pods Ihrer Anwendung in Kubero. Sie können Pod-Grössene erstellen, bearbeiten und löschen, um sie an Ihre Workload-Anforderungen anzupassen.</p><p class="mt-2"><a href="https://www.kubero.dev/docs/usermanual/podsizes/" target="_blank" rel="noopener">Mehr in der Kubero-Dokumentation</a></p>',
     form: {
       name: 'Pod-Grössenname',
-      description: 'Beschreibung',
-      cpuRequest: 'CPU-Anforderung (m)',
+      description: 'Beschriibig',
+      cpuRequest: 'CPU-Anforderig (m)',
       cpuLimit: 'CPU-Limit (m)',
-      memoryRequest: 'Speicheranforderung (Gi)',
+      memoryRequest: 'Speicheranforderig (Gi)',
       memoryLimit: 'Speicherlimit (Gi)',
       cpu: 'CPU',
       memory: 'Speicher',
     },
     actions: {
-      create: 'Pod-Grösse erstellen',
-      edit: 'Pod-Grösse bearbeiten',
+      create: 'Pod-Grösse erstelle',
+      edit: 'Pod-Grösse bearbeite',
     },
     errors: {
-      loadinPodsize: 'Fehler beim Laden der Pod-Grössen',
+      loadinPodsize: 'Fehler bim Lade vo de Pod-Grössene',
     },
   },
   templates: {
