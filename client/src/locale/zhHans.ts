@@ -130,6 +130,7 @@ const messages = {
       openApp: '打开应用',
       restart: '重启',
       openConsole: '打开控制台',
+      openLogs: '打开日志',
       downloadTemplate: '下载模板',
       delete: '删除',
       update: '更新',
@@ -528,6 +529,16 @@ const messages = {
     },
     errors: {
       loadinPodsize: '加载Pod大小时出错',
+    },
+  },
+  templates: {
+    search: '搜索模板',
+    category: '类别',
+    pipeline: '流水线',
+    phase: '阶段',
+    actions: {
+      install: '安装',
+      loadTemplate: '加载模板',
     },
   },
   $vuetify: {

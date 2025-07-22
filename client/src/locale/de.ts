@@ -532,6 +532,16 @@ const messages = {
       loadinPodsize: 'Fehler beim Laden der Pod-Größen',
     },
   },
+  templates: {
+    search: 'Vorlagen suchen',
+    category: 'Kategorie',
+    pipeline: 'Pipeline',
+    phase: 'Phase',
+    actions: {
+      install: 'Installieren',
+      loadTemplate: 'Vorlage laden',
+    },
+  },
   $vuetify: {
     ...de,
   },
