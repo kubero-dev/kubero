@@ -7,7 +7,8 @@
             </v-col>
             <v-col cols="3" sm="6" md="3">
                 <v-text-field 
-                    label="Search"
+                    :label="$t('templates.search')"
+                    prepend-inner-icon="mdi-magnify"
                     v-model="search"
                     color="secondary"
                     @input="searchTemplates"
@@ -16,11 +17,12 @@
             </v-col>
             <v-col cols="3" sm="6" md="3">
                 <v-select
+                    :label="$t('templates.category')"
+                    prepend-inner-icon="mdi-tag"
                     :items="categories"
                     color="secondary"
                     density="comfortable"
                     @update:modelValue="filterByCategory"
-                    label="Category"
                     :v-model="selectedCategory"
                 ></v-select>
             </v-col>
@@ -113,7 +115,7 @@
                             :disabled="template.enabled"
                             @click="openInstallDialog(template)"
                             >
-                            install
+                            {{ $t('templates.actions.install') }}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -143,12 +145,12 @@
                 <v-card-text>
                     <v-select
                         :items="pipelines"
-                        label="Pipeline"
+                        :label="$t('templates.pipeline')"
                         v-model="pipeline"
                     ></v-select>
                     <v-select
                         :items="phases[pipeline]"
-                        label="Phase"
+                        :label="$t('templates.phase')"
                         v-model="phase"
                     ></v-select>
                 </v-card-text>
@@ -160,7 +162,7 @@
                         dark
                         @click="dialog = false"
                         >
-                        close
+                        {{ $t('global.abort') }}
                     </v-btn>
                     <v-btn
                         color="primary"
@@ -169,7 +171,7 @@
                         :disabled="!pipeline || !phase"
                         @click="openInstall(clickedTemplate.template, pipeline, phase)"
                         >
-                        Load template
+                        {{ $t('templates.actions.install') }}
                     </v-btn>
                 </v-card-actions>
             </v-card>

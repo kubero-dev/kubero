@@ -130,6 +130,7 @@ const messages = {
       openApp: 'App öffne',
       restart: 'Neustart',
       openConsole: 'Konsole öffne',
+      openLogs: 'Logs öffne',
       downloadTemplate: 'Vorlage abelade',
       delete: 'Lösche',
       update: 'Aktualisiere',
@@ -528,6 +529,16 @@ const messages = {
     },
     errors: {
       loadinPodsize: 'Fehler beim Laden der Pod-Grössen',
+    },
+  },
+  templates: {
+    search: 'Vorlage sueche',
+    category: 'Kategorie',
+    pipeline: 'Pipeline',
+    phase: 'Phase',
+    actions: {
+      install: 'Installiere',
+      loadTemplate: 'Vorlage lade',
     },
   },
   $vuetify: {

@@ -1,3 +1,4 @@
+import { pipeline } from 'stream'
 import { en } from 'vuetify/locale'
 
 const messages = {
@@ -74,6 +75,7 @@ const messages = {
           openApp: 'Open App',
           restart: 'Restart',
           openConsole: 'Open Console',
+          openLogs: 'Open Logs',
           downloadTemplate: 'Download Template',
           delete: 'Delete',
           update: 'Update',
@@ -529,6 +531,16 @@ const messages = {
             limit: 'Limit',
             size: 'Size',
           },
+        },
+      },
+      templates: {
+        search: 'Search',
+        category: 'Category',
+        pipeline: 'Pipeline',
+        phase: 'Phase',
+        actions: {
+          install: 'Install',
+          loadTemplate: 'Load Template',
         },
       },
       $vuetify: {

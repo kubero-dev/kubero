@@ -1,3 +1,4 @@
+import { template } from 'lodash'
 import { ja } from 'vuetify/locale'
 
 const messages = {
@@ -130,6 +131,7 @@ const messages = {
       openApp: 'アプリを開く',
       restart: '再起動',
       openConsole: 'コンソールを開く',
+      openLogs: 'ログを開く',
       downloadTemplate: 'テンプレートをダウンロード',
       delete: '削除',
       update: '更新',
@@ -528,6 +530,16 @@ const messages = {
     },
     errors: {
       loadinPodsize: 'Podサイズの読み込みエラー',
+    },
+  },
+  templates: {
+    search: 'テンプレートを検索',
+    category: 'カテゴリー',
+    pipeline: 'パイプライン',
+    phase: 'フェーズ',
+    actions: {
+      install: 'インストール',
+      loadTemplate: 'テンプレートを読み込む',
     },
   },
   $vuetify: {
