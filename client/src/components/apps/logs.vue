@@ -1,5 +1,5 @@
 <template>
-    <div :style="'height: ' + height + '; width: 100%;'">
+    <div class="logs-container">
         <v-tabs class="console-bar" style="position: relative;">
             <v-tab v-if="logType == 'runlogs'" @click="getLogHistory('web')">run</v-tab>
             <v-tab v-if="logType == 'runlogs' && deploymentstrategy == 'git' && buildstrategy=='plain'" @click="getLogHistory('builder')">build</v-tab>
@@ -9,7 +9,7 @@
             <v-tab v-if="logType == 'buildlogs' && (buildstrategy=='nixpacks' || buildstrategy=='dockerfile')" @click="getBuildLogHistory('push')">push</v-tab>
             <v-tab v-if="logType == 'buildlogs'" @click="getBuildLogHistory('deploy')">deploy</v-tab>
         </v-tabs>
-        <div class="console" id="console" style="height:100%; margin-top: -45px; z-index: 2000;">
+        <div class="console" id="console">
             <div v-for="line in loglines" :key="line.id">
             {{ new Date(line.time).toLocaleDateString() }} {{ new Date(line.time).toLocaleTimeString()}} <span :style="'color:' +line.color">[{{ line.podID }}/{{ line.container.replace('kuberoapp-', '') }}]</span>
             {{ line.log }}
@@ -175,22 +175,29 @@ a:link { text-decoration: none;}
     vertical-align:inherit;
 }
 
-.v-tabs.console-bar {
-    color: #9F9F9F;
+.logs-container {
+    height: calc(100vh - 400px);
+    width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .v-tabs.console-bar {
+    color: #9F9F9F;
     background-color: #1E1E1E; /*#444*/
+    flex-shrink: 0;
 }
 
 .console {
-    overflow-x: scroll;
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: auto;
     background-color: #333;
     color: #c0c0c0;
     padding: 5px;
     font: 0.85rem Inconsolata, monospace;
-
     display: flex;
     flex-direction: column-reverse;
+    min-height: 0;
 }
 </style>
