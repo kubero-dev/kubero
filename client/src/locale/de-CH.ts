@@ -99,6 +99,12 @@ const messages = {
       disconnect: 'Tränne',
       reconnect: 'Wieder verbinde',
     },
+    phases: {
+      production: 'Production',
+      stage: 'Stage',
+      test: 'Test',
+      review: 'Review',
+    },
     form: {
       label: {
         name: 'Name',

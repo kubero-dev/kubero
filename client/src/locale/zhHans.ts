@@ -99,6 +99,12 @@ const messages = {
       disconnect: '断开连接',
       reconnect: '重新连接',
     },
+    phases: {
+      production: '生产',
+      stage: '阶段',
+      test: '测试',
+      review: '审查',
+    },
     form: {
       label: {
         name: '名称',

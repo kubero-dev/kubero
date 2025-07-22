@@ -43,6 +43,12 @@ const messages = {
       disconnect: 'Desconectar',
       reconnect: 'Reconectar',
     },
+    phases: {
+      production: 'Production',
+      stage: 'Stage',
+      test: 'Teste',
+      review: 'Revisão',
+    },
     form: {
       label: {
         name: 'Nome',

@@ -93,18 +93,20 @@
                         </p>
                         
                 </v-col>
-                <v-col cols="12" sm="12" md="5" style="cursor: pointer;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
-                        <v-chip
-                            v-for="phase in item.phases" :key="phase.name"
-                            small
-                            label
-                            class="ma-1"
-                            :color="phase.enabled ? 'green' : ''"
-                            :text-color="phase.enabled  ? 'white' : ''"
-                            >
-                            <v-icon start v-if="phase.name.includes('review')" icon="mdi-eye-refresh-outline"></v-icon>
-                            {{ phase.name }}
-                        </v-chip>
+                <v-col cols="12" sm="12" md="5" style="cursor: pointer; text-align: right;" @click="$router.push({ name: 'Pipeline Apps', params: { pipeline: item.name } })">
+                        <template v-for="phase in item.phases" :key="phase.name">
+                            <v-chip
+                                v-if="!(item.git.repository.admin != true && phase.name === 'review')"
+                                small
+                                label
+                                class="ma-1"
+                                :color="phase.enabled ? 'green' : ''"
+                                :text-color="phase.enabled  ? 'white' : ''"
+                                >
+                                <v-icon start v-if="phase.name.includes('review')" icon="mdi-eye-refresh-outline"></v-icon>
+                                {{ $t(`pipeline.phases.${phase.name}`) }}
+                            </v-chip>
+                        </template>
                 </v-col>
 
                 <v-col cols="12" sm="12" md="2">

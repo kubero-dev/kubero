@@ -140,7 +140,7 @@
                     </v-table>
                 </div>
                 <div class="mb-5" v-if="appData.spec?.extraVolumes?.length > 0">
-                    <h3>{{ $t('app.title.volumes') }}</h3>
+                    <h3>{{ $t('app.titles.volumes') }}</h3>
                     <!--{{ appData.spec.extraVolumes }}-->
                     <v-row class="pt-5">
                         <v-col 

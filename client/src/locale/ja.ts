@@ -100,6 +100,12 @@ const messages = {
       disconnect: '切断',
       reconnect: '再接続',
     },
+    phases: {
+      production: 'プロダクション',
+      stage: 'ステージ',
+      test: 'テスト',
+      review: 'レビュー',
+    },
     form: {
       label: {
         name: '名前',

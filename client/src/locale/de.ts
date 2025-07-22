@@ -96,6 +96,12 @@ const messages = {
       disconnect: 'Trennen',
       reconnect: 'Verbindung erneuern',
     },
+    phases: {
+      production: 'Production',
+      stage: 'Stage',
+      test: 'Test',
+      review: 'Review',
+    },
     form: {
       label: {
         name: 'Name',

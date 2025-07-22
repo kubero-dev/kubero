@@ -17,7 +17,7 @@
         <v-layout>
                 <v-row>
                     <v-col v-for="phase in activePhases" :key="phase.name">
-                        <h4 class="text-uppercase ml-1">{{phase.name}}</h4>
+                        <h4 class="text-uppercase ml-1">{{ $t(`pipeline.phases.${phase.name}`) }}</h4>
                         <v-chip
                             class="ma-1"
                             label
