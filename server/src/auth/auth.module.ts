@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from '../users/users.module';
 import { KubernetesModule } from '../kubernetes/kubernetes.module';
@@ -10,11 +10,12 @@ import { AuthController } from './auth.controller';
 import { AuditModule } from '../audit/audit.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
+import { ConfigModule } from '../config/config.module';
 import * as dotenv from 'dotenv';
-import { RolesService } from 'src/roles/roles.service';
+import { RolesService } from '../roles/roles.service';
 dotenv.config();
 
-const providers = [AuthService, JwtStrategy, KubernetesModule, AuditModule, RolesService];
+const providers: Provider[] = [AuthService, JwtStrategy, RolesService];
 if (ConfigService.getOauth2Enabled()) {
   providers.push(Oauth2Strategy);
 }
@@ -26,6 +27,9 @@ if (ConfigService.getGithubEnabled()) {
   imports: [
     UsersModule,
     PassportModule,
+    AuditModule,
+    KubernetesModule,
+    ConfigModule,
     JwtModule.register({
       secret:
         process.env.JWT_SECRET ||
@@ -37,6 +41,6 @@ if (ConfigService.getGithubEnabled()) {
   ],
   providers: providers,
   controllers: [AuthController],
-  exports: [AuthService],
+  exports: [AuthService, JwtModule, UsersModule],
 })
 export class AuthModule {}

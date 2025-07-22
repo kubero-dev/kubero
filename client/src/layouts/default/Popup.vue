@@ -15,7 +15,7 @@ import { useCookies } from "vue3-cookies";
 import { useSocketIO } from '../../socket.io';
 
 const { cookies } = useCookies();
-const token = cookies.get("kubero.websocketToken");
+const token = cookies.get("kubero.JWT_TOKEN");
 //console.log("COOKIE token", token);
 const { socket } = useSocketIO(token);
 
