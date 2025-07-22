@@ -1,0 +1,49 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: lunalytics
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Open source monitoring tool built with Node.js"
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/KSJaay/Lunalytics/refs/heads/main/public/logo.svg"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/KSJaay/Lunalytics/refs/heads/main/docs/public/demo.gif"]'
+        kubero.dev/template.source: "https://github.com/ksjaay/lunalytics"
+        kubero.dev/template.categories: '["monitoring"]'
+        kubero.dev/template.title: "Lunalytics"
+        kubero.dev/template.website: "https://lunalytics.xyz"
+    labels:
+        manager: kubero
+spec:
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/data
+          name: lunalytics-data
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/logs
+          name: lunalytics-logs
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    name: lunalytics
+    deploymentstrategy: docker
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "2308"
+        pullPolicy: Always
+        repository: ksjaay/lunalytics
+        tag: latest
