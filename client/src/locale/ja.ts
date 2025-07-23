@@ -152,6 +152,9 @@ const messages = {
     autoscale: 'オートスケール',
     webReplicas: 'Webレプリカ',
     workerReplicas: 'ワーカーレプリカ',
+    cpu: 'CPU',
+    memory: 'Memory',
+    pod: 'Pod',
     titles: {
       advanced: '高度なアプリ設定',
       consumption: 'リソース消費',

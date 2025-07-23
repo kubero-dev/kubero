@@ -151,6 +151,9 @@ const messages = {
     autoscale: '自动扩缩',
     webReplicas: 'Web副本',
     workerReplicas: 'Worker副本',
+    cpu: 'CPU',
+    memory: 'Memory',
+    pod: 'Pod',
     titles: {
       advanced: '高级应用设置',
       consumption: '资源消耗',

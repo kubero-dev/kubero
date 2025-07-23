@@ -151,6 +151,9 @@ const messages = {
     autoscale: 'Automatisches Skalieren',
     webReplicas: 'Web-Replikas',
     workerReplicas: 'Worker-Replikas',
+    cpu: 'CPU',
+    memory: 'Memory',
+    pod: 'Pod',
     titles: {
       advanced: 'Erweiterte App Einstellungen',
       consumption: 'Ressourcenverbrauch',

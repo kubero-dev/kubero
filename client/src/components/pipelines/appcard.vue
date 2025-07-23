@@ -67,8 +67,8 @@
     <v-divider></v-divider>
     <v-card-text v-if="metricsDisplay == 'bars'">
       <v-row>
-        <v-col cols="6" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
-        <v-col cols="6" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+        <v-col cols="6" class="pb-0 text-left text-caption font-weight-light">{{ $t('app.cpu') }}</v-col>
+        <v-col cols="6" class="pb-0 text-right text-caption font-weight-light">{{ $t('app.memory') }}</v-col>
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" style="height:20px">
         <v-col cols="6" class="text-left"><v-progress-linear :value="metric.cpu.percentage" color="#8560A9" class="mr-6 float-left"></v-progress-linear></v-col>
@@ -77,9 +77,9 @@
     </v-card-text>
     <v-card-text v-if="metricsDisplay == 'table'">
       <v-row>
-        <v-col cols="8" class="pb-0 text-left text-caption font-weight-light">Pod</v-col>
-        <v-col cols="2" class="pb-0 text-left text-caption font-weight-light">CPU</v-col>
-        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">Memory</v-col>
+        <v-col cols="8" class="pb-0 text-left text-caption font-weight-light">{{ $t('app.pod') }}</v-col>
+        <v-col cols="2" class="pb-0 text-left text-caption font-weight-light">{{ $t('app.cpu') }}</v-col>
+        <v-col cols="2" class="pb-0 text-right text-caption font-weight-light">{{ $t('app.memory') }}</v-col>
       </v-row>
       <v-row v-for="metric in metrics" :key="metric.name" id="metrics">
         <v-col cols="8" class="py-0 text-left">{{metric.name}}</v-col>

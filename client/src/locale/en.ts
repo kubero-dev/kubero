@@ -96,6 +96,9 @@ const messages = {
         autoscale: 'Autoscale',
         webReplicas: 'Web Replicas',
         workerReplicas: 'Worker Replicas',
+        cpu: 'CPU',
+        memory: 'Memory',
+        pod: 'Pod',
         titles: {
           advanced: 'Advanced App Settings',
           consumption: 'Resource Consumption',
