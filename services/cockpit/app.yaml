@@ -1,0 +1,57 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: cockpit
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Cockpit is a headless CMS that gives you the flexibility to build content-driven applications your way"
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/78603032"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: '["https://getcockpit.com/documentation"]'
+        kubero.dev/template.screenshots: '["https://github.com/user-attachments/assets/c8d4daf1-86cc-45c9-be24-5c6a6a2ca8ca"]'
+        kubero.dev/template.source: "https://github.com/Cockpit-HQ/Cockpit"
+        kubero.dev/template.categories: '["CMS"]'
+        kubero.dev/template.title: "cockopit"
+        kubero.dev/template.website: "https://getcockpit.com/"
+    labels:
+        manager: kubero
+spec:
+    envVars: []
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/html/.spaces
+          name: cockpit-spaces
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/html/storage/data
+          name: cockpit-storage-data
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /var/www/html/storage/uploads
+          name: cockpit-storage-uploads
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    name: cockpit
+    deploymentstrategy: docker
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "80"
+        pullPolicy: Always
+        repository: cockpithq/cockpit
+        tag: core-latest
