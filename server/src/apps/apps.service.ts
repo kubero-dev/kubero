@@ -270,8 +270,8 @@ export class AppsService {
       return;
     }
 
-    this.logger.debug('createPRApp: ', branch, title, ssh_url);
-    const pipelines = await this.pipelinesService.listPipelines();
+    this.logger.debug('createPRApp: ', userGroups, branch, title, ssh_url);
+    const pipelines = await this.pipelinesService.listPipelines(userGroups);
 
     for (const pipeline of pipelines.items) {
       console.log(pipeline.git.repository?.ssh_url, ssh_url);
