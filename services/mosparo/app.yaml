@@ -37,7 +37,7 @@ spec:
               rootPassword: mysecret
               username: mosparo
             global:
-              storageClass: linode-block-storage
+              storageClass: standard
             primary:
               persistence:
                 accessModes:

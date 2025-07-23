@@ -36,7 +36,7 @@ spec:
                   password: rallly
                   postgresPassword: rallly
                   username: rallly
-              storageClass: linode-block-storage
+              storageClass: standard
             primary:
               persistence:
                 size: 1Gi

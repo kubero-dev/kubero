@@ -53,10 +53,10 @@ spec:
     value: root
   - name: LIME_ADMIN_PASSWORD
     value: root
-  - LIMESURVEY_ADMIN_NAME: null
+  - name: LIMESURVEY_ADMIN_NAME
     value: Lime Administrator
-  - LIMESURVEY_ADMIN_EMAIL: null
-    value: lime@lime.llime
+  - name: LIMESURVEY_ADMIN_EMAIL
+    value: lime@lime.me
   extraVolumes:
   - accessModes:
     - ReadWriteMany
