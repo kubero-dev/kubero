@@ -1,0 +1,59 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: vikunja
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm/v6", "linux/arm/v7"]'
+        kubero.dev/template.description: ""
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/41270016"
+        kubero.dev/template.installation: ""
+        kubero.dev/template.links: "[]"
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/go-vikunja/vikunja"
+        kubero.dev/template.categories: "[]"
+        kubero.dev/template.title: "vikunja"
+        kubero.dev/template.website: "https://vikunja.io"
+    labels:
+        manager: kubero
+spec:
+    envVars:
+        - name: VIKUNJA_DATABASE_PATH
+          value: /db/vikunja.db
+        - name: VIKUNJA_DATABASE_TYPE
+          value: sqlite
+        - name: VIKUNJA_SERVICE_ENABLEREGISTRATION
+          value: "true"
+        - name: VIKUNJA_SERVICE_JWTSECRET
+          value: 011fe7f2ec6a5975e1bc0281f34d727f
+        - name: VIKUNJA_SERVICE_PUBLICURL
+          value: vikunja.localhost
+    extraVolumes:
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /app/vikunja/files
+          name: vikunja-files
+          size: 1Gi
+          storageClass: standard
+        - accessMode: ReadWriteOnce
+          accessModes:
+              - ReadWriteOnce
+          emptyDir: false
+          mountPath: /db
+          name: vikunja-db
+          size: 1Gi
+          storageClass: standard
+    cronjobs: []
+    addons: []
+    name: vikunja
+    deploymentstrategy: docker
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "3456"
+        pullPolicy: Always
+        repository: vikunja/vikunja
+        tag: latest
