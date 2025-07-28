@@ -167,6 +167,78 @@ export class DatabaseService {
     }
   }
 
+  /**
+   * Resets the admin user account with a new random password.
+   * If the admin user doesn't exist, it creates one.
+   * Prints the new username and password to the console.
+   * @returns {Promise<void>}
+   */
+  async resetAdminUser(): Promise<void> {
+    const prisma = new PrismaClient();
+    const adminUser = process.env.KUBERO_ADMIN_USERNAME || 'admin';
+    const adminEmail = process.env.KUBERO_ADMIN_EMAIL || 'admin@kubero.dev';
+    const role = process.env.KUBERO_SYSTEM_USER_ROLE || 'admin';
+    const userGroups = ['everyone', 'admin'];
+
+    try {
+      // Generate a random password
+      const plainPassword = crypto
+        .randomBytes(25)
+        .toString('base64')
+        .slice(0, 19);
+      // Create bcrypt hash
+      const passwordHash = await bcrypt.hash(plainPassword, 10);
+      
+      // Check if admin user exists
+      const existingUser = await prisma.user.findUnique({
+        where: { id: '2' },
+      });
+      
+      if (existingUser) {
+        // Update existing admin user
+        await prisma.user.update({
+          where: { id: '2' },
+          data: {
+            password: passwordHash,
+            updatedAt: new Date(),
+          },
+        });
+        console.log('\n\n\n', 'Admin account has been reset');
+      } else {
+        // Create new admin user
+        await prisma.user.create({
+          data: {
+            id: '2',
+            username: adminUser,
+            email: adminEmail,
+            password: passwordHash,
+            isActive: true,
+            role: { connect: { name: role } },
+            userGroups:
+              userGroups && Array.isArray(userGroups)
+                ? {
+                    connect: userGroups.map((g: any) => ({ name: g })),
+                  }
+                : undefined,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+        });
+        console.log('\n\n\n', 'New admin account created');
+      }
+      
+      console.log('  username: ', adminUser);
+      console.log('  password: ', plainPassword);
+      console.log('  email:    ', adminEmail, '\n\n\n');
+      
+      this.logger.log('Admin user reset successfully.');
+      return;
+    } catch (error) {
+      this.logger.error('Failed to reset admin user.', error);
+      throw error;
+    }
+  }
+
   private async migrateLegeacyUsers() {
     const prisma = new PrismaClient();
 
