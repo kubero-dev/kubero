@@ -90,7 +90,6 @@
     "@types/passport-oauth2": "^1.4.17",
     "@types/sshpk": "^1.17.4",
     "@types/supertest": "^6.0.2",
-    "tsconfig-paths": "^4.2.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",

@@ -25,7 +25,7 @@ $ yarn run start:prod
 
 ```bash
 # Reset admin account (creates or updates with new password)
-$ npm run cli:reset-admin
+$ yarn cli:reset-admin
 ```
 
 ## Run tests
