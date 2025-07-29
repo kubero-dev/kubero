@@ -24,6 +24,7 @@ import { DatabaseModule } from './database/database.module';
 import { GroupModule } from './groups/groups.module';
 import { RolesModule } from './roles/roles.module';
 import { TokenModule } from './token/token.module';
+import { CliModule } from './cli/cli.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { TokenModule } from './token/token.module';
     GroupModule,
     RolesModule,
     TokenModule,
+    CliModule,
   ],
   controllers: [AppController, TemplatesController],
   providers: [AppService, TemplatesService],

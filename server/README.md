@@ -21,6 +21,13 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+## Administration Commands
+
+```bash
+# Reset admin account (creates or updates with new password)
+$ yarn cli:reset-admin
+```
+
 ## Run tests
 
 ```bash
