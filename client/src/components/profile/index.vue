@@ -171,7 +171,7 @@
           </v-dialog>
           <v-dialog v-model="changePasswordDialog" max-width="500px">
             <v-card>
-              <v-card-title>{{ $t('user.actions.changePassword') }}</v-card-title>
+              <v-card-title>{{ $t('user.changePassword') }}</v-card-title>
               <v-card-text>
                 <v-alert
                   v-show="passwordError"
