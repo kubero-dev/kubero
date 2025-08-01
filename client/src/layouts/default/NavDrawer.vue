@@ -126,7 +126,7 @@
                 :title="$t('navigation.kuberoAPI')">
             </v-list-item>
             <v-list-item 
-                link href="https://docs.kubero.dev/" 
+                link href="https://www.kubero.dev/docs" 
                 target="_blank"
                 prepend-icon="mdi-book-open-variant"
                 :title="$t('navigation.documentation')">
