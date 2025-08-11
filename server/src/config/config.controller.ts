@@ -20,7 +20,8 @@ export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
   @Get('/')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the Kubero settings' })
   @ApiForbiddenResponse({
@@ -48,7 +49,8 @@ export class ConfigController {
   }
 
   @Get('/banner')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the banner informations' })
   @ApiForbiddenResponse({
@@ -61,7 +63,8 @@ export class ConfigController {
   }
 
   @Get('/templates')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the templates settings' })
   @ApiForbiddenResponse({
@@ -74,7 +77,8 @@ export class ConfigController {
   }
 
   @Get('/registry')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the registry settings' })
   @ApiForbiddenResponse({
@@ -87,7 +91,8 @@ export class ConfigController {
   }
 
   @Get('/runpacks')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'List runpacks' })
   @ApiForbiddenResponse({
@@ -100,7 +105,8 @@ export class ConfigController {
   }
 
   @Delete('/runpacks/:id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Delete a runpack' })
   @ApiForbiddenResponse({
@@ -114,8 +120,8 @@ export class ConfigController {
   }
 
   @Post('/runpacks')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(ReadonlyGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Add a new runpack' })
   @ApiForbiddenResponse({
@@ -146,7 +152,8 @@ export class ConfigController {
 
 
   @Get('/clusterissuer')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiOperation({ summary: 'Get the configured cluster issuer' })
   @ApiForbiddenResponse({
@@ -166,7 +173,8 @@ export class ConfigController {
   }
 
   @Get('/podsizes')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -180,7 +188,7 @@ export class ConfigController {
 
   @Post('/podsizes')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
-  @Permissions('user:read', 'user:write')
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -244,7 +252,7 @@ export class ConfigController {
 
   @Delete('/podsizes/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
-  @Permissions('user:read', 'user:write')
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -262,7 +270,7 @@ export class ConfigController {
 
   @Put('/podsizes/:id')
   @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
-  @Permissions('user:read', 'user:write')
+  @Permissions('config:read', 'config:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

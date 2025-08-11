@@ -79,6 +79,7 @@
           <template #activator="{ props }">
             <v-list-item v-bind="props" :title="$t('navigation.settings')"></v-list-item>
           </template>
+          <!--
           <v-list-item 
             link to="/settings"
             :title="$t('navigation.general')"
@@ -86,6 +87,7 @@
             density="compact"
             style="transform: scale(0.9);"
           ></v-list-item>
+          -->
           <v-list-item 
               link to="/runpacks" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"
