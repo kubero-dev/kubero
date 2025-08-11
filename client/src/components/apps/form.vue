@@ -2203,7 +2203,7 @@ export default defineComponent({
       },
       cleanupIngressAnnotations(){
 
-        if (this.ingress.tls?.length == 0) {
+        if (this.ingress.tls[0].hosts.length == 0) {
           delete this.ingress.annotations['cert-manager.io/cluster-issuer'];
           delete this.ingress.annotations['kubernetes.io/tls-acme'];
         } else {
@@ -2251,8 +2251,8 @@ export default defineComponent({
           this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(regex, "https://$2/$4$5");
         }
 
-        this.cleanupIngressAnnotations();
         this.setSSL();
+        this.cleanupIngressAnnotations();
 
         let command = [] as string[];
         if (this.docker.command.length > 0) {
@@ -2361,8 +2361,8 @@ export default defineComponent({
           this.docker.tag = "v1"
         }
 
-        this.cleanupIngressAnnotations();
         this.setSSL();
+        this.cleanupIngressAnnotations();
 
         let postdata = {
           pipeline: this.pipeline,
@@ -2415,7 +2415,7 @@ export default defineComponent({
           cronjobs: this.cronjobFormat(this.cronjobs),
           addons: this.addons,
           security: this.security,
-          ingress: this.ingress,
+            ingress: this.ingress,
           vulnerabilityscan: this.vulnerabilityscan,
           healthcheck: this.healthcheck,
         }

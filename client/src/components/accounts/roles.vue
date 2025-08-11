@@ -168,7 +168,7 @@
         :disabled="!writeUserPermission"
       >
         <v-icon>mdi-plus</v-icon>
-        <span class="sr-only">{{ $t('roles.actions.edit') }}</span>
+        <span class="sr-only">{{ $t('roles.actions.create') }}</span>
       </v-btn>
     </div>
 
@@ -279,7 +279,7 @@
     <!-- Dialog for a new Role -->
     <v-dialog v-model="createDialog" max-width="500px">
       <v-card>
-        <v-card-title>Create Role</v-card-title>
+        <v-card-title>{{ $t('roles.actions.create') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="newRole.name" label="Role Name"></v-text-field>
           <v-text-field v-model="newRole.description" label="Descrioption"></v-text-field>

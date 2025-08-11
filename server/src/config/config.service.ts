@@ -197,6 +197,10 @@ export class ConfigService {
       'KUBERO_TEMPLATES_ENABLED',
       config.templates?.enabled ? 'true' : 'false',
     );
+    this.setEnvVar(
+      'KUBERO_CLUSTER_ISSUER',
+      config.clusterissuer || 'letsencrypt-prod',
+    );
   }
 
   private reloadRunningConfig(): void {
@@ -623,14 +627,9 @@ export class ConfigService {
 
 
   public async getClusterIssuer(): Promise<{ clusterissuer: string }> {
-    const namespace = process.env.KUBERO_NAMESPACE || 'kubero';
-    const kuberoes = await this.kubectl.getKuberoConfig(namespace);
-    if (kuberoes == undefined) {
-      return { clusterissuer: 'not-configured' };
-    }
     return {
       clusterissuer:
-        kuberoes.spec.kubero.config.clusterissuer || 'not-configured',
+        process.env.KUBERO_CLUSTER_ISSUER || 'letsencrypt-prod',
     };
   }
 
