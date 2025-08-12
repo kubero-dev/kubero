@@ -389,40 +389,32 @@ export class DatabaseService {
       });
 
     // Ensure the 'everyone' user group exists
-    const existingGroup = await this.prisma.userGroup.findUnique({
+    this.prisma.userGroup
+    .upsert({
       where: { name: 'everyone' },
+      update: {},
+      create: {
+        name: 'everyone',
+        description: 'Standard group for all users',
+      },
+    })
+    .then(() => {
+      this.logger.log('UserGroup "everyone" seeded successfully.');
     });
-
-    if (!existingGroup) {
-      await this.prisma.userGroup.create({
-        data: {
-          name: 'everyone',
-          description: 'Standard group for all users',
-        },
-      });
-      this.logger.log('UserGroup "everyone" created successfully.');
-    } else {
-      this.logger.log(
-        'UserGroup "everyone" already exists. Skipping creation.',
-      );
-    }
 
     // Ensure the 'admin' user group exists
-    const adminGroup = await this.prisma.userGroup.findUnique({
-      where: { name: 'admin' },
-    });
-
-    if (!adminGroup) {
-      await this.prisma.userGroup.create({
-        data: {
+    this.prisma.userGroup
+      .upsert({
+        where: { name: 'admin' },
+        update: {},
+        create: {
           name: 'admin',
           description: 'Group for admin users',
         },
+      })
+      .then(() => {
+        this.logger.log('UserGroup "admin" seeded successfully.');
       });
-      this.logger.log('UserGroup "admin" created successfully.');
-    } else {
-      this.logger.log('UserGroup "admin" already exists. Skipping creation.');
-    }
 
     this.logger.log('Default data seeded successfully.');
   }
