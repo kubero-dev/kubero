@@ -10,12 +10,6 @@
 
 Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on existing containers or from source code.
 
-> [!NOTE] 
-> Kubero v3.0.0 is on the way! 
-> 
-> We're gearing up for the Kubero v3.0.0 release! 🎉 This major update features a rewritten backend, now powered by NestJS, bringing best practices and maintainability.
-
-
 ![](https://raw.githubusercontent.com/kubero-dev/docs/refs/heads/main/static/assets/screenshots/createapp.gif)
 
 More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
