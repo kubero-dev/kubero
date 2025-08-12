@@ -302,7 +302,7 @@ export class DatabaseService {
   private static async SeedDefaultData() {
     const prisma = new PrismaClient();
     // Ensure the 'admin' role exists with permissions
-    prisma.role
+    await prisma.role
       .upsert({
         where: { name: 'admin' },
         update: {},
@@ -330,7 +330,7 @@ export class DatabaseService {
       });
 
     // Ensure the 'member' role exists with limited permissions
-    prisma.role
+    await prisma.role
       .upsert({
         where: { name: 'member' },
         update: {},
@@ -358,7 +358,7 @@ export class DatabaseService {
       });
 
     // Ensure the 'guest' role exists with minimal permissions
-    prisma.role
+    await prisma.role
       .upsert({
         where: { name: 'guest' },
         update: {},
@@ -400,7 +400,7 @@ export class DatabaseService {
     });
 
     // Ensure the 'admin' user group exists
-    prisma.userGroup
+    await prisma.userGroup
       .upsert({
         where: { name: 'admin' },
         update: {},
