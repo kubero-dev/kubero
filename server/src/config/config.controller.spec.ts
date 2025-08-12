@@ -66,7 +66,7 @@ describe('ConfigController', () => {
   });
 
   it('should get cluster issuer', async () => {
-    await expect(controller.getClusterIssuer()).resolves.toBe('issuer');
+    await expect(controller.getClusterIssuer()).resolves.toBe('letsencrypt-prod');
     expect(service.getClusterIssuer).toHaveBeenCalled();
   });
 
