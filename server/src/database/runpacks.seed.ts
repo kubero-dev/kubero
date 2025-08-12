@@ -299,4 +299,5 @@ export const runpacks = `
         allowPrivilegeEscalation: false
         capabilities:
           add: []
+          drop: []
 `

@@ -12,6 +12,7 @@ export class DatabaseService {
   private readonly prisma = new PrismaClient();
 
   constructor() {
+
     // Initialize the Prisma client
     this.prisma
       .$connect()
@@ -21,25 +22,20 @@ export class DatabaseService {
       .catch((error) => {
         this.logger.error('Failed to connect to the database.', error);
       });
-    this.runMigrations()
-      .then(() => {
-        // create user after migrations
-        this.seedDefaultData().then(() => {
-          this.createSystemUser();
-          this.createAdminUser();
-          this.migrateLegeacyUsers();
-
-        });
-      })
-      .catch((error) => {
-        this.logger.error('Error during database migrations.', error);
-      });
-
-    this.seedRunpacks();
-    this.seedPodSizes();
   }
 
-  private async init() {
+  public static async DBinit() {
+    await this.Init();
+    await this.RunMigrations();
+    await this.SeedDefaultData();
+    await this.CreateSystemUser();
+    await this.CreateAdminUser();
+    await this.MigrateLegacyUsers();
+    await this.SeedRunpacks();
+    await this.SeedPodSizes();
+  }
+
+  private static async Init() {
     if (
       process.env.DATABASE_URL === '' ||
       process.env.DATABASE_URL === undefined
@@ -54,29 +50,28 @@ export class DatabaseService {
     }
   }
 
-  private async runMigrations() {
+  private static async RunMigrations() {
     const { execSync } = await import('child_process');
-
-    await this.init();
 
     const prisma = new PrismaClient();
 
     try {
-      this.logger.log('Running Prisma migrations...');
+      Logger.debug('Running Prisma migrations...', 'DatabaseService');
       // @ts-ignore
       await prisma.$executeRawUnsafe?.('PRAGMA foreign_keys=OFF;'); // For SQLite, optional
       // Use CLI for migrations
-      execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+      await execSync('npx prisma migrate deploy', { stdio: 'inherit' });
       //execSync('npx prisma migrate deploy', {});
-      this.logger.log('Prisma migrations completed.');
+      Logger.log('Prisma migrations completed.', 'DatabaseService');
       //await prisma.$disconnect();
     } catch (err) {
-      this.logger.error('Prisma migration failed', err);
+      Logger.error('Prisma migration failed', err, 'DatabaseService');
       process.exit(1);
     }
   }
 
-  private async createSystemUser() {
+
+  private static async CreateSystemUser() {
     const prisma = new PrismaClient();
 
     // Check if the system user already exists
@@ -84,7 +79,7 @@ export class DatabaseService {
       where: { id: '1' },
     });
     if (existingUser) {
-      this.logger.log('System user already exists. Skipping creation.');
+      Logger.log('System user already exists. Skipping creation.', 'DatabaseService');
       return;
     }
 
@@ -107,13 +102,13 @@ export class DatabaseService {
               : undefined,
         },
       });
-      this.logger.log('System user created successfully.');
+      Logger.log('System user created successfully.', 'DatabaseService');
     } catch (error) {
-      this.logger.error('Failed to create system user.', error);
+      Logger.error('Failed to create system user.', error, 'DatabaseService');
     }
   }
 
-  private async createAdminUser() {
+  private static async CreateAdminUser() {
     const prisma = new PrismaClient();
 
     // Check if the admin user already exists
@@ -121,7 +116,7 @@ export class DatabaseService {
       where: { id: '2' },
     });
     if (existingUser) {
-      this.logger.log('Admin user already exists. Skipping creation.');
+      Logger.log('Admin user already exists. Skipping creation.', 'DatabaseService');
       return;
     }
 
@@ -161,9 +156,9 @@ export class DatabaseService {
           updatedAt: new Date(),
         },
       });
-      this.logger.log('Admin user created successfully.');
+      Logger.log('Admin user created successfully.', 'DatabaseService');
     } catch (error) {
-      Logger.error('Failed to create admin user.', error);
+      Logger.error('Failed to create admin user.', error, 'DatabaseService');
     }
   }
 
@@ -239,17 +234,17 @@ export class DatabaseService {
     }
   }
 
-  private async migrateLegeacyUsers() {
+  private static async MigrateLegacyUsers() {
     const prisma = new PrismaClient();
 
     const existingUsers = await prisma.user.count();
     if (existingUsers > 2) {
-      this.logger.log('Legacy users already migrated. Skipping migration.');
+      Logger.log('Legacy users already migrated. Skipping migration.', 'DatabaseService');
       return;
     }
 
     if (!process.env.KUBERO_USERS || process.env.KUBERO_USERS === '') {
-      this.logger.log('No legacy users to migrate. KUBERO_USERS is not set.');
+      Logger.log('No legacy users to migrate. KUBERO_USERS is not set.', 'DatabaseService');
       return;
     }
 
@@ -263,10 +258,11 @@ export class DatabaseService {
         user.insecure === true &&
         process.env.KUBERO_SESSION_KEY
       ) {
-        this.logger.warn(
+        Logger.warn(
           'User with unencrypted Password detected: "' +
             user.username +
             '" - This feature is deprecated and will be removed in the future',
+          'DatabaseService',
         );
         password = crypto
           .createHmac('sha256', process.env.KUBERO_SESSION_KEY)
@@ -294,18 +290,19 @@ export class DatabaseService {
                 : undefined,
           },
         });
-        this.logger.log(`Migrated user ${user.username} successfully.`);
+        Logger.log(`Migrated user ${user.username} successfully.`, 'DatabaseService');
       } catch (error) {
-        this.logger.error(`Failed to migrate user ${user.username}.`, error);
+        Logger.error(`Failed to migrate user ${user.username}.`, error, 'DatabaseService');
       }
     }
 
-    this.logger.log('Legacy users migrated successfully.');
+    Logger.log('Legacy users migrated successfully.', 'DatabaseService');
   }
 
-  private async seedDefaultData() {
+  private static async SeedDefaultData() {
+    const prisma = new PrismaClient();
     // Ensure the 'admin' role exists with permissions
-    this.prisma.role
+    prisma.role
       .upsert({
         where: { name: 'admin' },
         update: {},
@@ -329,11 +326,11 @@ export class DatabaseService {
         },
       })
       .then(() => {
-        this.logger.log('Role "admin" seeded successfully.');
+        Logger.log('Role "admin" seeded successfully.', 'DatabaseService');
       });
 
     // Ensure the 'member' role exists with limited permissions
-    this.prisma.role
+    prisma.role
       .upsert({
         where: { name: 'member' },
         update: {},
@@ -357,11 +354,11 @@ export class DatabaseService {
         },
       })
       .then(() => {
-        this.logger.log('Role "member" seeded successfully.');
+        Logger.log('Role "member" seeded successfully.', 'DatabaseService');
       });
 
     // Ensure the 'guest' role exists with minimal permissions
-    this.prisma.role
+    prisma.role
       .upsert({
         where: { name: 'guest' },
         update: {},
@@ -385,12 +382,12 @@ export class DatabaseService {
         },
       })
       .then(() => {
-        this.logger.log('Role "guest" seeded successfully.');
+        Logger.log('Role "guest" seeded successfully.', 'DatabaseService');
       });
 
     // Ensure the 'everyone' user group exists
-    this.prisma.userGroup
-    .upsert({
+    prisma.userGroup
+      .upsert({
       where: { name: 'everyone' },
       update: {},
       create: {
@@ -399,11 +396,11 @@ export class DatabaseService {
       },
     })
     .then(() => {
-      this.logger.log('UserGroup "everyone" seeded successfully.');
+      Logger.log('UserGroup "everyone" seeded successfully.', 'DatabaseService');
     });
 
     // Ensure the 'admin' user group exists
-    this.prisma.userGroup
+    prisma.userGroup
       .upsert({
         where: { name: 'admin' },
         update: {},
@@ -413,20 +410,20 @@ export class DatabaseService {
         },
       })
       .then(() => {
-        this.logger.log('UserGroup "admin" seeded successfully.');
+        Logger.log('UserGroup "admin" seeded successfully.', 'DatabaseService');
       });
 
-    this.logger.log('Default data seeded successfully.');
+    Logger.log('Default data seeded successfully.', 'DatabaseService');
   }
 
-  private async seedRunpacks() {
+  private static async SeedRunpacks() {
+    const prisma = new PrismaClient();
     const config = yaml.parse(runpacks);
 
     const buildpacks = config || [];
     for (const bp of buildpacks) {
       // Find existing by name
-      const existing = await this.prisma.runpack.findFirst({ where: { name: bp.name } });
-      const prisma = this.prisma;
+      const existing = await prisma.runpack.findFirst({ where: { name: bp.name } });
       const createPhase = async (phase: any) => {
         // Create SecurityContext
         const sec = await prisma.securityContext.create({
@@ -460,10 +457,10 @@ export class DatabaseService {
       const runPhase = await createPhase(bp.run);
       if (existing) {
         // Optionally update here
-        this.logger.log(`Runpack/Buildpack '${bp.name}' already exists. Skipping.`);
+        Logger.log(`Runpack/Buildpack '${bp.name}' already exists. Skipping.`, 'DatabaseService');
         continue;
       }
-      await this.prisma.runpack.create({
+      await prisma.runpack.create({
         data: {
           name: bp.name,
           language: bp.language,
@@ -472,21 +469,22 @@ export class DatabaseService {
           runId: runPhase.id,
         },
       });
-      this.logger.log(`Runpack/Buildpack '${bp.name}' seeded.`);
+      Logger.log(`Runpack/Buildpack '${bp.name}' seeded.`, 'DatabaseService');
     }
-    this.logger.log('Buildpacks/Runpacks seeded successfully.');
+    Logger.log('Buildpacks/Runpacks seeded successfully.', 'DatabaseService');
   }
 
-  private async seedPodSizes() {
+  private static async SeedPodSizes() {
+    const prisma = new PrismaClient();
     const config = yaml.parse(podsizes);
     // seed pod sizes if the table is empty
-    const existingSizes = await this.prisma.podSize.count();
+    const existingSizes = await prisma.podSize.count();
     if (existingSizes > 0) {
-      this.logger.log('Pod sizes already exist. Skipping seeding.');
+      Logger.log('Pod sizes already exist. Skipping seeding.', 'DatabaseService');
       return;
     }
     for (const size of config) {
-      await this.prisma.podSize.create({
+      await prisma.podSize.create({
         data: {
           name: size.name,
           description: size.description,
@@ -496,8 +494,8 @@ export class DatabaseService {
           memoryRequest: size.resources.requests.memory,
         },
       });
-      this.logger.log(`Pod size '${size.name}' seeded successfully.`);
+      Logger.log(`Pod size '${size.name}' seeded successfully.`, 'DatabaseService');
     }
-    this.logger.log('Pod sizes seeded successfully.');
+    Logger.log('Pod sizes seeded successfully.', 'DatabaseService');
   }
 }
