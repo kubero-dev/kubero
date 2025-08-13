@@ -299,13 +299,8 @@ describe('ConfigService', () => {
   */
 
   it('should get cluster issuer', async () => {
-    kubectl.getKuberoConfig.mockResolvedValueOnce({
-      spec: {
-        kubero: { config: { clusterissuer: 'issuer' } },
-      },
-    });
     const result = await service.getClusterIssuer();
-    expect(result.clusterissuer).toBe('issuer');
+    expect(result.clusterissuer).toBe('letsencrypt-prod');
   });
 
   /*

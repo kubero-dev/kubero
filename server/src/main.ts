@@ -30,8 +30,7 @@ async function bootstrap() {
     cors: true,
   });
 
-  //DatabaseService.RunMigrations();
-  //DatabaseService.CreateAdminUser();
+  await DatabaseService.DBinit();
 
   app.use(
     helmet({
