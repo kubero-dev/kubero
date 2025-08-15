@@ -18,6 +18,7 @@ export interface IPlugin {
   id: string;
   enabled: boolean;
   beta: boolean;
+  deprecated?: boolean;
   version: {
     latest: string;
     installed: string;
