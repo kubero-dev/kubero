@@ -6,6 +6,7 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoAddonMysql extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'MySQL';
+  public description = 'MySQL is a fast, reliable, scalable, and easy to use open source relational database system. Designed to handle mission-critical, heavy-load production applications.'
   public icon = '/img/addons/mysql.svg';
   public install: string = '';
   public url =

@@ -7,6 +7,7 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoAddonRedis extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'Redis';
+  public description = 'Redis(R) is an open source, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.';
   public icon = '/img/addons/redis.svg';
   public install: string = '';
   public url =

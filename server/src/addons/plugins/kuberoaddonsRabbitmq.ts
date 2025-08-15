@@ -6,6 +6,7 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoAddonRabbitmq extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'RabbitMQ';
+  public description = 'RabbitMQ is an open source general-purpose message broker that is designed for consistent, highly-available messaging scenarios (both synchronous and asynchronous).';
   public icon = '/img/addons/rabbitmq.svg';
   public install: string = '';
   public url =

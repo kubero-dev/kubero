@@ -6,6 +6,7 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoAddonPostgres extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'PostgreSQL';
+  public description = 'PostgreSQL (Postgres) is an open source object-relational database known for reliability and data integrity. ACID-compliant, it supports foreign keys, joins, views, triggers and stored procedures.';
   public icon = '/img/addons/pgsql.svg';
   public install: string = '';
   public url =

@@ -39,47 +39,23 @@ export class AddonsService {
     // Load all Custom Resource Definitions to get the list of installed operators
     this.CRDList = await this.kubectl.getCustomresources();
 
-    const kuberoMysql = new KuberoMysql(this.CRDList);
-    this.addonsList.push(kuberoMysql);
-
     const kuberoAddonMysql = new KuberoAddonMysql(this.CRDList);
     this.addonsList.push(kuberoAddonMysql);
-
-    const kuberoRedis = new KuberoRedis(this.CRDList);
-    this.addonsList.push(kuberoRedis);
 
     const kuberoAddonRedis = new KuberoAddonRedis(this.CRDList);
     this.addonsList.push(kuberoAddonRedis);
 
-    const kuberoPostgresql = new KuberoPostgresql(this.CRDList);
-    this.addonsList.push(kuberoPostgresql);
-
     const kuberoAddonPostgres = new KuberoAddonPostgres(this.CRDList);
     this.addonsList.push(kuberoAddonPostgres);
-
-    const kuberoMongoDB = new KuberoMongoDB(this.CRDList);
-    this.addonsList.push(kuberoMongoDB);
 
     const kuberoAddonMongodb = new KuberoAddonMongodb(this.CRDList);
     this.addonsList.push(kuberoAddonMongodb);
 
-    const kuberoMemcached = new KuberoMemcached(this.CRDList);
-    this.addonsList.push(kuberoMemcached);
-
-    const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList);
-    this.addonsList.push(kuberoElasticsearch);
-
     const kuberoCouchDB = new KuberoCouchDB(this.CRDList);
     this.addonsList.push(kuberoCouchDB);
 
-    const kuberoKafka = new KuberoKafka(this.CRDList);
-    this.addonsList.push(kuberoKafka);
-
     const kuberoMail = new KuberoMail(this.CRDList);
     this.addonsList.push(kuberoMail);
-
-    const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList);
-    this.addonsList.push(kuberoRabbitMQ);
 
     const kuberoAddonRabbitMQ = new KuberoAddonRabbitmq(this.CRDList);
     this.addonsList.push(kuberoAddonRabbitMQ);
@@ -107,6 +83,31 @@ export class AddonsService {
 
     const clickhouse = new ClickHouseInstallation(this.CRDList);
     this.addonsList.push(clickhouse);
+
+    const kuberoMysql = new KuberoMysql(this.CRDList);
+    this.addonsList.push(kuberoMysql);
+
+    const kuberoRedis = new KuberoRedis(this.CRDList);
+    this.addonsList.push(kuberoRedis);
+
+    const kuberoKafka = new KuberoKafka(this.CRDList);
+    this.addonsList.push(kuberoKafka);
+
+    const kuberoMemcached = new KuberoMemcached(this.CRDList);
+    this.addonsList.push(kuberoMemcached);
+
+    const kuberoElasticsearch = new KuberoElasticsearch(this.CRDList);
+    this.addonsList.push(kuberoElasticsearch);
+
+    const kuberoMongoDB = new KuberoMongoDB(this.CRDList);
+    this.addonsList.push(kuberoMongoDB);
+
+    const kuberoPostgresql = new KuberoPostgresql(this.CRDList);
+    this.addonsList.push(kuberoPostgresql);
+
+    const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList);
+    this.addonsList.push(kuberoRabbitMQ);
+
   }
 
   public async getAddonsList(): Promise<IPlugin[]> {

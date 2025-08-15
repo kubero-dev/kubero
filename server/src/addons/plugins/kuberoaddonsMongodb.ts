@@ -6,6 +6,8 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoAddonMongodb extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'MongoDB';
+  public description: string =
+    'MongoDB(R) is a relational open source NoSQL database. Easy to use, it stores data in JSON-like documents. Automated scalability and high-performance. Ideal for developing cloud native applications.';
   public icon = '/img/addons/mongo.svg';
   public install: string = '';
   public url =

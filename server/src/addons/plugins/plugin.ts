@@ -68,7 +68,9 @@ export abstract class Plugin {
     // set artifact hub values
     if (response?.data && response.data.description) {
       //this.displayName = response?.data.displayName; // use the name from the plugin
-      this.description = response.data.description;
+      if (this.description == '') {
+        this.description = response.data.description;
+      }
       this.maintainers = response.data.maintainers;
       this.links = response.data.links;
       this.readme = response.data.readme;
