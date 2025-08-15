@@ -1,9 +1,11 @@
-import { Plugin, IPlugin, IPluginFormFields } from './plugin';
+import { Plugin, } from './plugin';
+import { IPlugin, IPluginFormFields  } from './plugin.interface';
+
 
 // Classname must be same as the CRD's Name
 export class KuberoMysql extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
-  public displayName = 'MySQL';
+  public displayName = 'MySQL (Bitnami)';
   public icon = '/img/addons/mysql.svg';
   public install: string = '';
   public url =
@@ -17,6 +19,7 @@ export class KuberoMysql extends Plugin implements IPlugin {
   public artifact_url =
     'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator';
   public beta: boolean = false;
+  public deprecated: boolean = true
 
   public formfields: { [key: string]: IPluginFormFields } = {
     'KuberoMysql.metadata.name': {

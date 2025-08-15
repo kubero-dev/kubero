@@ -1,9 +1,10 @@
-import { Plugin, IPlugin, IPluginFormFields } from './plugin';
+import { Plugin, } from './plugin';
+import { IPlugin, IPluginFormFields  } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoKafka extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
-  public displayName = 'Kafka';
+  public displayName = 'Kafka (Bitnami)';
   public icon = '/img/addons/kafka.svg';
   public install: string = '';
   public url =
@@ -17,6 +18,7 @@ export class KuberoKafka extends Plugin implements IPlugin {
   public artifact_url =
     'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator';
   public beta: boolean = false;
+  public deprecated: boolean = true
 
   public formfields: { [key: string]: IPluginFormFields } = {
     'KuberoKafka.metadata.name': {
