@@ -1967,10 +1967,10 @@ svg.select.js@^3.0.1:
   dependencies:
     svg.js "^2.6.5"
 
-sweetalert2@^11.10.2:
-  version "11.22.2"
-  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.22.2.tgz#d4d82a2edd4e97024306fe37f1bc64fa576e9bc9"
-  integrity sha512-GFQGzw8ZXF23PO79WMAYXLl4zYmLiaKqYJwcp5eBF07wiI5BYPbZtKi2pcvVmfUQK+FqL1risJAMxugcPbGIyg==
+sweetalert2@^11.22.4:
+  version "11.22.4"
+  resolved "https://registry.yarnpkg.com/sweetalert2/-/sweetalert2-11.22.4.tgz#772e6448cef4e753c6c429e96d233b7e701210ed"
+  integrity sha512-JwcRODfozxiKmspFp+xctZ2izAmLAKbRPcoLMEW7LdugN/YmNrX1LT7hdBW87qsgupEO1ukBBuB17KzKFKW0tg==
 
 text-table@^0.2.0:
   version "0.2.0"
