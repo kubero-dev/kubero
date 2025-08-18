@@ -24,6 +24,7 @@ import { KuberoAddonMysql } from './plugins/kuberoaddonsMysql';
 import { KuberoAddonRedis } from './plugins/kuberoaddonsRedis';
 import { KuberoAddonRabbitmq } from './plugins/kuberoaddonsRabbitmq';
 import { KuberoAddonMongodb } from './plugins/kuberoaddonsMongodb';
+import { Cluster as CloudnativePG } from './plugins/cloudnativePG';
 
 @Injectable()
 export class AddonsService {
@@ -62,6 +63,9 @@ export class AddonsService {
 
     const tunnel = new Tunnel(this.CRDList);
     this.addonsList.push(tunnel);
+
+    const cloudnativePG = new CloudnativePG(this.CRDList);
+    this.addonsList.push(cloudnativePG);
 
     const postgresCluster = new PostgresCluster(this.CRDList);
     this.addonsList.push(postgresCluster);

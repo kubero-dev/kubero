@@ -20,16 +20,16 @@ kubectl apply --server-side -k github.com/CrunchyData/postgres-operator-examples
   ];
   public artifact_url =
     'https://artifacthub.io/api/v1/packages/olm/community-operators/postgresql';
-  public beta: boolean = true;
+  public beta: boolean = false;
 
   public formfields: { [key: string]: IPluginFormFields } = {
     'PostgresCluster.metadata.name': {
       type: 'text',
-      label: 'Redis Cluster Name',
+      label: 'Postgres Cluster Name',
       name: 'metadata.name',
       required: true,
       default: 'pg-cluster',
-      description: 'The name of the Redis cluster',
+      description: 'The name of the Postgres cluster',
     },
     'PostgresCluster.spec.postgresVersion': {
       type: 'number',
