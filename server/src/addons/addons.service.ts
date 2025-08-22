@@ -25,6 +25,7 @@ import { KuberoAddonRedis } from './plugins/kuberoaddonsRedis';
 import { KuberoAddonRabbitmq } from './plugins/kuberoaddonsRabbitmq';
 import { KuberoAddonMongodb } from './plugins/kuberoaddonsMongodb';
 import { Cluster as CloudnativePG } from './plugins/cloudnativePG';
+import { Elasticsearch } from './plugins/elasticsearch';
 
 @Injectable()
 export class AddonsService {
@@ -75,6 +76,9 @@ export class AddonsService {
 
     const redis = new Redis(this.CRDList);
     this.addonsList.push(redis);
+
+    const elasticsearch = new Elasticsearch(this.CRDList);
+    this.addonsList.push(elasticsearch);
 
     const mongoDB = new MongoDB(this.CRDList);
     this.addonsList.push(mongoDB);
