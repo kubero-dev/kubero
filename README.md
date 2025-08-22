@@ -8,8 +8,9 @@
 [![GitHub (Pre-)Release Date](https://img.shields.io/github/release-date-pre/kubero-dev/kubero?style=flat-square)](https://github.com/kubero-dev/kubero/releases/latest)
 [![Demo](https://img.shields.io/badge/demo-up-sucess?style=flat-square&color=blue)](https://demo.kubero.dev)
 
-[引言](README.zh-CN.md)
-[はじめに](README.ja.md)
+[中文翻译](README.zh-CN.md)
+
+[日本語訳](README.ja.md)
 
 Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) that allows any developer to deploy their application on Kubernetes without specialized knowledge. Kubero follows the principles of 12-factor apps. It is possible to run apps based on existing containers or from source code.
 
