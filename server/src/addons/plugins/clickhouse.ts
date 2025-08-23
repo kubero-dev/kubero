@@ -1,4 +1,5 @@
-import { Plugin, IPlugin, IPluginFormFields } from './plugin';
+import { Plugin, } from './plugin';
+import { IPlugin, IPluginFormFields  } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class ClickHouseInstallation extends Plugin implements IPlugin {

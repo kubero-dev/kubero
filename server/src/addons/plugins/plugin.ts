@@ -1,38 +1,7 @@
 import axios from 'axios';
 import { Logger } from '@nestjs/common';
 
-export interface IPluginFormFields {
-  type:
-    | 'text'
-    | 'number'
-    | 'switch'
-    | 'select'
-    | 'select-storageclass'
-    | 'combobox';
-  label: string;
-  name: string;
-  required: boolean;
-  options?: string[];
-  default: string | number | boolean;
-  description?: string;
-}
 
-export interface IPlugin {
-  id: string;
-  enabled: boolean;
-  beta: boolean;
-  version: {
-    latest: string;
-    installed: string;
-  };
-  description: string;
-  install: string;
-  installOLM?: string;
-  formfields: { [key: string]: IPluginFormFields };
-  //crd: KubernetesObject,
-  resourceDefinitions: any;
-  artifact_url: string;
-}
 
 export abstract class Plugin {
   public plugin?: any;
@@ -99,7 +68,9 @@ export abstract class Plugin {
     // set artifact hub values
     if (response?.data && response.data.description) {
       //this.displayName = response?.data.displayName; // use the name from the plugin
-      this.description = response.data.description;
+      if (this.description == '') {
+        this.description = response.data.description;
+      }
       this.maintainers = response.data.maintainers;
       this.links = response.data.links;
       this.readme = response.data.readme;
