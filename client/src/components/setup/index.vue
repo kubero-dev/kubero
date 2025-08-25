@@ -176,7 +176,7 @@
                           <v-col cols="12">
                             <p>Install the operator by running the following command: </p>
                             <VCodeBlock
-                              code="kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml"
+                              code="kubectl apply -f https://raw.githubusercontent.com/kubero-dev/kubero-operator/main/deploy/operator.yaml"
                               highlightjs
                               copy-tab
                               tabs
