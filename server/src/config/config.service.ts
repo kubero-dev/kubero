@@ -239,15 +239,25 @@ export class ConfigService {
 
   private readConfigFromFS(): IKuberoConfig {
     // read config from local filesystem (dev mode)
-    //const path = join(__dirname, 'config.yaml')
-    const path =
-      process.env.KUBERO_CONFIG_PATH || join(__dirname, 'config.yaml');
+    let configPath: string;
+    if (process.env.KUBERO_CONFIG_PATH) {
+      configPath = process.env.KUBERO_CONFIG_PATH;
+    } else {
+      // In development, look in the project root; in production, look in dist
+      const isProduction = process.env.NODE_ENV === 'production';
+      configPath = isProduction
+        ? join(__dirname, 'config.yaml')
+        : join(process.cwd(), 'config.yaml');
+    }
+
     let settings: string;
     try {
-      settings = readFileSync(path, 'utf8');
+      settings = readFileSync(configPath, 'utf8');
       return YAML.parse(settings) as IKuberoConfig;
     } catch (_error) {
-      this.logger.error('Error reading config file', _error);
+      this.logger.error('Error reading config file');
+      this.logger.error(`Attempted path: ${configPath}`);
+      this.logger.error(_error);
 
       return new Object() as IKuberoConfig;
     }
@@ -255,9 +265,18 @@ export class ConfigService {
 
   // write config to local filesystem (dev mode)
   private writeConfig(configMap: KuberoConfig) {
-    const path =
-      process.env.KUBERO_CONFIG_PATH || join(__dirname, 'config.yaml');
-    writeFileSync(path, YAML.stringify(configMap), {
+    let configPath: string;
+    if (process.env.KUBERO_CONFIG_PATH) {
+      configPath = process.env.KUBERO_CONFIG_PATH;
+    } else {
+      // In development, write to project root; in production, write to dist
+      const isProduction = process.env.NODE_ENV === 'production';
+      configPath = isProduction
+        ? join(__dirname, 'config.yaml')
+        : join(process.cwd(), 'config.yaml');
+    }
+
+    writeFileSync(configPath, YAML.stringify(configMap), {
       flag: 'w',
       encoding: 'utf8',
     });
