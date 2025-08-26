@@ -65,7 +65,7 @@ export class KubernetesService {
     this.initKubeConfig();
   }
 
-  private initKubeConfig() {
+  private async initKubeConfig() {
     //this.config = config;
     //this.kc.loadFromDefault(); // should not be used since we want also load from base64 ENV var
 
@@ -125,7 +125,7 @@ export class KubernetesService {
         //this.logger.debug(error);
       });
 
-    this.loadOperatorVersion().then((v) => {
+    await this.loadOperatorVersion().then((v) => {
       this.logger.debug('ℹ️  Operator version: ' + v);
       this.kuberoOperatorVersion = v || 'unknown';
     });
@@ -188,7 +188,7 @@ export class KubernetesService {
     return this.kc.getContexts();
   }
 
-  public async setCurrentContext(context: string) {
+  public setCurrentContext(context: string) {
     this.kc.setCurrentContext(context);
   }
 
@@ -201,7 +201,9 @@ export class KubernetesService {
     return namespaces.body.items;
   }
 
-  public async getPipelinesList(userGroups: string[] = []): Promise<IKubectlPipelineList> {
+  public async getPipelinesList(
+    userGroups: string[] = [],
+  ): Promise<IKubectlPipelineList> {
     this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
     let pipelines = {} as IKubectlPipelineList;
     pipelines.items = [];
@@ -216,14 +218,14 @@ export class KubernetesService {
       //return pipelines.body as IKubectlPipelineList;
     } catch (_error) {
       //this.logger.debug(error);
-      this.logger.debug('❌ getPipelinesList: error getting pipelines');
+      this.logger.debug('❌ getPipelinesList: error getting pipelines!');
     }
     if (pipelines.items.length > 0) {
       // Filter pipelines based on user groups
-      
+
       pipelines.items = pipelines.items.filter((pipeline) => {
         if (!pipeline.spec || !pipeline.spec.access) return true; //true=keep, when no access defined for better backward compatibility
-        
+
         // return all, when user is in admin group
         if (userGroups.includes('admin')) return true;
 
@@ -287,7 +289,7 @@ export class KubernetesService {
         pipelineName,
       )
       .catch((error) => {
-        this.logger.debug(error);
+        // this.logger.debug(error);
       });
   }
 
@@ -357,7 +359,7 @@ export class KubernetesService {
         appl,
       )
       .catch((error) => {
-        this.logger.debug(error);
+        // this.logger.debug(error);
       });
   }
 
@@ -381,7 +383,7 @@ export class KubernetesService {
         appName,
       )
       .catch((error) => {
-        this.logger.debug(error);
+        // this.logger.debug(error);
       });
   }
 
@@ -403,7 +405,7 @@ export class KubernetesService {
         appName,
       )
       .catch((error) => {
-        this.logger.debug(error);
+        // this.logger.debug(error);
       });
 
     if (app) {
@@ -453,7 +455,7 @@ export class KubernetesService {
     return appslist;
   }
 
-  public async restartApp(
+  public restartApp(
     pipelineName: string,
     phaseName: string,
     appName: string,
@@ -581,7 +583,7 @@ export class KubernetesService {
     await this.coreV1Api
       .createNamespacedEvent(process.env.KUBERO_NAMESPACE || 'kubero', event)
       .catch((error) => {
-        this.logger.debug(error);
+        // this.logger.debug(error);
       });
   }
 
@@ -1099,7 +1101,7 @@ export class KubernetesService {
     }
   }
 
-  public async deployApp(namespace: string, appName: string, tag: string) {
+  public deployApp(namespace: string, appName: string, tag: string) {
     const deploymentName = appName + '-kuberoapp-web';
     this.logger.error(
       'deploy app: ' + appName,
@@ -1202,7 +1204,7 @@ export class KubernetesService {
       //console.log(config.body);
       return config.body as any;
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
       this.logger.debug('getKuberoConfig: error getting config');
     }
   }
@@ -1233,7 +1235,7 @@ export class KubernetesService {
         options,
       );
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
     }
   }
 
@@ -1262,7 +1264,7 @@ export class KubernetesService {
         options,
       );
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
     }
   }
 
@@ -1345,7 +1347,7 @@ export class KubernetesService {
     try {
       await this.batchV1Api.deleteNamespacedJob(buildName, namespace);
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
     }
   }
 
@@ -1354,7 +1356,7 @@ export class KubernetesService {
       const job = await this.batchV1Api.readNamespacedJob(jobName, namespace);
       return job.body;
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
       this.logger.debug('getJob: error getting job');
     }
   }
@@ -1364,7 +1366,7 @@ export class KubernetesService {
       const jobs = await this.batchV1Api.listNamespacedJob(namespace);
       return jobs.body;
     } catch (error) {
-      this.logger.debug(error);
+      // this.logger.debug(error);
       this.logger.debug('getJobs: error getting jobs');
     }
   }
