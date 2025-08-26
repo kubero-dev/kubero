@@ -762,38 +762,32 @@ export class ConfigService {
   }
 
   public static getLocalauthEnabled(): boolean {
-    let enabled = false;
-    process.env.KUBERO_SESSION_KEY == undefined ||
-    process.env.KUBERO_SESSION_KEY == ''
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when a non-empty session key exists
+    return (
+      process.env.KUBERO_SESSION_KEY !== undefined &&
+      process.env.KUBERO_SESSION_KEY !== ''
+    );
   }
 
   public static getGithubEnabled(): boolean {
-    let enabled = false;
-    process.env.GITHUB_CLIENT_SECRET == undefined ||
-    process.env.GITHUB_CLIENT_ID == undefined ||
-    process.env.GITHUB_CLIENT_CALLBACKURL == undefined ||
-    process.env.GITHUB_CLIENT_ORG == undefined
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when all required GitHub env vars are present
+    return (
+      process.env.GITHUB_CLIENT_SECRET !== undefined &&
+      process.env.GITHUB_CLIENT_ID !== undefined &&
+      process.env.GITHUB_CLIENT_CALLBACKURL !== undefined &&
+      process.env.GITHUB_CLIENT_ORG !== undefined
+    );
   }
 
   public static getOauth2Enabled(): boolean {
-    let enabled = false;
-    process.env.OAUTH2_CLIENT_AUTH_URL == undefined ||
-    process.env.OAUTH2_CLIENT_TOKEN_URL == undefined ||
-    process.env.OAUTH2_CLIENT_ID == undefined ||
-    process.env.OAUTH2_CLIENT_SECRET == undefined ||
-    process.env.OAUTH2_CLIENT_CALLBACKURL == undefined
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when all required OAuth2 env vars are present
+    return (
+      process.env.OAUTH2_CLIENT_AUTH_URL !== undefined &&
+      process.env.OAUTH2_CLIENT_TOKEN_URL !== undefined &&
+      process.env.OAUTH2_CLIENT_ID !== undefined &&
+      process.env.OAUTH2_CLIENT_SECRET !== undefined &&
+      process.env.OAUTH2_CLIENT_CALLBACKURL !== undefined
+    );
   }
 
   public static getAuthenticationScope(scope: string | undefined): string[] {
