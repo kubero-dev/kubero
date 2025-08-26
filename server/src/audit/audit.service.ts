@@ -8,7 +8,7 @@ export class AuditService {
   private logmaxbackups: number = 1000;
   private enabled: boolean = true;
   private readonly logger = new Logger(AuditService.name);
-  private readonly prisma = new PrismaClient();
+  private prisma = new PrismaClient();
 
   constructor() {
     this.logmaxbackups = process.env.KUBERO_AUDIT_LIMIT

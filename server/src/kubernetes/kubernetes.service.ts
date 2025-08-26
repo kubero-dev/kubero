@@ -455,7 +455,7 @@ export class KubernetesService {
     return appslist;
   }
 
-  public restartApp(
+  public async restartApp(
     pipelineName: string,
     phaseName: string,
     appName: string,
@@ -487,8 +487,8 @@ export class KubernetesService {
     const options = {
       headers: { 'Content-type': 'application/json-patch+json' },
     };
-    this.customObjectsApi
-      .patchNamespacedCustomObject(
+    try {
+      await this.customObjectsApi.patchNamespacedCustomObject(
         group,
         apiVersion,
         namespace,
@@ -499,18 +499,16 @@ export class KubernetesService {
         undefined,
         undefined,
         options,
-      )
-      .then(() => {
-        this.logger.debug(
-          `Deployment ${deploymentName} in Pipeline ${namespace} updated`,
-        );
-      })
-      .catch((error) => {
-        if (error.body.message) {
-          this.logger.debug('ERROR: ' + error.body.message);
-        }
-        this.logger.debug('ERROR: ' + error);
-      });
+      );
+      this.logger.debug(
+        `Deployment ${deploymentName} in Pipeline ${namespace} updated`,
+      );
+    } catch (error) {
+      if (error.body.message) {
+        this.logger.debug('ERROR: ' + error.body.message);
+      }
+      this.logger.debug('ERROR: ' + error);
+    }
   }
 
   public async getOperators() {
@@ -1191,7 +1189,7 @@ export class KubernetesService {
     return ws;
   }
 
-  public async getKuberoConfig(namespace: string): Promise<any | void> {
+  public async getKuberoConfig(namespace: string) {
     this.kc.setCurrentContext(process.env.KUBERO_CONTEXT || 'default');
     try {
       const config = await this.customObjectsApi.getNamespacedCustomObject(
