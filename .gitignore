@@ -17,3 +17,7 @@ secrets.yaml
 config.yaml
 
 db
+
+.yarn
+.claude/settings.local.json
+*.sqlite
