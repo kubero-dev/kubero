@@ -1378,12 +1378,12 @@ export default defineComponent({
         },
       ],
       takenDomains: [] as string[],
-      advanced: localStorage.getItem('kubero-advanced-app-config') === 'true',
+      advanced: localStorage.getItem("kubero-advanced-app-config") === "true",
       panel: [0],
       valid: false,
       sleep: "disabled",
       sleepEnabled: false,
-      envFile: [],
+      envFile: null as File | null,
       buildpacks: [] as { text: string; value: Buildpack }[],
       basicAuth: {
         enabled: false,
@@ -1724,7 +1724,7 @@ export default defineComponent({
   },
   watch: {
     advanced(newValue) {
-      localStorage.setItem('kubero-advanced-app-config', newValue.toString());
+      localStorage.setItem("kubero-advanced-app-config", newValue.toString());
     },
   },
   async mounted() {
@@ -2516,28 +2516,65 @@ export default defineComponent({
       }
     },
     handleFileInput() {
-      for (let i = 0; i < this.envFile.length; i++) {
-        const file = this.envFile[i];
+      // check if the file is an array or not
+      let envFiles = [] as File[];
+      if (!Array.isArray(this.envFile) && this.envFile) {
+        envFiles = [this.envFile];
+      }
+
+      for (let i = 0; i < envFiles.length; i++) {
+        const file = envFiles[i];
+
+        // Validate file type
+        if (!file.name?.endsWith(".env") && !file.name.endsWith(".txt")) {
+          console.warn(
+            `Skipping file ${file.name}: Expected .env or .txt file`
+          );
+          continue;
+        }
+
         const reader = new FileReader();
         reader.onload = () => {
-          const text = reader.result;
-          this.parseEnvFile(text);
+          try {
+            const text = reader.result as string;
+            this.parseEnvFile(text);
+          } catch (error) {
+            console.error("Error parsing env file:", error);
+          }
         };
+
+        reader.onerror = () => {
+          console.error(`Error reading file ${file.name}`);
+        };
+
         reader.readAsText(file);
       }
 
       // clear file input
-      this.envFile = [];
+      this.envFile = null;
     },
     parseEnvFile(text: any) {
       const lines = text.split("\n");
       for (const line of lines) {
-        const [name, value] = line.split("=");
-        // check if name isn't commented out
-        if (name && !name.startsWith("#") && value) {
-          if (!this.envVars.some((envVars) => envVars.name === name.trim())) {
-            this.envVars.push({ name: name.trim(), value: value.trim() });
-          }
+        const trimmedLine = line.trim();
+        // Skip empty lines and comments
+        if (!trimmedLine || trimmedLine.startsWith("#")) {
+          continue;
+        }
+
+        const equalIndex = trimmedLine.indexOf("=");
+        if (equalIndex === -1) {
+          continue; // Skip lines without =
+        }
+
+        const name = trimmedLine.substring(0, equalIndex).trim();
+        const value = trimmedLine.substring(equalIndex + 1).trim();
+
+        // Remove quotes if present
+        const cleanValue = value.replace(/^["']|["']$/g, "");
+
+        if (name && !this.envVars.some((envVar) => envVar.name === name)) {
+          this.envVars.push({ name, value: cleanValue });
         }
       }
     },
