@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Runpack as DBRunpack, PrismaClient } from '@prisma/client';
 import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import YAML from 'yaml';
+import * as YAML from 'yaml';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { INotification } from '../notifications/notifications.interface';
 import { NotificationsService } from '../notifications/notifications.service';
