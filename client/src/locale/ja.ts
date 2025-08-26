@@ -230,6 +230,10 @@ const messages = {
       variableName: '変数名',
       currentValue: '現在の値',
       newValue: '新しい値',
+      envNameRequired: '環境変数名は必須です',
+      envNameTooLong: '名前は60文字未満である必要があります',
+      envNameInvalidChars: '文字、数字、アンダースコアのみ使用可能。文字またはアンダースコアで開始する必要があります',
+      duplicateEnvVar: '環境変数名は既に存在しています',
     },
     strategy: {
       name: '戦略',

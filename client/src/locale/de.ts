@@ -231,6 +231,10 @@ const messages = {
       variableName: 'Variablenname',
       currentValue: 'Aktueller Wert',
       newValue: 'Neuer Wert',
+      envNameRequired: 'Name der Umgebungsvariable ist erforderlich',
+      envNameTooLong: 'Name muss weniger als 60 Zeichen haben',
+      envNameInvalidChars: 'Nur Buchstaben, Zahlen und Unterstriche erlaubt. Muss mit Buchstaben oder Unterstrich beginnen',
+      duplicateEnvVar: 'Name der Umgebungsvariable existiert bereits',
     },
     strategy: {
       name: 'Strategie',

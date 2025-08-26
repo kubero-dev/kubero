@@ -229,6 +229,10 @@ const messages = {
       variableName: 'Variable Name',
       currentValue: 'Aktuälle Wert',
       newValue: 'Neue Wert',
+      envNameRequired: 'Name vo dr Umgäbigsvariable isch erforderlich',
+      envNameTooLong: 'Name muess weniger als 60 Zeiche ha',
+      envNameInvalidChars: 'Nur Buechstabe, Zahle und Underscore erlaubt. Muess mit Buechstab oder Underscore aafange',
+      duplicateEnvVar: 'Name vo dr Umgäbigsvariable existiert bereits',
     },
     strategy: {
       name: 'Strategie',

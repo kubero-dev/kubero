@@ -229,6 +229,10 @@ const messages = {
       variableName: '变量名',
       currentValue: '当前值',
       newValue: '新值',
+      envNameRequired: '环境变量名是必需的',
+      envNameTooLong: '名称必须少于60个字符',
+      envNameInvalidChars: '只允许字母、数字和下划线。必须以字母或下划线开头',
+      duplicateEnvVar: '环境变量名已存在',
     },
     strategy: {
       name: '策略',

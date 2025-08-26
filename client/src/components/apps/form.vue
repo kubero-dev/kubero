@@ -845,6 +845,9 @@
                   v-model="envvar.name"
                   :label="$t('global.name')"
                   :counter="60"
+                  :rules="getEnvNameRules(envvar.name, index)"
+                  :error="isDuplicateEnvVar(envvar.name, index)"
+                  :error-messages="isDuplicateEnvVar(envvar.name, index) ? [$t('app.form.duplicateEnvVar')] : []"
                 ></v-text-field>
               </v-col>
               <v-col cols="12" md="6">
@@ -1770,6 +1773,11 @@ export default defineComponent({
         { title: this.$t('app.form.newValue'), key: 'newValue' },
       ];
     },
+    duplicateEnvVarNames() {
+      const names = this.envVars.map(env => env.name.trim()).filter(name => name !== '');
+      const duplicates = names.filter((name, index) => names.indexOf(name) !== index);
+      return [...new Set(duplicates)];
+    },
   },
   watch: {
     advanced(newValue) {
@@ -2550,6 +2558,25 @@ export default defineComponent({
           this.envVars.splice(i, 1);
         }
       }
+    },
+    isDuplicateEnvVar(name: string, currentIndex: number) {
+      if (!name || name.trim() === '') return false;
+      const trimmedName = name.trim();
+      return this.envVars.some((env, index) => 
+        index !== currentIndex && env.name.trim() === trimmedName
+      );
+    },
+    getEnvNameRules(name: string, index: number) {
+      const baseRules = [
+        (v: any) => !!v || this.$t('app.form.envNameRequired'),
+        (v: any) => v.length <= 60 || this.$t('app.form.envNameTooLong'),
+        (v: any) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v) || this.$t('app.form.envNameInvalidChars'),
+      ];
+      
+      const duplicateRule = (v: any) => 
+        !this.isDuplicateEnvVar(v, index) || this.$t('app.form.duplicateEnvVar');
+      
+      return [...baseRules, duplicateRule];
     },
     addSAAnnotationLine() {
       this.sAAnnotations.push({
