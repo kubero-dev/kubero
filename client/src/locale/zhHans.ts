@@ -86,6 +86,7 @@ const messages = {
     abort: "中止",
     cancel: "取消",
     save: "保存",
+    applyChanges: "应用更改",
   },
   pipeline: {
     name: '流水线',
@@ -222,6 +223,12 @@ const messages = {
       healthCheckStartupSeconds: '启动秒数',
       healthCheckTimeoutSeconds: '超时时间（秒）',
       healthCheckIntervalSeconds: '间隔时间（秒）',
+      noNewEnvVarsFound: '上传的文件中未找到新的环境变量',
+      envVarConflicts: '环境变量冲突',
+      envVarConflictsDescription: '上传的.env文件包含已存在的变量。请选择要保留的值：',
+      variableName: '变量名',
+      currentValue: '当前值',
+      newValue: '新值',
     },
     strategy: {
       name: '策略',

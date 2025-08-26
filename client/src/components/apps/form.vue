@@ -1164,6 +1164,43 @@
       </div>
       <Addons :addons="addons" :appname="name" />
 
+      <!-- ENV VAR OVERLAP DIALOG -->
+      <v-dialog v-model="envOverlapDialog" max-width="800px" persistent>
+        <v-card>
+          <v-card-title class="headline">
+            {{ $t("app.form.envVarConflicts") }}
+          </v-card-title>
+          <v-card-text>
+            <p class="mb-4">
+              {{ $t("app.form.envVarConflictsDescription") }}
+            </p>
+            <v-data-table
+              v-model="selectedOverlaps"
+              :headers="overlapHeaders"
+              :items="envOverlaps"
+              item-value="name"
+              show-select
+            >
+              <template v-slot:item.oldValue="{ item }">
+                <code class="text-caption">{{ item.oldValue }}</code>
+              </template>
+              <template v-slot:item.newValue="{ item }">
+                <code class="text-caption">{{ item.newValue }}</code>
+              </template>
+            </v-data-table>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn variant="text" @click="cancelOverlapDialog">
+              {{ $t("global.cancel") }}
+            </v-btn>
+            <v-btn color="primary" @click="applyOverlapChanges">
+              {{ $t("global.applyChanges") }}
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
       <!-- SUBMIT -->
       <v-row class="pt-5">
         <v-col cols="12" md="4">
@@ -1194,8 +1231,8 @@ import axios from "axios";
 import Addons from "./addons.vue";
 import { defineComponent } from "vue";
 import { useKuberoStore } from "../../stores/kubero";
-import { mapState } from "pinia";
 import Breadcrumbs from "../breadcrumbs.vue";
+import Swal from "sweetalert2";
 
 type App = {
   name: string;
@@ -1668,6 +1705,11 @@ export default defineComponent({
         timeoutSeconds: 3,
         periodSeconds: 10,
       },
+      // Environment variable overlap dialog state
+      envOverlapDialog: false,
+      envOverlaps: [] as { name: string; oldValue: string; newValue: string }[],
+      selectedOverlaps: [] as string[],
+      pendingEnvVars: [] as EnvVar[],
       nameRules: [
         (v: any) => !!v || "Name is required",
         (v: any) => v.length <= 60 || "Name must be less than 60 characters",
@@ -1720,6 +1762,13 @@ export default defineComponent({
     kuberoConfig() {
       const store = useKuberoStore();
       return store.kubero;
+    },
+    overlapHeaders() {
+      return [
+        { title: this.$t('app.form.variableName'), key: 'name' },
+        { title: this.$t('app.form.currentValue'), key: 'oldValue' },
+        { title: this.$t('app.form.newValue'), key: 'newValue' },
+      ];
     },
   },
   watch: {
@@ -2555,6 +2604,10 @@ export default defineComponent({
     },
     parseEnvFile(text: any) {
       const lines = text.split("\n");
+      const newEnvVars: EnvVar[] = [];
+      const overlaps: { name: string; oldValue: string; newValue: string }[] =
+        [];
+
       for (const line of lines) {
         const trimmedLine = line.trim();
         // Skip empty lines and comments
@@ -2573,9 +2626,50 @@ export default defineComponent({
         // Remove quotes if present
         const cleanValue = value.replace(/^["']|["']$/g, "");
 
-        if (name && !this.envVars.some((envVar) => envVar.name === name)) {
-          this.envVars.push({ name, value: cleanValue });
+        if (name) {
+          const existingVar = this.envVars.find(
+            (envVar) => envVar.name === name
+          );
+          if (existingVar) {
+            // skip if value is the same
+            if (existingVar.value === cleanValue) {
+              continue;
+            }
+
+            // Found overlap - add to overlaps list
+            overlaps.push({
+              name,
+              oldValue: existingVar.value,
+              newValue: cleanValue,
+            });
+          } else {
+            // No overlap - can add directly
+            newEnvVars.push({ name, value: cleanValue });
+          }
         }
+      }
+
+      // Add non-overlapping variables immediately
+      this.envVars.push(...newEnvVars);
+
+      // If there are overlaps, show dialog
+      if (overlaps.length > 0) {
+        this.envOverlaps = overlaps;
+        this.selectedOverlaps = overlaps.map((overlap) => overlap.name); // Default all selected
+        this.envOverlapDialog = true;
+      } else if (newEnvVars.length === 0) {
+        // Show notification if no new environment variables were found
+        Swal.fire({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          icon: 'info',
+          title: this.$t('app.form.noNewEnvVarsFound'),
+          background: "rgb(var(--v-theme-cardBackground))",
+          color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity))",
+        });
       }
     },
     addVolumeLine() {
@@ -2631,6 +2725,30 @@ export default defineComponent({
         cronjob.command = cronjob.command.join(" ");
       });
       return cronjobs;
+    },
+    // Environment variable overlap dialog methods
+    cancelOverlapDialog() {
+      this.envOverlapDialog = false;
+      this.envOverlaps = [];
+      this.selectedOverlaps = [];
+    },
+    applyOverlapChanges() {
+      // Update existing environment variables with selected new values
+      for (const overlap of this.envOverlaps) {
+        if (this.selectedOverlaps.includes(overlap.name)) {
+          const existingVar = this.envVars.find(
+            (envVar) => envVar.name === overlap.name
+          );
+          if (existingVar) {
+            existingVar.value = overlap.newValue;
+          }
+        }
+      }
+
+      // Close dialog and reset state
+      this.envOverlapDialog = false;
+      this.envOverlaps = [];
+      this.selectedOverlaps = [];
     },
   },
 });

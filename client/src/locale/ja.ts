@@ -87,6 +87,7 @@ const messages = {
     abort: "中止",
     cancel: "キャンセル",
     save: "保存",
+    applyChanges: "変更を適用",
   },
   pipeline: {
     name: 'パイプライン',
@@ -223,6 +224,12 @@ const messages = {
       healthCheckStartupSeconds: '起動秒数',
       healthCheckTimeoutSeconds: 'タイムアウト秒数',
       healthCheckIntervalSeconds: 'インターバル秒数',
+      noNewEnvVarsFound: 'アップロードされたファイルに新しい環境変数が見つかりませんでした',
+      envVarConflicts: '環境変数の競合',
+      envVarConflictsDescription: 'アップロードされた.envファイルには、既に存在する変数が含まれています。保持する値を選択してください:',
+      variableName: '変数名',
+      currentValue: '現在の値',
+      newValue: '新しい値',
     },
     strategy: {
       name: '戦略',

@@ -31,6 +31,7 @@ const messages = {
         abort: "Abort",
         cancel: "Cancel",
         save: "Save",
+        applyChanges: "Apply Changes",
       },
       pipeline: {
         name: 'Pipeline',
@@ -167,6 +168,12 @@ const messages = {
           healthCheckStartupSeconds: 'Startup Seconds',
           healthCheckTimeoutSeconds: 'Timeout Seconds',
           healthCheckIntervalSeconds: 'Interval Seconds',
+          noNewEnvVarsFound: 'No new environment variables found in the uploaded file',
+          envVarConflicts: 'Environment Variable Conflicts',
+          envVarConflictsDescription: 'The uploaded .env file contains variables that already exist. Please select which values you want to keep:',
+          variableName: 'Variable Name',
+          currentValue: 'Current Value',
+          newValue: 'New Value',
         },
         strategy: {
           name: 'Strategy',

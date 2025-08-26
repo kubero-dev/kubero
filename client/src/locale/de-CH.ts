@@ -86,6 +86,7 @@ const messages = {
     abort: "Abbräche",
     cancel: "Abbräche",
     save: "Speichere",
+    applyChanges: "Änderige aawände",
   },
   pipeline: {
     name: 'Pipeline',
@@ -222,6 +223,12 @@ const messages = {
       healthCheckStartupSeconds: 'Startup Sekunde',
       healthCheckTimeoutSeconds: 'Timeout Sekunde',
       healthCheckIntervalSeconds: 'Intervall Sekunde',
+      noNewEnvVarsFound: 'Kei neui Umgäbigsvariable id hochladeni Datei gfunde',
+      envVarConflicts: 'Umgäbigsvariable-Konflikt',
+      envVarConflictsDescription: 'Die hochladeni .env-Datei enthalt Variable, wo scho existiere. Bitte wähl us, weli Wert du behalte möchtisch:',
+      variableName: 'Variable Name',
+      currentValue: 'Aktuälle Wert',
+      newValue: 'Neue Wert',
     },
     strategy: {
       name: 'Strategie',

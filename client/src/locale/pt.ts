@@ -30,6 +30,7 @@ const messages = {
     abort: 'Abortar',
     cancel: 'Cancelar',
     save: 'Salvar',
+    applyChanges: 'Aplicar Alterações',
   },
   pipeline: {
     name: 'Pipeline',
@@ -165,6 +166,12 @@ const messages = {
       healthCheckStartupSeconds: 'Segundos de Inicialização',
       healthCheckTimeoutSeconds: 'Segundos de Timeout',
       healthCheckIntervalSeconds: 'Segundos de Intervalo',
+      noNewEnvVarsFound: 'Nenhuma nova variável de ambiente encontrada no arquivo enviado',
+      envVarConflicts: 'Conflitos de Variáveis de Ambiente',
+      envVarConflictsDescription: 'O arquivo .env enviado contém variáveis que já existem. Por favor, selecione quais valores deseja manter:',
+      variableName: 'Nome da Variável',
+      currentValue: 'Valor Atual',
+      newValue: 'Novo Valor',
     },
     strategy: {
       name: 'Estratégia',

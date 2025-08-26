@@ -9,6 +9,9 @@ const messages = {
     size: "Größe",
     create: "Erstellen",
     update: "Aktualisieren",
+    cancel: "Abbrechen",
+    save: "Speichern",
+    applyChanges: "Änderungen anwenden",
   },
   navigation: {
     pipelines: 'Pipelines',
@@ -222,6 +225,12 @@ const messages = {
       healthCheckStartupSeconds: 'Startup Sekunden',
       healthCheckTimeoutSeconds: 'Timeout Sekunden',
       healthCheckIntervalSeconds: 'Interval Sekunden',
+      noNewEnvVarsFound: 'Keine neuen Umgebungsvariablen in der hochgeladenen Datei gefunden',
+      envVarConflicts: 'Umgebungsvariablen-Konflikte',
+      envVarConflictsDescription: 'Die hochgeladene .env-Datei enthält Variablen, die bereits existieren. Bitte wählen Sie aus, welche Werte Sie behalten möchten:',
+      variableName: 'Variablenname',
+      currentValue: 'Aktueller Wert',
+      newValue: 'Neuer Wert',
     },
     strategy: {
       name: 'Strategie',
