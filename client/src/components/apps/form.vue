@@ -1378,7 +1378,7 @@ export default defineComponent({
         },
       ],
       takenDomains: [] as string[],
-      advanced: false,
+      advanced: localStorage.getItem('kubero-advanced-app-config') === 'true',
       panel: [0],
       valid: false,
       sleep: "disabled",
@@ -1720,6 +1720,11 @@ export default defineComponent({
     kuberoConfig() {
       const store = useKuberoStore();
       return store.kubero;
+    },
+  },
+  watch: {
+    advanced(newValue) {
+      localStorage.setItem('kubero-advanced-app-config', newValue.toString());
     },
   },
   async mounted() {
