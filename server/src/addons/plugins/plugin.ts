@@ -139,6 +139,10 @@ export abstract class Plugin {
   }
 
   private loadOperatorData(availableOperators: any): any {
+    // Ensure availableOperators is iterable (array)
+    if (!Array.isArray(availableOperators)) {
+      return undefined;
+    }
     //console.log(this.constructor.name, 'loading operator data -------------------');
     for (const operatorCRD of availableOperators) {
       //console.log(operatorCRD.spec.names.kind, this.constructor.name) // debug CRD
