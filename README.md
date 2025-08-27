@@ -52,6 +52,14 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 | <img src="client/public/img/addons/RabbitMQ.svg" width="30px" style="vertical-align: middle; margin: 10px">       | RabbitMQ                  | [groundhog2k](https://github.com/groundhog2k/helm-charts/tree/master/charts/rabbitmq) | ✅        |
 | <img src="client/public/img/addons/couchdb.svg" width="30px" style="vertical-align: middle; margin: 10px">        | CouchDB                   | [Apache](https://apache.github.io/couchdb-helm)                                       | ✅        |
 | <img src="client/public/img/addons/Haraka.png" width="30px" style="vertical-align: middle; margin: 10px">         | Haraka Mail Server        | [Kubero](https://github.com/kubero-dev/haraka-docker)                                 | ✅        |
+| <img src="client/public/img/addons/mysql.svg" width="30px" style="vertical-align: middle; margin: 10px">          | MySQL                     | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/mysql)                  | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/pgsql.svg" width="30px" style="vertical-align: middle; margin: 10px">          | PostgreSQL                | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/postgresql)             | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/redis.svg" width="30px" style="vertical-align: middle; margin: 10px">          | Redis                     | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/redis)                  | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/mongo.svg" width="30px" style="vertical-align: middle; margin: 10px">          | MongoDB                   | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/mongodb)                | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/elasticsearch.svg" width="30px" style="vertical-align: middle; margin: 10px">  | Elasticsearch             | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/elasticsearch)          | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/kafka.svg" width="30px" style="vertical-align: middle; margin: 10px">          | Kafka                     | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/kafka)                  | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/memcached.svg" width="30px" style="vertical-align: middle; margin: 10px">      | Memcache                  | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/memcached)              | ⚠️ (deprecated) |
+| <img src="client/public/img/addons/RabbitMQ.svg" width="30px" style="vertical-align: middle; margin: 10px">       | RabbitMQ                  | [Bitnami](https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq)               | ⚠️ (deprecated) |
 | <img src="client/public/img/addons/pgsql.svg" width="30px" style="vertical-align: middle; margin: 10px">          | PostgreSQL HA             | [CloudNative](https://github.com/cloudnative-pg/cloudnative-pg)                       |           |
 | <img src="client/public/img/addons/cloudflare.svg" width="30px" style="vertical-align: middle; margin: 10px">     | Cludflare Tunnels         | [Adianth](https://github.com/adyanth/cloudflare-operator)                             |           |
 | <img src="client/public/img/addons/Minio.png" width="30px" style="vertical-align: middle; margin: 10px">          | Minio                     | [Minio](https://artifacthub.io/packages/olm/community-operators/minio-operator)       |           |
@@ -64,6 +72,8 @@ Kubero is Kubernetes native and runs with two containers on any Kubernetes insta
 
 
 \* These add-ons are shipped with the Kubero Operator. They are not High Availability (HA) ready but greate to to get you started as fast as possible.
+
+\*\* All Bitnami add-ons are deprecated and will be removed in future releases due to Broadcom's image repository removal. [read more here](https://github.com/bitnami/charts/issues/35164)
 
 ## 164+ Application templates (similar to Heroku Buttons)
 - WordPress
