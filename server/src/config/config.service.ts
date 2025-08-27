@@ -1,15 +1,15 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IKuberoCRD, IKuberoConfig, IRegistry } from './config.interface';
-import { KuberoConfig } from './kubero-config/kubero-config';
-import { KubernetesService } from '../kubernetes/kubernetes.service';
+import { Runpack as DBRunpack, PrismaClient } from '@prisma/client';
 import { readFileSync, writeFileSync } from 'fs';
-import YAML from 'yaml';
 import { join } from 'path';
-import { Runpack } from './buildpack/runpack';
-import { PodSize } from './podsize/podsize';
+import * as YAML from 'yaml';
+import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { INotification } from '../notifications/notifications.interface';
 import { NotificationsService } from '../notifications/notifications.service';
-import { PrismaClient, User as PrismaUser, Runpack as DBRunpack } from '@prisma/client';
+import { Runpack } from './buildpack/runpack';
+import { IKuberoCRD, IKuberoConfig, IRegistry } from './config.interface';
+import { KuberoConfig } from './kubero-config/kubero-config';
+import { PodSize } from './podsize/podsize';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -110,8 +110,8 @@ export class ConfigService {
       this.writeConfig(kuberoes.spec.kubero.config);
     }
 
-    this.kubectl.updateKuberoConfig(namespace, kuberoes);
-    this.kubectl.updateKuberoSecret(namespace, config.secrets);
+    await this.kubectl.updateKuberoConfig(namespace, kuberoes);
+    await this.kubectl.updateKuberoSecret(namespace, config.secrets);
     this.setSecretEnv(config.secrets);
 
     const m = {
@@ -126,7 +126,7 @@ export class ConfigService {
       appName: '',
       data: {},
     } as INotification;
-    this.notification.send(m);
+    await this.notification.send(m);
 
     return kuberoes;
   }
@@ -239,15 +239,25 @@ export class ConfigService {
 
   private readConfigFromFS(): IKuberoConfig {
     // read config from local filesystem (dev mode)
-    //const path = join(__dirname, 'config.yaml')
-    const path =
-      process.env.KUBERO_CONFIG_PATH || join(__dirname, 'config.yaml');
+    let configPath: string;
+    if (process.env.KUBERO_CONFIG_PATH) {
+      configPath = process.env.KUBERO_CONFIG_PATH;
+    } else {
+      // In development, look in the project root; in production, look in dist
+      const isProduction = process.env.NODE_ENV === 'production';
+      configPath = isProduction
+        ? join(__dirname, 'config.yaml')
+        : join(process.cwd(), 'config.yaml');
+    }
+
     let settings: string;
     try {
-      settings = readFileSync(path, 'utf8');
+      settings = readFileSync(configPath, 'utf8');
       return YAML.parse(settings) as IKuberoConfig;
     } catch (_error) {
       this.logger.error('Error reading config file');
+      this.logger.error(`Attempted path: ${configPath}`);
+      this.logger.error(_error);
 
       return new Object() as IKuberoConfig;
     }
@@ -255,9 +265,18 @@ export class ConfigService {
 
   // write config to local filesystem (dev mode)
   private writeConfig(configMap: KuberoConfig) {
-    const path =
-      process.env.KUBERO_CONFIG_PATH || join(__dirname, 'config.yaml');
-    writeFileSync(path, YAML.stringify(configMap), {
+    let configPath: string;
+    if (process.env.KUBERO_CONFIG_PATH) {
+      configPath = process.env.KUBERO_CONFIG_PATH;
+    } else {
+      // In development, write to project root; in production, write to dist
+      const isProduction = process.env.NODE_ENV === 'production';
+      configPath = isProduction
+        ? join(__dirname, 'config.yaml')
+        : join(process.cwd(), 'config.yaml');
+    }
+
+    writeFileSync(configPath, YAML.stringify(configMap), {
       flag: 'w',
       encoding: 'utf8',
     });
@@ -288,7 +307,7 @@ export class ConfigService {
     return registry;
   }
 
-  public async getBanner(): Promise<any> {
+  public getBanner() {
     const defaultbanner = {
       show: false,
       text: '',
@@ -296,7 +315,7 @@ export class ConfigService {
       fontcolor: 'white',
     };
 
-    const banner = (await this.runningConfig.kubero?.banner) || defaultbanner;
+    const banner = this.runningConfig.kubero?.banner || defaultbanner;
     return banner;
   }
 
@@ -321,13 +340,13 @@ export class ConfigService {
     return this.kubectl.validateKubeconfig(kubeConfig, kubeContext);
   }
 
-  public updateRunningConfig(
+  public async updateRunningConfig(
     kubeConfig: string,
     kubeContext: string,
     kuberoNamespace: string,
     KuberoSessionKey: string,
     kuberoWebhookSecret: string,
-  ): { error: string; status: string } {
+  ): Promise<{ error: string; status: string }> {
     if (process.env.KUBERO_SETUP != 'enabled') {
       return {
         error: 'Setup is disabled. Set env KUBERO_SETUP=enabled and retry',
@@ -343,7 +362,7 @@ export class ConfigService {
 
     this.kubectl.updateKubectlConfig(kubeConfig, kubeContext);
 
-    this.kubectl.createNamespace(kuberoNamespace);
+    await this.kubectl.createNamespace(kuberoNamespace);
     return {
       error: '',
       status: 'ok',
@@ -409,7 +428,7 @@ export class ConfigService {
     return false;
   }
 
-  public async getTemplateConfig() {
+  public getTemplateConfig() {
     return this.runningConfig.templates;
   }
 
@@ -459,7 +478,7 @@ export class ConfigService {
 
   private async runFeatureCheck() {
     this.features.sleep = await this.checkForZeropod();
-    this.features.metrics = await this.checkMetricsEnabled();
+    this.features.metrics = this.checkMetricsEnabled();
   }
 
   public getSleepEnabled(): boolean {
@@ -505,12 +524,10 @@ export class ConfigService {
         runpackName: runpack.name,
       },
     };
-    this.notification.send(m);
+    await this.notification.send(m);
   }
 
-  public async createRunpack(
-    runpack: any,
-  ): Promise<DBRunpack> {
+  public async createRunpack(runpack: any): Promise<DBRunpack> {
     // Create the fetch, build, and run stages first
     const fetch = await this.prisma.runpackPhase.create({
       data: {
@@ -522,8 +539,10 @@ export class ConfigService {
           create: {
             runAsUser: runpack.fetch.securityContext.runAsUser,
             runAsGroup: runpack.fetch.securityContext.runAsGroup,
-            allowPrivilegeEscalation: runpack.fetch.securityContext.allowPrivilegeEscalation,
-            readOnlyRootFilesystem: runpack.fetch.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation:
+              runpack.fetch.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem:
+              runpack.fetch.securityContext.readOnlyRootFilesystem,
             runAsNonRoot: runpack.fetch.securityContext.runAsNonRoot,
           },
         },
@@ -531,18 +550,22 @@ export class ConfigService {
       include: { securityContext: { include: { capabilities: true } } },
     });
 
-    this.prisma.capabilityAdd.createMany({
-      data: runpack.fetch.securityContext.capabilities.add.map((cap: string) => ({
-        capability: cap,
-        runpackPhaseId: fetch.id,
-      })),
+    await this.prisma.capabilityAdd.createMany({
+      data: runpack.fetch.securityContext.capabilities.add.map(
+        (cap: string) => ({
+          capability: cap,
+          runpackPhaseId: fetch.id,
+        }),
+      ),
     });
 
-    this.prisma.capabilityDrop.createMany({
-      data: runpack.fetch.securityContext.capabilities.drop.map((cap: string) => ({
-        capability: cap,
-        runpackPhaseId: fetch.id,
-      })),
+    await this.prisma.capabilityDrop.createMany({
+      data: runpack.fetch.securityContext.capabilities.drop.map(
+        (cap: string) => ({
+          capability: cap,
+          runpackPhaseId: fetch.id,
+        }),
+      ),
     });
 
     const build = await this.prisma.runpackPhase.create({
@@ -555,8 +578,10 @@ export class ConfigService {
           create: {
             runAsUser: runpack.build.securityContext.runAsUser,
             runAsGroup: runpack.build.securityContext.runAsGroup,
-            allowPrivilegeEscalation: runpack.build.securityContext.allowPrivilegeEscalation,
-            readOnlyRootFilesystem: runpack.build.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation:
+              runpack.build.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem:
+              runpack.build.securityContext.readOnlyRootFilesystem,
             runAsNonRoot: runpack.build.securityContext.runAsNonRoot,
           },
         },
@@ -564,18 +589,22 @@ export class ConfigService {
       include: { securityContext: { include: { capabilities: true } } },
     });
 
-    this.prisma.capabilityAdd.createMany({
-      data: runpack.build.securityContext.capabilities.add.map((cap: string) => ({
-        capability: cap,
-        runpackPhaseId: build.id,
-      })),
+    await this.prisma.capabilityAdd.createMany({
+      data: runpack.build.securityContext.capabilities.add.map(
+        (cap: string) => ({
+          capability: cap,
+          runpackPhaseId: build.id,
+        }),
+      ),
     });
 
-    this.prisma.capabilityDrop.createMany({
-      data: runpack.build.securityContext.capabilities.drop.map((cap: string) => ({
-        capability: cap,
-        runpackPhaseId: build.id,
-      })),
+    await this.prisma.capabilityDrop.createMany({
+      data: runpack.build.securityContext.capabilities.drop.map(
+        (cap: string) => ({
+          capability: cap,
+          runpackPhaseId: build.id,
+        }),
+      ),
     });
 
     const run = await this.prisma.runpackPhase.create({
@@ -588,8 +617,10 @@ export class ConfigService {
           create: {
             runAsUser: runpack.run.securityContext.runAsUser,
             runAsGroup: runpack.run.securityContext.runAsGroup,
-            allowPrivilegeEscalation: runpack.run.securityContext.allowPrivilegeEscalation,
-            readOnlyRootFilesystem: runpack.run.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation:
+              runpack.run.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem:
+              runpack.run.securityContext.readOnlyRootFilesystem,
             runAsNonRoot: runpack.run.securityContext.runAsNonRoot,
           },
         },
@@ -597,18 +628,20 @@ export class ConfigService {
       include: { securityContext: { include: { capabilities: true } } },
     });
 
-    this.prisma.capabilityAdd.createMany({
+    await this.prisma.capabilityAdd.createMany({
       data: runpack.run.securityContext.capabilities.add.map((cap: string) => ({
         capability: cap,
         runpackPhaseId: run.id,
       })),
     });
 
-    this.prisma.capabilityDrop.createMany({
-      data: runpack.run.securityContext.capabilities.drop.map((cap: string) => ({
-        capability: cap,
-        runpackPhaseId: run.id,
-      })),
+    await this.prisma.capabilityDrop.createMany({
+      data: runpack.run.securityContext.capabilities.drop.map(
+        (cap: string) => ({
+          capability: cap,
+          runpackPhaseId: run.id,
+        }),
+      ),
     });
 
     // Now create the runpack and connect the phases
@@ -622,14 +655,12 @@ export class ConfigService {
       },
       include: { fetch: true, build: true, run: true },
     });
-    return dbRunpack
+    return dbRunpack;
   }
 
-
-  public async getClusterIssuer(): Promise<{ clusterissuer: string }> {
+  public getClusterIssuer(): { clusterissuer: string } {
     return {
-      clusterissuer:
-        process.env.KUBERO_CLUSTER_ISSUER || 'letsencrypt-prod',
+      clusterissuer: process.env.KUBERO_CLUSTER_ISSUER || 'letsencrypt-prod',
     };
   }
 
@@ -637,21 +668,24 @@ export class ConfigService {
     // Fetch PodSizes from the database using Prisma
     const dbPodSizes = await this.prisma.podSize.findMany();
     // Map DB results to PodSize class
-    return dbPodSizes.map((ps: any) => new PodSize({
-      id: ps.id,
-      name: ps.name,
-      description: ps.description,
-      resources: {
-        requests: {
-          memory: ps.memoryRequest || '',
-          cpu: ps.cpuLimit || '',
-        },
-        limits: {
-          memory: ps.memoryLimit || '',
-          cpu: ps.cpuLimit || '',
-        },
-      },
-    }));
+    return dbPodSizes.map(
+      (ps: any) =>
+        new PodSize({
+          id: ps.id,
+          name: ps.name,
+          description: ps.description,
+          resources: {
+            requests: {
+              memory: ps.memoryRequest || '',
+              cpu: ps.cpuLimit || '',
+            },
+            limits: {
+              memory: ps.memoryLimit || '',
+              cpu: ps.cpuLimit || '',
+            },
+          },
+        }),
+    );
   }
 
   public async addPodSize(podSize: PodSize): Promise<PodSize> {
@@ -728,38 +762,32 @@ export class ConfigService {
   }
 
   public static getLocalauthEnabled(): boolean {
-    let enabled = false;
-    process.env.KUBERO_SESSION_KEY == undefined ||
-    process.env.KUBERO_SESSION_KEY == ''
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when a non-empty session key exists
+    return (
+      process.env.KUBERO_SESSION_KEY !== undefined &&
+      process.env.KUBERO_SESSION_KEY !== ''
+    );
   }
 
   public static getGithubEnabled(): boolean {
-    let enabled = false;
-    process.env.GITHUB_CLIENT_SECRET == undefined ||
-    process.env.GITHUB_CLIENT_ID == undefined ||
-    process.env.GITHUB_CLIENT_CALLBACKURL == undefined ||
-    process.env.GITHUB_CLIENT_ORG == undefined
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when all required GitHub env vars are present
+    return (
+      process.env.GITHUB_CLIENT_SECRET !== undefined &&
+      process.env.GITHUB_CLIENT_ID !== undefined &&
+      process.env.GITHUB_CLIENT_CALLBACKURL !== undefined &&
+      process.env.GITHUB_CLIENT_ORG !== undefined
+    );
   }
 
   public static getOauth2Enabled(): boolean {
-    let enabled = false;
-    process.env.OAUTH2_CLIENT_AUTH_URL == undefined ||
-    process.env.OAUTH2_CLIENT_TOKEN_URL == undefined ||
-    process.env.OAUTH2_CLIENT_ID == undefined ||
-    process.env.OAUTH2_CLIENT_SECRET == undefined ||
-    process.env.OAUTH2_CLIENT_CALLBACKURL == undefined
-      ? (enabled = false)
-      : (enabled = true);
-
-    return enabled;
+    // return true only when all required OAuth2 env vars are present
+    return (
+      process.env.OAUTH2_CLIENT_AUTH_URL !== undefined &&
+      process.env.OAUTH2_CLIENT_TOKEN_URL !== undefined &&
+      process.env.OAUTH2_CLIENT_ID !== undefined &&
+      process.env.OAUTH2_CLIENT_SECRET !== undefined &&
+      process.env.OAUTH2_CLIENT_CALLBACKURL !== undefined
+    );
   }
 
   public static getAuthenticationScope(scope: string | undefined): string[] {

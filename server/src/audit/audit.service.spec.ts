@@ -15,8 +15,9 @@ describe('AuditService', () => {
     process.env.KUBERO_AUDIT = 'true';
     process.env.KUBERO_AUDIT_LIMIT = '10';
     AuditService.prototype.init = jest.fn();
-    service = new AuditService(mockPrisma);
+    service = new AuditService();
     service['enabled'] = true;
+    service['prisma'] = mockPrisma;
   });
 
   afterEach(() => {
@@ -29,7 +30,7 @@ describe('AuditService', () => {
 
   it('should not enable audit if KUBERO_AUDIT is not true', () => {
     process.env.KUBERO_AUDIT = 'false';
-    const s = new AuditService(mockPrisma);
+    const s = new AuditService();
     expect(s.getAuditEnabled()).toBe(false);
   });
   /*
@@ -52,10 +53,10 @@ describe('AuditService', () => {
   });
 */
 
-  it('init should do nothing if not enabled', async () => {
+  it('init should do nothing if not enabled', () => {
     const logSpy = jest.spyOn(service, 'log');
     service['enabled'] = false;
-    await service.init();
+    service.init();
     expect(logSpy).not.toHaveBeenCalled();
   });
 
@@ -75,12 +76,14 @@ describe('AuditService', () => {
       value: {},
       writable: true,
     });
-    mockPrisma.audit.create = jest.fn().mockResolvedValue({});
+    // create a local spy and assign it to the mock to avoid referencing an unbound method
+    const createSpy = jest.fn().mockResolvedValue({});
+    mockPrisma.audit.create = createSpy;
     mockPrisma.audit.count = jest.fn().mockResolvedValue(0);
     mockPrisma.audit.findMany = jest.fn().mockResolvedValue([]);
     mockPrisma.audit.deleteMany = jest.fn().mockResolvedValue({});
     await service.log(entry);
-    expect(mockPrisma.audit.create).toHaveBeenCalledWith({
+    expect(createSpy).toHaveBeenCalledWith({
       data: expect.objectContaining({
         user: 'test',
         severity: 'normal',
@@ -121,15 +124,23 @@ describe('AuditService', () => {
   });
 
   it('should reset audit log', async () => {
-    mockPrisma.audit.deleteMany = jest.fn().mockResolvedValue({});
+    // ensure audit object exists and assign a local spy to avoid referencing an unbound method
+    Object.defineProperty(mockPrisma, 'audit', {
+      value: {},
+      writable: true,
+    });
+    const deleteSpy = jest.fn().mockResolvedValue({});
+    mockPrisma.audit.deleteMany = deleteSpy;
     const logSpy = jest.spyOn(service['logger'], 'log');
     await service.reset();
-    expect(mockPrisma.audit.deleteMany).toHaveBeenCalled();
+    expect(deleteSpy).toHaveBeenCalled();
     expect(logSpy).toHaveBeenCalledWith('Audit log reset.');
   });
 
   it('should return 0 for count if not enabled', async () => {
     service['enabled'] = false;
+    mockPrisma.audit.count = jest.fn().mockResolvedValue(0);
+
     const count = await service.count();
     expect(count).toBe(0);
   });
@@ -144,7 +155,10 @@ describe('AuditService', () => {
 
   it('should not log if not enabled', async () => {
     service['enabled'] = false;
-    const createSpy = jest.spyOn(mockPrisma.audit, 'create');
+
+    const createSpy = jest.fn().mockResolvedValue({});
+    mockPrisma.audit.create = createSpy;
+
     await service.log({
       user: 'test',
       severity: 'normal',
@@ -173,10 +187,12 @@ describe('AuditService', () => {
         message: 'foo',
       },
     ];
-    mockPrisma.audit.findMany = jest.fn().mockResolvedValue(rows);
+    // create local spy and assign to mock to avoid referencing an unbound method
+    const findManySpy = jest.fn().mockResolvedValue(rows);
+    mockPrisma.audit.findMany = findManySpy;
 
     const result = await service.getFiltered(10, 'foo');
-    expect(mockPrisma.audit.findMany).toHaveBeenCalledWith({
+    expect(findManySpy).toHaveBeenCalledWith({
       where: { message: { contains: 'foo' } },
       orderBy: { timestamp: 'desc' },
       take: 10,
@@ -209,10 +225,14 @@ describe('AuditService', () => {
         message: 'foo',
       },
     ];
-    mockPrisma.audit.findMany = jest.fn().mockResolvedValue(rows);
+    // create local spy and assign to mock to avoid referencing an unbound method
+    const findManySpy2 = jest.fn().mockResolvedValue(rows);
+
+    mockPrisma.audit.findMany = findManySpy2;
+    mockPrisma.audit.count = jest.fn().mockResolvedValue(rows.length);
 
     const result = await service.getAppEntries('pipe', 'dev', 'app', 5);
-    expect(mockPrisma.audit.findMany).toHaveBeenCalledWith({
+    expect(findManySpy2).toHaveBeenCalledWith({
       where: { pipeline: 'pipe', phase: 'dev', app: 'app' },
       orderBy: { timestamp: 'desc' },
       take: 5,

@@ -173,8 +173,8 @@ describe('ConfigService', () => {
     expect(result.host).toBe('registry');
   });
 
-  it('should get banner', async () => {
-    const result = await service.getBanner();
+  it('should get banner', () => {
+    const result = service.getBanner();
     expect(result).toHaveProperty('show');
   });
 
@@ -199,9 +199,9 @@ describe('ConfigService', () => {
     expect(result.status).toBe('error');
   });
 
-  it('should update running config if setup enabled', () => {
+  it('should update running config if setup enabled', async () => {
     process.env.KUBERO_SETUP = 'enabled';
-    const result = service.updateRunningConfig(
+    const result = await service.updateRunningConfig(
       'kube',
       'ctx',
       'ns',
@@ -213,9 +213,9 @@ describe('ConfigService', () => {
     expect(kubectl.createNamespace).toHaveBeenCalled();
   });
 
-  it('should return error if setup is disabled in updateRunningConfig', () => {
+  it('should return error if setup is disabled in updateRunningConfig', async () => {
     process.env.KUBERO_SETUP = 'disabled';
-    const result = service.updateRunningConfig(
+    const result = await service.updateRunningConfig(
       'kube',
       'ctx',
       'ns',
@@ -298,8 +298,8 @@ describe('ConfigService', () => {
   });
   */
 
-  it('should get cluster issuer', async () => {
-    const result = await service.getClusterIssuer();
+  it('should get cluster issuer', () => {
+    const result = service.getClusterIssuer();
     expect(result.clusterissuer).toBe('letsencrypt-prod');
   });
 
@@ -439,7 +439,9 @@ describe('ConfigService', () => {
     });
 
     it('should handle database errors', async () => {
-      mockPrismaClient.runpack.findMany.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.runpack.findMany.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(service.getRunpacks()).rejects.toThrow('Database error');
     });
@@ -490,7 +492,9 @@ describe('ConfigService', () => {
     });
 
     it('should handle database errors', async () => {
-      mockPrismaClient.podSize.findMany.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.podSize.findMany.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(service.getPodSizes()).rejects.toThrow('Database error');
     });
@@ -622,7 +626,7 @@ describe('ConfigService', () => {
       expect(result.description).toBe('Large pod size');
       expect(result.resources.requests?.memory).toBe('512Mi');
       expect(result.resources.limits?.memory).toBe('1Gi');
-      
+
       expect(mockPrismaClient.podSize.create).toHaveBeenCalledWith({
         data: {
           name: 'large',
@@ -676,9 +680,13 @@ describe('ConfigService', () => {
         resources: {},
       });
 
-      mockPrismaClient.podSize.create.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.podSize.create.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.addPodSize(mockPodSize)).rejects.toThrow('Database error');
+      await expect(service.addPodSize(mockPodSize)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -719,7 +727,7 @@ describe('ConfigService', () => {
       expect(result.description).toBe('Updated large pod size');
       expect(result.resources.requests?.memory).toBe('1Gi');
       expect(result.resources.limits?.memory).toBe('2Gi');
-      
+
       expect(mockPrismaClient.podSize.update).toHaveBeenCalledWith({
         where: { id: podSizeId },
         data: {
@@ -740,9 +748,13 @@ describe('ConfigService', () => {
         resources: {},
       });
 
-      mockPrismaClient.podSize.update.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.podSize.update.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.updatePodSize('test-id', mockPodSize)).rejects.toThrow('Database error');
+      await expect(
+        service.updatePodSize('test-id', mockPodSize),
+      ).rejects.toThrow('Database error');
     });
   });
 
@@ -774,7 +786,7 @@ describe('ConfigService', () => {
       mockPrismaClient.podSize.findUnique.mockResolvedValue(null);
 
       await expect(service.deletePodSize(podSizeId)).rejects.toThrow(
-        `PodSize with id ${podSizeId} not found`
+        `PodSize with id ${podSizeId} not found`,
       );
 
       expect(mockPrismaClient.podSize.delete).not.toHaveBeenCalled();
@@ -785,9 +797,13 @@ describe('ConfigService', () => {
       const mockPodSize = { id: podSizeId, name: 'test' };
 
       mockPrismaClient.podSize.findUnique.mockResolvedValue(mockPodSize);
-      mockPrismaClient.podSize.delete.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.podSize.delete.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.deletePodSize(podSizeId)).rejects.toThrow('Database error');
+      await expect(service.deletePodSize(podSizeId)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -819,7 +835,7 @@ describe('ConfigService', () => {
             runpackId,
             runpackName: 'nodejs-to-delete',
           },
-        })
+        }),
       );
     });
 
@@ -829,7 +845,7 @@ describe('ConfigService', () => {
       mockPrismaClient.runpack.findUnique.mockResolvedValue(null);
 
       await expect(service.deleteRunpack(runpackId)).rejects.toThrow(
-        `Runpack with id ${runpackId} not found`
+        `Runpack with id ${runpackId} not found`,
       );
 
       expect(mockPrismaClient.runpack.delete).not.toHaveBeenCalled();
@@ -841,9 +857,13 @@ describe('ConfigService', () => {
       const mockRunpack = { id: runpackId, name: 'test-runpack' };
 
       mockPrismaClient.runpack.findUnique.mockResolvedValue(mockRunpack);
-      mockPrismaClient.runpack.delete.mockRejectedValue(new Error('Database error'));
+      mockPrismaClient.runpack.delete.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.deleteRunpack(runpackId)).rejects.toThrow('Database error');
+      await expect(service.deleteRunpack(runpackId)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 });

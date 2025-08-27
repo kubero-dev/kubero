@@ -217,21 +217,21 @@ describe('KubernetesService', () => {
         items: [
           {
             metadata: { name: 'pod1' },
-            status: { startTime: new Date(Date.now() - 60000) } // 1 minute ago
+            status: { startTime: new Date(Date.now() - 60000) }, // 1 minute ago
           },
           {
             metadata: { name: 'pod2' },
-            status: { startTime: new Date(Date.now() - 3600000) } // 1 hour ago
+            status: { startTime: new Date(Date.now() - 3600000) }, // 1 hour ago
           },
           {
             metadata: { name: 'pod3' },
-            status: {} // no startTime
+            status: {}, // no startTime
           },
           {
-            metadata: {} // no name
-          }
-        ]
-      }
+            metadata: {}, // no name
+          },
+        ],
+      },
     };
 
     // Access the mocked coreV1Api through the service
@@ -240,7 +240,9 @@ describe('KubernetesService', () => {
 
     const result = await service.getPodUptimes('test-namespace');
 
-    expect(coreV1ApiMock.listNamespacedPod).toHaveBeenCalledWith('test-namespace');
+    expect(coreV1ApiMock.listNamespacedPod).toHaveBeenCalledWith(
+      'test-namespace',
+    );
     expect(result).toBeDefined();
     expect(result['pod1']).toBeDefined();
     expect(result['pod1'].ms).toBeGreaterThan(50000); // roughly 1 minute in ms
@@ -264,7 +266,7 @@ describe('KubernetesService', () => {
 
     it('should return -1 when startTime is not provided', () => {
       const pod = {
-        status: {}
+        status: {},
       };
 
       const uptime = (service as any).getPodUptimeMS(pod);
