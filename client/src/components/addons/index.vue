@@ -28,6 +28,12 @@
                                 content="beta"
                                 >
                             </v-badge>
+                            <v-badge
+                                v-if="addon.deprecated"
+                                color="red"
+                                content="deprecated"
+                                >
+                            </v-badge>
                         </div>
                         <v-card-title>
                             <a :href="addon.url" target="_blank">{{ addon.displayName }}</a>
@@ -123,6 +129,7 @@ type Addon = {
     }[],
     url: string,
     icon: string,
+    deprecated: boolean,
     beta: boolean,
     enabled: boolean,
 }
