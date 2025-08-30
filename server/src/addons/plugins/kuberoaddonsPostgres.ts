@@ -37,66 +37,80 @@ export class KuberoAddonPostgres extends Plugin implements IPlugin {
       options: ['13', '14', '15', '16', '17', 'latest'], // TODO - load this dynamically
       name: 'spec.postgres.image.tag',
       required: true,
-      default: '16',
-      description: 'Version of the PostgreSQL version to use',
+      default: '17.6',
+      description: 'Version of the PostgreSQL image to use',
     },
-    /*
-    'KuberoAddonPostgres.spec.postgres.settings.superuser.value': {
-      type: 'text',
-      label: 'Postgres Superuser*',
-      name: 'spec.postgres.settings.superuser.value',
-      default: 'postgres',
+    'KuberoAddonPostgres.spec.postgres.replicaCount': {
+      type: 'number',
+      label: 'Replica Count',
+      name: 'spec.postgres.replicaCount',
       required: true,
-      description: 'Username for the "postgres" admin user',
+      default: 1,
+      description: 'Number of PostgreSQL replicas',
     },
-    */
-    'KuberoAddonPostgres.spec.postgres.settings.superuserPassword.value': {
+    'KuberoAddonPostgres.spec.postgres.auth.enablePostgresUser': {
+      type: 'switch',
+      label: 'Enable Postgres User',
+      name: 'spec.postgres.auth.enablePostgresUser',
+      required: false,
+      default: true,
+      description: 'Enable the default postgres user',
+    },
+    'KuberoAddonPostgres.spec.postgres.auth.postgresPassword': {
       type: 'text',
-      label: 'Postgres Superuser Password*',
-      name: 'spec.postgres.settings.superuserPassword.value',
+      label: 'Postgres Password',
+      name: 'spec.postgres.auth.postgresPassword',
+      required: false,
       default: '',
-      required: true,
-      description: 'Password for the "postgres" admin user',
+      description: 'Password for the default postgres user',
     },
-    'KuberoAddonPostgres.spec.postgres.userDatabase.user.value': {
+    'KuberoAddonPostgres.spec.postgres.auth.username': {
       type: 'text',
-      label: 'Username*',
-      name: 'spec.postgres.userDatabase.user.value',
+      label: 'Additional Username',
+      name: 'spec.postgres.auth.username',
+      required: false,
       default: '',
-      required: true,
       description: 'Username for an additional user to create',
     },
-    'KuberoAddonPostgres.spec.postgres.userDatabase.password.value': {
+    'KuberoAddonPostgres.spec.postgres.auth.password': {
       type: 'text',
-      label: 'User Password*',
-      name: 'spec.postgres.userDatabase.password.value',
+      label: 'Additional User Password',
+      name: 'spec.postgres.auth.password',
+      required: false,
       default: '',
-      required: true,
       description: 'Password for an additional user to create',
     },
-    'KuberoAddonPostgres.spec.postgres.userDatabase.name.value': {
+    'KuberoAddonPostgres.spec.postgres.auth.database': {
       type: 'text',
-      label: 'Database*',
-      name: 'spec.postgres.userDatabase.name.value',
-      default: 'postgresql',
-      required: true,
+      label: 'Database Name',
+      name: 'spec.postgres.auth.database',
+      required: false,
+      default: '',
       description: 'Name for a custom database to create',
     },
-    'KuberoAddonPostgres.spec.postgres.storage.className': {
+    'KuberoAddonPostgres.spec.postgres.persistence.storageClass': {
       type: 'select-storageclass',
       label: 'Storage Class',
-      // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
-      name: 'spec.postgres.storage.className',
-      default: 'default',
-      required: true,
+      name: 'spec.postgres.persistence.storageClass',
+      required: false,
+      default: '',
+      description: 'Kubernetes StorageClass to use',
     },
-    'KuberoAddonPostgres.spec.postgres.storage.requestedSize': {
+    'KuberoAddonPostgres.spec.postgres.persistence.size': {
       type: 'text',
-      label: 'Storage Size*',
-      name: 'spec.postgres.storage.requestedSize',
-      default: '1Gi',
-      required: true,
+      label: 'Storage Size',
+      name: 'spec.postgres.persistence.size',
+      required: false,
+      default: '8Gi',
       description: 'Size of the storage',
+    },
+    'KuberoAddonPostgres.spec.postgres.persistence.accessModes[0]': {
+      type: 'text',
+      label: 'Access Modes',
+      name: 'spec.postgres.persistence.accessModes[0]',
+      required: false,
+      default: 'ReadWriteOnce',
+      description: 'Access modes for the persistent volume',
     },
   };
 
@@ -112,41 +126,28 @@ export class KuberoAddonPostgres extends Plugin implements IPlugin {
       spec: {
         postgres: {
           image: {
-            tag: ""
+            tag: "17.6"
+          },
+          replicaCount: 1,
+          auth: {
+            enablePostgresUser: true,
+            postgresPassword: "",
+            username: "",
+            password: "",
+            database: ""
           },
           resources: {},
-          useDeployment: true,
-          settings: {
-            superuser: {
-              value: "postgres"
-            },
-            superuserPassword: {
-              value: "changeme"
-            }
-          },
-          userDatabase: {
-            name: {
-              value: "kubero_database"
-            },
-            user: {
-              value: "kubero_user"
-            },
-            password: {
-              value: "kubero_password"
-            }
-          },
-          storage: {
-            volumeName: "postgres-data",
-            requestedSize: "1Gi",
-            className: null,
+          persistence: {
+            enabled: true,
+            storageClass: "",
+            size: "8Gi",
             accessModes: [
               "ReadWriteOnce"
             ],
-            keepPvc: false
           }
         }
       }
-    },
+    }
   }
 
   protected additionalResourceDefinitions: object = {};
