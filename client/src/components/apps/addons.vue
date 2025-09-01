@@ -47,33 +47,48 @@
 
 
     </v-col>
-  </v-row>
 
-  <v-row>
+    <v-col
+      cols="12"
+      md="3">
     <v-dialog
       v-model="dialog"
       persistent
       max-width="600px"
     >
       <template v-slot:activator="{ props }" v-if="showButtons">
-
-        <v-col cols="12">
-            <v-btn
-            elevation="2"
-            icon
-            small
-            v-bind="props"
-            @click="openNewDialog()"
-            >
-                <v-icon dark >
-                    mdi-plus
-                </v-icon>
-            </v-btn>
-        </v-col>
+        <v-card
+          color="cardBackground"
+          variant="flat"
+          class="d-flex flex-column align-center justify-center add-addon-card"
+          style="height: 198.08px; cursor: pointer; border: 2px dashed rgb(var(--v-theme-primary), 0.25); transition: border-color 0.2s;"
+          v-bind="props"
+          @click="openNewDialog()"
+          
+        >
+          <v-avatar size="57" rounded class="bg-primary-lighten-2 mb-2" style="background-color: rgb(var(--v-theme-secondary));" >
+            <v-icon size="36">mdi-plus</v-icon>
+          </v-avatar>
+          <span class="text-subtitle-1 font-weight-medium mt-2 text-primary">Add Addon</span>
+        </v-card>
       </template>
       <v-card>
+        <v-card-title v-if="mode==='create'">
+          <span class="text-h5">Addon</span>
+        </v-card-title>
+        <v-card-title v-if="mode==='edit'">
+          <v-container class="pb-0">
+            <v-avatar
+              size="50"
+              rounded
+              :image="selectedAddon.icon"
+              :alt="selectedAddon.displayName"
+            ></v-avatar>
+            <span class="text-h5 ml-4">{{ selectedAddon.displayName }}</span>
+          </v-container>
+        </v-card-title>
         <v-card-text>
-          <v-container>
+          <v-container class="pt-0">
             <v-row>
               <v-col cols="12">
                 <v-select
@@ -192,6 +207,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+  </v-col>
   </v-row>
   </v-form>
 </template>
