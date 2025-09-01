@@ -24,6 +24,7 @@ import { KuberoAddonMysql } from './plugins/kuberoaddonsMysql';
 import { KuberoAddonRedis } from './plugins/kuberoaddonsRedis';
 import { KuberoAddonRabbitmq } from './plugins/kuberoaddonsRabbitmq';
 import { KuberoAddonMongodb } from './plugins/kuberoaddonsMongodb';
+import { KuberoAddonMemcached } from './plugins/kuberoaddonsMemcached';
 import { Cluster as CloudnativePG } from './plugins/cloudnativePG';
 import { Elasticsearch } from './plugins/elasticsearch';
 
@@ -41,14 +42,18 @@ export class AddonsService {
     // Load all Custom Resource Definitions to get the list of installed operators
     this.CRDList = await this.kubectl.getCustomresources();
 
-    const kuberoAddonMysql = new KuberoAddonMysql(this.CRDList);
-    this.addonsList.push(kuberoAddonMysql);
-
-    const kuberoAddonRedis = new KuberoAddonRedis(this.CRDList);
-    this.addonsList.push(kuberoAddonRedis);
 
     const kuberoAddonPostgres = new KuberoAddonPostgres(this.CRDList);
     this.addonsList.push(kuberoAddonPostgres);
+
+    const kuberoAddonRedis = new KuberoAddonRedis(this.CRDList);
+    this.addonsList.push(kuberoAddonRedis);
+    
+    const kuberoAddonMysql = new KuberoAddonMysql(this.CRDList);
+    this.addonsList.push(kuberoAddonMysql);
+
+    const kuberoAddonMemcached = new KuberoAddonMemcached(this.CRDList);
+    this.addonsList.push(kuberoAddonMemcached);
 
     const kuberoAddonMongodb = new KuberoAddonMongodb(this.CRDList);
     this.addonsList.push(kuberoAddonMongodb);
