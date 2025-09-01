@@ -72,22 +72,43 @@
         </v-col>
       </template>
       <v-card>
-        <v-card-title>
-          <span class="text-h5">Addon</span>
-        </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col cols="12">
                 <v-select
-                :items="availableAddons"
-                label="Addon"
-                outlined
-                item-title="text"
-                item-value="value"
-                v-if="mode==='create'"
-                v-model="selectedAddon"
-                ></v-select>
+                  :items="availableAddons"
+                  label="Addon"
+                  outlined
+                  item-title="text"
+                  item-value="value"
+                  v-if="mode==='create'"
+                  v-model="selectedAddon"
+                >
+                  <template #item="{ item, props }">
+                    <v-list-item v-bind="props">
+                      <template v-slot:prepend>
+                        <v-avatar
+                          v-if="item.value && item.value.icon"
+                          size="24"
+                          class="mr-2"
+                          :image="item.value.icon"
+                          :alt="item.value.displayName"
+                        ></v-avatar>
+                      </template>
+                    </v-list-item>
+                  </template>
+                  <template #selection="{ item }">
+                    <v-avatar
+                      v-if="item.value && item.value.icon"
+                      size="24"
+                      class="mr-2"
+                      :image="item.value.icon"
+                      :alt="item.value.displayName"
+                    ></v-avatar>
+                    <span>{{ item.value.displayName }}</span>
+                  </template>
+                </v-select>
               </v-col>
 
               <v-col cols="12" v-for="field in selectedAddon.formfields" v-bind:key="field.name">
