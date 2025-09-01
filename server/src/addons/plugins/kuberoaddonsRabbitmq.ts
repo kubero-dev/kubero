@@ -89,7 +89,7 @@ export class KuberoAddonRabbitmq extends Plugin implements IPlugin {
       apiVersion: "application.kubero.dev/v1alpha1",
       kind: "KuberoAddonRabbitmq",
       metadata: {
-        name: "kuberoaddonrabbitmq-sample"
+        name: "rabbitmq"
       },
       spec: {
         rabbitmq: {

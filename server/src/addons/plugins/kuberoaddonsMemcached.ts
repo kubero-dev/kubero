@@ -29,7 +29,7 @@ export class KuberoAddonMemcached extends Plugin implements IPlugin {
       label: 'Memcached Instance Name',
       name: 'metadata.name',
       required: true,
-      default: 'kuberoaddonmemcached-sample',
+      default: 'memcached',
       description: 'The name of the Memcached instance',
     },
     'KuberoAddonMemcached.spec.memcached.image.tag': {

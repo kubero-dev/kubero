@@ -90,15 +90,6 @@
                 ></v-select>
               </v-col>
 
-              <v-col cols="12">
-                <v-text-field
-                label="Instance Name"
-                :rules="baseRule"
-                v-model="selectedAddon.id"
-                outlined
-                ></v-text-field>
-              </v-col>
-
               <v-col cols="12" v-for="field in selectedAddon.formfields" v-bind:key="field.name">
                 <v-select
                     v-if="field.type === 'select-storageclass'"
@@ -165,7 +156,7 @@
           <v-btn
             color="blue darken-1"
             variant="text"
-            @click="dialog = false"
+            @click="dialog = false; selectedAddon = {} as Addon"
           >
             Close
           </v-btn>
@@ -321,7 +312,15 @@ export default defineComponent({
             Object.entries(this.selectedAddon.formfields as FormField[]).forEach(([field, value]) => {
                 const fieldvalue = get(addon.resourceDefinitions, field, value.default)
                 //console.log(field, value, fieldvalue);
-                value.default = fieldvalue;
+
+                if (value.name === 'metadata.name' && typeof value.default === 'string') {
+                    if (fieldvalue.startsWith(this.appname)) {
+                      // remove appname prefix
+                      value.default = fieldvalue.replace(`${this.appname}-`, '');
+                    }
+                } else {
+                   value.default = fieldvalue;
+                }
             });
             //console.log(this.selectedAddon.formfields);
 

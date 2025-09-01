@@ -123,7 +123,7 @@ export class KuberoAddonMongodb extends Plugin implements IPlugin {
       apiVersion: "application.kubero.dev/v1alpha1",
       kind: "KuberoAddonMongodb",
       metadata: {
-        name: "kuberoaddonmongodb-sample"
+        name: "mongodb"
       },
       spec: {
         mongodb: {

@@ -97,7 +97,7 @@ export class KuberoAddonMysql extends Plugin implements IPlugin {
       apiVersion: "application.kubero.dev/v1alpha1",
       kind: "KuberoAddonMysql",
       metadata: {
-        name: "KuberoAddonMysql-sample"
+        name: "mysql"
       },
       spec: {
         mysql: {

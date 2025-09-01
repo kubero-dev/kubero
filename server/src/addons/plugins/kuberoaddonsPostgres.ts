@@ -121,7 +121,7 @@ export class KuberoAddonPostgres extends Plugin implements IPlugin {
       apiVersion: "application.kubero.dev/v1alpha1",
       kind: "KuberoAddonPostgres",
       metadata: {
-        name: "kuberoaddonpostgres-sample"
+        name: "postgres"
       },
       spec: {
         postgres: {
