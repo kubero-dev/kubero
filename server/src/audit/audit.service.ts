@@ -8,8 +8,9 @@ export class AuditService {
   private logmaxbackups: number = 1000;
   private enabled: boolean = true;
   private readonly logger = new Logger(AuditService.name);
+  private prisma = new PrismaClient();
 
-  constructor(private readonly prisma: PrismaClient) {
+  constructor() {
     this.logmaxbackups = process.env.KUBERO_AUDIT_LIMIT
       ? parseInt(process.env.KUBERO_AUDIT_LIMIT)
       : 1000;
@@ -24,7 +25,7 @@ export class AuditService {
     this.init();
   }
 
-  public async init() {
+  public init() {
     if (!this.enabled) {
       return;
     }
@@ -40,7 +41,7 @@ export class AuditService {
       message: 'server started',
     };
 
-    await this.logDelayed(auditEntry, 5000);
+    this.logDelayed(auditEntry, 5000);
   }
 
   public logDelayed(entry: AuditEntry, delay: number = 1000) {
