@@ -252,7 +252,7 @@ describe('ConfigService', () => {
   });
 
   it('should get template enabled', () => {
-    expect(service.getTemplateEnabled()).toBe(false);
+    expect(service.getTemplateEnabled()).toBe(true);
   });
 
   /*
