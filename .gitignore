@@ -21,3 +21,4 @@ db
 .yarn
 .claude/settings.local.json
 *.sqlite
+.DS_Store
