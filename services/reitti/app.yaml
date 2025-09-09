@@ -1,0 +1,210 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: reitti
+    annotations:
+        kubero.dev/template.architecture: '["linux/amd64", "linux/arm64"]'
+        kubero.dev/template.description: "Reitti is a comprehensive personal location tracking and analysis application that helps you understand your movement patterns and significant places. The name 'Reitti' comes from Finnish, meaning 'route' or 'path'."
+        kubero.dev/template.icon: "https://avatars.githubusercontent.com/u/87373896"
+        kubero.dev/template.installation: "Default login credentials are admin:admin. Configure API tokens for mobile app integration and geocoding services for address resolution. Consider adjusting the Photon REGION environment variable to match your main location."
+        kubero.dev/template.links: '["https://www.dedicatedcode.com/projects/reitti/overview/"]'
+        kubero.dev/template.screenshots: '["https://raw.githubusercontent.com/dedicatedcode/reitti/main/.github/screenshots/main.png", "https://raw.githubusercontent.com/dedicatedcode/reitti/main/.github/screenshots/multiple-users.png", "https://raw.githubusercontent.com/dedicatedcode/reitti/main/.github/screenshots/statistics.png"]'
+        kubero.dev/template.source: "https://github.com/dedicatedcode/reitti"
+        kubero.dev/template.categories: '["tracking", "analytics", "privacy", "geolocation"]'
+        kubero.dev/template.title: "Reitti"
+        kubero.dev/template.website: "https://www.dedicatedcode.com/projects/reitti/"
+    labels:
+        manager: kubero
+spec:
+    name: reitti
+    deploymentstrategy: docker
+    envVars:
+        - name: POSTGIS_HOST
+          value: reitti-postgis-postgresql
+        - name: POSTGIS_PORT
+          value: "5432"
+        - name: POSTGIS_DB
+          value: reittidb
+        - name: POSTGIS_USER
+          value: reitti
+        - name: POSTGIS_PASSWORD
+          value: reitti
+        - name: RABBITMQ_HOST
+          value: reitti-rabbitmq
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_USER
+          value: reitti
+        - name: RABBITMQ_PASSWORD
+          value: reitti
+        - name: REDIS_HOST
+          value: reitti-redis-master
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_USERNAME
+          value: ""
+        - name: REDIS_PASSWORD
+          value: reitti
+        - name: PHOTON_BASE_URL
+          value: http://reitti-photon:2322
+        - name: PROCESSING_WAIT_TIME
+          value: "15"
+        - name: SERVER_PORT
+          value: "8080"
+        - name: APP_UID
+          value: "1000"
+        - name: APP_GID
+          value: "1000"
+    extraVolumes: []
+    cronjobs: []
+    addons:
+        - displayName: PostGIS (PostgreSQL with spatial extensions)
+          env: []
+          icon: /img/addons/pgsql.svg
+          id: kubero-operator
+          kind: KuberoPostgresql
+          resourceDefinitions:
+              KuberoPostgresql:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoPostgresql
+                  metadata:
+                      name: reitti-postgis-postgresql
+                  spec:
+                      postgresql:
+                          global:
+                              postgresql:
+                                  auth:
+                                      database: reittidb
+                                      password: reitti
+                                      postgresPassword: reitti
+                                      username: reitti
+                              storageClass: standard
+                          primary:
+                              persistence:
+                                  size: 5Gi
+                          image:
+                              repository: postgis/postgis
+                              tag: "17-3.5-alpine"
+          version:
+              latest: 0.1.8
+        - displayName: RabbitMQ
+          env: []
+          icon: /img/addons/rabbitmq.svg
+          id: kubero-operator
+          kind: KuberoRabbitmq
+          resourceDefinitions:
+              KuberoRabbitmq:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRabbitmq
+                  metadata:
+                      name: reitti-rabbitmq
+                  spec:
+                      rabbitmq:
+                          global:
+                              storageClass: standard
+                          auth:
+                              username: reitti
+                              password: reitti
+                          persistence:
+                              size: 2Gi
+          version:
+              latest: 0.1.8
+        - displayName: Redis
+          env: []
+          icon: /img/addons/redis.svg
+          id: kubero-operator
+          kind: KuberoRedis
+          resourceDefinitions:
+              KuberoRedis:
+                  apiVersion: application.kubero.dev/v1alpha1
+                  kind: KuberoRedis
+                  metadata:
+                      name: reitti-redis
+                  spec:
+                      redis:
+                          architecture: standalone
+                          global:
+                              redis:
+                                  password: reitti
+                              storageClass: standard
+                          master:
+                              persistence:
+                                  size: 1Gi
+          version:
+              latest: 0.1.8
+        - displayName: Photon Geocoding Service
+          env:
+              - name: UPDATE_STRATEGY
+                value: PARALLEL
+              - name: REGION
+                value: de
+          icon: /img/addons/custom.svg
+          id: kubero-operator
+          kind: KuberoCustomResource
+          resourceDefinitions:
+              KuberoCustomResource:
+                  apiVersion: apps/v1
+                  kind: Deployment
+                  metadata:
+                      name: reitti-photon
+                  spec:
+                      replicas: 1
+                      selector:
+                          matchLabels:
+                              app: reitti-photon
+                      template:
+                          metadata:
+                              labels:
+                                  app: reitti-photon
+                          spec:
+                              containers:
+                              - name: photon
+                                image: rtuszik/photon-docker:1.0.0
+                                ports:
+                                - containerPort: 2322
+                                env:
+                                - name: UPDATE_STRATEGY
+                                  value: PARALLEL
+                                - name: REGION
+                                  value: de
+                                volumeMounts:
+                                - name: photon-data
+                                  mountPath: /photon/data
+                              volumes:
+                              - name: photon-data
+                                persistentVolumeClaim:
+                                    claimName: reitti-photon-pvc
+                  ---
+                  apiVersion: v1
+                  kind: Service
+                  metadata:
+                      name: reitti-photon
+                  spec:
+                      selector:
+                          app: reitti-photon
+                      ports:
+                      - port: 2322
+                        targetPort: 2322
+                  ---
+                  apiVersion: v1
+                  kind: PersistentVolumeClaim
+                  metadata:
+                      name: reitti-photon-pvc
+                  spec:
+                      accessModes:
+                      - ReadWriteOnce
+                      resources:
+                          requests:
+                              storage: 10Gi
+                      storageClassName: standard
+          version:
+              latest: 1.0.0
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: "8080"
+        pullPolicy: Always
+        repository: dedicatedcode/reitti
+        tag: "latest"
