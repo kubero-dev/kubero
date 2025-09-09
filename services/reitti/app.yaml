@@ -87,31 +87,9 @@ spec:
                               tag: "17-3.5-alpine"
           version:
               latest: 0.1.8
-        - displayName: RabbitMQ
+        - displayName: Kubero Redis
           env: []
-          icon: /img/addons/rabbitmq.svg
-          id: kubero-operator
-          kind: KuberoRabbitmq
-          resourceDefinitions:
-              KuberoRabbitmq:
-                  apiVersion: application.kubero.dev/v1alpha1
-                  kind: KuberoRabbitmq
-                  metadata:
-                      name: reitti-rabbitmq
-                  spec:
-                      rabbitmq:
-                          global:
-                              storageClass: standard
-                          auth:
-                              username: reitti
-                              password: reitti
-                          persistence:
-                              size: 2Gi
-          version:
-              latest: 0.1.8
-        - displayName: Redis
-          env: []
-          icon: /img/addons/redis.svg
+          icon: /img/addons/Redis.png
           id: kubero-operator
           kind: KuberoRedis
           resourceDefinitions:
@@ -132,6 +110,90 @@ spec:
                                   size: 1Gi
           version:
               latest: 0.1.8
+        - displayName: RabbitMQ Message Queue
+          env: []
+          icon: /img/addons/custom.svg
+          id: kubero-operator
+          kind: KuberoCustomResource
+          resourceDefinitions:
+              Deployment:
+                  apiVersion: apps/v1
+                  kind: Deployment
+                  metadata:
+                      name: reitti-rabbitmq
+                      labels:
+                          app: reitti-rabbitmq
+                  spec:
+                      replicas: 1
+                      selector:
+                          matchLabels:
+                              app: reitti-rabbitmq
+                      template:
+                          metadata:
+                              labels:
+                                  app: reitti-rabbitmq
+                          spec:
+                              containers:
+                              - name: rabbitmq
+                                image: rabbitmq:3-management-alpine
+                                ports:
+                                - containerPort: 5672
+                                  name: amqp
+                                - containerPort: 15672
+                                  name: management
+                                env:
+                                - name: RABBITMQ_DEFAULT_USER
+                                  value: reitti
+                                - name: RABBITMQ_DEFAULT_PASS
+                                  value: reitti
+                                volumeMounts:
+                                - name: rabbitmq-data
+                                  mountPath: /var/lib/rabbitmq
+                                livenessProbe:
+                                  exec:
+                                    command: ["rabbitmq-diagnostics", "check_port_connectivity"]
+                                  initialDelaySeconds: 60
+                                  periodSeconds: 30
+                                  timeoutSeconds: 10
+                                readinessProbe:
+                                  exec:
+                                    command: ["rabbitmq-diagnostics", "check_port_connectivity"] 
+                                  initialDelaySeconds: 20
+                                  periodSeconds: 10
+                                  timeoutSeconds: 5
+                              volumes:
+                              - name: rabbitmq-data
+                                persistentVolumeClaim:
+                                    claimName: reitti-rabbitmq-pvc
+              Service:
+                  apiVersion: v1
+                  kind: Service
+                  metadata:
+                      name: reitti-rabbitmq
+                  spec:
+                      selector:
+                          app: reitti-rabbitmq
+                      ports:
+                      - port: 5672
+                        targetPort: 5672
+                        name: amqp
+                      - port: 15672
+                        targetPort: 15672
+                        name: management
+              PVC:
+                  apiVersion: v1
+                  kind: PersistentVolumeClaim
+                  metadata:
+                      name: reitti-rabbitmq-pvc
+                  spec:
+                      accessModes:
+                      - ReadWriteOnce
+                      resources:
+                          requests:
+                              storage: 2Gi
+                      storageClassName: standard
+          version:
+              latest: 3.0.0
         - displayName: Photon Geocoding Service
           env:
               - name: UPDATE_STRATEGY
