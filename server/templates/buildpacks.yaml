@@ -99,7 +99,10 @@ spec:
           #command: ['tail', '-f', '/dev/null']
           image: "paketobuildpacks/builder-jammy-full:latest" #List of Builders : https://paketo.io/docs/reference/builders-reference/
           imagePullPolicy: Always
-          resources: {}
+          resources:
+            limits:
+              cpu: 2
+              memory: 2Gi
           env:
           - name: CNB_PLATFORM_API
             value: "0.13"
