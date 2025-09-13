@@ -52,7 +52,7 @@
     "@prisma/client": "^6.9.0",
     "@types/bcrypt": "^5.0.2",
     "@willsoto/nestjs-prometheus": "^6.0.2",
-    "axios": "^1.7.9",
+    "axios": "^1.12.0",
     "bcrypt": "^5.1.1",
     "bitbucket": "^2.12.0",
     "cross-fetch": "^4.1.0",
