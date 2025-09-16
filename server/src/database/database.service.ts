@@ -271,7 +271,7 @@ export class DatabaseService {
       }
 
       const userID = crypto.randomUUID();
-      const role = process.env.KUBERO_DEFAULT_USER_ROLE || 'guest';
+      const role = 'admin'; //process.env.DEFAULT_USER_ROLE || 'admin'; //should be 'admin' for legacy users
       const userGroups = ['everyone'];
       try {
         await prisma.user.create({
