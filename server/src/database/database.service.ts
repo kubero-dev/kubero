@@ -126,12 +126,20 @@ export class DatabaseService {
     const userGroups = ['everyone', 'admin'];
 
     try {
-      // Generiere ein zufälliges Passwort
-      const plainPassword = crypto
-        .randomBytes(25)
-        .toString('base64')
-        .slice(0, 19);
-      // Erstelle einen bcrypt-Hash
+      let plainPassword: string;
+
+      if (!process.env.KUBERO_ADMIN_PASSWORD && process.env.KUBERO_ADMIN_PASSWORD !== '') {
+        // Generate a random password
+        plainPassword = crypto
+          .randomBytes(25)
+          .toString('base64')
+          .slice(0, 19);
+
+      } else {
+        plainPassword = process.env.KUBERO_ADMIN_PASSWORD;
+      }
+
+      // create bcrypt hash
       const passwordHash = await bcrypt.hash(plainPassword, 10);
       console.log('\n\n\n', 'Admin account created since no user exists yet');
       console.log('  username: ', adminUser);
