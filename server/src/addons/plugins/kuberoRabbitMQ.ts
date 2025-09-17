@@ -5,7 +5,7 @@ import { IPlugin, IPluginFormFields  } from './plugin.interface';
 export class KuberoRabbitMQ extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'RabbitMQ (Bitnami)';
-  public icon = '/img/addons/RabbitMQ.svg';
+  public icon = '/img/addons/rabbitmq.svg';
   public install: string = '';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/kubero-operator';

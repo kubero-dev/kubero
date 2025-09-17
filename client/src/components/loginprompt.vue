@@ -27,7 +27,7 @@
             class="mt-5"
         >
             User: <b>demo/reader</b><br>
-            Pass: <b>123456</b>
+            Pass: <b>kubero</b>
         </v-alert>
         <div v-if="authMethods.local" class="py-5">
             <v-alert
@@ -126,7 +126,7 @@ export default defineComponent({
             const demoDomain = demoDomains.includes(window.location.hostname)
             if (demoDomain) {
                 this.username = 'demo';
-                this.password = '123456';
+                this.password = 'kubero';
             }
             return demoDomain;
         }
