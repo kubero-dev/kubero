@@ -17,8 +17,10 @@ Kubero [pronounced: Kube Hero] is a self-hosted PaaS (Platform as a Service) tha
 <div align="center">
   <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/pipeline-list-a693ac0c7dc36ec9fa42100e8908577c.png" alt="Create App Screenshot 1" width="220" style="margin:8px; border-radius:8px;" /></a>
   <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/app-overview-56c193140fd4f5acd9d8d242da15129b.png" alt="Create App Screenshot 2" width="220" style="margin:8px; border-radius:8px;" /></a>
-  <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/app-metrics-762b0a7f53e9b3f926bc1c2cc8e33fd8.png" alt="Create App Screenshot 3" width="220" style="margin:8px; border-radius:8px;" /></a>
   <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/app-vulnerabilities-49af1cf7933071f3cc680ab4737249e2.png" alt="Create App Screenshot 4" width="220" style="margin:8px; border-radius:8px;" /></a>
+  <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/app-metrics-762b0a7f53e9b3f926bc1c2cc8e33fd8.png" alt="Create App Screenshot 3" width="220" style="margin:8px; border-radius:8px;" /></a>
+  <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/pipeline-overview-4de7dcef62bd231f24946ee41f2068a8.png" alt="Create App Screenshot 3" width="220" style="margin:8px; border-radius:8px;" /></a>
+  <a href="https://www.kubero.dev/docs/screenshots" target="_blank"><img src="https://www.kubero.dev/assets/images/addons-overview-ce4352793df173c1f4b82e620914952e.png" alt="Create App Screenshot 3" width="220" style="margin:8px; border-radius:8px;" /></a>
 </div>
 
 More [Screenshots](https://www.kubero.dev/docs/screenshots) and a full video on
