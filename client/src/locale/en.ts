@@ -57,6 +57,8 @@ const messages = {
             fqdnDomain: 'FQDN Domain',
             teamAccess: 'Team Access',
             enableBuilds: 'Enable Pipeline to build from Source',
+            cluster: 'Cluster',
+            clusterContext: 'Cluster Context',
           },
           title:{
             continuousDeployment: 'Continuous Deployment',
