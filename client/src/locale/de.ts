@@ -113,7 +113,6 @@ const messages = {
         enableBuilds: 'Pipeline zum Bauen aus Quellcode aktivieren',
         cluster: 'Cluster',
         clusterContext: 'Cluster Kontext',
-        baseDomain: 'Basis-Domain',
       },
       title:{
         continuousDeployment: 'Kontinuierliches Deployment',
