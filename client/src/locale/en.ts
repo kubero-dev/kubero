@@ -134,7 +134,7 @@ const messages = {
           runpack: 'Runpack',
           buildcommand: 'Build Command',
           runcommand: 'Run Command',
-          containerImage: 'Conmtainer Image',
+          containerImage: 'Container Image',
           tag: 'Tag',
           command: 'Command',
           basicAuthEnabled: 'Enable Basic Auth',
