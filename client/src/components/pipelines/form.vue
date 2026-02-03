@@ -631,6 +631,7 @@ export default defineComponent({
         gogs: false,
         docker: true
       },
+      repositoriesListLoaded: false, // flag to indicate if repositoriesList has been loaded
       git: {
         keys: {},
         repository: {},
@@ -721,11 +722,12 @@ export default defineComponent({
     },
     mounted() {
       this.getContextList();
-      this.listRepositories();
+      this.listRepositories().then(() => {
+        this.loadRepository();
+        this.loadPipeline();
+      });
       this.loadDefaultregistry();
       this.listBuildpacks();
-      this.loadRepository();
-      this.loadPipeline();
     },
     components: {
         Breadcrumbs,
@@ -747,10 +749,18 @@ export default defineComponent({
           }
         });
       },
-      listRepositories() {
-        axios.get('/api/repo/providers').then(response => {
-          this.repositoriesList = response.data
-        });
+      async listRepositories() {
+        const response = await axios.get('/api/repo/providers');
+        this.repositoriesList = response.data
+        this.repositoriesListLoaded = true;
+        // Set default repotab to first enabled provider (not github by default)
+        const providers = ['github', 'gitea', 'gitlab', 'gogs', 'bitbucket'];
+        for (const provider of providers) {
+          if (this.repositoriesList[provider as keyof typeof this.repositoriesList] === true) {
+            this.repotab = provider;
+            break;
+          }
+        }
       },
       listBuildpacks() {
         axios.get('/api/config/runpacks').then(response => {
@@ -827,6 +837,10 @@ export default defineComponent({
       },
 
       loadRepository() {
+        // Only load repositories if the selected provider is enabled
+        if (!this.repositoriesList[this.repotab as keyof typeof this.repositoriesList]) {
+          return;
+        }
         axios.get(`/api/repo/${this.repotab}/repositories`)
         .then(response => {
           this.gitrepoItems = response.data;

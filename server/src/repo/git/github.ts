@@ -17,11 +17,14 @@ import { RequestError } from '@octokit/types';
 
 export class GithubApi extends Repo {
   private octokit: any;
+  private token: string;
 
   constructor(baseUrl: string, token: string) {
     super('github');
 
-    if (baseUrl === '') {
+    this.token = token;
+
+    if (!baseUrl || baseUrl === '') {
       baseUrl = 'https://api.github.com';
     }
 
@@ -29,6 +32,10 @@ export class GithubApi extends Repo {
       auth: token,
       baseUrl: baseUrl,
     });
+  }
+
+  private isConfigured(): boolean {
+    return !!this.token && this.token !== '';
   }
 
   protected async getRepository(gitrepo: string): Promise<IRepository> {
@@ -42,6 +49,11 @@ export class GithubApi extends Repo {
         push: false,
       },
     };
+
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping getRepository');
+      return ret;
+    }
 
     const parsed = gitUrlParse(gitrepo);
     const repo = parsed.name;
@@ -92,6 +104,10 @@ export class GithubApi extends Repo {
   }
 
   public async getRepositories() {
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping getRepositories');
+      return [];
+    }
     const res = await this.octokit.request('GET /user/repos', {});
     return res.data;
   }
@@ -308,6 +324,10 @@ export class GithubApi extends Repo {
 
   public async listRepos(): Promise<string[]> {
     const ret: string[] = [];
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping listRepos');
+      return ret;
+    }
     try {
       const repos = await this.octokit.request('GET /user/repos', {
         visibility: 'all',
@@ -325,6 +345,10 @@ export class GithubApi extends Repo {
 
   public async getBranches(gitrepo: string): Promise<string[]> {
     const ret: string[] = [];
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping getBranches');
+      return ret;
+    }
 
     const { repo, owner } = this.parseRepo(gitrepo);
 
@@ -348,6 +372,10 @@ export class GithubApi extends Repo {
 
   public async getReferences(gitrepo: string): Promise<string[]> {
     const ret: string[] = [];
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping getReferences');
+      return ret;
+    }
 
     const { repo, owner } = this.parseRepo(gitrepo);
 
@@ -401,6 +429,10 @@ export class GithubApi extends Repo {
 
   public async getPullrequests(gitrepo: string): Promise<IPullrequest[]> {
     const ret: IPullrequest[] = [];
+    if (!this.isConfigured()) {
+      this.logger.debug('GitHub API is not configured, skipping getPullrequests');
+      return ret;
+    }
 
     const { repo, owner } = this.parseRepo(gitrepo);
 
