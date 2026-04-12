@@ -2289,11 +2289,11 @@ export default defineComponent({
     async updateApp() {
       this.loading = true;
       try {
-        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+        if (this.pipelineData.git?.repository && this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
           this.gitrepo = this.pipelineData.git.repository;
         }
 
-        if (this.gitrepo.admin == false) {
+        if (this.gitrepo.admin == false && this.gitrepo.ssh_url) {
           //this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(':', '/').replace('git@', 'https://');
           // eslint-disable-next-line no-useless-escape
           const regex =
@@ -2373,12 +2373,12 @@ export default defineComponent({
           healthcheck: this.healthcheck,
         };
 
-        if (typeof postdata.image.run.securityContext.runAsUser === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsUser === "string") {
           postdata.image.run.securityContext.runAsUser = parseInt(
             postdata.image.run.securityContext.runAsUser
           );
         }
-        if (typeof postdata.image.run.securityContext.runAsGroup === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsGroup === "string") {
           postdata.image.run.securityContext.runAsGroup = parseInt(
             postdata.image.run.securityContext.runAsGroup
           );
@@ -2409,11 +2409,11 @@ export default defineComponent({
           }
         }
 
-        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+        if (this.pipelineData.git?.repository && this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
           this.gitrepo = this.pipelineData.git.repository;
         }
 
-        if (this.gitrepo.admin == false) {
+        if (this.gitrepo.admin == false && this.gitrepo.ssh_url) {
           // eslint-disable-next-line no-useless-escape
           const regex =
             /(git@|ssh:|http[s]?:\/\/)([\w.]+)(:|\/)([\w/\-~]+)(\.git)?/;
@@ -2491,12 +2491,12 @@ export default defineComponent({
           postdata.image.run = {} as BuildpackStepConfig;
         }
 
-        if (typeof postdata.image.run.securityContext.runAsUser === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsUser === "string") {
           postdata.image.run.securityContext.runAsUser = parseInt(
             postdata.image.run.securityContext.runAsUser
           );
         }
-        if (typeof postdata.image.run.securityContext.runAsGroup === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsGroup === "string") {
           postdata.image.run.securityContext.runAsGroup = parseInt(
             postdata.image.run.securityContext.runAsGroup
           );
