@@ -1824,14 +1824,8 @@ export default defineComponent({
       this.sslIndex.splice(index, 1);
     },
     whiteListDomains(domainsList: string[]) {
-      for (let i = 0; i < domainsList.length; i++) {
-        this.ingress.hosts.forEach((host) => {
-          if (host.host == domainsList[i]) {
-            domainsList.splice(i, 1);
-          }
-        });
-      }
-      return domainsList;
+      const ownHosts = new Set(this.ingress.hosts.map((h) => h.host));
+      return domainsList.filter((d) => !ownHosts.has(d));
     },
     async getDomains() {
       return axios.get("/api/kubernetes/domains").then((response) => {
@@ -2001,7 +1995,7 @@ export default defineComponent({
         }
 
         if (this.app != "new") {
-          this.loadApp();
+          await this.loadApp();
         }
       });
     },
@@ -2091,9 +2085,9 @@ export default defineComponent({
           console.log(error);
         });
     },
-    loadApp() {
+    async loadApp() {
       if (this.app !== "new") {
-        axios
+        return axios
           .get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`)
           .then((response) => {
             this.resourceVersion = response.data.metadata.resourceVersion;
@@ -2200,8 +2194,6 @@ export default defineComponent({
               this.buildpack.run.readOnlyAppStorage = true;
             }
 
-            // remove loaded domain from taken domains
-            this.takenDomains = this.whiteListDomains(this.takenDomains);
           });
       }
     },
