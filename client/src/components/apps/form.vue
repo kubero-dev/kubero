@@ -1920,7 +1920,7 @@ export default defineComponent({
       this.ingress.hosts[0].host = name + "." + this.pipelineData.domain;
     },
     async loadPipelineAndApp() {
-      return axios.get("/api/pipelines/" + this.pipeline).then((response) => {
+      return axios.get("/api/pipelines/" + this.pipeline).then(async (response) => {
         this.pipelineData = response.data;
 
         if (this.pipelineData.dockerimage) {
