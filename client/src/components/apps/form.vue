@@ -2183,7 +2183,7 @@ export default defineComponent({
             // iterate over ingress hosts and fill sslIndex
             for (let i = 0; i < this.ingress.hosts.length; i++) {
               this.sslIndex.push(
-                this.ingress.tls[0].hosts.includes(this.ingress.hosts[i].host)
+                this.ingress.tls?.[0]?.hosts.includes(this.ingress.hosts[i].host) ?? false
               );
             }
 
@@ -2200,7 +2200,7 @@ export default defineComponent({
       }
     },
     setSSL() {
-      if (this.ingress.tls?.length == 0) {
+      if (!this.ingress.tls || this.ingress.tls.length == 0) {
         this.ingress.tls = [{ hosts: [], secretName: this.name + "-tls" }];
       }
       this.ingress.tls[0].hosts = [];
