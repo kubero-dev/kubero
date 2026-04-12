@@ -1793,8 +1793,10 @@ export default defineComponent({
         this.loadPodsizeList(),
         this.loadBuildpacks(),
         this.loadClusterIssuers(),
-        this.getDomains(),
       ]);
+      // getDomains must run after loadPipelineAndApp (which awaits loadApp) so
+      // that this.ingress.hosts is populated before whiteListDomains() is called.
+      await this.getDomains();
 
       if (this.$route.query.template) {
         const template = this.$route.query.template as string;
