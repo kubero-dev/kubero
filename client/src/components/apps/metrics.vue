@@ -103,6 +103,7 @@ import { defineComponent } from 'vue'
 import VueApexCharts from "vue3-apexcharts";
 import { useKuberoStore } from '../../stores/kubero'
 import { mapState } from 'pinia'
+import type { ApexOptions } from 'apexcharts'
 
 import axios from "axios";
 import Alerts from './alerts.vue';
@@ -137,7 +138,7 @@ export default defineComponent({
         },
         legend: {
             show: false,
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -154,7 +155,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -192,14 +193,14 @@ export default defineComponent({
             text: 'MiB',
           },
         }
-      },
+      } as ApexOptions,
       LoadOptions: {
         fill: {
           opacity: 0.5,
           type: 'solid',
         },
         legend: {
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -216,7 +217,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -254,7 +255,7 @@ export default defineComponent({
             text: 'load',
           },
         }
-      },
+      } as ApexOptions,
       cpuOptions: {
         fill: {
           opacity: 0.5,
@@ -262,7 +263,7 @@ export default defineComponent({
         },
         legend: {
             show: false,
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -279,7 +280,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -317,14 +318,14 @@ export default defineComponent({
             text: 'millicores',
           },
         }
-      },
+      } as ApexOptions,
       ResponsetimeOptions: {
         fill: {
           opacity: 0.2,
           type: 'solid',
         },
         legend: {
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -342,7 +343,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -380,14 +381,14 @@ export default defineComponent({
             text: 'miliseconds',
           },
         }
-      },
+      } as ApexOptions,
       httpStusCodeOptions: {
         fill: {
           opacity: 0.5,
           type: 'solid',
         },
         legend: {
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -405,7 +406,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -443,14 +444,14 @@ export default defineComponent({
             text: 'Req/sec',
           },
         }
-      },
+      } as ApexOptions,
       httpStusCodeIncreaseOptions: {
         fill: {
           opacity: 0.5,
           type: 'solid',
         },
         legend: {
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -468,7 +469,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -506,14 +507,14 @@ export default defineComponent({
             text: 'Req',
           },
         }
-      },
+      } as ApexOptions,
       httpResponseTrafficOptions: {
         fill: {
           opacity: 0.5,
           type: 'solid',
         },
         legend: {
-            position: 'top',
+            position: 'top' as const,
         },
         colors: colors,
         chart: {
@@ -531,7 +532,7 @@ export default defineComponent({
           }
         },
         stroke: {
-          curve: 'stepline',
+          curve: 'stepline' as const,
           width: 1
         },
         dataLabels: {
@@ -569,7 +570,7 @@ export default defineComponent({
             text: 'KB',
           },
         }
-      },
+      } as ApexOptions,
       cpuData: [] as {
             name: string,
             data: number[][],

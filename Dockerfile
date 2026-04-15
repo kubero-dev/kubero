@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:24-alpine AS build
 ENV NODE_ENV=development
 
 WORKDIR /build
@@ -17,7 +17,7 @@ RUN cd /build/client && \
 RUN cd /build/client && \
     yarn build 
 
-FROM node:22-alpine AS release
+FROM node:24-alpine AS release
 ARG VERSION=unknown
 
 LABEL maintainer='www.kubero.dev'
