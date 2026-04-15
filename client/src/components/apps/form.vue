@@ -1793,8 +1793,10 @@ export default defineComponent({
         this.loadPodsizeList(),
         this.loadBuildpacks(),
         this.loadClusterIssuers(),
-        this.getDomains(),
       ]);
+      // getDomains must run after loadPipelineAndApp (which awaits loadApp) so
+      // that this.ingress.hosts is populated before whiteListDomains() is called.
+      await this.getDomains();
 
       if (this.$route.query.template) {
         const template = this.$route.query.template as string;
@@ -1824,14 +1826,8 @@ export default defineComponent({
       this.sslIndex.splice(index, 1);
     },
     whiteListDomains(domainsList: string[]) {
-      for (let i = 0; i < domainsList.length; i++) {
-        this.ingress.hosts.forEach((host) => {
-          if (host.host == domainsList[i]) {
-            domainsList.splice(i, 1);
-          }
-        });
-      }
-      return domainsList;
+      const ownHosts = new Set(this.ingress.hosts.map((h) => h.host));
+      return domainsList.filter((d) => !ownHosts.has(d));
     },
     async getDomains() {
       return axios.get("/api/kubernetes/domains").then((response) => {
@@ -1926,7 +1922,7 @@ export default defineComponent({
       this.ingress.hosts[0].host = name + "." + this.pipelineData.domain;
     },
     async loadPipelineAndApp() {
-      return axios.get("/api/pipelines/" + this.pipeline).then((response) => {
+      return axios.get("/api/pipelines/" + this.pipeline).then(async (response) => {
         this.pipelineData = response.data;
 
         if (this.pipelineData.dockerimage) {
@@ -2001,7 +1997,7 @@ export default defineComponent({
         }
 
         if (this.app != "new") {
-          this.loadApp();
+          await this.loadApp();
         }
       });
     },
@@ -2091,9 +2087,9 @@ export default defineComponent({
           console.log(error);
         });
     },
-    loadApp() {
+    async loadApp() {
       if (this.app !== "new") {
-        axios
+        return axios
           .get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}`)
           .then((response) => {
             this.resourceVersion = response.data.metadata.resourceVersion;
@@ -2187,7 +2183,7 @@ export default defineComponent({
             // iterate over ingress hosts and fill sslIndex
             for (let i = 0; i < this.ingress.hosts.length; i++) {
               this.sslIndex.push(
-                this.ingress.tls[0].hosts.includes(this.ingress.hosts[i].host)
+                this.ingress.tls?.[0]?.hosts.includes(this.ingress.hosts[i].host) ?? false
               );
             }
 
@@ -2200,13 +2196,11 @@ export default defineComponent({
               this.buildpack.run.readOnlyAppStorage = true;
             }
 
-            // remove loaded domain from taken domains
-            this.takenDomains = this.whiteListDomains(this.takenDomains);
           });
       }
     },
     setSSL() {
-      if (this.ingress.tls?.length == 0) {
+      if (!this.ingress.tls || this.ingress.tls.length == 0) {
         this.ingress.tls = [{ hosts: [], secretName: this.name + "-tls" }];
       }
       this.ingress.tls[0].hosts = [];
@@ -2297,11 +2291,11 @@ export default defineComponent({
     async updateApp() {
       this.loading = true;
       try {
-        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+        if (this.pipelineData.git?.repository && this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
           this.gitrepo = this.pipelineData.git.repository;
         }
 
-        if (this.gitrepo.admin == false) {
+        if (this.gitrepo.admin == false && this.gitrepo.ssh_url) {
           //this.gitrepo.clone_url = this.gitrepo.ssh_url.replace(':', '/').replace('git@', 'https://');
           // eslint-disable-next-line no-useless-escape
           const regex =
@@ -2381,12 +2375,12 @@ export default defineComponent({
           healthcheck: this.healthcheck,
         };
 
-        if (typeof postdata.image.run.securityContext.runAsUser === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsUser === "string") {
           postdata.image.run.securityContext.runAsUser = parseInt(
             postdata.image.run.securityContext.runAsUser
           );
         }
-        if (typeof postdata.image.run.securityContext.runAsGroup === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsGroup === "string") {
           postdata.image.run.securityContext.runAsGroup = parseInt(
             postdata.image.run.securityContext.runAsGroup
           );
@@ -2417,11 +2411,11 @@ export default defineComponent({
           }
         }
 
-        if (this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
+        if (this.pipelineData.git?.repository && this.gitrepo.ssh_url == this.pipelineData.git.repository.ssh_url) {
           this.gitrepo = this.pipelineData.git.repository;
         }
 
-        if (this.gitrepo.admin == false) {
+        if (this.gitrepo.admin == false && this.gitrepo.ssh_url) {
           // eslint-disable-next-line no-useless-escape
           const regex =
             /(git@|ssh:|http[s]?:\/\/)([\w.]+)(:|\/)([\w/\-~]+)(\.git)?/;
@@ -2499,12 +2493,12 @@ export default defineComponent({
           postdata.image.run = {} as BuildpackStepConfig;
         }
 
-        if (typeof postdata.image.run.securityContext.runAsUser === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsUser === "string") {
           postdata.image.run.securityContext.runAsUser = parseInt(
             postdata.image.run.securityContext.runAsUser
           );
         }
-        if (typeof postdata.image.run.securityContext.runAsGroup === "string") {
+        if (postdata.image.run?.securityContext && typeof postdata.image.run.securityContext.runAsGroup === "string") {
           postdata.image.run.securityContext.runAsGroup = parseInt(
             postdata.image.run.securityContext.runAsGroup
           );
