@@ -22,6 +22,12 @@ export class GitlabApi extends Repo {
     },
   } as Options;
 
+  // Helper method to properly encode project path for nested groups
+  private encodeProjectPath(owner: string, repo: string): string {
+    const fullPath = `${owner}/${repo}`;
+    return fullPath.split('/').map(encodeURIComponent).join('%2F');
+  }
+
   constructor(baseURL: string, token: string) {
     super('gitlab');
     const host = baseURL || 'https://gitlab.com';
@@ -52,11 +58,18 @@ export class GitlabApi extends Repo {
     };
 
     const parsed = gitUrlParse(gitrepo);
-    const repo = parsed.name;
-    const owner = parsed.owner;
+
+    // Extract full project path to support nested groups/subgroups
+    // For gitlab.com/owner/subgroup/repo.git -> owner/subgroup/repo
+    const projectPath = parsed.pathname
+      .replace(/^\//, '')      // Remove leading slash
+      .replace(/\.git$/, '');  // Remove .git suffix
+
+    // URL-encode each path segment separately, then join with %2F
+    const encodedPath = projectPath.split('/').map(encodeURIComponent).join('%2F');
 
     const res: any = await this.gitlab
-      .get(`projects/${owner}%2F${repo}`)
+      .get(`projects/${encodedPath}`)
       .catch((error: any) => {
         console.log(error);
         return ret;
@@ -72,15 +85,21 @@ export class GitlabApi extends Repo {
     res.permissions.admin = true;
     res.permissions.push = true;
 
+    // Extract owner path (everything except the last segment)
+    // For owner/subgroup/repo -> owner/subgroup
+    const pathSegments = res.path_with_namespace.split('/');
+    const repoName = pathSegments.pop(); // Remove and get last segment
+    const ownerPath = pathSegments.join('/'); // Join remaining segments
+
     ret = {
       status: 200,
       statusText: 'found',
       data: {
         id: res.id,
         node_id: res.path_with_namespace,
-        name: res.path,
+        name: repoName || res.path,
         description: res.description,
-        owner: res.namespace.path,
+        owner: ownerPath || res.namespace.path,
         private: res.private,
         ssh_url: res.ssh_url_to_repo,
         language: res.language,
@@ -114,8 +133,9 @@ export class GitlabApi extends Repo {
       },
     };
 
+    const encodedPath = this.encodeProjectPath(owner, repo);
     const webhooksList: any = await this.gitlab
-      .get(`projects/${owner}%2F${repo}/hooks`)
+      .get(`projects/${encodedPath}/hooks`)
       .catch((error: any) => {
         console.log(error);
         return ret;
@@ -142,7 +162,7 @@ export class GitlabApi extends Repo {
     // create the webhook since it does not exist
     try {
       const res: any = await this.gitlab.post(
-        `projects/${owner}%2F${repo}/hooks`,
+        `projects/${encodedPath}/hooks`,
         JSON.stringify({
           url: url,
           token: secret,
@@ -193,8 +213,9 @@ export class GitlabApi extends Repo {
     };
     try {
       // https://docs.gitlab.com/ee/api/deploy_keys.html#add-deploy-key
+      const encodedPath = this.encodeProjectPath(owner, repo);
       const res: any = await this.gitlab.post(
-        `projects/${owner}%2F${repo}/deploy_keys`,
+        `projects/${encodedPath}/deploy_keys`,
         JSON.stringify({
           title: title,
           key: keyPair.pubKey,
@@ -315,10 +336,11 @@ export class GitlabApi extends Repo {
     const ret: string[] = [];
 
     const { repo, owner } = this.parseRepo(gitrepo);
+    const encodedPath = this.encodeProjectPath(owner, repo);
 
     try {
       const branches: any = await this.gitlab
-        .get(`projects/${owner}%2F${repo}/repository/branches`)
+        .get(`projects/${encodedPath}/repository/branches`)
         .catch((error: any) => {
           console.log(error);
           return ret;
@@ -338,10 +360,11 @@ export class GitlabApi extends Repo {
     const ret: string[] = [];
 
     const { repo, owner } = this.parseRepo(gitrepo);
+    const encodedPath = this.encodeProjectPath(owner, repo);
 
     try {
       const branches: any = await this.gitlab
-        .get(`projects/${owner}%2F${repo}/repository/branches`)
+        .get(`projects/${encodedPath}/repository/branches`)
         .catch((error: any) => {
           console.log(error);
           return ret;
@@ -356,7 +379,7 @@ export class GitlabApi extends Repo {
 
     try {
       const tags: any = await this.gitlab
-        .get(`projects/${owner}%2F${repo}/repository/tags`)
+        .get(`projects/${encodedPath}/repository/tags`)
         .catch((error: any) => {
           console.log(error);
           return ret;
@@ -371,7 +394,7 @@ export class GitlabApi extends Repo {
 
     try {
       const commits: any = await this.gitlab
-        .get(`projects/${owner}%2F${repo}/repository/commits`)
+        .get(`projects/${encodedPath}/repository/commits`)
         .catch((error: any) => {
           console.log(error);
           return ret;
