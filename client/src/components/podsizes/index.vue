@@ -128,7 +128,7 @@
         <v-card-title>{{ $t('podsizes.actions.create') }}</v-card-title>
         <v-card-text>
           <v-text-field v-model="newPodsize.name" :label="$t('podsizes.form.name')"></v-text-field>
-          <v-text-field v-model="newPodsize.description" :label="$t('podsizes.form.name')"></v-text-field>
+          <v-text-field v-model="newPodsize.description" :label="$t('podsizes.form.description')"></v-text-field>
           <v-text-field v-model="newPodsize.resources.requests.cpu" :label="$t('podsizes.form.cpuRequest')"></v-text-field>
           <v-text-field v-model="newPodsize.resources.requests.memory" :label="$t('podsizes.form.memoryRequest')"></v-text-field>
           <v-text-field v-model="newPodsize.resources.limits.cpu" :label="$t('podsizes.form.cpuLimit')"></v-text-field>
