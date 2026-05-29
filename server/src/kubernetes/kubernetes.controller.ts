@@ -14,13 +14,16 @@ import {
 } from './dto/kubernetes.dto';
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/kubernetes', version: '1' })
 export class KubernetesController {
   constructor(private readonly kubernetesService: KubernetesService) {}
 
   @Get('events')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -41,7 +44,8 @@ export class KubernetesController {
   }
 
   @Get('storageclasses')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -59,7 +63,8 @@ export class KubernetesController {
   }
 
   @Get('domains')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -79,7 +84,8 @@ export class KubernetesController {
   }
 
   @Get('/contexts')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
     type: OKDTO,
