@@ -325,6 +325,13 @@ const messages = {
         name: 'Roles',
         search: 'Search for a Role',
         permission: 'Permission',
+        builtIn: {
+          admin: 'Administrator — full access to apps, pipelines, accounts, and settings',
+          member: 'Member — manage apps and pipelines; read account info',
+          developer: 'Developer — deploy and operate apps; no account or settings access',
+          viewer: 'Viewer — read-only access to apps, pipelines, and logs',
+          guest: 'Guest — legacy read-only role (prefer Viewer for new users)',
+        },
         actions: {
           create: 'Create Role',
           edit: 'Edit Role',
