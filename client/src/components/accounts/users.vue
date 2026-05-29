@@ -23,7 +23,7 @@
       </template>
       <template v-slot:[`item.isActive`]="{ item }">
         <v-chip :color="item.isActive ? 'green' : 'red'" dark>
-          {{ item.isActive ? 'Aktive' : 'Disabled' }}
+          {{ item.isActive ? 'Active' : 'Disabled' }}
         </v-chip>
       </template>
       <template v-slot:[`item.name`]="{ item }">
@@ -149,7 +149,7 @@
           <v-text-field v-model="editedUser.firstName" label="First Name"></v-text-field>
           <v-text-field v-model="editedUser.lastName" label="Last Name"></v-text-field>
           <v-text-field v-model="editedUser.email" label="E-Mail"></v-text-field>
-          <v-switch v-model="editedUser.isActive" label="Aktive"></v-switch>
+          <v-switch v-model="editedUser.isActive" label="Active"></v-switch>
           <v-select
             v-model="editedUser.role"
             :items="roles"
@@ -190,7 +190,7 @@
           <v-text-field v-model="newUser.lastName" label="Last Name"></v-text-field>
           <v-text-field v-model="newUser.email" label="E-Mail"></v-text-field>
           <v-text-field v-model="newUser.password" label="Password"></v-text-field>
-          <v-switch v-model="newUser.isActive" label="Aktive"></v-switch>
+          <v-switch v-model="newUser.isActive" label="Active"></v-switch>
           <v-select
             v-model="newUser.role"
             :items="roles"
