@@ -13,7 +13,7 @@
     "@mdi/font": "7.0.96",
     "@wdns/vue-code-block": "^2.3.3",
     "apexcharts": "^3.49.0",
-    "axios": "^1.7.4",
+    "axios": "^1.13.5",
     "chart.js": "^4.4.1",
     "core-js": "^3.29.0",
     "jwt-decode": "^4.0.0",
