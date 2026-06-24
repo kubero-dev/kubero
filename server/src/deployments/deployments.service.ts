@@ -35,7 +35,7 @@ export class DeploymentsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
-    userGroups: string[]
+    userGroups: string[],
   ): Promise<any> {
     const namespace = pipelineName + '-' + phaseName;
     const jobs = (await this.kubectl.getJobs(namespace)) as V1JobList;

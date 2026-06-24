@@ -50,9 +50,7 @@ export class PipelinesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Get all pipelines' })
-  async getPipelines(
-    @Request() req: any
-  ) {
+  async getPipelines(@Request() req: any) {
     return this.pipelinesService.listPipelines(req.user.userGroups);
   }
 
@@ -199,8 +197,11 @@ export class PipelinesController {
   @ApiOperation({ summary: 'Get all apps for a pipeline' })
   async getPipelineApps(
     @Param('pipeline') pipeline: string,
-    @Request() req: any
+    @Request() req: any,
   ) {
-    return this.pipelinesService.getPipelineWithApps(pipeline, req.user.userGroups);
+    return this.pipelinesService.getPipelineWithApps(
+      pipeline,
+      req.user.userGroups,
+    );
   }
 }

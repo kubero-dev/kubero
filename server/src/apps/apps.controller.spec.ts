@@ -214,7 +214,11 @@ describe('AppsController', () => {
         req,
       );
       expect(result).toEqual(mockApp);
-      expect(mockAppsService.createApp).toHaveBeenCalledWith(mockApp, mockUser, mockUserGroups);
+      expect(mockAppsService.createApp).toHaveBeenCalledWith(
+        mockApp,
+        mockUser,
+        mockUserGroups,
+      );
     });
   });
 

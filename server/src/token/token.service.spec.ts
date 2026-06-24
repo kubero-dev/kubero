@@ -47,20 +47,30 @@ describe('TokenService', () => {
 
   describe('create', () => {
     it('should create a token', async () => {
-      const result = await service.create('token1', '2025-01-01', 'u1', 'test', 'admin', []);
+      const result = await service.create(
+        'token1',
+        '2025-01-01',
+        'u1',
+        'test',
+        'admin',
+        [],
+      );
       expect(mockPrisma.token.create).toHaveBeenCalled();
-      expect(result).toEqual({"expiresAt": "2025-01-01", "name": "token1", "token": "mocked-jwt-token" });
+      expect(result).toEqual({
+        expiresAt: '2025-01-01',
+        name: 'token1',
+        token: 'mocked-jwt-token',
+      });
     });
   });
 
   describe('delete', () => {
     it('should delete a token by id', async () => {
       const result = await service.delete('1');
-      expect(mockPrisma.token.delete).toHaveBeenCalledWith({ where: { id: '1' } });
+      expect(mockPrisma.token.delete).toHaveBeenCalledWith({
+        where: { id: '1' },
+      });
       expect(result).toEqual({ id: '1', deleted: true });
     });
   });
 });
-
-
-

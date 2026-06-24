@@ -10,7 +10,11 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import { NotificationsDbService, CreateNotificationDto, UpdateNotificationDto } from './notifications-db.service';
+import {
+  NotificationsDbService,
+  CreateNotificationDto,
+  UpdateNotificationDto,
+} from './notifications-db.service';
 import { INotificationConfig } from './notifications.interface';
 
 export interface ApiResponse<T = any> {
@@ -23,12 +27,15 @@ export interface ApiResponse<T = any> {
 export class NotificationsController {
   private readonly logger = new Logger(NotificationsController.name);
 
-  constructor(private readonly notificationsDbService: NotificationsDbService) {}
+  constructor(
+    private readonly notificationsDbService: NotificationsDbService,
+  ) {}
 
   @Get()
   async findAll(): Promise<ApiResponse<INotificationConfig[]>> {
     try {
-      const notifications = await this.notificationsDbService.getNotificationConfigs();
+      const notifications =
+        await this.notificationsDbService.getNotificationConfigs();
       return {
         success: true,
         data: notifications,
@@ -43,7 +50,9 @@ export class NotificationsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<INotificationConfig>> {
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ApiResponse<INotificationConfig>> {
     try {
       const notification = await this.notificationsDbService.findById(id);
       if (!notification) {
@@ -67,7 +76,9 @@ export class NotificationsController {
   }
 
   @Post()
-  async create(@Body() createNotificationDto: CreateNotificationDto): Promise<ApiResponse<INotificationConfig>> {
+  async create(
+    @Body() createNotificationDto: CreateNotificationDto,
+  ): Promise<ApiResponse<INotificationConfig>> {
     try {
       // Validate required fields
       if (!createNotificationDto.name || !createNotificationDto.type) {
@@ -78,7 +89,9 @@ export class NotificationsController {
       }
 
       // Validate notification type
-      if (!['slack', 'webhook', 'discord'].includes(createNotificationDto.type)) {
+      if (
+        !['slack', 'webhook', 'discord'].includes(createNotificationDto.type)
+      ) {
         throw new HttpException(
           'Invalid notification type. Must be slack, webhook, or discord',
           HttpStatus.BAD_REQUEST,
@@ -86,10 +99,15 @@ export class NotificationsController {
       }
 
       // Validate config based on type
-      this.validateNotificationConfig(createNotificationDto.type, createNotificationDto.config);
+      this.validateNotificationConfig(
+        createNotificationDto.type,
+        createNotificationDto.config,
+      );
 
-      const notification = await this.notificationsDbService.create(createNotificationDto);
-      
+      const notification = await this.notificationsDbService.create(
+        createNotificationDto,
+      );
+
       return {
         success: true,
         data: this.notificationsDbService.toNotificationConfig(notification),
@@ -114,13 +132,17 @@ export class NotificationsController {
   ): Promise<ApiResponse<INotificationConfig>> {
     try {
       // Check if notification exists
-      const existingNotification = await this.notificationsDbService.findById(id);
+      const existingNotification =
+        await this.notificationsDbService.findById(id);
       if (!existingNotification) {
         throw new HttpException('Notification not found', HttpStatus.NOT_FOUND);
       }
 
       // Validate notification type if provided
-      if (updateNotificationDto.type && !['slack', 'webhook', 'discord'].includes(updateNotificationDto.type)) {
+      if (
+        updateNotificationDto.type &&
+        !['slack', 'webhook', 'discord'].includes(updateNotificationDto.type)
+      ) {
         throw new HttpException(
           'Invalid notification type. Must be slack, webhook, or discord',
           HttpStatus.BAD_REQUEST,
@@ -129,11 +151,17 @@ export class NotificationsController {
 
       // Validate config if provided
       if (updateNotificationDto.config && updateNotificationDto.type) {
-        this.validateNotificationConfig(updateNotificationDto.type, updateNotificationDto.config);
+        this.validateNotificationConfig(
+          updateNotificationDto.type,
+          updateNotificationDto.config,
+        );
       }
 
-      const notification = await this.notificationsDbService.update(id, updateNotificationDto);
-      
+      const notification = await this.notificationsDbService.update(
+        id,
+        updateNotificationDto,
+      );
+
       return {
         success: true,
         data: this.notificationsDbService.toNotificationConfig(notification),
@@ -155,7 +183,7 @@ export class NotificationsController {
   async remove(@Param('id') id: string): Promise<ApiResponse> {
     try {
       await this.notificationsDbService.delete(id);
-      
+
       return {
         success: true,
         message: 'Notification deleted successfully',

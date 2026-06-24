@@ -23,7 +23,7 @@ describe('ResetAdminCommand', () => {
 
     command = module.get<ResetAdminCommand>(ResetAdminCommand);
     databaseService = module.get(DatabaseService);
-    
+
     // Mock the logger
     logger = {
       log: jest.fn(),
@@ -43,7 +43,9 @@ describe('ResetAdminCommand', () => {
     let exitSpy: jest.SpyInstance;
 
     beforeEach(() => {
-      exitSpy = jest.spyOn(process, 'exit').mockImplementation((() => {}) as (code?: number) => never);
+      exitSpy = jest
+        .spyOn(process, 'exit')
+        .mockImplementation((() => {}) as (code?: number) => never);
       // We need to call the original implementation of run
       jest.spyOn(command, 'run').mockRestore();
     });
@@ -56,7 +58,9 @@ describe('ResetAdminCommand', () => {
       await command.run();
       expect(logger.log).toHaveBeenCalledWith('Resetting admin account...');
       expect(databaseService.resetAdminUser).toHaveBeenCalled();
-      expect(logger.log).toHaveBeenCalledWith('Admin account has been reset successfully');
+      expect(logger.log).toHaveBeenCalledWith(
+        'Admin account has been reset successfully',
+      );
       expect(exitSpy).toHaveBeenCalledWith(0);
     });
 
@@ -66,7 +70,10 @@ describe('ResetAdminCommand', () => {
       await command.run();
       expect(logger.log).toHaveBeenCalledWith('Resetting admin account...');
       expect(databaseService.resetAdminUser).toHaveBeenCalled();
-      expect(logger.error).toHaveBeenCalledWith('Failed to reset admin account', error);
+      expect(logger.error).toHaveBeenCalledWith(
+        'Failed to reset admin account',
+        error,
+      );
       expect(exitSpy).toHaveBeenCalledWith(1);
     });
   });

@@ -1,12 +1,12 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoAddonRabbitmq extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'RabbitMQ';
-  public description = 'RabbitMQ is an open source general-purpose message broker that is designed for consistent, highly-available messaging scenarios (both synchronous and asynchronous).';
+  public description =
+    'RabbitMQ is an open source general-purpose message broker that is designed for consistent, highly-available messaging scenarios (both synchronous and asynchronous).';
   public icon = '/img/addons/rabbitmq.svg';
   public install: string = '';
   public url =
@@ -86,63 +86,61 @@ export class KuberoAddonRabbitmq extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     KuberoAddonRabbitmq: {
-      apiVersion: "application.kubero.dev/v1alpha1",
-      kind: "KuberoAddonRabbitmq",
+      apiVersion: 'application.kubero.dev/v1alpha1',
+      kind: 'KuberoAddonRabbitmq',
       metadata: {
-        name: "rabbitmq"
+        name: 'rabbitmq',
       },
       spec: {
         rabbitmq: {
           image: {
-            tag: ""
+            tag: '',
           },
           replicaCount: 1,
           serviceMonitor: {
-            enabled: false
+            enabled: false,
           },
           revisionHistoryLimit: null,
-          clusterDomain: "cluster.local",
+          clusterDomain: 'cluster.local',
           plugins: [],
           authentication: {
             user: {
-              value: "kubero_user"
+              value: 'kubero_user',
             },
             password: {
-              value: "kubero_password"
+              value: 'kubero_password',
             },
             erlangCookie: {
-              value: "kubero_erlang_cookie"
-            }
+              value: 'kubero_erlang_cookie',
+            },
           },
           options: {
             memoryHighWatermark: {
               enabled: false,
-              type: "relative",
+              type: 'relative',
               value: 0.4,
-              pagingRatio: null
+              pagingRatio: null,
             },
             memory: {
               totalAvailableOverrideValue: null,
-              calculationStrategy: null
-            }
+              calculationStrategy: null,
+            },
           },
           managementPlugin: {
-            enabled: false
+            enabled: false,
           },
           prometheusPlugin: {
-            enabled: true
+            enabled: true,
           },
           storage: {
-            volumeName: "rabbitmq-volume",
+            volumeName: 'rabbitmq-volume',
             requestedSize: null,
             className: null,
-            accessModes: [
-              "ReadWriteOnce"
-            ]
-          }
-        }
-      }
-    }
+            accessModes: ['ReadWriteOnce'],
+          },
+        },
+      },
+    },
   };
 
   protected additionalResourceDefinitions: object = {};

@@ -21,13 +21,13 @@ describe('AuthService', () => {
       findOneOrCreate: jest.fn().mockResolvedValue({
         userId: 3,
         username: 'oauthuser',
-        emails: [{ value: 'undefined@kubero.dev'  }],
+        emails: [{ value: 'undefined@kubero.dev' }],
       }),
     };
     rolesService = {
       getPermissions: jest.fn().mockResolvedValue([
         { resource: 'app', action: 'read' },
-        { resource: 'app', action: 'write' }
+        { resource: 'app', action: 'write' },
       ]),
     };
     kubectl = {

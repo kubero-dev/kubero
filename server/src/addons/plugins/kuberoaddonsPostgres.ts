@@ -1,12 +1,12 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoAddonPostgres extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'PostgreSQL';
-  public description = 'PostgreSQL (Postgres) is an open source object-relational database known for reliability and data integrity. ACID-compliant, it supports foreign keys, joins, views, triggers and stored procedures.';
+  public description =
+    'PostgreSQL (Postgres) is an open source object-relational database known for reliability and data integrity. ACID-compliant, it supports foreign keys, joins, views, triggers and stored procedures.';
   public icon = '/img/addons/pgsql.svg';
   public install: string = '';
   public url =
@@ -118,37 +118,35 @@ export class KuberoAddonPostgres extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     KuberoAddonPostgres: {
-      apiVersion: "application.kubero.dev/v1alpha1",
-      kind: "KuberoAddonPostgres",
+      apiVersion: 'application.kubero.dev/v1alpha1',
+      kind: 'KuberoAddonPostgres',
       metadata: {
-        name: "postgres"
+        name: 'postgres',
       },
       spec: {
         postgres: {
           image: {
-            tag: "17.6"
+            tag: '17.6',
           },
           replicaCount: 1,
           auth: {
             enablePostgresUser: true,
-            postgresPassword: "",
-            username: "",
-            password: "",
-            database: ""
+            postgresPassword: '',
+            username: '',
+            password: '',
+            database: '',
           },
           resources: {},
           persistence: {
             enabled: true,
-            storageClass: "",
-            size: "8Gi",
-            accessModes: [
-              "ReadWriteOnce"
-            ],
-          }
-        }
-      }
-    }
-  }
+            storageClass: '',
+            size: '8Gi',
+            accessModes: ['ReadWriteOnce'],
+          },
+        },
+      },
+    },
+  };
 
   protected additionalResourceDefinitions: object = {};
 

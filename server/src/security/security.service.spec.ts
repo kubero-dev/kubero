@@ -36,7 +36,13 @@ describe('SecurityService', () => {
       pipelinesService.getContext.mockResolvedValue('ctx');
       appsService.getApp.mockResolvedValue(app);
       kubectl.getLatestPodByLabel.mockResolvedValue({});
-      const result = await service.getScanResult('pipe', 'phase', 'app', false, ['group1', 'group2']);
+      const result = await service.getScanResult(
+        'pipe',
+        'phase',
+        'app',
+        false,
+        ['group1', 'group2'],
+      );
       expect(result.status).toBe('error');
       expect(result.message).toBe('no vulnerability scan pod found');
     });
@@ -46,7 +52,13 @@ describe('SecurityService', () => {
       appsService.getApp.mockResolvedValue(app);
       kubectl.getLatestPodByLabel.mockResolvedValue({ name: 'pod1' });
       kubectl.getVulnerabilityScanLogs.mockResolvedValue('');
-      const result = await service.getScanResult('pipe', 'phase', 'app', false, ['group1', 'group2']);
+      const result = await service.getScanResult(
+        'pipe',
+        'phase',
+        'app',
+        false,
+        ['group1', 'group2'],
+      );
       expect(result.status).toBe('running');
       expect(result.message).toBe('no vulnerability scan logs found');
     });
@@ -64,7 +76,10 @@ describe('SecurityService', () => {
       appsService.getApp.mockResolvedValue(app1);
       kubectl.getLatestPodByLabel.mockResolvedValue({ name: 'pod1' });
       kubectl.getVulnerabilityScanLogs.mockResolvedValue({ Results: [] });
-      const result = await service.getScanResult('pipe', 'phase', 'app', true, ['group1', 'group2']);
+      const result = await service.getScanResult('pipe', 'phase', 'app', true, [
+        'group1',
+        'group2',
+      ]);
       expect(result.status).toBe('ok');
       expect(result.message).toBe('vulnerability scan result');
       expect(result.logs).toBeDefined();
@@ -119,7 +134,10 @@ describe('SecurityService', () => {
         },
       } as IKubectlApp;
       appsService.getApp.mockResolvedValue(app1);
-      const result = await service.startScan('pipe', 'phase', 'app', ['group1', 'group2']);
+      const result = await service.startScan('pipe', 'phase', 'app', [
+        'group1',
+        'group2',
+      ]);
       expect(kubectl.createScanImageJob).toHaveBeenCalledWith(
         'pipe-phase',
         'app',
@@ -142,7 +160,10 @@ describe('SecurityService', () => {
         },
       } as IKubectlApp;
       appsService.getApp.mockResolvedValue(app1);
-      const result = await service.startScan('pipe', 'phase', 'app', ['group1', 'group2']);
+      const result = await service.startScan('pipe', 'phase', 'app', [
+        'group1',
+        'group2',
+      ]);
       expect(kubectl.createScanImageJob).toHaveBeenCalledWith(
         'pipe-phase',
         'app',

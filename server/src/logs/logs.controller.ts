@@ -36,7 +36,13 @@ export class LogsController {
     @Param('container') container: string,
     @Request() req: any,
   ) {
-    return this.logsService.getLogsHistory(pipeline, phase, app, container, req.user.userGroups);
+    return this.logsService.getLogsHistory(
+      pipeline,
+      phase,
+      app,
+      container,
+      req.user.userGroups,
+    );
   }
 
   @Get('/:pipeline/:phase/:app/')
@@ -58,6 +64,11 @@ export class LogsController {
     @Param('app') app: string,
     @Request() req: any,
   ) {
-    return this.logsService.startLogging(pipeline, phase, app, req.user.userGroups);
+    return this.logsService.startLogging(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
   }
 }

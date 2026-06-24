@@ -192,10 +192,16 @@ export class UsersController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update current User password' })
-  async updateMyPassword(@Request() req: any, @Body() body: { currentPassword: string; newPassword: string }) {
+  async updateMyPassword(
+    @Request() req: any,
+    @Body() body: { currentPassword: string; newPassword: string },
+  ) {
     const user = req.user;
     if (!user || !user.userId) {
-      throw new HttpException('User not authenticated', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'User not authenticated',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
     if (
       !body.currentPassword ||
@@ -209,7 +215,11 @@ export class UsersController {
         HttpStatus.BAD_REQUEST,
       );
     }
-    return this.usersService.updateMyPassword(user.userId, body.currentPassword, body.newPassword);
+    return this.usersService.updateMyPassword(
+      user.userId,
+      body.currentPassword,
+      body.newPassword,
+    );
   }
 
   @Post('/')
@@ -274,14 +284,17 @@ export class UsersController {
   async updateProfile(@Request() req: any, @Body() body: Partial<User>) {
     const user = req.user;
     if (!body || Object.keys(body).length === 0) {
-      throw new HttpException('No data provided to update', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'No data provided to update',
+        HttpStatus.BAD_REQUEST,
+      );
     }
     // sanitize input
     const data: Partial<User> = {};
     data.firstName = body.firstName;
     data.lastName = body.lastName;
     data.email = body.email;
-    
+
     return this.usersService.update(user.userId, data);
   }
 

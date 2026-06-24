@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { Logger } from '@nestjs/common';
 
-
-
 export abstract class Plugin {
   public plugin?: any;
   public id: string = ''; //same as operator name

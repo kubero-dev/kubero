@@ -1,5 +1,5 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoElasticsearch extends Plugin implements IPlugin {
@@ -18,7 +18,7 @@ export class KuberoElasticsearch extends Plugin implements IPlugin {
   public artifact_url =
     'https://artifacthub.io/api/v1/packages/olm/kubero/kubero-operator';
   public beta: boolean = false;
-  public deprecated: boolean = true
+  public deprecated: boolean = true;
 
   public formfields: { [key: string]: IPluginFormFields } = {
     'KuberoElasticsearch.metadata.name': {

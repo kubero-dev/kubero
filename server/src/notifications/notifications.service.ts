@@ -41,7 +41,8 @@ export class NotificationsService {
 
     // Load notifications from database instead of config
     try {
-      const notifications = await this.notificationsDbService.getNotificationConfigs();
+      const notifications =
+        await this.notificationsDbService.getNotificationConfigs();
       this.sendAllCustomNotification(notifications, message);
     } catch (error) {
       this.logger.error('Failed to load notifications from database', error);
@@ -242,9 +243,15 @@ export class NotificationsService {
       return;
     }
 
-    this.logger.log('Starting migration of notifications from config to database');
-    await this.notificationsDbService.migrateFromConfig(this.config.notifications);
-    this.logger.log('Completed migration of notifications from config to database');
+    this.logger.log(
+      'Starting migration of notifications from config to database',
+    );
+    await this.notificationsDbService.migrateFromConfig(
+      this.config.notifications,
+    );
+    this.logger.log(
+      'Completed migration of notifications from config to database',
+    );
   }
 
   // Method to get notifications from database (for admin interface)

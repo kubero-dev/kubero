@@ -7,7 +7,13 @@ import { JwtService } from '@nestjs/jwt';
 import { RolesService } from '../roles/roles.service';
 
 @Module({
-  providers: [TokenService, AuthService, UsersService, JwtService, RolesService],
+  providers: [
+    TokenService,
+    AuthService,
+    UsersService,
+    JwtService,
+    RolesService,
+  ],
   controllers: [TokenController],
 })
 export class TokenModule {}

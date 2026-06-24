@@ -15,9 +15,7 @@ describe('TokenController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [TokenController],
-      providers: [
-        { provide: TokenService, useValue: mockTokenService }
-      ],
+      providers: [{ provide: TokenService, useValue: mockTokenService }],
     }).compile();
 
     controller = module.get<TokenController>(TokenController);
@@ -39,7 +37,9 @@ describe('TokenController', () => {
   describe('createToken', () => {
     it('should create a token for current user', async () => {
       const tokenData = { name: 'token1', expiresAt: '2025-01-01' };
-      const req = { user: { userId: 'u1', username: 'test', role: 'admin', userGroups: [] } };
+      const req = {
+        user: { userId: 'u1', username: 'test', role: 'admin', userGroups: [] },
+      };
       const result = await controller.createToken(tokenData, req);
       expect(tokenService.create).toHaveBeenCalledWith(
         'token1',
@@ -47,14 +47,13 @@ describe('TokenController', () => {
         'u1',
         'test',
         'admin',
-        []
+        [],
       );
       expect(result).toEqual({ id: '1', name: 'token1' });
     });
 
     it('should throw if missing data', async () => {
-      await expect(controller.createToken({}, { user: {} }))
-        .rejects.toThrow();
+      await expect(controller.createToken({}, { user: {} })).rejects.toThrow();
     });
   });
 
@@ -90,8 +89,12 @@ describe('TokenController', () => {
     });
 
     it('should throw if id or userId missing', async () => {
-      await expect(controller.deleteMyToken('', { user: { userId: 'u1' } })).rejects.toThrow();
-      await expect(controller.deleteMyToken('1', { user: {} })).rejects.toThrow();
+      await expect(
+        controller.deleteMyToken('', { user: { userId: 'u1' } }),
+      ).rejects.toThrow();
+      await expect(
+        controller.deleteMyToken('1', { user: {} }),
+      ).rejects.toThrow();
     });
   });
 });

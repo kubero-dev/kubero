@@ -1,6 +1,5 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoAddonMongodb extends Plugin implements IPlugin {
@@ -120,49 +119,47 @@ export class KuberoAddonMongodb extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     KuberoAddonMongodb: {
-      apiVersion: "application.kubero.dev/v1alpha1",
-      kind: "KuberoAddonMongodb",
+      apiVersion: 'application.kubero.dev/v1alpha1',
+      kind: 'KuberoAddonMongodb',
       metadata: {
-        name: "mongodb"
+        name: 'mongodb',
       },
       spec: {
         mongodb: {
           image: {
-            tag: ""
+            tag: '',
           },
           resources: {},
           replicaSet: {
             enabled: false,
-            name: "repl",
-            clusterDomain: "cluster.local",
+            name: 'repl',
+            clusterDomain: 'cluster.local',
             secondaries: 2,
             hiddenSecondaries: {
               instances: 0,
-              volumeName: "mongodb-hidden-volume"
-            }
+              volumeName: 'mongodb-hidden-volume',
+            },
           },
           settings: {
             rootUsername: null,
-            rootPassword: null
+            rootPassword: null,
           },
           userDatabase: {
-            name: "kubero_database",
-            user: "kubero_user",
-            password: "kubero_password"
+            name: 'kubero_database',
+            user: 'kubero_user',
+            password: 'kubero_password',
           },
           storage: {
-            volumeName: "mongodb-volume",
+            volumeName: 'mongodb-volume',
             requestedSize: null,
             className: null,
-            accessModes: [
-              "ReadWriteOnce"
-            ],
-            keepPvc: false
-          }
-        }
-      }
-    }
-  }
+            accessModes: ['ReadWriteOnce'],
+            keepPvc: false,
+          },
+        },
+      },
+    },
+  };
 
   protected additionalResourceDefinitions: object = {};
 

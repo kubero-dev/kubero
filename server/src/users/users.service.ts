@@ -61,7 +61,9 @@ export class UsersService {
   ): Promise<PartialPrismaUser> {
     let user = await this.findOneFull(username);
     if (!user) {
-      this.logger.debug(`Oauth2 User ${username} not found, creating new user.`);
+      this.logger.debug(
+        `Oauth2 User ${username} not found, creating new user.`,
+      );
 
       // Define default role
       const role = await this.prisma.role.findFirst({
@@ -70,10 +72,14 @@ export class UsersService {
         },
       });
       if (!role) {
-        this.logger.warn(`Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`);
-        throw new Error(`Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`);
+        this.logger.warn(
+          `Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`,
+        );
+        throw new Error(
+          `Default role not found: ${process.env.DEFAULT_USER_ROLE || 'guest'}`,
+        );
       }
-      
+
       // Define default user group
       const defaultUserGroup = process.env.DEFAULT_USER_GROUP || 'everyone';
       const userGroupsData = await this.prisma.userGroup.findFirst({
@@ -98,7 +104,7 @@ export class UsersService {
         email,
         provider,
         image: imageData,
-        role: role.id, 
+        role: role.id,
         userGroups: [userGroupsData.id],
         providerId: null, // Set providerId if needed
         providerData: null, // Set providerData if needed
@@ -209,7 +215,7 @@ export class UsersService {
       this.logger.warn('Password is required for user creation.');
       throw new Error('Password is required for user creation.');
     }
-    
+
     return this.prisma.user.create({
       data: {
         ...cleanedData,
@@ -314,7 +320,9 @@ export class UsersService {
       typeof newPassword !== 'string' ||
       newPassword.length < 8
     ) {
-      this.logger.warn('Invalid current or new password provided for password update.');
+      this.logger.warn(
+        'Invalid current or new password provided for password update.',
+      );
       return undefined;
     }
 
@@ -322,18 +330,25 @@ export class UsersService {
       // First, get the user with their current password
       const user = await this.prisma.user.findUnique({
         where: { id: userId },
-        select: { id: true, password: true }
+        select: { id: true, password: true },
       });
 
       if (!user) {
-        this.logger.warn(`User with ID ${userId} not found for password update.`);
+        this.logger.warn(
+          `User with ID ${userId} not found for password update.`,
+        );
         return undefined;
       }
 
       // Verify current password
-      const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      const isCurrentPasswordValid = await bcrypt.compare(
+        currentPassword,
+        user.password,
+      );
       if (!isCurrentPasswordValid) {
-        this.logger.warn(`Invalid current password provided for user ${userId}.`);
+        this.logger.warn(
+          `Invalid current password provided for user ${userId}.`,
+        );
         //throw new Error('Current password is incorrect');
         throw new HttpException(
           `Error updating password: Current password is incorrect`,
@@ -441,12 +456,12 @@ export class UsersService {
     if (!mimetype.startsWith('image/')) {
       throw new Error(`Invalid image MIME type: ${mimetype}`);
     }
-    
+
     const buffer = Buffer.from(response.data, 'binary');
     const base64Image = buffer.toString('base64');
     return `data:${mimetype};base64,${base64Image}`;
   }
-/*
+  /*
   async getPermissions(userId: string,): Promise<{ action: string; resource: string }[]> {
     const user = await this.prisma.user.findUnique({
       where: { id: userId },

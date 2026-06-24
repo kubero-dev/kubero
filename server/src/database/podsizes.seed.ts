@@ -28,4 +28,4 @@ export const podsizes = `
       limits:
         memory: 4Gi
         cpu: 2000m
-`
+`;

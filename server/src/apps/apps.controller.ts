@@ -28,7 +28,6 @@ import { ReadonlyGuard } from '../common/guards/readonly.guard';
 import { PermissionsGuard } from '../auth/permissions.guard';
 import { Permissions } from '../auth/permissions.decorator';
 
-
 @Controller({ path: 'api/apps', version: '1' })
 export class AppsController {
   constructor(private readonly appsService: AppsService) {}
@@ -129,7 +128,12 @@ export class AppsController {
       strategy: req.user.strategy,
       username: req.user.username,
     };
-    return this.appsService.updateApp(app, resourceVersion, user, req.user.userGroups);
+    return this.appsService.updateApp(
+      app,
+      resourceVersion,
+      user,
+      req.user.userGroups,
+    );
   }
 
   @Delete('/:pipeline/:phase/:app')
@@ -154,7 +158,13 @@ export class AppsController {
       strategy: req.user.strategy,
       username: req.user.username,
     };
-    return this.appsService.deleteApp(pipeline, phase, app, user, req.user.userGroups);
+    return this.appsService.deleteApp(
+      pipeline,
+      phase,
+      app,
+      user,
+      req.user.userGroups,
+    );
   }
 
   @Post('/pullrequest')
@@ -167,10 +177,7 @@ export class AppsController {
     isArray: false,
   })
   @ApiBearerAuth('bearerAuth')
-  async startPullRequest(
-    @Body() body: any,
-    @Request() req: any,
-  ) {
+  async startPullRequest(@Body() body: any, @Request() req: any) {
     return this.appsService.createPRApp(
       body.branch,
       body.branch,
@@ -196,7 +203,12 @@ export class AppsController {
     @Param('app') app: string,
     @Request() req: any,
   ) {
-    return this.appsService.getTemplate(pipeline, phase, app, req.user.userGroups);
+    return this.appsService.getTemplate(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
   }
 
   @Get('/:pipeline/:phase/:app/restart')
@@ -222,7 +234,13 @@ export class AppsController {
       username: req.user.username,
     };
 
-    return this.appsService.restartApp(pipeline, phase, app, user, req.user.userGroups);
+    return this.appsService.restartApp(
+      pipeline,
+      phase,
+      app,
+      user,
+      req.user.userGroups,
+    );
   }
 
   @Get('/:pipeline/:phase/:app/pods')
