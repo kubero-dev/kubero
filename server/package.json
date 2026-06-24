@@ -123,7 +123,8 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "moduleNameMapper": {
-      "^@octokit/core$": "<rootDir>/__mocks__/@octokit/core.js"
+      "^@octokit/core$": "<rootDir>/__mocks__/@octokit/core.js",
+      "^jose$": "<rootDir>/__mocks__/jose/core.js"
     },
     "setupFilesAfterEnv": [
       "<rootDir>/../jest-setup.js"

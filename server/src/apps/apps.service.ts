@@ -11,6 +11,7 @@ import { ConfigService } from '../config/config.service';
 import { KubectlTemplate } from '../templates/template';
 import { Stream } from 'stream';
 import { EventsGateway } from '../events/events.gateway';
+import { RegistryService } from '../registry/registry.service';
 
 @Injectable()
 export class AppsService {
@@ -23,6 +24,7 @@ export class AppsService {
     private NotificationsService: NotificationsService,
     private configService: ConfigService,
     private eventsGateway: EventsGateway,
+    private registryService: RegistryService
   ) {
     //this.logger.log('AppsService initialized');
   }
@@ -160,7 +162,9 @@ export class AppsService {
 
     const timestamp = new Date().getTime();
     if (contextName) {
+      const image = pipeline + '-' + appName;
       this.kubectl.setCurrentContext(contextName);
+      const registryCredentials = await this.registryService.makeTemporaryPushCredentialsForImage(image);
 
       this.kubectl.createBuildJob(
         namespace,
@@ -173,8 +177,11 @@ export class AppsService {
           ref: app.spec.branch, //git commit reference
         },
         {
-          image: `${process.env.KUBERO_BUILD_REGISTRY}/${pipeline}-${appName}`,
+          registry: process.env.KUBERO_BUILD_REGISTRY || "",
+          image: image,
           tag: app.spec.branch + '-' + timestamp,
+          registryUsername: registryCredentials.username,
+          registryPassword: registryCredentials.password
         },
       );
     }
