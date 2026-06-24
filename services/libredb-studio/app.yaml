@@ -1,0 +1,53 @@
+apiVersion: application.kubero.dev/v1alpha1
+kind: KuberoApp
+metadata:
+    name: libredb-studio
+    annotations:
+        kubero.dev/template.architecture: "[]"
+        kubero.dev/template.description: "Modern, AI-powered open-source SQL IDE. Connect to and query PostgreSQL, MySQL, Oracle, SQL Server, SQLite, MongoDB and Redis directly from your browser, with an optional AI assistant to help write and explain queries."
+        kubero.dev/template.icon: "https://raw.githubusercontent.com/libredb/libredb-studio/main/public/logo.svg"
+        kubero.dev/template.installation: "On first start LibreDB Studio creates an initial admin account (ADMIN_EMAIL / ADMIN_PASSWORD) and a regular user account (USER_EMAIL / USER_PASSWORD). Set a strong JWT_SECRET (minimum 32 characters). Data is stored in a local SQLite file under /app/data by default, so no external database is required."
+        kubero.dev/template.links: '["https://libredb.org/"]'
+        kubero.dev/template.screenshots: "[]"
+        kubero.dev/template.source: "https://github.com/libredb/libredb-studio"
+        kubero.dev/template.categories: '["database", "development", "utilities"]'
+        kubero.dev/template.title: "LibreDB Studio"
+        kubero.dev/template.website: "https://libredb.org"
+    labels:
+        manager: kubero
+spec:
+    name: libredb-studio
+    deploymentstrategy: docker
+    envVars:
+    - name: ADMIN_EMAIL
+      value: admin@libredb.org
+    - name: ADMIN_PASSWORD
+      value: changeme-admin
+    - name: USER_EMAIL
+      value: user@libredb.org
+    - name: USER_PASSWORD
+      value: changeme-user
+    - name: JWT_SECRET
+      value: change-this-jwt-secret-min-32-characters
+    - name: STORAGE_PROVIDER
+      value: sqlite
+    - name: STORAGE_SQLITE_PATH
+      value: /app/data/libredb-storage.db
+    extraVolumes:
+    - accessModes:
+      - ReadWriteOnce
+      emptyDir: false
+      mountPath: /app/data
+      name: libredb-data
+      size: 5Gi
+    cronjobs: []
+    addons: []
+    web:
+        replicaCount: 1
+    worker:
+        replicaCount: 0
+    image:
+        containerPort: 3000
+        pullPolicy: Always
+        repository: ghcr.io/libredb/libredb-studio
+        tag: 0.9.27
