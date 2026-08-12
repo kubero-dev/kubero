@@ -14,7 +14,7 @@
                             <th>{{ $t('app.domains') }}</th>
                             <td>
                                 <ul style="list-style-type: none; padding: 0;">
-                                    <li v-for="host in appData.spec.ingress.hosts" :key="host.host">
+                                    <li v-for="host in appData.spec.ingress?.hosts" :key="host.host">
                                         <a :href="'https://' + host.host" target="_blank">{{ host.host }}</a> 
                                         <v-icon size="x-small" style="color: rgba(var(--v-theme-kubero), var(--v-high-emphasis-opacity));">mdi-open-in-new</v-icon>
                                     </li>
