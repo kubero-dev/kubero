@@ -7,7 +7,8 @@
     "dev": "vue-tsc --noEmit && vite build --watch",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint . --fix --ignore-path .gitignore"
+    "lint": "eslint . --fix --ignore-path .gitignore",
+    "test": "vitest run"
   },
   "dependencies": {
     "@mdi/font": "7.0.96",
@@ -48,6 +49,7 @@
     "unplugin-fonts": "^1.0.3",
     "vite": "^6.3.6",
     "vite-plugin-vuetify": "^2.1.1",
+    "vitest": "2.1.9",
     "vue-tsc": "^2.2.10"
   }
 }
