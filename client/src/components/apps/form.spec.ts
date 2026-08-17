@@ -46,6 +46,7 @@ function createFormContext(app: string) {
     branchesList: [] as string[],
     panel: [] as number[],
     docker: { image: "", tag: "", command: "" },
+    envVars: [] as { name: string; value: string }[],
     sslIndex: [] as boolean[],
     takenDomains: [] as string[],
     pipelineData: {
