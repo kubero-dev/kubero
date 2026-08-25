@@ -351,7 +351,7 @@ export default defineComponent({
                 //console.log(field, value, fieldvalue);
 
                 if (value.name === 'metadata.name' && typeof value.default === 'string') {
-                    if (fieldvalue.startsWith(this.appname)) {
+                    if (this.appname && fieldvalue.startsWith(`${this.appname}-`)) {
                       // remove appname prefix
                       value.default = fieldvalue.replace(`${this.appname}-`, '');
                     }
@@ -391,7 +391,7 @@ export default defineComponent({
                 }
 
                 if (value.name === 'metadata.name' && typeof value.default === 'string') {
-                    if (!value.default.startsWith(this.appname)) {
+                    if (this.appname && !value.default.startsWith(`${this.appname}-`)) {
                         value.default = this.appname+"-"+value.default
                     }
                 }

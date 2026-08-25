@@ -1717,8 +1717,8 @@ export default defineComponent({
         (v: any) => !!v || "Name is required",
         (v: any) => v.length <= 60 || "Name must be less than 60 characters",
         (v: any) =>
-          /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(v) ||
-          "Allowed characters : [a-zA-Z0-9_-]",
+          /^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/.test(v) ||
+          "Lowercase letters, numbers and hyphens only (a-z, 0-9, -). No spaces. Must start and end with a letter or number.",
       ],
       repositoryRules: [
         //(v: any) => !!v || 'Repository is required',
@@ -2562,7 +2562,7 @@ export default defineComponent({
     isDuplicateEnvVar(name: string, currentIndex: number) {
       if (!name || name.trim() === '') return false;
       const trimmedName = name.trim();
-      return this.envVars.some((env, index) => 
+      return this.envVars.some((env, index) =>
         index !== currentIndex && env.name.trim() === trimmedName
       );
     },
@@ -2572,10 +2572,10 @@ export default defineComponent({
         (v: any) => v.length <= 60 || this.$t('app.form.envNameTooLong'),
         (v: any) => /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v) || this.$t('app.form.envNameInvalidChars'),
       ];
-      
-      const duplicateRule = (v: any) => 
+
+      const duplicateRule = (v: any) =>
         !this.isDuplicateEnvVar(v, index) || this.$t('app.form.duplicateEnvVar');
-      
+
       return [...baseRules, duplicateRule];
     },
     addSAAnnotationLine() {

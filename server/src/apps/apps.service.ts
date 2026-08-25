@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -25,6 +25,43 @@ export class AppsService {
     private eventsGateway: EventsGateway,
   ) {
     //this.logger.log('AppsService initialized');
+  }
+
+  private validateAppName(name: string): void {
+    if (!/^[a-z0-9]([-a-z0-9]*[a-z0-9])?$/.test(name)) {
+      throw new BadRequestException(
+        `App name "${name}" is not a valid Kubernetes resource name. ` +
+          'Use lowercase letters, numbers and hyphens only (a-z, 0-9, -); ' +
+          'it must start and end with a letter or number and contain no spaces.',
+      );
+    }
+  }
+
+  private validateAddonReleaseNames(app: App): void {
+    const releaseNames = new Set([app.name]);
+
+    for (const addon of (app.addons || []) as any[]) {
+      for (const resource of Object.values(
+        addon.resourceDefinitions || {},
+      ) as any[]) {
+        if (!resource?.apiVersion?.startsWith('application.kubero.dev/')) {
+          continue;
+        }
+
+        const name = resource?.metadata?.name;
+        if (!name) {
+          continue;
+        }
+
+        if (releaseNames.has(name)) {
+          throw new BadRequestException(
+            `Add-on resource name "${name}" conflicts with another Kubero Helm release in this application`,
+          );
+        }
+
+        releaseNames.add(name);
+      }
+    }
   }
 
   public async getApp(
@@ -78,6 +115,9 @@ export class AppsService {
       );
       return;
     }
+
+    this.validateAppName(app.name);
+    this.validateAddonReleaseNames(app);
 
     const contextName = await this.pipelinesService.getContext(
       app.pipeline,
@@ -620,6 +660,9 @@ export class AppsService {
       );
       return;
     }
+
+    this.validateAppName(app.name);
+    this.validateAddonReleaseNames(app);
 
     const contextName = await this.pipelinesService.getContext(
       app.pipeline,
