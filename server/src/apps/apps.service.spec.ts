@@ -203,6 +203,59 @@ describe('AppsService', () => {
       await service.createApp(app, { username: 'u' } as any, mockUSerGroups);
       expect(kubectl.createApp).not.toHaveBeenCalled();
     });
+    it('should reject an addon with the same Helm release name as the app', async () => {
+      const app = new App({
+        ...mockApp,
+        addons: [
+          {
+            kind: 'KuberoAddonPostgres',
+            resourceDefinitions: {
+              KuberoAddonPostgres: {
+                apiVersion: 'application.kubero.dev/v1alpha1',
+                kind: 'KuberoAddonPostgres',
+                metadata: { name: mockApp.name },
+              },
+            },
+          },
+        ],
+      } as unknown as IApp);
+
+      await expect(
+        service.createApp(app, { username: 'u' } as any, mockUSerGroups),
+      ).rejects.toThrow(
+        `Add-on resource name "${mockApp.name}" conflicts with another Kubero Helm release`,
+      );
+      expect(kubectl.createApp).not.toHaveBeenCalled();
+    });
+    it('should allow an addon name prefixed with the app name and a delimiter', async () => {
+      (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
+      const app = new App({
+        ...mockApp,
+        addons: [
+          {
+            kind: 'KuberoAddonPostgres',
+            resourceDefinitions: {
+              KuberoAddonPostgres: {
+                apiVersion: 'application.kubero.dev/v1alpha1',
+                kind: 'KuberoAddonPostgres',
+                metadata: { name: `${mockApp.name}-postgres` },
+              },
+            },
+          },
+        ],
+      } as unknown as IApp);
+
+      await service.createApp(app, { username: 'u' } as any, mockUSerGroups);
+
+      expect(kubectl.createApp).toHaveBeenCalled();
+    });
+    it('should reject an app name with invalid characters', async () => {
+      const app = new App({ ...mockApp, name: 'My App!' });
+      await expect(
+        service.createApp(app, { username: 'u' } as any, mockUSerGroups),
+      ).rejects.toThrow('is not a valid Kubernetes resource name');
+      expect(kubectl.createApp).not.toHaveBeenCalled();
+    });
   });
 
   describe('deleteApp', () => {
@@ -306,6 +359,41 @@ describe('AppsService', () => {
       process.env.KUBERO_READONLY = 'true';
       const app = new App(mockApp);
       await service.updateApp(app, 'rv', { username: 'u' } as any, mockUSerGroups);
+      expect(kubectl.updateApp).not.toHaveBeenCalled();
+    });
+    it('should reject duplicate Helm release names across addons', async () => {
+      const releaseName = `${mockApp.name}-database`;
+      const app = new App({
+        ...mockApp,
+        addons: ['Postgres', 'Redis'].map((type) => ({
+          kind: `KuberoAddon${type}`,
+          resourceDefinitions: {
+            [`KuberoAddon${type}`]: {
+              apiVersion: 'application.kubero.dev/v1alpha1',
+              kind: `KuberoAddon${type}`,
+              metadata: { name: releaseName },
+            },
+          },
+        })),
+      } as unknown as IApp);
+
+      await expect(
+        service.updateApp(
+          app,
+          'rv',
+          { username: 'u' } as any,
+          mockUSerGroups,
+        ),
+      ).rejects.toThrow(
+        `Add-on resource name "${releaseName}" conflicts with another Kubero Helm release`,
+      );
+      expect(kubectl.updateApp).not.toHaveBeenCalled();
+    });
+    it('should reject an app name with invalid characters', async () => {
+      const app = new App({ ...mockApp, name: 'My App!' });
+      await expect(
+        service.updateApp(app, 'rv', { username: 'u' } as any, mockUSerGroups),
+      ).rejects.toThrow('is not a valid Kubernetes resource name');
       expect(kubectl.updateApp).not.toHaveBeenCalled();
     });
   });
