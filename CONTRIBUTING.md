@@ -50,19 +50,14 @@ This will install a local cluster with a single node and all required components
 
 You can skip the kubero-UI step since we will use our local code.
 
-### 2) Export the Kubeconfig
-```bash
-kind export kubeconfig --name kubero-XXX --kubeconfig ./kubeconfig
-```
-This step exports the kubeconfig for your local cluster, making it available for Kubero.
 
-### 3) Create a Development Namespace (Optional)
+### 2) Create a Development Namespace (Optional)
 Although optional, creating a separate namespace helps prevent interference with the local in-cluster Kubero-UI instance.
 ```bash
 kubectl create namespace kubero-dev
 ```
 
-### 4) Checkout the Code
+### 3) Checkout the Code
 1. Fork the [Kubero](https://github.com/kubero-dev/kubero) repository to your GitHub account.
 2. Clone your forked repository to your local machine.
 
@@ -71,11 +66,22 @@ git clone https://github.com/YOUR_USERNAME/kubero.git
 cd kubero
 ```
 
-### 5) Start Your Local Instance
+### 4) Start Your Local Instance
 Navigate to the server directory, and rename the .env.template file to .env to set up the required environment variables.
 ```bash
 cd server
 mv .env.template .env
+```
+
+Export the Kubeconfig. This step exports the kubeconfig for your local cluster, making it available for Kubero.
+```bash
+kind export kubeconfig --name kubero-XXX --kubeconfig ./kubeconfig
+```
+
+Prepare database file:
+```bash
+mkdir db
+sqlite3 db/kubero.sqlite "VACUUM;"
 ```
 
 Install the dependencies, and start the server:
@@ -88,12 +94,12 @@ Next, set up the client JavaScript part:
 ```bash
 cd client
 yarn install
-yarn watch
+yarn dev
 ```
 
 You should now be able to access your local development instance at http://localhost:2000 
 
-### 6) Start Additional Services (Optional)
+### 5) Start Additional Services (Optional)
 If you need additional services (such as Gitea or GitHub integration), run the following command to start them via Docker:
 ```bash
 docker-compose up -d
