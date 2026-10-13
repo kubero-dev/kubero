@@ -97,10 +97,7 @@ export class RolesController {
     isArray: false,
   })
   @ApiOperation({ summary: 'Update a Role' })
-  async updateRole(
-    @Param('roleId') roleId: string,
-    @Body() role: any,
-  ) {
+  async updateRole(@Param('roleId') roleId: string, @Body() role: any) {
     return this.rolesService.updateRole(roleId, role);
   }
 }

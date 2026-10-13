@@ -72,7 +72,7 @@ export class AuthService {
 
     const permissions = await this.rolesService.getPermissions(user.roleId);
     user.permissions = permissions.map((p) => `${p.resource}:${p.action}`);
-    
+
     // Defines the user object to be signed in the JWT
     // Add more fields if needed
     const u = {

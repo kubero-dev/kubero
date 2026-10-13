@@ -17,7 +17,6 @@ const mockUser: IUser = {
   userGroups: mockUserGroups,
 } as any;
 
-
 describe('DeploymentsService', () => {
   let service: DeploymentsService;
   let kubectl: jest.Mocked<KubernetesService>;
@@ -81,7 +80,12 @@ describe('DeploymentsService', () => {
     it('should return empty items if no jobs', async () => {
       kubectl.getJobs.mockResolvedValue(undefined);
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
+      const result = await service.listBuildjobs(
+        'pipe',
+        'phase',
+        'app',
+        mockUserGroups,
+      );
       expect(result).toEqual({ items: [] });
     });
 
@@ -133,7 +137,12 @@ describe('DeploymentsService', () => {
         ],
       });
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
+      const result = await service.listBuildjobs(
+        'pipe',
+        'phase',
+        'app',
+        mockUserGroups,
+      );
       expect(Array.isArray(result)).toBe(true);
       expect(result[0].name).toBe('job1');
       expect(result[0].app).toBe('app');
@@ -181,7 +190,12 @@ describe('DeploymentsService', () => {
         ],
       });
       appsService.getApp.mockResolvedValue(app);
-      const result = await service.listBuildjobs('pipe', 'phase', 'app', mockUserGroups);
+      const result = await service.listBuildjobs(
+        'pipe',
+        'phase',
+        'app',
+        mockUserGroups,
+      );
       expect(result).toEqual([]);
     });
   });

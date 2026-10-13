@@ -129,7 +129,10 @@ describe('PipelinesService', () => {
           },
         ],
       });
-      const ctx = await service.getContext('pipe1', 'dev', ['group1', 'group2']);
+      const ctx = await service.getContext('pipe1', 'dev', [
+        'group1',
+        'group2',
+      ]);
       expect(ctx).toBe('ctx1');
     });
 
@@ -137,7 +140,10 @@ describe('PipelinesService', () => {
       service.listPipelines = jest.fn().mockResolvedValue({
         items: [],
       });
-      const ctx = await service.getContext('pipe1', 'dev', ['group1', 'group2']);
+      const ctx = await service.getContext('pipe1', 'dev', [
+        'group1',
+        'group2',
+      ]);
       expect(ctx).toBe('missing-pipe1-dev');
     });
   });

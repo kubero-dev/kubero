@@ -31,7 +31,7 @@ export class AppsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
-    userGroups: string[]
+    userGroups: string[],
   ) {
     this.logger.debug(
       'get App: ' + appName + ' in ' + pipelineName + ' phase: ' + phaseName,
@@ -115,7 +115,12 @@ export class AppsService {
           app.buildstrategy == 'nixpacks' ||
           app.buildstrategy == 'buildpacks')
       ) {
-        this.triggerImageBuildDelayed(app.pipeline, app.phase, app.name, userGroups);
+        this.triggerImageBuildDelayed(
+          app.pipeline,
+          app.phase,
+          app.name,
+          userGroups,
+        );
       }
     }
   }
@@ -124,7 +129,7 @@ export class AppsService {
     pipeline: string,
     phase: string,
     appName: string,
-    userGroups: string[]
+    userGroups: string[],
   ) {
     // delay for 2 seconds to trigger the Image build
     await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -137,7 +142,11 @@ export class AppsService {
     appName: string,
     userGroups: string[],
   ) {
-    const contextName = await this.pipelinesService.getContext(pipeline, phase, userGroups);
+    const contextName = await this.pipelinesService.getContext(
+      pipeline,
+      phase,
+      userGroups,
+    );
     const namespace = pipeline + '-' + phase;
 
     const appresult = await this.getApp(pipeline, phase, appName, userGroups);
@@ -425,7 +434,12 @@ export class AppsService {
   }
 
   // delete a pr app in all pipelines that have review apps enabled and the same ssh_url
-  public async deletePRApp(branch: string, title: string, ssh_url: string, userGroups: string[]) {
+  public async deletePRApp(
+    branch: string,
+    title: string,
+    ssh_url: string,
+    userGroups: string[],
+  ) {
     this.logger.debug('destroyPRApp');
     const websaveTitle = title.toLowerCase().replace(/[^a-z0-9-]/g, '-'); //TODO improve websave title
 
@@ -603,7 +617,12 @@ export class AppsService {
   }
 
   // update an app in a pipeline and phase
-  public async updateApp(app: App, resourceVersion: string, user: IUser, userGroups: string[]) {
+  public async updateApp(
+    app: App,
+    resourceVersion: string,
+    user: IUser,
+    userGroups: string[],
+  ) {
     this.logger.debug(
       'update App: ' +
         app.name +

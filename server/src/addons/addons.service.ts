@@ -42,13 +42,12 @@ export class AddonsService {
     // Load all Custom Resource Definitions to get the list of installed operators
     this.CRDList = await this.kubectl.getCustomresources();
 
-
     const kuberoAddonPostgres = new KuberoAddonPostgres(this.CRDList);
     this.addonsList.push(kuberoAddonPostgres);
 
     const kuberoAddonRedis = new KuberoAddonRedis(this.CRDList);
     this.addonsList.push(kuberoAddonRedis);
-    
+
     const kuberoAddonMysql = new KuberoAddonMysql(this.CRDList);
     this.addonsList.push(kuberoAddonMysql);
 
@@ -120,7 +119,6 @@ export class AddonsService {
 
     const kuberoRabbitMQ = new KuberoRabbitMQ(this.CRDList);
     this.addonsList.push(kuberoRabbitMQ);
-
   }
 
   public async getAddonsList(): Promise<IPlugin[]> {

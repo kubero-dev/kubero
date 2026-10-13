@@ -1,7 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { NotificationsController } from './notifications.controller';
-import { NotificationsDbService, CreateNotificationDto, UpdateNotificationDto } from './notifications-db.service';
+import {
+  NotificationsDbService,
+  CreateNotificationDto,
+  UpdateNotificationDto,
+} from './notifications-db.service';
 import { INotificationConfig } from './notifications.interface';
 
 describe('NotificationsController', () => {
@@ -80,10 +84,15 @@ describe('NotificationsController', () => {
     });
 
     it('should throw HttpException when service fails', async () => {
-      service.getNotificationConfigs.mockRejectedValue(new Error('Database error'));
+      service.getNotificationConfigs.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(controller.findAll()).rejects.toThrow(
-        new HttpException('Failed to fetch notifications', HttpStatus.INTERNAL_SERVER_ERROR)
+        new HttpException(
+          'Failed to fetch notifications',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
       );
     });
   });
@@ -102,29 +111,39 @@ describe('NotificationsController', () => {
         data: mockNotificationConfig,
       });
       expect(service.findById).toHaveBeenCalledWith(notificationId);
-      expect(service.toNotificationConfig).toHaveBeenCalledWith(mockNotificationDb);
+      expect(service.toNotificationConfig).toHaveBeenCalledWith(
+        mockNotificationDb,
+      );
     });
 
     it('should throw NotFound when notification does not exist', async () => {
       service.findById.mockResolvedValue(null);
 
       await expect(controller.findOne(notificationId)).rejects.toThrow(
-        new HttpException('Notification not found', HttpStatus.NOT_FOUND)
+        new HttpException('Notification not found', HttpStatus.NOT_FOUND),
       );
     });
 
     it('should re-throw HttpException from service', async () => {
-      const httpError = new HttpException('Service error', HttpStatus.BAD_REQUEST);
+      const httpError = new HttpException(
+        'Service error',
+        HttpStatus.BAD_REQUEST,
+      );
       service.findById.mockRejectedValue(httpError);
 
-      await expect(controller.findOne(notificationId)).rejects.toThrow(httpError);
+      await expect(controller.findOne(notificationId)).rejects.toThrow(
+        httpError,
+      );
     });
 
     it('should throw Internal Server Error for other errors', async () => {
       service.findById.mockRejectedValue(new Error('Database error'));
 
       await expect(controller.findOne(notificationId)).rejects.toThrow(
-        new HttpException('Failed to fetch notification', HttpStatus.INTERNAL_SERVER_ERROR)
+        new HttpException(
+          'Failed to fetch notification',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
       );
     });
   });
@@ -160,7 +179,10 @@ describe('NotificationsController', () => {
       const invalidDto = { ...createDto, name: '' };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Name and type are required fields', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Name and type are required fields',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -168,7 +190,10 @@ describe('NotificationsController', () => {
       const invalidDto = { ...createDto, type: undefined as any };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Name and type are required fields', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Name and type are required fields',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -176,7 +201,10 @@ describe('NotificationsController', () => {
       const invalidDto = { ...createDto, type: 'invalid' as any };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Invalid notification type. Must be slack, webhook, or discord', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Invalid notification type. Must be slack, webhook, or discord',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -188,7 +216,10 @@ describe('NotificationsController', () => {
       };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Slack notifications require a webhook URL', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Slack notifications require a webhook URL',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -200,7 +231,10 @@ describe('NotificationsController', () => {
       };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Webhook notifications require a URL', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Webhook notifications require a URL',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -212,12 +246,18 @@ describe('NotificationsController', () => {
       };
 
       await expect(controller.create(invalidDto)).rejects.toThrow(
-        new HttpException('Discord notifications require a webhook URL', HttpStatus.BAD_REQUEST)
+        new HttpException(
+          'Discord notifications require a webhook URL',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
     it('should re-throw HttpException from service', async () => {
-      const httpError = new HttpException('Service error', HttpStatus.BAD_REQUEST);
+      const httpError = new HttpException(
+        'Service error',
+        HttpStatus.BAD_REQUEST,
+      );
       service.create.mockRejectedValue(httpError);
 
       await expect(controller.create(createDto)).rejects.toThrow(httpError);
@@ -227,7 +267,10 @@ describe('NotificationsController', () => {
       service.create.mockRejectedValue(new Error('Database error'));
 
       await expect(controller.create(createDto)).rejects.toThrow(
-        new HttpException('Failed to create notification', HttpStatus.INTERNAL_SERVER_ERROR)
+        new HttpException(
+          'Failed to create notification',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
       );
     });
   });
@@ -243,12 +286,18 @@ describe('NotificationsController', () => {
       const updatedNotificationDb = {
         ...mockNotificationDb,
         name: updateDto.name || mockNotificationDb.name,
-        enabled: updateDto.enabled !== undefined ? updateDto.enabled : mockNotificationDb.enabled,
+        enabled:
+          updateDto.enabled !== undefined
+            ? updateDto.enabled
+            : mockNotificationDb.enabled,
       };
       const updatedNotificationConfig = {
         ...mockNotificationConfig,
         name: updateDto.name || mockNotificationConfig.name,
-        enabled: updateDto.enabled !== undefined ? updateDto.enabled : mockNotificationConfig.enabled,
+        enabled:
+          updateDto.enabled !== undefined
+            ? updateDto.enabled
+            : mockNotificationConfig.enabled,
       };
 
       service.findById.mockResolvedValue(mockNotificationDb);
@@ -269,8 +318,10 @@ describe('NotificationsController', () => {
     it('should throw NotFound when notification does not exist', async () => {
       service.findById.mockResolvedValue(null);
 
-      await expect(controller.update(notificationId, updateDto)).rejects.toThrow(
-        new HttpException('Notification not found', HttpStatus.NOT_FOUND)
+      await expect(
+        controller.update(notificationId, updateDto),
+      ).rejects.toThrow(
+        new HttpException('Notification not found', HttpStatus.NOT_FOUND),
       );
     });
 
@@ -278,8 +329,13 @@ describe('NotificationsController', () => {
       service.findById.mockResolvedValue(mockNotificationDb);
       const invalidUpdateDto = { ...updateDto, type: 'invalid' as any };
 
-      await expect(controller.update(notificationId, invalidUpdateDto)).rejects.toThrow(
-        new HttpException('Invalid notification type. Must be slack, webhook, or discord', HttpStatus.BAD_REQUEST)
+      await expect(
+        controller.update(notificationId, invalidUpdateDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Invalid notification type. Must be slack, webhook, or discord',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
@@ -290,25 +346,40 @@ describe('NotificationsController', () => {
         config: { channel: '#general' }, // missing URL
       };
 
-      await expect(controller.update(notificationId, invalidUpdateDto)).rejects.toThrow(
-        new HttpException('Slack notifications require a webhook URL', HttpStatus.BAD_REQUEST)
+      await expect(
+        controller.update(notificationId, invalidUpdateDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Slack notifications require a webhook URL',
+          HttpStatus.BAD_REQUEST,
+        ),
       );
     });
 
     it('should re-throw HttpException from service', async () => {
-      const httpError = new HttpException('Service error', HttpStatus.BAD_REQUEST);
+      const httpError = new HttpException(
+        'Service error',
+        HttpStatus.BAD_REQUEST,
+      );
       service.findById.mockResolvedValue(mockNotificationDb);
       service.update.mockRejectedValue(httpError);
 
-      await expect(controller.update(notificationId, updateDto)).rejects.toThrow(httpError);
+      await expect(
+        controller.update(notificationId, updateDto),
+      ).rejects.toThrow(httpError);
     });
 
     it('should throw Internal Server Error for other errors', async () => {
       service.findById.mockResolvedValue(mockNotificationDb);
       service.update.mockRejectedValue(new Error('Database error'));
 
-      await expect(controller.update(notificationId, updateDto)).rejects.toThrow(
-        new HttpException('Failed to update notification', HttpStatus.INTERNAL_SERVER_ERROR)
+      await expect(
+        controller.update(notificationId, updateDto),
+      ).rejects.toThrow(
+        new HttpException(
+          'Failed to update notification',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
       );
     });
   });
@@ -332,7 +403,7 @@ describe('NotificationsController', () => {
       service.delete.mockRejectedValue(new Error('Notification not found'));
 
       await expect(controller.remove(notificationId)).rejects.toThrow(
-        new HttpException('Notification not found', HttpStatus.NOT_FOUND)
+        new HttpException('Notification not found', HttpStatus.NOT_FOUND),
       );
     });
 
@@ -340,15 +411,21 @@ describe('NotificationsController', () => {
       service.delete.mockRejectedValue(new Error('Database error'));
 
       await expect(controller.remove(notificationId)).rejects.toThrow(
-        new HttpException('Failed to delete notification', HttpStatus.INTERNAL_SERVER_ERROR)
+        new HttpException(
+          'Failed to delete notification',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        ),
       );
     });
   });
 
   describe('validateNotificationConfig', () => {
     it('should validate slack config successfully', () => {
-      const config = { url: 'https://hooks.slack.com/test', channel: '#general' };
-      
+      const config = {
+        url: 'https://hooks.slack.com/test',
+        channel: '#general',
+      };
+
       expect(() => {
         (controller as any).validateNotificationConfig('slack', config);
       }).not.toThrow();
@@ -356,7 +433,7 @@ describe('NotificationsController', () => {
 
     it('should validate webhook config successfully', () => {
       const config = { url: 'https://webhook.example.com', secret: 'secret' };
-      
+
       expect(() => {
         (controller as any).validateNotificationConfig('webhook', config);
       }).not.toThrow();
@@ -364,7 +441,7 @@ describe('NotificationsController', () => {
 
     it('should validate discord config successfully', () => {
       const config = { url: 'https://discord.com/api/webhooks/test' };
-      
+
       expect(() => {
         (controller as any).validateNotificationConfig('discord', config);
       }).not.toThrow();

@@ -178,7 +178,7 @@ describe('RepoService', () => {
         'feature-branch',
         'git@github.com:user/repo.git',
         undefined,
-        ['admin']
+        ['admin'],
       );
     });
 
@@ -209,7 +209,7 @@ describe('RepoService', () => {
         'feature-branch',
         'git@github.com:user/repo.git',
         undefined,
-        ['admin']
+        ['admin'],
       );
     });
 
@@ -239,7 +239,7 @@ describe('RepoService', () => {
         'feature-branch',
         'feature-branch',
         'git@github.com:user/repo.git',
-        ['admin']
+        ['admin'],
       );
     });
 
@@ -266,7 +266,7 @@ describe('RepoService', () => {
       await service.handleWebhook('github', headers, body);
 
       expect(console.log).toHaveBeenCalledWith(
-        'webhook pull request action not handled: undefined'
+        'webhook pull request action not handled: undefined',
       );
       expect(appsService.createPRApp).not.toHaveBeenCalled();
       expect(appsService.deletePRApp).not.toHaveBeenCalled();
@@ -298,7 +298,7 @@ describe('RepoService', () => {
         'pr-branch',
         'git@gitea.example.com:user/repo.git',
         undefined,
-        ['admin']
+        ['admin'],
       );
     });
 
@@ -324,7 +324,7 @@ describe('RepoService', () => {
       await service.handleWebhook('github', headers, {});
 
       expect(console.log).toHaveBeenCalledWith(
-        'webhook pull request action not handled: undefined'
+        'webhook pull request action not handled: undefined',
       );
       expect(appsService.createPRApp).not.toHaveBeenCalled();
       expect(appsService.deletePRApp).not.toHaveBeenCalled();
@@ -363,7 +363,7 @@ describe('RepoService', () => {
       await (service as any).handleWebhookPullRequest(mockWebhook);
 
       expect(console.log).toHaveBeenCalledWith(
-        'webhook pull request action not handled: synchronize'
+        'webhook pull request action not handled: synchronize',
       );
       expect(appsService.createPRApp).not.toHaveBeenCalled();
       expect(appsService.deletePRApp).not.toHaveBeenCalled();

@@ -21,11 +21,16 @@ describe('NotificationsService', () => {
     eventsGateway = { sendEvent: jest.fn() } as any;
     auditService = { log: jest.fn() } as any;
     kubectl = { createEvent: jest.fn() } as any;
-    notificationsDbService = { 
-      getNotificationConfigs: jest.fn().mockResolvedValue([])
+    notificationsDbService = {
+      getNotificationConfigs: jest.fn().mockResolvedValue([]),
     } as any;
 
-    service = new NotificationsService(eventsGateway, auditService, kubectl, notificationsDbService);
+    service = new NotificationsService(
+      eventsGateway,
+      auditService,
+      kubectl,
+      notificationsDbService,
+    );
     service.setConfig({
       notifications: [],
     } as any);

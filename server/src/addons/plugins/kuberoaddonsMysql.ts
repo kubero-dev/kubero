@@ -1,12 +1,12 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoAddonMysql extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'MySQL';
-  public description = 'MySQL is a fast, reliable, scalable, and easy to use open source relational database system. Designed to handle mission-critical, heavy-load production applications.'
+  public description =
+    'MySQL is a fast, reliable, scalable, and easy to use open source relational database system. Designed to handle mission-critical, heavy-load production applications.';
   public icon = '/img/addons/mysql.svg';
   public install: string = '';
   public url =
@@ -94,47 +94,45 @@ export class KuberoAddonMysql extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     KuberoAddonMysql: {
-      apiVersion: "application.kubero.dev/v1alpha1",
-      kind: "KuberoAddonMysql",
+      apiVersion: 'application.kubero.dev/v1alpha1',
+      kind: 'KuberoAddonMysql',
       metadata: {
-        name: "mysql"
+        name: 'mysql',
       },
       spec: {
         mysql: {
           image: {
-            tag: ""
+            tag: '',
           },
           resources: {},
           useDeployment: true,
           settings: {
             rootPassword: {
-              value: "postgres"
-            }
+              value: 'postgres',
+            },
           },
           userDatabase: {
             name: {
-              value: "kubero_database"
+              value: 'kubero_database',
             },
             user: {
-              value: "kubero_user"
+              value: 'kubero_user',
             },
             password: {
-              value: "kubero_password"
-            }
+              value: 'kubero_password',
+            },
           },
           storage: {
-            volumeName: "postgres-data",
-            requestedSize: "1Gi",
+            volumeName: 'postgres-data',
+            requestedSize: '1Gi',
             className: null,
-            accessModes: [
-              "ReadWriteOnce"
-            ],
-            keepPvc: false
-          }
-        }
-      }
+            accessModes: ['ReadWriteOnce'],
+            keepPvc: false,
+          },
+        },
+      },
     },
-  }
+  };
 
   protected additionalResourceDefinitions: object = {};
 

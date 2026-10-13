@@ -42,15 +42,15 @@ export class NotificationsDbService {
   private readonly prisma = new PrismaClient();
 
   async findAll(): Promise<NotificationDb[]> {
-    return await this.prisma.notification.findMany({
+    return (await this.prisma.notification.findMany({
       orderBy: { createdAt: 'desc' },
-    }) as NotificationDb[];
+    })) as NotificationDb[];
   }
 
   async findById(id: string): Promise<NotificationDb | null> {
-    return await this.prisma.notification.findUnique({
+    return (await this.prisma.notification.findUnique({
       where: { id },
-    }) as NotificationDb | null;
+    })) as NotificationDb | null;
   }
 
   async create(data: CreateNotificationDto): Promise<NotificationDb> {
@@ -77,22 +77,27 @@ export class NotificationsDbService {
         break;
     }
 
-    const notification = await this.prisma.notification.create({
+    const notification = (await this.prisma.notification.create({
       data: notificationData,
-    }) as NotificationDb;
+    })) as NotificationDb;
 
     this.logger.log(`Notification '${notification.name}' created successfully`);
     return notification;
   }
 
-  async update(id: string, data: Partial<CreateNotificationDto>): Promise<NotificationDb> {
+  async update(
+    id: string,
+    data: Partial<CreateNotificationDto>,
+  ): Promise<NotificationDb> {
     const updateData: any = {};
 
     if (data.name !== undefined) updateData.name = data.name;
     if (data.enabled !== undefined) updateData.enabled = data.enabled;
     if (data.type !== undefined) updateData.type = data.type;
-    if (data.pipelines !== undefined) updateData.pipelines = JSON.stringify(data.pipelines);
-    if (data.events !== undefined) updateData.events = JSON.stringify(data.events);
+    if (data.pipelines !== undefined)
+      updateData.pipelines = JSON.stringify(data.pipelines);
+    if (data.events !== undefined)
+      updateData.events = JSON.stringify(data.events);
 
     // Clear existing config fields and set new ones
     if (data.config && data.type) {
@@ -119,19 +124,19 @@ export class NotificationsDbService {
       }
     }
 
-    const notification = await this.prisma.notification.update({
+    const notification = (await this.prisma.notification.update({
       where: { id },
       data: updateData,
-    }) as NotificationDb;
+    })) as NotificationDb;
 
     this.logger.log(`Notification '${notification.name}' updated successfully`);
     return notification;
   }
 
   async delete(id: string): Promise<void> {
-    const notification = await this.prisma.notification.findUnique({
+    const notification = (await this.prisma.notification.findUnique({
       where: { id },
-    }) as NotificationDb | null;
+    })) as NotificationDb | null;
 
     if (!notification) {
       throw new Error(`Notification with id ${id} not found`);
@@ -176,12 +181,18 @@ export class NotificationsDbService {
   // Get all notifications in the format expected by the notification service
   async getNotificationConfigs(): Promise<INotificationConfig[]> {
     const notifications = await this.findAll();
-    return notifications.map(notification => this.toNotificationConfig(notification));
+    return notifications.map((notification) =>
+      this.toNotificationConfig(notification),
+    );
   }
 
   // Migration helper: Create notifications from YAML config
-  async migrateFromConfig(configNotifications: INotificationConfig[]): Promise<void> {
-    this.logger.log('Starting migration of notifications from YAML config to database');
+  async migrateFromConfig(
+    configNotifications: INotificationConfig[],
+  ): Promise<void> {
+    this.logger.log(
+      'Starting migration of notifications from YAML config to database',
+    );
 
     for (const configNotification of configNotifications) {
       try {
@@ -190,7 +201,9 @@ export class NotificationsDbService {
         });
 
         if (existingNotification) {
-          this.logger.warn(`Notification '${configNotification.name}' already exists in database, skipping`);
+          this.logger.warn(
+            `Notification '${configNotification.name}' already exists in database, skipping`,
+          );
           continue;
         }
 
@@ -203,12 +216,18 @@ export class NotificationsDbService {
           config: configNotification.config as any,
         });
 
-        this.logger.log(`Migrated notification '${configNotification.name}' to database`);
+        this.logger.log(
+          `Migrated notification '${configNotification.name}' to database`,
+        );
       } catch (error) {
-        this.logger.error(`Failed to migrate notification '${configNotification.name}': ${error.message}`);
+        this.logger.error(
+          `Failed to migrate notification '${configNotification.name}': ${error.message}`,
+        );
       }
     }
 
-    this.logger.log('Completed migration of notifications from YAML config to database');
+    this.logger.log(
+      'Completed migration of notifications from YAML config to database',
+    );
   }
 }

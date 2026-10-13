@@ -16,7 +16,7 @@ export class ReadonlyGuard implements CanActivate {
         'Kubero is in read-only mode, write operations are blocked',
       );
       this.logger.warn(
-        'KUBERO_READONLY is deprecated! Use Kubero\'s RBAC feature instead.',
+        "KUBERO_READONLY is deprecated! Use Kubero's RBAC feature instead.",
       );
       throw new HttpException('Kubero is in read-only mode', 202);
     }

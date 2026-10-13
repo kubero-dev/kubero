@@ -1,6 +1,5 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class Elasticsearch extends Plugin implements IPlugin {
@@ -9,7 +8,8 @@ export class Elasticsearch extends Plugin implements IPlugin {
   public description: string =
     'Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases.';
   public icon = '/img/addons/elasticsearch.svg';
-  public install: string = 'kubectl create -f https://download.elastic.co/downloads/eck/3.1.0/crds.yaml && kubectl apply -f https://download.elastic.co/downloads/eck/3.1.0/operator.yaml';
+  public install: string =
+    'kubectl create -f https://download.elastic.co/downloads/eck/3.1.0/crds.yaml && kubectl apply -f https://download.elastic.co/downloads/eck/3.1.0/operator.yaml';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/elastic-cloud-eck';
   public docs = [
@@ -49,22 +49,24 @@ export class Elasticsearch extends Plugin implements IPlugin {
       required: true,
       description: 'Number of Elasticsearch instances to create',
     },
-    'Elasticsearch.spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName': {
-      type: 'select-storageclass',
-      label: 'Master Storage Class',
-      // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
-      name: 'spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName',
-      default: 'default',
-      required: true,
-    },
-    'Elasticsearch.spec.nodeSets[0].volumeClaimTemplates[0].spec.resources.requests.storage': {
-      type: 'text',
-      label: 'Master Storage Size*',
-      name: 'spec.nodeSets[0].volumeClaimTemplates[0].spec.resources.requests.storage',
-      default: '10Gi',
-      required: true,
-      description: 'Size of the storage',
-    },
+    'Elasticsearch.spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName':
+      {
+        type: 'select-storageclass',
+        label: 'Master Storage Class',
+        // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
+        name: 'spec.nodeSets[0].volumeClaimTemplates[0].spec.storageClassName',
+        default: 'default',
+        required: true,
+      },
+    'Elasticsearch.spec.nodeSets[0].volumeClaimTemplates[0].spec.resources.requests.storage':
+      {
+        type: 'text',
+        label: 'Master Storage Size*',
+        name: 'spec.nodeSets[0].volumeClaimTemplates[0].spec.resources.requests.storage',
+        default: '10Gi',
+        required: true,
+        description: 'Size of the storage',
+      },
     'Elasticsearch.spec.nodeSets[1].count': {
       type: 'number',
       label: 'Data Node Instances',
@@ -73,22 +75,24 @@ export class Elasticsearch extends Plugin implements IPlugin {
       required: true,
       description: 'Number of Elasticsearch instances to create',
     },
-    'Elasticsearch.spec.nodeSets[1].volumeClaimTemplates[0].spec.storageClassName': {
-      type: 'select-storageclass',
-      label: 'Data Node Storage Class',
-      // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
-      name: 'spec.nodeSets[1].volumeClaimTemplates[0].spec.storageClassName',
-      default: 'default',
-      required: true,
-    },
-    'Elasticsearch.spec.nodeSets[1].volumeClaimTemplates[0].spec.resources.requests.storage': {
-      type: 'text',
-      label: 'Data Node Storage Size*',
-      name: 'spec.nodeSets[1].volumeClaimTemplates[0].spec.resources.requests.storage',
-      default: '10Gi',
-      required: true,
-      description: 'Size of the storage',
-    },
+    'Elasticsearch.spec.nodeSets[1].volumeClaimTemplates[0].spec.storageClassName':
+      {
+        type: 'select-storageclass',
+        label: 'Data Node Storage Class',
+        // options: ['default', 'local-path', 'nfs-client', 'rook-ceph-block'],
+        name: 'spec.nodeSets[1].volumeClaimTemplates[0].spec.storageClassName',
+        default: 'default',
+        required: true,
+      },
+    'Elasticsearch.spec.nodeSets[1].volumeClaimTemplates[0].spec.resources.requests.storage':
+      {
+        type: 'text',
+        label: 'Data Node Storage Size*',
+        name: 'spec.nodeSets[1].volumeClaimTemplates[0].spec.resources.requests.storage',
+        default: '10Gi',
+        required: true,
+        description: 'Size of the storage',
+      },
   };
 
   public env: any[] = [];
@@ -96,128 +100,118 @@ export class Elasticsearch extends Plugin implements IPlugin {
   // https://www.elastic.co/docs/deploy-manage/deploy/cloud-on-k8s/nodes-orchestration
   public resourceDefinitions: object = {
     Elasticsearch: {
-      apiVersion: "elasticsearch.k8s.elastic.co/v1",
-      kind: "Elasticsearch",
+      apiVersion: 'elasticsearch.k8s.elastic.co/v1',
+      kind: 'Elasticsearch',
       metadata: {
-        name: "elasticsearch-sample"
+        name: 'elasticsearch-sample',
       },
       spec: {
-        version: "9.1.0",
+        version: '9.1.0',
         nodeSets: [
           {
-            name: "master-nodes",
+            name: 'master-nodes',
             count: 3,
             config: {
               node: {
-                roles: [
-                  "master"
-                ],
+                roles: ['master'],
                 attr: {
-                  attr_name: "attr_value"
+                  attr_name: 'attr_value',
                 },
                 store: {
-                  allow_mmap: false
-                }
-              }
+                  allow_mmap: false,
+                },
+              },
             },
             podTemplate: {
               spec: {
                 containers: [
                   {
-                    name: "elasticsearch",
+                    name: 'elasticsearch',
                     resources: {
                       requests: {
-                        memory: "4Gi",
-                        cpu: 1
+                        memory: '4Gi',
+                        cpu: 1,
                       },
                       limits: {
-                        memory: "4Gi",
-                        cpu: 2
-                      }
-                    }
-                  }
-                ]
-              }
+                        memory: '4Gi',
+                        cpu: 2,
+                      },
+                    },
+                  },
+                ],
+              },
             },
             volumeClaimTemplates: [
               {
                 metadata: {
-                  name: "elasticsearch-data"
+                  name: 'elasticsearch-data',
                 },
                 spec: {
-                  accessModes: [
-                    "ReadWriteOnce"
-                  ],
+                  accessModes: ['ReadWriteOnce'],
                   resources: {
                     requests: {
-                      storage: "8Gi"
-                    }
+                      storage: '8Gi',
+                    },
                   },
-                  storageClassName: "default"
-                }
-              }
-            ]
+                  storageClassName: 'default',
+                },
+              },
+            ],
           },
           {
-            name: "data-nodes",
+            name: 'data-nodes',
             count: 3,
             config: {
               node: {
-                roles: [
-                  "data",
-                  "ingest",
-                  "ml"
-                ],
+                roles: ['data', 'ingest', 'ml'],
                 attr: {
-                  attr_name: "attr_value"
+                  attr_name: 'attr_value',
                 },
                 store: {
-                  allow_mmap: false
-                }
-              }
+                  allow_mmap: false,
+                },
+              },
             },
             podTemplate: {
               spec: {
                 containers: [
                   {
-                    name: "elasticsearch",
+                    name: 'elasticsearch',
                     resources: {
                       requests: {
-                        memory: "4Gi",
-                        cpu: 1
+                        memory: '4Gi',
+                        cpu: 1,
                       },
                       limits: {
-                        memory: "4Gi",
-                        cpu: 2
-                      }
-                    }
-                  }
-                ]
-              }
+                        memory: '4Gi',
+                        cpu: 2,
+                      },
+                    },
+                  },
+                ],
+              },
             },
             volumeClaimTemplates: [
               {
                 metadata: {
-                  name: "elasticsearch-data"
+                  name: 'elasticsearch-data',
                 },
                 spec: {
-                  accessModes: [
-                    "ReadWriteOnce"
-                  ],
+                  accessModes: ['ReadWriteOnce'],
                   resources: {
                     requests: {
-                      storage: "8Gi"
-                    }
+                      storage: '8Gi',
+                    },
                   },
-                  storageClassName: "default"
-                }
-              }
-            ]
-          }
-        ]
-      }
-    }
-  }
+                  storageClassName: 'default',
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  };
 
   protected additionalResourceDefinitions: object = {};
 

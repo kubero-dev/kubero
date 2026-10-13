@@ -36,7 +36,7 @@ export class LogsService {
     appName: string,
     podName: string,
     container: string,
-    userGroups: string[]
+    userGroups: string[],
   ) {
     const logStream = new Stream.PassThrough();
 

@@ -1,5 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { IPipelineList, IPipeline, IKubectlPipelineList } from './pipelines.interface';
+import {
+  IPipelineList,
+  IPipeline,
+  IKubectlPipelineList,
+} from './pipelines.interface';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { Buildpack } from '../config/buildpack/buildpack';
 import { IUser } from '../auth/auth.interface';
@@ -16,7 +20,9 @@ export class PipelinesService {
     private notificationsService: NotificationsService,
   ) {}
 
-  public async listPipelines(userGroups: string[] = []): Promise<IPipelineList> {
+  public async listPipelines(
+    userGroups: string[] = [],
+  ): Promise<IPipelineList> {
     //this.logger.debug('listPipelines for userGroups: ' + userGroups.join(', '));
     let pipelines = await this.kubectl.getPipelinesList(userGroups);
 
@@ -29,7 +35,10 @@ export class PipelinesService {
     return ret;
   }
 
-  public async getPipelineWithApps(pipelineName: string, userGroups: string[] = []): Promise<IPipeline | undefined> {
+  public async getPipelineWithApps(
+    pipelineName: string,
+    userGroups: string[] = [],
+  ): Promise<IPipeline | undefined> {
     this.logger.debug('listApps in ' + pipelineName);
 
     await this.kubectl.setCurrentContext(
@@ -49,7 +58,11 @@ export class PipelinesService {
     if (pipeline) {
       for (const phase of pipeline.phases) {
         if (phase.enabled == true) {
-          const contextName = await this.getContext(pipelineName, phase.name, userGroups);
+          const contextName = await this.getContext(
+            pipelineName,
+            phase.name,
+            userGroups,
+          );
           if (contextName) {
             const namespace = pipelineName + '-' + phase.name;
             const apps = await this.kubectl.getAppsList(namespace, contextName);

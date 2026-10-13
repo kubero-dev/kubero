@@ -1,13 +1,13 @@
 import { KuberoRabbitMQ } from './kuberoRabbitMQ';
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class KuberoAddonMemcached extends Plugin implements IPlugin {
   public id: string = 'kubero-operator'; //same as operator name
   public displayName = 'Memcached';
-  public description = 'Memcached is a high-performance, distributed memory object caching system, intended for use in speeding up dynamic web applications by alleviating database load.';
+  public description =
+    'Memcached is a high-performance, distributed memory object caching system, intended for use in speeding up dynamic web applications by alleviating database load.';
   public icon = '/img/addons/memcached.svg';
   public install: string = '';
   public url =
@@ -71,27 +71,27 @@ export class KuberoAddonMemcached extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     KuberoAddonMemcached: {
-      apiVersion: "application.kubero.dev/v1alpha1",
-      kind: "KuberoAddonMemcached",
+      apiVersion: 'application.kubero.dev/v1alpha1',
+      kind: 'KuberoAddonMemcached',
       metadata: {
-        name: "kuberoaddonmemcached-sample"
+        name: 'kuberoaddonmemcached-sample',
       },
       spec: {
         memcached: {
           image: {
-            tag: "1.6.39"
+            tag: '1.6.39',
           },
           replicaCount: 1,
           config: {
             memoryLimit: 64,
             maxConnections: 1024,
             extraArgs: [],
-            verbosity: 0
+            verbosity: 0,
           },
-          resources: {}
-        }
-      }
-    }
+          resources: {},
+        },
+      },
+    },
   };
 
   protected additionalResourceDefinitions: object = {};

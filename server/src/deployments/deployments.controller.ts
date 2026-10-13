@@ -45,7 +45,12 @@ export class DeploymentsController {
     @Param('app') app: string,
     @Request() req: any,
   ) {
-    return this.deploymentsService.listBuildjobs(pipeline, phase, app, req.user.userGroups);
+    return this.deploymentsService.listBuildjobs(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
   }
 
   @Post('/build/:pipeline/:phase/:app')
@@ -178,7 +183,13 @@ export class DeploymentsController {
     @Param('tag') tag: string,
     @Request() req: any,
   ): Promise<OKDTO> {
-    this.deploymentsService.deployApp(pipeline, phase, app, tag, req.user.userGroups);
+    this.deploymentsService.deployApp(
+      pipeline,
+      phase,
+      app,
+      tag,
+      req.user.userGroups,
+    );
     return {
       message: `Deployment triggered for ${app} in ${pipeline} phase ${phase} with tag ${tag}`,
       status: 'success',

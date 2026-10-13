@@ -133,7 +133,10 @@ describe('PipelinesController', () => {
   it('should get all apps for a pipeline', async () => {
     const req = { user: mockJWT };
     const result = await controller.getPipelineApps('pipeline1', req);
-    expect(service.getPipelineWithApps).toHaveBeenCalledWith('pipeline1', ["group1", "group2"]);
+    expect(service.getPipelineWithApps).toHaveBeenCalledWith('pipeline1', [
+      'group1',
+      'group2',
+    ]);
     expect(result).toEqual([{ name: 'app1' }]);
   });
 });

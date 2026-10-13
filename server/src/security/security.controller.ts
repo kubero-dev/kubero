@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { SecurityService } from './security.service';
 import {
   ApiBearerAuth,
@@ -30,7 +37,12 @@ export class SecurityController {
     @Param('app') app: string,
     @Request() req: any,
   ) {
-    return this.securityService.startScan(pipeline, phase, app, req.user.userGroups);
+    return this.securityService.startScan(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
   }
 
   @Get(':pipeline/:phase/:app/scan/result')

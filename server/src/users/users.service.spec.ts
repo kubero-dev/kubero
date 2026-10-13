@@ -34,7 +34,7 @@ describe('UsersService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     prismaMock = {
       user: {
         findUnique: jest.fn(),
@@ -54,9 +54,15 @@ describe('UsersService', () => {
     };
 
     // Mock bcrypt methods
-    (mockedBcrypt.compare as jest.Mock).mockImplementation(() => Promise.resolve(true));
-    (mockedBcrypt.hash as jest.Mock).mockImplementation(() => Promise.resolve('hashedPassword'));
-    (mockedBcrypt.hashSync as jest.Mock).mockImplementation(() => 'hashedPassword');
+    (mockedBcrypt.compare as jest.Mock).mockImplementation(() =>
+      Promise.resolve(true),
+    );
+    (mockedBcrypt.hash as jest.Mock).mockImplementation(() =>
+      Promise.resolve('hashedPassword'),
+    );
+    (mockedBcrypt.hashSync as jest.Mock).mockImplementation(
+      () => 'hashedPassword',
+    );
 
     service = new UsersService();
     // @ts-ignore
@@ -217,9 +223,13 @@ describe('UsersService', () => {
         id: '1',
         username: 'user1',
         email: 'user1@example.com',
-        tokens: [{ id: 'token1', createdAt: new Date(), expiresAt: new Date() }],
+        tokens: [
+          { id: 'token1', createdAt: new Date(), expiresAt: new Date() },
+        ],
         role: { id: 'role1', name: 'admin', description: 'Administrator' },
-        userGroups: [{ id: 'group1', name: 'admins', description: 'Admin group' }],
+        userGroups: [
+          { id: 'group1', name: 'admins', description: 'Admin group' },
+        ],
       };
       prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
 
@@ -276,7 +286,7 @@ describe('UsersService', () => {
         'existinguser',
         'existing@example.com',
         'oauth2',
-        'https://example.com/avatar.jpg'
+        'https://example.com/avatar.jpg',
       );
 
       expect(result).toBe(existingUser);
@@ -303,7 +313,7 @@ describe('UsersService', () => {
         'newuser',
         'new@example.com',
         'oauth2',
-        'https://example.com/avatar.jpg'
+        'https://example.com/avatar.jpg',
       );
 
       expect(result).toBe(newUser);
@@ -315,17 +325,20 @@ describe('UsersService', () => {
       prismaMock.role.findFirst.mockResolvedValueOnce(null);
 
       await expect(
-        service.findOneOrCreate('newuser', 'new@example.com', 'oauth2', '')
+        service.findOneOrCreate('newuser', 'new@example.com', 'oauth2', ''),
       ).rejects.toThrow('Default role not found');
     });
 
     it('should throw error if default user group not found', async () => {
       prismaMock.user.findUnique.mockResolvedValueOnce(null);
-      prismaMock.role.findFirst.mockResolvedValueOnce({ id: 'role1', name: 'guest' });
+      prismaMock.role.findFirst.mockResolvedValueOnce({
+        id: 'role1',
+        name: 'guest',
+      });
       prismaMock.userGroup.findFirst.mockResolvedValueOnce(null);
 
       await expect(
-        service.findOneOrCreate('newuser', 'new@example.com', 'oauth2', '')
+        service.findOneOrCreate('newuser', 'new@example.com', 'oauth2', ''),
       ).rejects.toThrow('Default user group not found');
     });
   });
@@ -351,20 +364,33 @@ describe('UsersService', () => {
 
       prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
       (mockedBcrypt.compare as jest.Mock).mockResolvedValueOnce(true);
-      (mockedBcrypt.hash as jest.Mock).mockResolvedValueOnce('hashedNewPassword');
+      (mockedBcrypt.hash as jest.Mock).mockResolvedValueOnce(
+        'hashedNewPassword',
+      );
       prismaMock.user.update.mockResolvedValueOnce(updatedUser);
 
-      const result = await service.updateMyPassword('1', 'currentPass', 'newPassword123');
+      const result = await service.updateMyPassword(
+        '1',
+        'currentPass',
+        'newPassword123',
+      );
 
       expect(result).toBe(updatedUser);
-      expect(mockedBcrypt.compare).toHaveBeenCalledWith('currentPass', 'hashedCurrentPassword');
+      expect(mockedBcrypt.compare).toHaveBeenCalledWith(
+        'currentPass',
+        'hashedCurrentPassword',
+      );
       expect(mockedBcrypt.hash).toHaveBeenCalledWith('newPassword123', 10);
     });
 
     it('should return undefined for invalid input parameters', async () => {
       const result1 = await service.updateMyPassword('1', '', 'newPassword123');
       const result2 = await service.updateMyPassword('1', 'currentPass', '');
-      const result3 = await service.updateMyPassword('1', 'currentPass', 'short');
+      const result3 = await service.updateMyPassword(
+        '1',
+        'currentPass',
+        'short',
+      );
 
       expect(result1).toBeUndefined();
       expect(result2).toBeUndefined();
@@ -374,7 +400,11 @@ describe('UsersService', () => {
     it('should return undefined when user not found', async () => {
       prismaMock.user.findUnique.mockResolvedValueOnce(null);
 
-      const result = await service.updateMyPassword('1', 'currentPass', 'newPassword123');
+      const result = await service.updateMyPassword(
+        '1',
+        'currentPass',
+        'newPassword123',
+      );
 
       expect(result).toBeUndefined();
     });
@@ -385,7 +415,7 @@ describe('UsersService', () => {
       (mockedBcrypt.compare as jest.Mock).mockResolvedValueOnce(false);
 
       await expect(
-        service.updateMyPassword('1', 'wrongPassword', 'newPassword123')
+        service.updateMyPassword('1', 'wrongPassword', 'newPassword123'),
       ).rejects.toThrow(HttpException);
     });
 
@@ -393,11 +423,13 @@ describe('UsersService', () => {
       const mockUser = { id: '1', password: 'hashedCurrentPassword' };
       prismaMock.user.findUnique.mockResolvedValueOnce(mockUser);
       (mockedBcrypt.compare as jest.Mock).mockResolvedValueOnce(true);
-      (mockedBcrypt.hash as jest.Mock).mockResolvedValueOnce('hashedNewPassword');
+      (mockedBcrypt.hash as jest.Mock).mockResolvedValueOnce(
+        'hashedNewPassword',
+      );
       prismaMock.user.update.mockRejectedValueOnce(new Error('Database error'));
 
       await expect(
-        service.updateMyPassword('1', 'currentPass', 'newPassword123')
+        service.updateMyPassword('1', 'currentPass', 'newPassword123'),
       ).rejects.toThrow('Database error');
     });
   });
@@ -454,7 +486,10 @@ describe('UsersService', () => {
         buffer: Buffer.from('fake-image-data'),
         mimetype: 'image/jpeg',
       };
-      const updatedUser = { id: '1', image: 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh' };
+      const updatedUser = {
+        id: '1',
+        image: 'data:image/jpeg;base64,ZmFrZS1pbWFnZS1kYXRh',
+      };
 
       prismaMock.user.update.mockResolvedValueOnce(updatedUser);
 
@@ -520,12 +555,19 @@ describe('UsersService', () => {
         headers: { 'content-type': 'image/jpeg' },
       });
 
-      const result = await (service as any).generateUserDataFromImageUrl('https://example.com/image.jpg');
+      const result = await (service as any).generateUserDataFromImageUrl(
+        'https://example.com/image.jpg',
+      );
 
-      expect(result).toBe(`data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
-      expect(mockedAxios.get).toHaveBeenCalledWith('https://example.com/image.jpg', {
-        responseType: 'arraybuffer',
-      });
+      expect(result).toBe(
+        `data:image/jpeg;base64,${imageBuffer.toString('base64')}`,
+      );
+      expect(mockedAxios.get).toHaveBeenCalledWith(
+        'https://example.com/image.jpg',
+        {
+          responseType: 'arraybuffer',
+        },
+      );
     });
 
     it('should throw error when image fetch fails', async () => {
@@ -536,7 +578,9 @@ describe('UsersService', () => {
       });
 
       await expect(
-        (service as any).generateUserDataFromImageUrl('https://example.com/notfound.jpg')
+        (service as any).generateUserDataFromImageUrl(
+          'https://example.com/notfound.jpg',
+        ),
       ).rejects.toThrow('Failed to fetch image from URL');
     });
 
@@ -548,7 +592,9 @@ describe('UsersService', () => {
       });
 
       await expect(
-        (service as any).generateUserDataFromImageUrl('https://example.com/text.txt')
+        (service as any).generateUserDataFromImageUrl(
+          'https://example.com/text.txt',
+        ),
       ).rejects.toThrow('Invalid image MIME type');
     });
 
@@ -560,26 +606,37 @@ describe('UsersService', () => {
         headers: {},
       });
 
-      const result = await (service as any).generateUserDataFromImageUrl('https://example.com/image');
+      const result = await (service as any).generateUserDataFromImageUrl(
+        'https://example.com/image',
+      );
 
-      expect(result).toBe(`data:image/jpeg;base64,${imageBuffer.toString('base64')}`);
+      expect(result).toBe(
+        `data:image/jpeg;base64,${imageBuffer.toString('base64')}`,
+      );
     });
   });
 
   describe('create with error handling', () => {
     it('should throw error when no password provided', async () => {
-      const userWithoutPassword = { username: 'testuser', email: 'test@example.com' };
+      const userWithoutPassword = {
+        username: 'testuser',
+        email: 'test@example.com',
+      };
 
       await expect(service.create(userWithoutPassword)).rejects.toThrow(
-        'Password is required for user creation.'
+        'Password is required for user creation.',
       );
     });
 
     it('should throw error when empty password provided', async () => {
-      const userWithEmptyPassword = { username: 'testuser', password: '', email: 'test@example.com' };
+      const userWithEmptyPassword = {
+        username: 'testuser',
+        password: '',
+        email: 'test@example.com',
+      };
 
       await expect(service.create(userWithEmptyPassword)).rejects.toThrow(
-        'Password is required for user creation.'
+        'Password is required for user creation.',
       );
     });
   });

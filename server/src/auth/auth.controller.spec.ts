@@ -108,7 +108,7 @@ describe('AuthController', () => {
       const mockReq = { user: { username: 'user' } };
       const mockRes = { cookie: jest.fn(), redirect: jest.fn() };
       await controller.githubCallback(mockReq as any, mockRes as any);
-      expect(service.loginOAuth2).toHaveBeenCalledWith({"username": "user"});
+      expect(service.loginOAuth2).toHaveBeenCalledWith({ username: 'user' });
       expect(mockRes.cookie).toHaveBeenCalledWith('kubero.JWT_TOKEN', 'token');
       expect(mockRes.redirect).toHaveBeenCalledWith('/');
     });
@@ -120,7 +120,7 @@ describe('AuthController', () => {
       const mockReq = { user: { username: 'user' } };
       const mockRes = { cookie: jest.fn(), redirect: jest.fn() };
       await controller.oauth2Callback(mockReq as any, mockRes as any);
-      expect(service.loginOAuth2).toHaveBeenCalledWith({"username": "user"});
+      expect(service.loginOAuth2).toHaveBeenCalledWith({ username: 'user' });
       expect(mockRes.cookie).toHaveBeenCalledWith('kubero.JWT_TOKEN', 'token');
       expect(mockRes.redirect).toHaveBeenCalledWith('/');
     });

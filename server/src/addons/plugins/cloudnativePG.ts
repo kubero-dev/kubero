@@ -1,6 +1,5 @@
-import { Plugin, } from './plugin';
-import { IPlugin, IPluginFormFields  } from './plugin.interface';
-
+import { Plugin } from './plugin';
+import { IPlugin, IPluginFormFields } from './plugin.interface';
 
 // Classname must be same as the CRD's Name
 export class Cluster extends Plugin implements IPlugin {
@@ -9,7 +8,8 @@ export class Cluster extends Plugin implements IPlugin {
   public description: string =
     'CloudNativePG is the Kubernetes operator that covers the full lifecycle of a highly available PostgreSQL database cluster with a primary/standby architecture, using native streaming replication.';
   public icon = '/img/addons/pgsql.svg';
-  public install: string = 'kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.0.yaml';
+  public install: string =
+    'kubectl apply -f https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.27/releases/cnpg-1.27.0.yaml';
   public url =
     'https://artifacthub.io/packages/olm/community-operators/kubero-operator';
   public docs = [
@@ -35,7 +35,11 @@ export class Cluster extends Plugin implements IPlugin {
     'CloudnativePG.spec.image.tag': {
       type: 'combobox',
       label: 'Version/Tag',
-      options: ['ghcr.io/cloudnative-pg/postgresql:17-minimal-bookworm', 'ghcr.io/cloudnative-pg/postgresql:16-minimal-bookworm', 'ghcr.io/cloudnative-pg/postgresql:15-minimal-bookworm'], // TODO - load this dynamically
+      options: [
+        'ghcr.io/cloudnative-pg/postgresql:17-minimal-bookworm',
+        'ghcr.io/cloudnative-pg/postgresql:16-minimal-bookworm',
+        'ghcr.io/cloudnative-pg/postgresql:15-minimal-bookworm',
+      ], // TODO - load this dynamically
       name: 'spec.image.tag',
       required: true,
       default: 'ghcr.io/cloudnative-pg/postgresql:17-minimal-bookworm',
@@ -104,18 +108,18 @@ export class Cluster extends Plugin implements IPlugin {
 
   public resourceDefinitions: object = {
     CloudnativePG: {
-      apiVersion: "postgresql.cnpg.io/v1",
-      kind: "Cluster",
+      apiVersion: 'postgresql.cnpg.io/v1',
+      kind: 'Cluster',
       metadata: {
-        name: "cluster-example-full"
+        name: 'cluster-example-full',
       },
       spec: {
-        description: "Kubero generated postgresql cluster",
-        imageName: "ghcr.io/cloudnative-pg/postgresql:17.5",
+        description: 'Kubero generated postgresql cluster',
+        imageName: 'ghcr.io/cloudnative-pg/postgresql:17.5',
         instances: 3,
         startDelay: 300,
         stopDelay: 300,
-        primaryUpdateStrategy: "unsupervised",
+        primaryUpdateStrategy: 'unsupervised',
         /*
         postgresql: {
           parameters: {
@@ -135,23 +139,23 @@ export class Cluster extends Plugin implements IPlugin {
         */
         bootstrap: {
           initdb: {
-            database: "app",
-            owner: "app",
+            database: 'app',
+            owner: 'app',
             secret: {
-              name: "cluster-app-user"
-            }
-          }
+              name: 'cluster-app-user',
+            },
+          },
         },
         enableSuperuserAccess: true,
         superuserSecret: {
-          name: "cluster-superuser"
+          name: 'cluster-superuser',
         },
         storage: {
-          storageClass: "standard",
-          size: "1Gi"
+          storageClass: 'standard',
+          size: '1Gi',
         },
-        backup: null
-      }
+        backup: null,
+      },
     },
     superuserSecret: {
       apiVersion: 'v1',
@@ -161,8 +165,8 @@ export class Cluster extends Plugin implements IPlugin {
       },
       type: 'Opaque',
       stringData: {
-        'username': 'postgres',
-        'password': 'changeme',
+        username: 'postgres',
+        password: 'changeme',
       },
     },
     appUserSecret: {
@@ -173,11 +177,11 @@ export class Cluster extends Plugin implements IPlugin {
       },
       type: 'Opaque',
       stringData: {
-        'username': 'app',
-        'password': 'app',
+        username: 'app',
+        password: 'app',
       },
     },
-  }
+  };
 
   protected additionalResourceDefinitions: object = {};
 

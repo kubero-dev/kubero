@@ -3,9 +3,6 @@ import { ResetAdminCommand } from './commands/reset-admin.command';
 import { DatabaseService } from '../database/database.service';
 
 @Module({
-  providers: [
-    ResetAdminCommand,
-    DatabaseService,
-  ],
+  providers: [ResetAdminCommand, DatabaseService],
 })
 export class CliModule {}

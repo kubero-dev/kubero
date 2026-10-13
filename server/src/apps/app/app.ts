@@ -224,7 +224,7 @@ export class App implements IApp {
     this.autoscaling = {
       enabled: app.autoscale,
     };
-    (this.fullnameOverride = ''),
+    ((this.fullnameOverride = ''),
       (this.image = {
         containerPort: app.image.containerPort,
         pullPolicy: 'Always',
@@ -234,7 +234,7 @@ export class App implements IApp {
         fetch: app.image.fetch,
         build: app.image.build,
         run: app.image.run,
-      });
+      }));
 
     // function to set security context, required for backwards compatibility
     // Added in v1.11.0
@@ -259,7 +259,7 @@ export class App implements IApp {
       'nginx';
     this.ingress.enabled = true;
 
-    (this.nameOverride = ''),
+    ((this.nameOverride = ''),
       (this.nodeSelector = {}),
       (this.podAnnotations = {}),
       (this.podSecurityContext = {}),
@@ -269,7 +269,7 @@ export class App implements IApp {
         port: 80,
         type: 'ClusterIP',
       }),
-      (this.tolerations = []);
+      (this.tolerations = []));
 
     this.healthcheck = app.healthcheck;
   }

@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsDbService, CreateNotificationDto, NotificationDb } from './notifications-db.service';
+import {
+  NotificationsDbService,
+  CreateNotificationDto,
+  NotificationDb,
+} from './notifications-db.service';
 import { INotificationConfig } from './notifications.interface';
 import { PrismaClient } from '@prisma/client';
 
@@ -102,7 +106,9 @@ describe('NotificationsDbService', () => {
     });
 
     it('should handle database errors', async () => {
-      prisma.notification.findMany.mockRejectedValue(new Error('Database error'));
+      prisma.notification.findMany.mockRejectedValue(
+        new Error('Database error'),
+      );
 
       await expect(service.findAll()).rejects.toThrow('Database error');
     });
@@ -131,9 +137,13 @@ describe('NotificationsDbService', () => {
     });
 
     it('should handle database errors', async () => {
-      prisma.notification.findUnique.mockRejectedValue(new Error('Database error'));
+      prisma.notification.findUnique.mockRejectedValue(
+        new Error('Database error'),
+      );
 
-      await expect(service.findById(notificationId)).rejects.toThrow('Database error');
+      await expect(service.findById(notificationId)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -238,7 +248,9 @@ describe('NotificationsDbService', () => {
     it('should handle database errors during creation', async () => {
       prisma.notification.create.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.create(mockCreateNotificationDto)).rejects.toThrow('Database error');
+      await expect(service.create(mockCreateNotificationDto)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -333,7 +345,9 @@ describe('NotificationsDbService', () => {
     it('should handle database errors during update', async () => {
       prisma.notification.update.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.update(notificationId, { name: 'Updated' })).rejects.toThrow('Database error');
+      await expect(
+        service.update(notificationId, { name: 'Updated' }),
+      ).rejects.toThrow('Database error');
     });
   });
 
@@ -358,7 +372,7 @@ describe('NotificationsDbService', () => {
       prisma.notification.findUnique.mockResolvedValue(null);
 
       await expect(service.delete(notificationId)).rejects.toThrow(
-        `Notification with id ${notificationId} not found`
+        `Notification with id ${notificationId} not found`,
       );
       expect(prisma.notification.delete).not.toHaveBeenCalled();
     });
@@ -367,7 +381,9 @@ describe('NotificationsDbService', () => {
       prisma.notification.findUnique.mockResolvedValue(mockNotificationDb);
       prisma.notification.delete.mockRejectedValue(new Error('Database error'));
 
-      await expect(service.delete(notificationId)).rejects.toThrow('Database error');
+      await expect(service.delete(notificationId)).rejects.toThrow(
+        'Database error',
+      );
     });
   });
 
@@ -522,7 +538,9 @@ describe('NotificationsDbService', () => {
         .mockResolvedValueOnce(mockNotificationDb);
 
       // Should not throw, but handle errors gracefully
-      await expect(service.migrateFromConfig(configNotifications)).resolves.not.toThrow();
+      await expect(
+        service.migrateFromConfig(configNotifications),
+      ).resolves.not.toThrow();
 
       expect(prisma.notification.create).toHaveBeenCalledTimes(2);
     });

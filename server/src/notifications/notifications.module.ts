@@ -8,7 +8,12 @@ import { KubernetesModule } from '../kubernetes/kubernetes.module';
 @Global()
 @Module({
   controllers: [NotificationsController],
-  providers: [NotificationsService, NotificationsDbService, AuditModule, KubernetesModule],
+  providers: [
+    NotificationsService,
+    NotificationsDbService,
+    AuditModule,
+    KubernetesModule,
+  ],
   exports: [NotificationsService, NotificationsDbService],
 })
 export class NotificationsModule {}

@@ -75,7 +75,10 @@ describe('GroupsService', () => {
   it('should update a group', async () => {
     const mockGroup = { id: '4', name: 'group4', description: 'desc4' };
     prismaMock.userGroup.update.mockResolvedValueOnce(mockGroup);
-    const result = await service.update('4', { name: 'group4', description: 'desc4' });
+    const result = await service.update('4', {
+      name: 'group4',
+      description: 'desc4',
+    });
     expect(result).toBe(mockGroup);
     expect(prismaMock.userGroup.update).toHaveBeenCalledWith({
       where: { id: '4' },

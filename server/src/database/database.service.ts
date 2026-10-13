@@ -12,7 +12,6 @@ export class DatabaseService {
   private readonly prisma = new PrismaClient();
 
   constructor() {
-
     // Initialize the Prisma client
     this.prisma
       .$connect()
@@ -70,7 +69,6 @@ export class DatabaseService {
     }
   }
 
-
   private static async CreateSystemUser() {
     const prisma = new PrismaClient();
 
@@ -79,7 +77,10 @@ export class DatabaseService {
       where: { id: '1' },
     });
     if (existingUser) {
-      Logger.log('System user already exists. Skipping creation.', 'DatabaseService');
+      Logger.log(
+        'System user already exists. Skipping creation.',
+        'DatabaseService',
+      );
       return;
     }
 
@@ -116,7 +117,10 @@ export class DatabaseService {
       where: { id: '2' },
     });
     if (existingUser) {
-      Logger.log('Admin user already exists. Skipping creation.', 'DatabaseService');
+      Logger.log(
+        'Admin user already exists. Skipping creation.',
+        'DatabaseService',
+      );
       return;
     }
 
@@ -128,13 +132,12 @@ export class DatabaseService {
     try {
       let plainPassword: string;
 
-      if (!process.env.KUBERO_ADMIN_PASSWORD && process.env.KUBERO_ADMIN_PASSWORD !== '') {
+      if (
+        !process.env.KUBERO_ADMIN_PASSWORD &&
+        process.env.KUBERO_ADMIN_PASSWORD !== ''
+      ) {
         // Generate a random password
-        plainPassword = crypto
-          .randomBytes(25)
-          .toString('base64')
-          .slice(0, 19);
-
+        plainPassword = crypto.randomBytes(25).toString('base64').slice(0, 19);
       } else {
         plainPassword = process.env.KUBERO_ADMIN_PASSWORD;
       }
@@ -191,12 +194,12 @@ export class DatabaseService {
         .slice(0, 19);
       // Create bcrypt hash
       const passwordHash = await bcrypt.hash(plainPassword, 10);
-      
+
       // Check if admin user exists
       const existingUser = await prisma.user.findUnique({
         where: { id: '2' },
       });
-      
+
       if (existingUser) {
         // Update existing admin user
         await prisma.user.update({
@@ -229,11 +232,11 @@ export class DatabaseService {
         });
         console.log('\n\n\n', 'New admin account created');
       }
-      
+
       console.log('  username: ', adminUser);
       console.log('  password: ', plainPassword);
       console.log('  email:    ', adminEmail, '\n\n\n');
-      
+
       this.logger.log('Admin user reset successfully.');
       return;
     } catch (error) {
@@ -247,12 +250,18 @@ export class DatabaseService {
 
     const existingUsers = await prisma.user.count();
     if (existingUsers > 2) {
-      Logger.log('Legacy users already migrated. Skipping migration.', 'DatabaseService');
+      Logger.log(
+        'Legacy users already migrated. Skipping migration.',
+        'DatabaseService',
+      );
       return;
     }
 
     if (!process.env.KUBERO_USERS || process.env.KUBERO_USERS === '') {
-      Logger.log('No legacy users to migrate. KUBERO_USERS is not set.', 'DatabaseService');
+      Logger.log(
+        'No legacy users to migrate. KUBERO_USERS is not set.',
+        'DatabaseService',
+      );
       return;
     }
 
@@ -298,9 +307,16 @@ export class DatabaseService {
                 : undefined,
           },
         });
-        Logger.log(`Migrated user ${user.username} successfully.`, 'DatabaseService');
+        Logger.log(
+          `Migrated user ${user.username} successfully.`,
+          'DatabaseService',
+        );
       } catch (error) {
-        Logger.error(`Failed to migrate user ${user.username}.`, error, 'DatabaseService');
+        Logger.error(
+          `Failed to migrate user ${user.username}.`,
+          error,
+          'DatabaseService',
+        );
       }
     }
 
@@ -323,10 +339,10 @@ export class DatabaseService {
               { action: 'write', resource: 'pipeline' },
               { action: 'write', resource: 'user' },
               { action: 'write', resource: 'config' },
-              { action: 'ok',    resource: 'console' },
-              { action: 'ok',    resource: 'logs' },
-              { action: 'ok',    resource: 'reboot' },
-              { action: 'read',  resource: 'audit' },
+              { action: 'ok', resource: 'console' },
+              { action: 'ok', resource: 'logs' },
+              { action: 'ok', resource: 'reboot' },
+              { action: 'read', resource: 'audit' },
               { action: 'write', resource: 'token' },
               { action: 'write', resource: 'security' },
             ],
@@ -349,12 +365,12 @@ export class DatabaseService {
             create: [
               { action: 'write', resource: 'app' },
               { action: 'write', resource: 'pipeline' },
-              { action: 'read',  resource: 'user' },
-              { action: 'none',  resource: 'config' },
-              { action: 'ok',    resource: 'console' },
-              { action: 'ok',    resource: 'logs' },
-              { action: 'ok',    resource: 'reboot' },
-              { action: 'read',  resource: 'audit' },
+              { action: 'read', resource: 'user' },
+              { action: 'none', resource: 'config' },
+              { action: 'ok', resource: 'console' },
+              { action: 'ok', resource: 'logs' },
+              { action: 'ok', resource: 'reboot' },
+              { action: 'read', resource: 'audit' },
               { action: 'ok', resource: 'token' },
               { action: 'write', resource: 'security' },
             ],
@@ -396,16 +412,19 @@ export class DatabaseService {
     // Ensure the 'everyone' user group exists
     prisma.userGroup
       .upsert({
-      where: { name: 'everyone' },
-      update: {},
-      create: {
-        name: 'everyone',
-        description: 'Standard group for all users',
-      },
-    })
-    .then(() => {
-      Logger.log('UserGroup "everyone" seeded successfully.', 'DatabaseService');
-    });
+        where: { name: 'everyone' },
+        update: {},
+        create: {
+          name: 'everyone',
+          description: 'Standard group for all users',
+        },
+      })
+      .then(() => {
+        Logger.log(
+          'UserGroup "everyone" seeded successfully.',
+          'DatabaseService',
+        );
+      });
 
     // Ensure the 'admin' user group exists
     await prisma.userGroup
@@ -431,7 +450,9 @@ export class DatabaseService {
     const buildpacks = config || [];
     for (const bp of buildpacks) {
       // Find existing by name
-      const existing = await prisma.runpack.findFirst({ where: { name: bp.name } });
+      const existing = await prisma.runpack.findFirst({
+        where: { name: bp.name },
+      });
       const createPhase = async (phase: any) => {
         // Create SecurityContext
         const sec = await prisma.securityContext.create({
@@ -439,13 +460,25 @@ export class DatabaseService {
             runAsUser: phase.securityContext.runAsUser,
             runAsGroup: phase.securityContext.runAsGroup,
             runAsNonRoot: phase.securityContext.runAsNonRoot,
-            readOnlyRootFilesystem: phase.securityContext.readOnlyRootFilesystem,
-            allowPrivilegeEscalation: phase.securityContext.allowPrivilegeEscalation,
+            readOnlyRootFilesystem:
+              phase.securityContext.readOnlyRootFilesystem,
+            allowPrivilegeEscalation:
+              phase.securityContext.allowPrivilegeEscalation,
             capabilities: {
-              create: [{
-                add: { create: (phase.securityContext.capabilities?.add || []).map((v: string) => ({ value: v })) },
-                drop: { create: (phase.securityContext.capabilities?.drop || []).map((v: string) => ({ value: v })) },
-              }],
+              create: [
+                {
+                  add: {
+                    create: (phase.securityContext.capabilities?.add || []).map(
+                      (v: string) => ({ value: v }),
+                    ),
+                  },
+                  drop: {
+                    create: (
+                      phase.securityContext.capabilities?.drop || []
+                    ).map((v: string) => ({ value: v })),
+                  },
+                },
+              ],
             },
           },
         });
@@ -465,7 +498,10 @@ export class DatabaseService {
       const runPhase = await createPhase(bp.run);
       if (existing) {
         // Optionally update here
-        Logger.log(`Runpack/Buildpack '${bp.name}' already exists. Skipping.`, 'DatabaseService');
+        Logger.log(
+          `Runpack/Buildpack '${bp.name}' already exists. Skipping.`,
+          'DatabaseService',
+        );
         continue;
       }
       await prisma.runpack.create({
@@ -488,7 +524,10 @@ export class DatabaseService {
     // seed pod sizes if the table is empty
     const existingSizes = await prisma.podSize.count();
     if (existingSizes > 0) {
-      Logger.log('Pod sizes already exist. Skipping seeding.', 'DatabaseService');
+      Logger.log(
+        'Pod sizes already exist. Skipping seeding.',
+        'DatabaseService',
+      );
       return;
     }
     for (const size of config) {
@@ -502,7 +541,10 @@ export class DatabaseService {
           memoryRequest: size.resources.requests.memory,
         },
       });
-      Logger.log(`Pod size '${size.name}' seeded successfully.`, 'DatabaseService');
+      Logger.log(
+        `Pod size '${size.name}' seeded successfully.`,
+        'DatabaseService',
+      );
     }
     Logger.log('Pod sizes seeded successfully.', 'DatabaseService');
   }

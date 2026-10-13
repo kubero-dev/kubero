@@ -30,7 +30,7 @@ export class TokenController {
 
   @Get('/')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
-  @Permissions('token:write','token:read')
+  @Permissions('token:write', 'token:read')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

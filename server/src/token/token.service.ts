@@ -51,8 +51,10 @@ export class TokenService {
       userGroups,
     );
 
-    // transoform userGroups to a string 
-    const userGroupsString = userGroups.map((group: any) => group.name).join(',');
+    // transoform userGroups to a string
+    const userGroupsString = userGroups
+      .map((group: any) => group.name)
+      .join(',');
     const newToken = {
       name: name || '', // Optional name field
       role: role || 'guest', // Default to 'user' if not provided
