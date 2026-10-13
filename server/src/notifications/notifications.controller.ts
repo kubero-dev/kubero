@@ -9,9 +9,20 @@ import {
   HttpException,
   HttpStatus,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiForbiddenResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { NotificationsDbService, CreateNotificationDto, UpdateNotificationDto } from './notifications-db.service';
 import { INotificationConfig } from './notifications.interface';
+import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
+import { ReadonlyGuard } from '../common/guards/readonly.guard';
+import { OKDTO } from '../common/dto/ok.dto';
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -26,6 +37,11 @@ export class NotificationsController {
   constructor(private readonly notificationsDbService: NotificationsDbService) {}
 
   @Get()
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read', 'config:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({ description: 'Error: Unauthorized', type: OKDTO })
+  @ApiOperation({ summary: 'List notification configurations' })
   async findAll(): Promise<ApiResponse<INotificationConfig[]>> {
     try {
       const notifications = await this.notificationsDbService.getNotificationConfigs();
@@ -43,6 +59,11 @@ export class NotificationsController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('config:read', 'config:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({ description: 'Error: Unauthorized', type: OKDTO })
+  @ApiOperation({ summary: 'Get a notification configuration' })
   async findOne(@Param('id') id: string): Promise<ApiResponse<INotificationConfig>> {
     try {
       const notification = await this.notificationsDbService.findById(id);
@@ -67,6 +88,11 @@ export class NotificationsController {
   }
 
   @Post()
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('config:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({ description: 'Error: Unauthorized', type: OKDTO })
+  @ApiOperation({ summary: 'Create a notification configuration' })
   async create(@Body() createNotificationDto: CreateNotificationDto): Promise<ApiResponse<INotificationConfig>> {
     try {
       // Validate required fields
@@ -108,6 +134,11 @@ export class NotificationsController {
   }
 
   @Put(':id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('config:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({ description: 'Error: Unauthorized', type: OKDTO })
+  @ApiOperation({ summary: 'Update a notification configuration' })
   async update(
     @Param('id') id: string,
     @Body() updateNotificationDto: Partial<CreateNotificationDto>,
@@ -152,6 +183,11 @@ export class NotificationsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('config:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiForbiddenResponse({ description: 'Error: Unauthorized', type: OKDTO })
+  @ApiOperation({ summary: 'Delete a notification configuration' })
   async remove(@Param('id') id: string): Promise<ApiResponse> {
     try {
       await this.notificationsDbService.delete(id);

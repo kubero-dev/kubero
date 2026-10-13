@@ -8,6 +8,8 @@ import {
 import { TemplatesService } from './templates.service';
 import { Response } from 'express';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 import { OKDTO } from '../common/dto/ok.dto';
 
 @Controller({ path: 'api/templates', version: '1' })
@@ -16,7 +18,8 @@ export class TemplatesController {
   constructor(private readonly templatesService: TemplatesService) {}
 
   @Get('/:templateB64')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

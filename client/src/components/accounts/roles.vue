@@ -136,7 +136,7 @@
           class="ma-2"
           color="secondary"
           @click="openEditRoleDialog(item)"
-          :disabled="item.name === 'admin' || !writeUserPermission"
+          :disabled="isBuiltInRole(item.name) || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-pencil
@@ -149,7 +149,7 @@
           class="ma-2"
           color="secondary"
           @click="deleteRole(item)"
-          :disabled="item.name === 'admin' || item.name === 'guest' || item.name === 'member' || !writeUserPermission"
+          :disabled="isBuiltInRole(item.name) || !writeUserPermission"
         >
           <v-icon color="primary">
             mdi-delete
@@ -519,6 +519,10 @@ export default defineComponent({
       }
     }
 */
+    const builtInRoleNames = ['admin', 'member', 'developer', 'viewer', 'guest']
+
+    const isBuiltInRole = (name: string) => builtInRoleNames.includes(name)
+
     const getResourcePermissions = (permissions: any, resource: string) => {
       for (const permission of permissions) {
         if (permission.resource === resource) {
@@ -560,6 +564,7 @@ export default defineComponent({
       openCreateDialog,
       saveCreate,
       getResourcePermissions,
+      isBuiltInRole,
       writeUserPermission,
     }
   },

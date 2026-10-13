@@ -393,6 +393,64 @@ export class DatabaseService {
         Logger.log('Role "guest" seeded successfully.', 'DatabaseService');
       });
 
+    // Developer: deploy and operate apps, no account or cluster settings access
+    await prisma.role
+      .upsert({
+        where: { name: 'developer' },
+        update: {},
+        create: {
+          name: 'developer',
+          description:
+            'Developer role — manage apps and pipelines, logs, console, and builds',
+          permissions: {
+            create: [
+              { action: 'write', resource: 'app' },
+              { action: 'write', resource: 'pipeline' },
+              { action: 'none', resource: 'user' },
+              { action: 'none', resource: 'config' },
+              { action: 'ok', resource: 'console' },
+              { action: 'ok', resource: 'logs' },
+              { action: 'ok', resource: 'reboot' },
+              { action: 'read', resource: 'audit' },
+              { action: 'ok', resource: 'token' },
+              { action: 'write', resource: 'security' },
+            ],
+          },
+        },
+      })
+      .then(() => {
+        Logger.log('Role "developer" seeded successfully.', 'DatabaseService');
+      });
+
+    // Viewer: read-only access to apps, pipelines, metrics, and audit
+    await prisma.role
+      .upsert({
+        where: { name: 'viewer' },
+        update: {},
+        create: {
+          name: 'viewer',
+          description:
+            'Viewer role — read-only access to apps, pipelines, logs, and audit',
+          permissions: {
+            create: [
+              { action: 'read', resource: 'app' },
+              { action: 'read', resource: 'pipeline' },
+              { action: 'none', resource: 'user' },
+              { action: 'none', resource: 'config' },
+              { action: 'none', resource: 'console' },
+              { action: 'ok', resource: 'logs' },
+              { action: 'none', resource: 'reboot' },
+              { action: 'read', resource: 'audit' },
+              { action: 'none', resource: 'token' },
+              { action: 'read', resource: 'security' },
+            ],
+          },
+        },
+      })
+      .then(() => {
+        Logger.log('Role "viewer" seeded successfully.', 'DatabaseService');
+      });
+
     // Ensure the 'everyone' user group exists
     prisma.userGroup
       .upsert({

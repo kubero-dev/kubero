@@ -7,6 +7,8 @@ import {
 } from '@nestjs/swagger';
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 
 @Controller({ path: 'api/addons', version: '1' })
 export class AddonsController {
@@ -19,7 +21,8 @@ export class AddonsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   async getAddons() {
     return this.addonsService.getAddonsList();
@@ -32,7 +35,8 @@ export class AddonsController {
     type: OKDTO,
     isArray: false,
   })
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   async getOperators() {
     return this.addonsService.getOperatorsList();

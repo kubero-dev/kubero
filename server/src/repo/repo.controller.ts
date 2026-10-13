@@ -16,6 +16,8 @@ import {
 } from '@nestjs/swagger';
 import { OKDTO } from '../common/dto/ok.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 import { ReadonlyGuard } from '../common/guards/readonly.guard';
 
 @Controller({ path: 'api/repo', version: '1' })
@@ -23,7 +25,8 @@ export class RepoController {
   constructor(private readonly repoService: RepoService) {}
 
   @Get('/providers')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -36,7 +39,8 @@ export class RepoController {
   }
 
   @Get('/:provider/repositories')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -56,7 +60,8 @@ export class RepoController {
   }
 
   @Get('/:provider/:gitrepob64/branches')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write', 'pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -85,7 +90,8 @@ export class RepoController {
   }
 
   @Get('/:provider/:gitrepob64/pullrequests')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write', 'pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -114,7 +120,8 @@ export class RepoController {
   }
 
   @Get('/:provider/:gitrepob64/references')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write', 'pipeline:read', 'pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -143,8 +150,8 @@ export class RepoController {
   }
 
   @Post('/:provider/connect')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(ReadonlyGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -164,8 +171,8 @@ export class RepoController {
   }
 
   @Post('/:provider/disconnect')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(ReadonlyGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard, ReadonlyGuard)
+  @Permissions('pipeline:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',

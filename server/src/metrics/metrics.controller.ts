@@ -7,6 +7,8 @@ import {
 } from '@nestjs/swagger';
 import { MetricsService } from './metrics.service';
 import { JwtAuthGuard } from '../auth/strategies/jwt.guard';
+import { PermissionsGuard } from '../auth/permissions.guard';
+import { Permissions } from '../auth/permissions.decorator';
 import { OKDTO } from '../common/dto/ok.dto';
 
 @Controller({ path: 'api/metrics', version: '1' })
@@ -14,7 +16,8 @@ export class MetricsController {
   constructor(private metricsService: MetricsService) {}
 
   @Get('/resources/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -34,7 +37,8 @@ export class MetricsController {
   }
 
   @Get('/uptimes/:pipeline/:phase')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -52,7 +56,8 @@ export class MetricsController {
   }
 
   @Get('/timeseries')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -65,7 +70,8 @@ export class MetricsController {
   }
 
   @Get('/timeseries/:type/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
@@ -169,7 +175,8 @@ export class MetricsController {
   }
 
   @Get('/rules/:pipeline/:phase/:app')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('app:read', 'app:write')
   @ApiBearerAuth('bearerAuth')
   @ApiForbiddenResponse({
     description: 'Error: Unauthorized',
