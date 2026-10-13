@@ -89,7 +89,7 @@
     </v-card-text>
     <v-divider></v-divider>
 
-    <span v-if="app.addons.length > 0">
+    <span v-if="app.addons?.length > 0">
     <v-card-text>
       <v-avatar
         rounded
@@ -134,7 +134,7 @@
         </v-btn>
         <v-btn
             title="Open App"
-            v-if="app.ingress.hosts.length > 0"
+            v-if="app.ingress?.hosts?.length > 0"
             color="deep-purple lighten-2"
             variant="text"
             :href="'//'+app.ingress?.hosts[0].host" target="_blank"
@@ -296,18 +296,24 @@ export default defineComponent({
         loadMetrics() {
             axios.get(`/api/metrics/resources/${this.pipeline}/${this.phase}/${this.app.name}`)
             .then(response => {
-                for (var i = 0; i < response.data.length; i++) {
-                    if (response.data[i].cpu.percentage != null && response.data[i].memory.percentage != null) {
-                        this.metricsDisplay = "bars";
-                    }
-                    if (
-                      (response.data[i].cpu.percentage == null && response.data[i].memory.percentage == null) &&
-                      (response.data[i].cpu.usage != null && response.data[i].memory.usage != null)
-                     ){
-                        this.metricsDisplay = "table";
-                    }
-                }
-                this.metrics = response.data;
+                const metrics = Array.isArray(response.data) ? response.data : [];
+                const allMetricsHavePercentages = metrics.length > 0 && metrics.every(
+                  (metric: Metric) =>
+                    metric.cpu.percentage != null &&
+                    metric.memory.percentage != null
+                );
+                const hasUsageMetrics = metrics.some(
+                  (metric: Metric) =>
+                    metric.cpu.usage != null &&
+                    metric.memory.usage != null
+                );
+
+                this.metricsDisplay = allMetricsHavePercentages
+                  ? "bars"
+                  : hasUsageMetrics
+                    ? "table"
+                    : "dots";
+                this.metrics = metrics;
             })
             .catch(error => {
                 console.log(error);

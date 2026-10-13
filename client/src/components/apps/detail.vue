@@ -74,7 +74,7 @@
                 <Builds :pipeline="pipeline" :phase="phase" :app="app" :appData="appData" :pipelineData="pipelineData"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
-                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.ingress.hosts[0].host"/>
+                <Metrics :pipeline="pipeline" :phase="phase" :app="app" :host="appData.spec.ingress?.hosts?.[0]?.host"/>
             </v-window-item>
             <v-window-item transition="false" reverse-transition="false" class="background">
                 <LogsTab :pipeline="pipeline" :phase="phase" :app="app" :deploymentstrategy="appData.spec.deploymentstrategy" :buildstrategy="appData.spec.buildstrategy"/>
@@ -177,7 +177,7 @@ export default defineComponent({
             });
         },
         ActionOpenApp() {
-            window.open(`https://${this.appData.spec.ingress.hosts[0].host}`, '_blank');
+            window.open(`https://${this.appData.spec.ingress?.hosts?.[0]?.host}`, '_blank');
         },
         ActionEditApp() {
             this.$router.push(`/pipeline/${this.pipeline}/${this.phase}/apps/${this.app}`);
