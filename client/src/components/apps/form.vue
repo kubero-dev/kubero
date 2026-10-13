@@ -2033,12 +2033,14 @@ export default defineComponent({
             this.branchesList.push(response.data[i]);
           }
 
-          // set default branch based on te repository's default branch
-          let defaultBranch = this.pipelineData.git.repository.default_branch;
-          if (this.branchesList.includes(defaultBranch)) {
-            this.branch = defaultBranch;
-          } else {
-            this.branch = this.branchesList[0];
+          // Only pre-select a default branch when creating an app
+          if (this.app == "new") {
+            let defaultBranch = this.pipelineData.git.repository.default_branch;
+            if (this.branchesList.includes(defaultBranch)) {
+              this.branch = defaultBranch;
+            } else {
+              this.branch = this.branchesList[0];
+            }
           }
         });
     },
