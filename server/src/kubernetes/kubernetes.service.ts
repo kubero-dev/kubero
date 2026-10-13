@@ -1309,9 +1309,12 @@ export class KubernetesService {
     job.spec.template.spec.initContainers[0].env[0].value = git.url;
     job.spec.template.spec.initContainers[0].env[1].value = git.ref;
     job.spec.template.spec.containers[0].env[0].value = repository.image;
-    job.spec.template.spec.containers[0].env[1].value =
-      repository.tag + '-' + id;
+    const tag = repository.tag + '-' + id;
+    job.spec.template.spec.containers[0].env[1].value = tag;
     job.spec.template.spec.containers[0].env[2].value = appName;
+    job.spec.template.spec.containers[0].env[3].value = JSON.stringify({
+      spec: { image: { repository: repository.image, tag: tag } },
+    });
 
     if (buildstrategy === 'buildpacks') {
       // configure build container
