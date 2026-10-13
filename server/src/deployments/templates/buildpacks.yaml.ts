@@ -40,11 +40,12 @@ spec:
             value: "123456"
           - name: APP
             value: example
+          - name: PATCH_JSON
+            value: '{"spec":{"image":{"repository":"$REPOSITORY","tag": "$TAG"}}}'
           command:
           - sh
           - -c
-          - 'kubectl patch kuberoapps $APP --type=merge -p "{\"spec\":{\"image\":{\"repository\":
-            \"$REPOSITORY\",\"tag\": \"$TAG\"}}}"'
+          - 'kubectl patch kuberoapps $APP --type=merge -p "$PATCH_JSON"'
           image: bitnami/kubectl:latest
           imagePullPolicy: Always
           resources: {}

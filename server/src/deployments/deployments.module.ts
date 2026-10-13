@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { DeploymentsController } from './deployments.controller';
 import { DeploymentsService } from './deployments.service';
-import { AppsService } from '../apps/apps.service';
-import { LogsService } from '../logs/logs.service';
+import { AppsModule } from '../apps/apps.module';
+import { LogsModule } from '../logs/logs.module';
+import { RegistryModule } from '../registry/registry.module';
 
 @Module({
   controllers: [DeploymentsController],
-  providers: [DeploymentsService, AppsService, LogsService],
+  imports: [AppsModule, LogsModule, RegistryModule],
+  providers: [DeploymentsService],
 })
 export class DeploymentsModule {}

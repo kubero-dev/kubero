@@ -3,9 +3,10 @@ import { SecurityController } from './security.controller';
 import { SecurityService } from './security.service';
 import { KubernetesModule } from '../kubernetes/kubernetes.module';
 import { PipelinesModule } from '../pipelines/pipelines.module';
-import { AppsService } from '../apps/apps.service';
+import { AppsModule} from '../apps/apps.module';
 @Module({
   controllers: [SecurityController],
-  providers: [SecurityService, KubernetesModule, PipelinesModule, AppsService],
+  imports: [AppsModule],
+  providers: [SecurityService, KubernetesModule, PipelinesModule],
 })
 export class SecurityModule {}

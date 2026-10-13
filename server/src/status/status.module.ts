@@ -6,7 +6,7 @@ import {
 } from '@willsoto/nestjs-prometheus';
 import { StatusService } from './status.service';
 import { ScheduleModule } from '@nestjs/schedule';
-import { AppsService } from '../apps/apps.service';
+import { AppsModule } from '../apps/apps.module';
 import { StatusController } from './status.controller';
 
 @Module({
@@ -15,10 +15,10 @@ import { StatusController } from './status.controller';
       controller: StatusController,
     }),
     ScheduleModule.forRoot(),
+    AppsModule
   ],
   providers: [
     StatusService,
-    AppsService,
     makeGaugeProvider({
       name: 'kubero_pipelines_total',
       help: 'Total number of pipelines',

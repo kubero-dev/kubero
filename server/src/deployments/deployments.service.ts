@@ -9,6 +9,7 @@ import { AppsService } from '../apps/apps.service';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { ILoglines } from '../logs/logs.interface';
 import { LogsService } from '../logs/logs.service';
+import { RegistryService } from '../registry/registry.service';
 import { V1JobList } from '@kubernetes/client-node';
 
 @Injectable()
@@ -22,6 +23,7 @@ export class DeploymentsService {
     private notificationService: NotificationsService,
     private pipelinesService: PipelinesService,
     private LogsService: LogsService,
+    private registryService: RegistryService,
   ) {
     //this.kubectl = options.kubectl
     //this._io = options.io
@@ -35,7 +37,7 @@ export class DeploymentsService {
     pipelineName: string,
     phaseName: string,
     appName: string,
-    userGroups: string[]
+    userGroups: string[],
   ): Promise<any> {
     const namespace = pipelineName + '-' + phaseName;
     const jobs = (await this.kubectl.getJobs(namespace)) as V1JobList;
@@ -139,6 +141,9 @@ export class DeploymentsService {
 
     // Create the Build CRD
     try {
+      const image = pipeline + '-' + app;
+      const registryCredentials =
+        await this.registryService.makeTemporaryPushCredentialsForImage(image);
       await this.kubectl.createBuildJob(
         namespace,
         app,
@@ -150,8 +155,11 @@ export class DeploymentsService {
           url: gitrepo,
         },
         {
-          image: process.env.KUBERO_BUILD_REGISTRY + '/' + pipeline + '-' + app,
+          registry: process.env.KUBERO_BUILD_REGISTRY || '',
+          image: image,
           tag: reference,
+          registryUsername: registryCredentials.username,
+          registryPassword: registryCredentials.password,
         },
       );
     } catch (error) {

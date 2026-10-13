@@ -10,6 +10,7 @@ import { IApp } from './apps.interface';
 import { IPodSize, ISecurityContext } from 'src/config/config.interface';
 import { IUser } from 'src/auth/auth.interface';
 import { IKubectlApp } from 'src/kubernetes/kubernetes.interface';
+import { RegistryService } from '../registry/registry.service';
 
 const podsize: IPodSize = {
   name: 'small',
@@ -122,6 +123,7 @@ describe('AppsService', () => {
   let notificationsService: jest.Mocked<NotificationsService>;
   let configService: jest.Mocked<ConfigService>;
   let eventsGateway: jest.Mocked<EventsGateway>;
+  let registryService: jest.Mocked<RegistryService>;
   const user: IUser = { id: '1', username: 'testuser' } as IUser;
 
   beforeEach(async () => {
@@ -153,6 +155,10 @@ describe('AppsService', () => {
           provide: EventsGateway,
           useValue: { execStreams: {}, sendTerminalLine: jest.fn() },
         },
+        {
+          provide: RegistryService,
+          useValue: { makeTemporaryPushCredentialsForImage: jest.fn() }
+        }
       ],
     }).compile();
 
@@ -162,6 +168,7 @@ describe('AppsService', () => {
     notificationsService = module.get(NotificationsService);
     configService = module.get(ConfigService);
     eventsGateway = module.get(EventsGateway);
+    registryService = module.get(RegistryService);
   });
 
   it('should be defined', () => {
@@ -225,6 +232,7 @@ describe('AppsService', () => {
   describe('triggerImageBuild', () => {
     it('should call createBuildJob', async () => {
       (pipelinesService.getContext as jest.Mock).mockResolvedValue('ctx');
+      (registryService.makeTemporaryPushCredentialsForImage as jest.Mock).mockResolvedValue({ username: 'fake', password: 'fake'});
       jest.spyOn(service, 'getApp').mockResolvedValue({
         spec: {
           gitrepo: { admin: true, ssh_url: 'repo' },
@@ -234,6 +242,7 @@ describe('AppsService', () => {
       } as any);
       await service.triggerImageBuild('p', 'ph', 'a', mockUSerGroups);
       expect(kubectl.createBuildJob).toHaveBeenCalled();
+      expect(registryService.makeTemporaryPushCredentialsForImage).toHaveBeenCalled();
     });
   });
 
@@ -334,6 +343,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // ConfigService
         mockEventsGateway,
+        {} as any, // RegistryService
       );
     });
 
@@ -450,6 +460,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // ConfigService
         {} as any, // EventsGateway
+        {} as any, // RegistryService
       );
     });
 
@@ -489,6 +500,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // configService
         {} as any, // eventsGateway
+        {} as any, // RegistryService
       );
       jest.spyOn(service, 'triggerImageBuild').mockResolvedValue({
         status: 'ok',
@@ -550,6 +562,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // configService
         {} as any, // eventsGateway
+        {} as any, // RegistryService
       );
       // Methoden ersetzen
       service.getAllAppsList = mockGetAllAppsList;
@@ -672,6 +685,7 @@ describe('AppsService', () => {
         mockNotificationsService,
         mockConfigService,
         {} as any,
+        {} as any, // RegistryService
       );
 
       service.createApp = jest.fn().mockResolvedValue(undefined);
@@ -893,6 +907,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // ConfigService
         {} as any, // eventsGateway
+        {} as any, // RegistryService
       );
 
       // Override the methods and properties
@@ -939,6 +954,7 @@ describe('AppsService', () => {
         mockNotificationsService,
         {} as any, // configService
         {} as any, // eventsGateway
+        {} as any, // RegistryService
       );
       service['logger'] = mockLogger;
     });
@@ -1026,6 +1042,7 @@ describe('AppsService', () => {
         {} as any, // NotificationsService
         {} as any, // ConfigService
         {} as any, // EventsGateway
+        {} as any, // RegistryService
       );
     });
 

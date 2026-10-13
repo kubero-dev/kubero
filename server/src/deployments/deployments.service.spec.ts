@@ -7,6 +7,7 @@ import { LogsService } from '../logs/logs.service';
 import { IUser } from '../auth/auth.interface';
 import { ILoglines } from 'src/logs/logs.interface';
 import { mockKubectlApp as app } from '../apps/apps.controller.spec';
+import { RegistryService } from 'src/registry/registry.service';
 
 const mockUserGroups = ['group1', 'group2'];
 
@@ -26,6 +27,7 @@ describe('DeploymentsService', () => {
   let pipelinesService: jest.Mocked<PipelinesService>;
   let logsService: jest.Mocked<LogsService>;
   let logLine: jest.Mocked<ILoglines>;
+  let registryService: jest.Mocked<RegistryService>;
 
   beforeEach(() => {
     kubectl = {
@@ -51,12 +53,17 @@ describe('DeploymentsService', () => {
       fetchLogs: jest.fn(),
     } as any;
 
+    registryService = {
+      makeTemporaryPushCredentialsForImage: jest.fn().mockResolvedValue({ username: 'fake', password: 'fake' }),
+    } as any;
+
     service = new DeploymentsService(
       kubectl,
       appsService,
       notificationsService,
       pipelinesService,
       logsService,
+      registryService
     );
 
     logLine = {

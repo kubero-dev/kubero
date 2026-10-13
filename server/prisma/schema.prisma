@@ -261,3 +261,14 @@ enum NotificationType {
   webhook
   discord
 }
+
+model RegistryUser {
+  id          String   @id @default(cuid())
+  username    String
+  password    String
+  scope       Json
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  expiresAt   DateTime?
+}
