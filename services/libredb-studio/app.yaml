@@ -52,4 +52,4 @@ spec:
         containerPort: 3000
         pullPolicy: Always
         repository: ghcr.io/libredb/libredb-studio
-        tag: 0.18.2
+        tag: 0.18.3
