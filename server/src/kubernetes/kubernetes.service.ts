@@ -1037,6 +1037,46 @@ export class KubernetesService {
     }
   }
 
+  public async getConfigMapValue(
+    namespace: string,
+    name: string,
+    key: string,
+  ): Promise<string | undefined> {
+    try {
+      const cm = await this.coreV1Api.readNamespacedConfigMap(name, namespace);
+      return cm.body.data?.[key];
+    } catch (error: any) {
+      if (error?.statusCode !== 404 && error?.response?.statusCode !== 404) {
+        this.logger.error(error);
+      }
+      return undefined;
+    }
+  }
+
+  public async setConfigMapValue(
+    namespace: string,
+    name: string,
+    key: string,
+    value: string,
+  ): Promise<void> {
+    const body = {
+      apiVersion: 'v1',
+      kind: 'ConfigMap',
+      metadata: { name, namespace },
+      data: { [key]: value },
+    };
+    try {
+      await this.coreV1Api.replaceNamespacedConfigMap(name, namespace, body);
+    } catch (error: any) {
+      if (error?.statusCode === 404 || error?.response?.statusCode === 404) {
+        await this.coreV1Api.createNamespacedConfigMap(namespace, body);
+      } else {
+        this.logger.error(error);
+        throw error;
+      }
+    }
+  }
+
   public async getVulnerabilityScanLogs(
     namespace: string,
     logPod: string,

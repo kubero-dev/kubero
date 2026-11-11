@@ -3,6 +3,14 @@ import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { IKubectlApp } from '../kubernetes/kubernetes.interface';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { AppsService } from '../apps/apps.service';
+import {
+  MAX_IGNORES,
+  VulnIgnore,
+  applyIgnores,
+  isActive,
+  parseIgnores,
+  validateIgnore,
+} from './vuln-ignore';
 
 @Injectable()
 export class SecurityService {
@@ -73,6 +81,8 @@ export class SecurityService {
       return scanResult;
     }
 
+    const ignores = await this.loadIgnores(namespace, appName);
+    applyIgnores(logs, ignores);
     const logsummary = this.getVulnSummary(logs);
 
     scanResult.status = 'ok';
@@ -98,6 +108,7 @@ export class SecurityService {
       unknown: 0,
       fixable: 0,
       nofix: 0,
+      ignored: 0,
     };
 
     if (!logs || !logs.Results) {
@@ -109,6 +120,10 @@ export class SecurityService {
     logs.Results.forEach((target: any) => {
       if (target.Vulnerabilities) {
         target.Vulnerabilities.forEach((vuln: any) => {
+          if (vuln.Ignored) {
+            summary.ignored++;
+            return;
+          }
           summary.total++;
           if (vuln.FixedVersion) {
             summary.fixable++;
@@ -139,6 +154,105 @@ export class SecurityService {
     });
 
     return summary;
+  }
+
+  private ignoreMapName(appName: string): string {
+    return appName + '-kuberoapp-vuln-ignore';
+  }
+
+  private async loadIgnores(
+    namespace: string,
+    appName: string,
+  ): Promise<VulnIgnore[]> {
+    return parseIgnores(
+      await this.kubectl.getConfigMapValue(
+        namespace,
+        this.ignoreMapName(appName),
+        'ignores',
+      ),
+    );
+  }
+
+  public async getIgnores(
+    pipeline: string,
+    phase: string,
+    appName: string,
+    userGroups: string[],
+  ) {
+    const contextName = await this.pipelinesService.getContext(
+      pipeline,
+      phase,
+      userGroups,
+    );
+    if (!contextName) {
+      return [];
+    }
+    this.kubectl.setCurrentContext(contextName);
+    return this.loadIgnores(pipeline + '-' + phase, appName);
+  }
+
+  public async addIgnore(
+    pipeline: string,
+    phase: string,
+    appName: string,
+    input: any,
+    userGroups: string[],
+  ) {
+    const entry = validateIgnore(input);
+    const contextName = await this.pipelinesService.getContext(
+      pipeline,
+      phase,
+      userGroups,
+    );
+    if (!contextName) {
+      throw new Error('no context found');
+    }
+    this.kubectl.setCurrentContext(contextName);
+    const namespace = pipeline + '-' + phase;
+    const current = (await this.loadIgnores(namespace, appName)).filter(
+      (e) => isActive(e) && !(e.id === entry.id && e.pkg === entry.pkg),
+    );
+    if (current.length >= MAX_IGNORES) {
+      throw new Error('too many ignore entries');
+    }
+    current.push(entry);
+    await this.kubectl.setConfigMapValue(
+      namespace,
+      this.ignoreMapName(appName),
+      'ignores',
+      JSON.stringify(current),
+    );
+    return current;
+  }
+
+  public async removeIgnore(
+    pipeline: string,
+    phase: string,
+    appName: string,
+    id: string,
+    pkg: string | undefined,
+    userGroups: string[],
+  ) {
+    const contextName = await this.pipelinesService.getContext(
+      pipeline,
+      phase,
+      userGroups,
+    );
+    if (!contextName) {
+      throw new Error('no context found');
+    }
+    this.kubectl.setCurrentContext(contextName);
+    const namespace = pipeline + '-' + phase;
+    const next = (await this.loadIgnores(namespace, appName)).filter(
+      (e) => !(e.id === id && (e.pkg || undefined) === (pkg || undefined)),
+    );
+    await this.kubectl.setConfigMapValue(
+      namespace,
+      this.ignoreMapName(appName),
+      'ignores',
+      JSON.stringify(next),
+    );
+    return next;
   }
 
   public async startScan(pipeline: string, phase: string, appName: string, userGroups: string[]) {

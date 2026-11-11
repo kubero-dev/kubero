@@ -1,4 +1,15 @@
-import { Controller, Get, Param, Query, Request, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { SecurityService } from './security.service';
 import {
   ApiBearerAuth,
@@ -57,5 +68,78 @@ export class SecurityController {
       logdetails === 'true',
       req.user.userGroups,
     );
+  }
+
+  @Get(':pipeline/:phase/:app/ignores')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write', 'security:read')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'List the ignored vulnerabilities of an app' })
+  async getIgnores(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Request() req: any,
+  ) {
+    return this.securityService.getIgnores(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
+  }
+
+  @Post(':pipeline/:phase/:app/ignores')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({
+    summary: 'Ignore a vulnerability of an app, optionally until a date',
+  })
+  async addIgnore(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Body() body: any,
+    @Request() req: any,
+  ) {
+    try {
+      return await this.securityService.addIgnore(
+        pipeline,
+        phase,
+        app,
+        body,
+        req.user.userGroups,
+      );
+    } catch (e: any) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Delete(':pipeline/:phase/:app/ignores/:id')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Stop ignoring a vulnerability of an app' })
+  async removeIgnore(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Param('id') id: string,
+    @Query('pkg') pkg: string,
+    @Request() req: any,
+  ) {
+    try {
+      return await this.securityService.removeIgnore(
+        pipeline,
+        phase,
+        app,
+        id,
+        pkg,
+        req.user.userGroups,
+      );
+    } catch (e: any) {
+      throw new BadRequestException(e.message);
+    }
   }
 }

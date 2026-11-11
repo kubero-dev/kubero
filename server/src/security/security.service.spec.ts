@@ -18,6 +18,7 @@ describe('SecurityService', () => {
       getVulnerabilityScanLogs: jest.fn(),
       createScanRepoJob: jest.fn(),
       createScanImageJob: jest.fn(),
+      getConfigMapValue: jest.fn().mockResolvedValue(undefined),
     } as any;
 
     pipelinesService = {
