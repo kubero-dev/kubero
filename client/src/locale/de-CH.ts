@@ -288,6 +288,8 @@ const messages = {
       workingDir: 'Arbeitsverzeichnis',
       exposedPorts: 'Offeni Ports',
       summary: 'Zämefassig',
+      pods: { title: 'Pod-Sicherheit', ok: 'ok' },
+      fix: { all: 'Alli', fixable: 'Fix verfüegbar', nofix: 'No kei Fix', waiting: 'No kei Fix' },
       empty: {
         title: 'Kei Schwachstellescans für {app} gfunde',
         message: 'Für e Schwachstellenscan, bitte e Rescan uslöse.',

@@ -289,6 +289,8 @@ const messages = {
       workingDir: '作業ディレクトリ',
       exposedPorts: '公開ポート',
       summary: '概要',
+      pods: { title: 'Podのセキュリティ', ok: '問題なし' },
+      fix: { all: 'すべて', fixable: '修正あり', nofix: '修正待ち', waiting: '修正待ち' },
       empty: {
         title: '{app}の脆弱性スキャンはありません',
         message: 'このアプリを脆弱性スキャンするには、再スキャンを実行してください。',

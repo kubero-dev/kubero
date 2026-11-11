@@ -290,6 +290,8 @@ const messages = {
       workingDir: 'Arbeitsverzeichnis',
       exposedPorts: 'Exponierte Ports',
       summary: 'Zusammenfassung',
+      pods: { title: 'Pod-Sicherheit', ok: 'ok' },
+      fix: { all: 'Alle', fixable: 'Fix verfügbar', nofix: 'Noch kein Fix', waiting: 'Noch kein Fix' },
       empty: {
         title: 'Keine Sicherheitslücken-Scans für { app } gefunden',
         message: 'Um diese App auf Sicherheitslücken zu scannen, bitte einen erneuten Scan auslösen.',

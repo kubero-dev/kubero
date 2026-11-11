@@ -288,6 +288,8 @@ const messages = {
       workingDir: '工作目录',
       exposedPorts: '暴露端口',
       summary: '摘要',
+      pods: { title: 'Pod 安全', ok: '正常' },
+      fix: { all: '全部', fixable: '有修复', nofix: '暂无修复', waiting: '暂无修复' },
       empty: {
         title: '{app}没有漏洞扫描',
         message: '要扫描此应用的漏洞，请触发重新扫描。',
