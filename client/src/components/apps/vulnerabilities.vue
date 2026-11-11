@@ -118,6 +118,9 @@
                                 <v-card-title>
                                     <h3 class="headline mb-0">{{ target.Target }}</h3>
                                     <v-spacer></v-spacer>
+                                    <v-switch v-model="showIgnored" hide-details density="compact" color="primary" class="mr-4"
+                                        :label="$t('app.vulnerabilities.ignore.show') + ' (' + (vulnScanResult.logsummary.ignored || 0) + ')'"></v-switch>
+                                    <v-btn size="small" variant="text" class="mr-4" @click="exportCsv">{{ $t('app.vulnerabilities.export') }}</v-btn>
                                     <v-btn-toggle v-model="fixFilter" mandatory density="compact" divided>
                                         <v-btn value="all">{{ $t('app.vulnerabilities.fix.all') }} ({{ vulnScanResult.logsummary.total }})</v-btn>
                                         <v-btn value="fixable">{{ $t('app.vulnerabilities.fix.fixable') }} ({{ vulnScanResult.logsummary.fixable }})</v-btn>
@@ -159,6 +162,12 @@
                                         <template v-slot:item.FixedVersion="{ item }">
                                             <span v-if="item.FixedVersion">{{ item.FixedVersion }}</span>
                                             <v-chip v-else label size="small" color="warning">{{ $t('app.vulnerabilities.fix.waiting') }}</v-chip>
+                                        </template>
+
+                                        <!-- eslint-disable-next-line vue/valid-v-slot -->
+                                        <template v-slot:item.actions="{ item }">
+                                            <v-btn v-if="!item.Ignored" size="x-small" variant="text" @click="ignoreVuln(item, 30)">{{ $t('app.vulnerabilities.ignore.ignore') }}</v-btn>
+                                            <v-btn v-else size="x-small" variant="text" :title="item.IgnoreReason" @click="unignoreVuln(item)">{{ $t('app.vulnerabilities.ignore.restore') }}</v-btn>
                                         </template>
 
                                         <template v-slot:expanded-row="{ columns, item }">
@@ -268,6 +277,7 @@ type ScanResult = {
         unknown: number;
         fixable: number;
         nofix: number;
+        ignored: number;
     };
     status: string;
     logPod: {
@@ -297,6 +307,8 @@ type Vulnerability = {
     InstalledVersion?: string;
     FixedVersion?: string;
     Status?: string;
+    Ignored?: boolean;
+    IgnoreReason?: string;
 }
 
 
@@ -334,6 +346,7 @@ export default defineComponent({
         renderVulnerabilities: false,
         vulnExpanded: [],
         fixFilter: 'all',
+        showIgnored: false,
         pods: [] as PodWithSecurity[],
         vulnHeaders: [
             { text: 'CVE', value: 'VulnerabilityID', filterable: false,},
@@ -343,6 +356,7 @@ export default defineComponent({
             { text: 'Title', value: 'Title' },
             //{ text: 'Score', value: 'Severity' },
             { text: 'CVSS', value: 'CVSS', sortable: false, filterable: false,},
+            { text: '', value: 'actions', sortable: false, filterable: false,},
         ],
         interval: null as any, //TODO: should be type 'Timer',
         vulnerabilitiesDoughnut: {
@@ -438,13 +452,52 @@ export default defineComponent({
         if (!items) {
             return [];
         }
+        let list = this.showIgnored ? items : items.filter(v => !v.Ignored);
         if (this.fixFilter === 'fixable') {
-            return items.filter(v => !!v.FixedVersion);
+            list = list.filter(v => !!v.FixedVersion);
+        } else if (this.fixFilter === 'nofix') {
+            list = list.filter(v => !v.FixedVersion);
         }
-        if (this.fixFilter === 'nofix') {
-            return items.filter(v => !v.FixedVersion);
+        return list;
+      },
+      ignoreVuln(item: Vulnerability, days: number) {
+        const expires = new Date(Date.now() + days * 86400000).toISOString();
+        axios.post(`/api/security/${this.pipeline}/${this.phase}/${this.app}/ignores`, {
+            id: item.VulnerabilityID,
+            pkg: item.PkgName,
+            expires,
+        })
+        .then(() => this.loadVulnerabilities())
+        .catch(error => console.log(error));
+      },
+      unignoreVuln(item: Vulnerability) {
+        axios.delete(`/api/security/${this.pipeline}/${this.phase}/${this.app}/ignores/${encodeURIComponent(item.VulnerabilityID)}`, {
+            params: { pkg: item.PkgName },
+        })
+        .then(() => this.loadVulnerabilities())
+        .catch(error => console.log(error));
+      },
+      exportCsv() {
+        const cell = (v: unknown) => {
+            let t = String(v ?? '');
+            // stop spreadsheet formula injection
+            if (/^[=+\-@\t\r]/.test(t)) {
+                t = "'" + t;
+            }
+            return '"' + t.replace(/"/g, '""') + '"';
+        };
+        const rows = [['CVE', 'Package', 'Installed', 'Fixed in', 'Severity', 'Ignored', 'Target']];
+        for (const target of this.vulnScanResult.logs.Results || []) {
+            for (const v of target.Vulnerabilities || []) {
+                rows.push([v.VulnerabilityID, v.PkgName, v.InstalledVersion || '', v.FixedVersion || '', v.Severity, v.Ignored ? 'yes' : 'no', target.Target]);
+            }
         }
-        return items;
+        const blob = new Blob([rows.map(r => r.map(cell).join(',')).join('\n')], { type: 'text/csv' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${this.app}-vulnerabilities.csv`;
+        a.click();
+        URL.revokeObjectURL(a.href);
       },
       startVulnScan() {
         this.renderVulnerabilities = false;

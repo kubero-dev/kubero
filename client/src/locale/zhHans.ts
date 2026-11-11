@@ -288,6 +288,8 @@ const messages = {
       workingDir: '工作目录',
       exposedPorts: '暴露端口',
       summary: '摘要',
+      export: '导出 CSV',
+      ignore: { show: '显示已忽略', ignore: '忽略 30 天', restore: '恢复' },
       pods: { title: 'Pod 安全', ok: '正常' },
       fix: { all: '全部', fixable: '有修复', nofix: '暂无修复', waiting: '暂无修复' },
       empty: {

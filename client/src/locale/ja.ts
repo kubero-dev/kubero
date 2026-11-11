@@ -289,6 +289,8 @@ const messages = {
       workingDir: '作業ディレクトリ',
       exposedPorts: '公開ポート',
       summary: '概要',
+      export: 'CSVを出力',
+      ignore: { show: '無視を表示', ignore: '30日間無視', restore: '元に戻す' },
       pods: { title: 'Podのセキュリティ', ok: '問題なし' },
       fix: { all: 'すべて', fixable: '修正あり', nofix: '修正待ち', waiting: '修正待ち' },
       empty: {

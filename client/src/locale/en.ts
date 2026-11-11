@@ -236,6 +236,8 @@ const messages = {
           workingDir: 'Working Directory',
           exposedPorts: 'Exposed Ports',
           summary: 'Summary',
+          export: 'Export CSV',
+          ignore: { show: 'Show ignored', ignore: 'Ignore 30 days', restore: 'Restore' },
           pods: {
             title: 'Pod security',
             ok: 'ok',

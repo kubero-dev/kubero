@@ -290,6 +290,8 @@ const messages = {
       workingDir: 'Arbeitsverzeichnis',
       exposedPorts: 'Exponierte Ports',
       summary: 'Zusammenfassung',
+      export: 'CSV exportieren',
+      ignore: { show: 'Ignorierte anzeigen', ignore: '30 Tage ignorieren', restore: 'Wiederherstellen' },
       pods: { title: 'Pod-Sicherheit', ok: 'ok' },
       fix: { all: 'Alle', fixable: 'Fix verfügbar', nofix: 'Noch kein Fix', waiting: 'Noch kein Fix' },
       empty: {

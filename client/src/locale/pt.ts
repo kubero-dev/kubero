@@ -231,6 +231,8 @@ const messages = {
       workingDir: 'Diretório de Trabalho',
       exposedPorts: 'Portas Expostas',
       summary: 'Resumo',
+      export: 'Exportar CSV',
+      ignore: { show: 'Mostrar ignoradas', ignore: 'Ignorar por 30 dias', restore: 'Restaurar' },
       pods: { title: 'Segurança dos pods', ok: 'ok' },
       fix: { all: 'Todos', fixable: 'Correção disponível', nofix: 'Sem correção ainda', waiting: 'Sem correção ainda' },
       empty: {

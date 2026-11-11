@@ -288,6 +288,8 @@ const messages = {
       workingDir: 'Arbeitsverzeichnis',
       exposedPorts: 'Offeni Ports',
       summary: 'Zämefassig',
+      export: 'CSV exportiere',
+      ignore: { show: 'Ignorierti zeige', ignore: '30 Täg ignoriere', restore: 'Wiederherstelle' },
       pods: { title: 'Pod-Sicherheit', ok: 'ok' },
       fix: { all: 'Alli', fixable: 'Fix verfüegbar', nofix: 'No kei Fix', waiting: 'No kei Fix' },
       empty: {
