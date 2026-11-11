@@ -1,3 +1,4 @@
+import { assessPod } from '../security/pod-security';
 import { Injectable, Logger } from '@nestjs/common';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
@@ -698,6 +699,7 @@ export class AppsService {
           age: pod.metadata?.creationTimestamp,
           startTime: pod.status?.startTime,
           containers: [] as WorkloadContainer[],
+          security: assessPod(pod),
         } as Workload;
 
         //for (const container of pod.spec?.containers || []) {
