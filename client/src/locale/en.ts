@@ -236,6 +236,16 @@ const messages = {
           workingDir: 'Working Directory',
           exposedPorts: 'Exposed Ports',
           summary: 'Summary',
+          pods: {
+            title: 'Pod security',
+            ok: 'ok',
+          },
+          fix: {
+            all: 'All',
+            fixable: 'Fix available',
+            nofix: 'No fix yet',
+            waiting: 'No fix yet',
+          },
           empty: {
             title: 'No vulnerabilityscans found for { app }',
             message: 'To scan this app for vulnerabilities, please trigger a rescan.',

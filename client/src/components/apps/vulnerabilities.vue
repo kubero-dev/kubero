@@ -117,6 +117,12 @@
                             <v-card class="mb-6" v-if="target.Class != 'secret'" elevation="2" outlined color="cardBackground">
                                 <v-card-title>
                                     <h3 class="headline mb-0">{{ target.Target }}</h3>
+                                    <v-spacer></v-spacer>
+                                    <v-btn-toggle v-model="fixFilter" mandatory density="compact" divided>
+                                        <v-btn value="all">{{ $t('app.vulnerabilities.fix.all') }} ({{ vulnScanResult.logsummary.total }})</v-btn>
+                                        <v-btn value="fixable">{{ $t('app.vulnerabilities.fix.fixable') }} ({{ vulnScanResult.logsummary.fixable }})</v-btn>
+                                        <v-btn value="nofix">{{ $t('app.vulnerabilities.fix.nofix') }} ({{ vulnScanResult.logsummary.nofix }})</v-btn>
+                                    </v-btn-toggle>
                                 </v-card-title>
                                 <v-card-text>
                                     <!--
@@ -128,7 +134,7 @@
                                     -->
                                     <v-data-table
                                         :headers="vulnHeaders"
-                                        :items="target.Vulnerabilities"
+                                        :items="filterByFix(target.Vulnerabilities)"
                                         :items-per-page=5
                                         :footer-props="{
                                             'items-per-page-options': [5, 10, 25, { text: 'ALL', value: -1 }]
@@ -149,6 +155,12 @@
                                             </v-chip>
                                         </template>
 
+                                        <!-- eslint-disable-next-line vue/valid-v-slot -->
+                                        <template v-slot:item.FixedVersion="{ item }">
+                                            <span v-if="item.FixedVersion">{{ item.FixedVersion }}</span>
+                                            <v-chip v-else label size="small" color="warning">{{ $t('app.vulnerabilities.fix.waiting') }}</v-chip>
+                                        </template>
+
                                         <template v-slot:expanded-row="{ columns, item }">
                                             <td :colspan="columns.length">
                                                 <div class="row sp-details">
@@ -161,6 +173,38 @@
                                 </v-card-text>
                             </v-card>
                         </span>
+                    </v-col>
+                </v-row>
+
+                <v-row v-if="pods.length > 0">
+                    <v-col cols="12">
+                        <v-card class="mb-6" elevation="2" outlined color="cardBackground">
+                            <v-card-title>
+                                <h3 class="headline mb-0">{{ $t('app.vulnerabilities.pods.title') }}</h3>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-table density="compact">
+                                    <tbody>
+                                        <tr v-for="pod in pods" :key="pod.name">
+                                            <td style="white-space: nowrap;">{{ pod.name }}</td>
+                                            <td>
+                                                <v-chip label size="small" :class="'severity-' + (pod.security.severity === 'ok' ? 'low' : pod.security.severity)">
+                                                    {{ pod.security.severity === 'ok' ? $t('app.vulnerabilities.pods.ok') : pod.security.severity }}
+                                                </v-chip>
+                                            </td>
+                                            <td>
+                                                <v-tooltip v-for="issue in pod.security.issues" :key="issue.id + issue.container" location="top">
+                                                    <template v-slot:activator="{ props }">
+                                                        <v-chip v-bind="props" label size="x-small" class="ma-1" :class="'severity-' + issue.severity">{{ issue.id }}</v-chip>
+                                                    </template>
+                                                    {{ issue.message }}<span v-if="issue.container"> ({{ issue.container }})</span>
+                                                </v-tooltip>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </v-table>
+                            </v-card-text>
+                        </v-card>
                     </v-col>
                 </v-row>
 
@@ -217,6 +261,8 @@ type ScanResult = {
         medium: number;
         low: number;
         unknown: number;
+        fixable: number;
+        nofix: number;
     };
     status: string;
     logPod: {
@@ -243,8 +289,19 @@ type Vulnerability = {
     PrimaryURL: string;
     CVSS: any;
     Metadata: any;
+    InstalledVersion?: string;
+    FixedVersion?: string;
+    Status?: string;
 }
 
+
+type PodWithSecurity = {
+    name: string;
+    security: {
+        severity: string;
+        issues: { id: string; severity: string; message: string; container?: string }[];
+    };
+}
 
 type severityColors = {
     critical: string;
@@ -264,15 +321,20 @@ export default defineComponent({
     },
     mounted() {
         this.loadVulnerabilities();
+        this.loadPods();
     },
     data: () => ({
         scanning: false,
         vulnScanResult: {} as ScanResult,
         renderVulnerabilities: false,
         vulnExpanded: [],
+        fixFilter: 'all',
+        pods: [] as PodWithSecurity[],
         vulnHeaders: [
             { text: 'CVE', value: 'VulnerabilityID', filterable: false,},
             { text: 'PGK', value: 'PkgName' },
+            { text: 'Installed', value: 'InstalledVersion' },
+            { text: 'Fixed in', value: 'FixedVersion' },
             { text: 'Title', value: 'Title' },
             //{ text: 'Score', value: 'Severity' },
             { text: 'CVSS', value: 'CVSS', sortable: false, filterable: false,},
@@ -357,6 +419,27 @@ export default defineComponent({
             console.log(error);
         });
 
+      },
+      loadPods() {
+        axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/pods`)
+        .then(response => {
+            this.pods = (response.data as PodWithSecurity[]).filter(p => p.security);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
+      filterByFix(items: Vulnerability[] | undefined) {
+        if (!items) {
+            return [];
+        }
+        if (this.fixFilter === 'fixable') {
+            return items.filter(v => !!v.FixedVersion);
+        }
+        if (this.fixFilter === 'nofix') {
+            return items.filter(v => !v.FixedVersion);
+        }
+        return items;
       },
       startVulnScan() {
         this.renderVulnerabilities = false;
