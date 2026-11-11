@@ -25,6 +25,15 @@ import { Permissions } from '../auth/permissions.decorator';
 export class SecurityController {
   constructor(private securityService: SecurityService) {}
 
+  @Get('overview')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write', 'security:read')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Latest scan of every app, worst first' })
+  async getOverview(@Request() req: any) {
+    return this.securityService.getOverview(req.user.userGroups);
+  }
+
   @Get(':pipeline/:phase/:app/scan')
   @UseGuards(JwtAuthGuard, PermissionsGuard)
   @Permissions('security:write')
@@ -136,6 +145,71 @@ export class SecurityController {
         app,
         id,
         pkg,
+        req.user.userGroups,
+      );
+    } catch (e: any) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
+  @Get(':pipeline/:phase/:app/history')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write', 'security:read')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'List the recorded scans of an app, oldest first' })
+  async getHistory(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Request() req: any,
+  ) {
+    return this.securityService.getHistory(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
+  }
+
+  @Get(':pipeline/:phase/:app/policy')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write', 'security:read')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({ summary: 'Get the vulnerability policy of an app' })
+  async getPolicy(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Request() req: any,
+  ) {
+    return this.securityService.getPolicy(
+      pipeline,
+      phase,
+      app,
+      req.user.userGroups,
+    );
+  }
+
+  @Post(':pipeline/:phase/:app/policy')
+  @UseGuards(JwtAuthGuard, PermissionsGuard)
+  @Permissions('security:write')
+  @ApiBearerAuth('bearerAuth')
+  @ApiOperation({
+    summary: 'Set the vulnerability policy: deploy gate, rescan interval, notifications',
+  })
+  async setPolicy(
+    @Param('pipeline') pipeline: string,
+    @Param('phase') phase: string,
+    @Param('app') app: string,
+    @Body() body: any,
+    @Request() req: any,
+  ) {
+    try {
+      return await this.securityService.setPolicy(
+        pipeline,
+        phase,
+        app,
+        body,
         req.user.userGroups,
       );
     } catch (e: any) {
