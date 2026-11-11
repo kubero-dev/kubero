@@ -192,6 +192,11 @@
                                                     {{ pod.security.severity === 'ok' ? $t('app.vulnerabilities.pods.ok') : pod.security.severity }}
                                                 </v-chip>
                                             </td>
+                                            <td v-if="renderVulnerabilities" style="white-space: nowrap;">
+                                                <v-chip label size="x-small" class="ma-1 severity-critical">C {{ vulnScanResult.logsummary.critical }}</v-chip>
+                                                <v-chip label size="x-small" class="ma-1 severity-high">H {{ vulnScanResult.logsummary.high }}</v-chip>
+                                                <v-chip label size="x-small" class="ma-1" color="warning">{{ vulnScanResult.logsummary.nofix }} {{ $t('app.vulnerabilities.fix.waiting') }}</v-chip>
+                                            </td>
                                             <td>
                                                 <v-tooltip v-for="issue in pod.security.issues" :key="issue.id + issue.container" location="top">
                                                     <template v-slot:activator="{ props }">
