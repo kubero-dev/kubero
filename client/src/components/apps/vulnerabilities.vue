@@ -185,6 +185,69 @@
                     </v-col>
                 </v-row>
 
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-card class="mb-6" elevation="2" outlined color="cardBackground">
+                            <v-card-title>
+                                <h3 class="headline mb-0">{{ $t('app.vulnerabilities.policy.title') }}</h3>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-select
+                                    v-model="policy.gate"
+                                    density="compact"
+                                    variant="outlined"
+                                    :items="[
+                                        { title: $t('app.vulnerabilities.policy.off'), value: 'off' },
+                                        { title: $t('app.vulnerabilities.policy.critical'), value: 'critical' },
+                                        { title: $t('app.vulnerabilities.policy.high'), value: 'high' },
+                                    ]"
+                                ></v-select>
+                                <v-text-field
+                                    v-model.number="policy.rescanDays"
+                                    type="number"
+                                    min="0"
+                                    max="365"
+                                    density="compact"
+                                    variant="outlined"
+                                    :label="$t('app.vulnerabilities.policy.rescan')"
+                                ></v-text-field>
+                                <v-switch
+                                    v-model="policy.notify"
+                                    density="compact"
+                                    color="primary"
+                                    hide-details
+                                    :label="$t('app.vulnerabilities.policy.notify')"
+                                ></v-switch>
+                                <v-btn class="mt-4" color="primary" variant="tonal" :loading="policySaving" @click="savePolicy()">
+                                    {{ $t('app.vulnerabilities.policy.save') }}
+                                </v-btn>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="6" v-if="history.length > 0">
+                        <v-card class="mb-6" elevation="2" outlined color="cardBackground">
+                            <v-card-title>
+                                <h3 class="headline mb-0">{{ $t('app.vulnerabilities.history') }}</h3>
+                            </v-card-title>
+                            <v-card-text>
+                                <v-table density="compact">
+                                    <tbody>
+                                        <tr v-for="entry in history.slice(-10).reverse()" :key="entry.scannedAt">
+                                            <td style="white-space: nowrap;">{{ new Date(entry.scannedAt).toLocaleString() }}</td>
+                                            <td style="white-space: nowrap;">
+                                                <v-chip label size="x-small" class="ma-1 severity-critical">C {{ entry.summary.critical }}</v-chip>
+                                                <v-chip label size="x-small" class="ma-1 severity-high">H {{ entry.summary.high }}</v-chip>
+                                                <v-chip label size="x-small" class="ma-1" color="success">{{ entry.summary.fixable }} {{ $t('app.vulnerabilities.fix.fixable') }}</v-chip>
+                                                <v-chip label size="x-small" class="ma-1" color="warning">{{ entry.summary.nofix }} {{ $t('app.vulnerabilities.fix.waiting') }}</v-chip>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </v-table>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
+
                 <v-row v-if="pods.length > 0">
                     <v-col cols="12">
                         <v-card class="mb-6" elevation="2" outlined color="cardBackground">
@@ -196,6 +259,10 @@
                                     <tbody>
                                         <tr v-for="pod in pods" :key="pod.name">
                                             <td style="white-space: nowrap;">{{ pod.name }}</td>
+                                            <td v-if="imageMismatch(pod)">
+                                                <v-chip label size="small" color="warning">{{ $t('app.vulnerabilities.mismatch') }}</v-chip>
+                                            </td>
+                                            <td v-else></td>
                                             <td>
                                                 <v-chip label size="small" :class="'severity-' + (pod.security.severity === 'ok' ? 'low' : pod.security.severity)">
                                                     {{ pod.security.severity === 'ok' ? $t('app.vulnerabilities.pods.ok') : pod.security.severity }}
@@ -314,6 +381,7 @@ type Vulnerability = {
 
 type PodWithSecurity = {
     name: string;
+    containers?: { name: string; image: string }[];
     security: {
         severity: string;
         issues: { id: string; severity: string; message: string; container?: string }[];
@@ -339,6 +407,8 @@ export default defineComponent({
     mounted() {
         this.loadVulnerabilities();
         this.loadPods();
+        this.loadPolicy();
+        this.loadHistory();
     },
     data: () => ({
         scanning: false,
@@ -348,6 +418,9 @@ export default defineComponent({
         fixFilter: 'all',
         showIgnored: false,
         pods: [] as PodWithSecurity[],
+        history: [] as { scannedAt: string; summary: any }[],
+        policy: { gate: 'off', rescanDays: 0, notify: true } as { gate: string; rescanDays: number; notify: boolean },
+        policySaving: false,
         vulnHeaders: [
             { text: 'CVE', value: 'VulnerabilityID', filterable: false,},
             { text: 'PGK', value: 'PkgName' },
@@ -443,6 +516,44 @@ export default defineComponent({
         axios.get(`/api/apps/${this.pipeline}/${this.phase}/${this.app}/pods`)
         .then(response => {
             this.pods = (response.data as PodWithSecurity[]).filter(p => p.security);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
+      imageMismatch(pod: PodWithSecurity): boolean {
+        const scanned = this.vulnScanResult?.logs?.ArtifactName;
+        if (!this.renderVulnerabilities || !scanned || !pod.containers?.length) {
+            return false;
+        }
+        return !pod.containers.some(c => c.image === scanned);
+      },
+      loadPolicy() {
+        axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/policy`)
+        .then(response => {
+            this.policy = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+      },
+      savePolicy() {
+        this.policySaving = true;
+        axios.post(`/api/security/${this.pipeline}/${this.phase}/${this.app}/policy`, this.policy)
+        .then(response => {
+            this.policy = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+        .finally(() => {
+            this.policySaving = false;
+        });
+      },
+      loadHistory() {
+        axios.get(`/api/security/${this.pipeline}/${this.phase}/${this.app}/history`)
+        .then(response => {
+            this.history = response.data?.entries || [];
         })
         .catch(error => {
             console.log(error);
