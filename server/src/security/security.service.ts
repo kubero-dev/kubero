@@ -96,6 +96,8 @@ export class SecurityService {
       medium: 0,
       low: 0,
       unknown: 0,
+      fixable: 0,
+      nofix: 0,
     };
 
     if (!logs || !logs.Results) {
@@ -108,6 +110,11 @@ export class SecurityService {
       if (target.Vulnerabilities) {
         target.Vulnerabilities.forEach((vuln: any) => {
           summary.total++;
+          if (vuln.FixedVersion) {
+            summary.fixable++;
+          } else {
+            summary.nofix++;
+          }
           switch (vuln.Severity) {
             case 'CRITICAL':
               summary.critical++;
