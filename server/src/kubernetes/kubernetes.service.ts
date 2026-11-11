@@ -949,13 +949,19 @@ export class KubernetesService {
     image: string,
     tag: string,
     withCredentials: boolean,
+    opts?: {
+      name?: string;
+      labels?: Record<string, string>;
+      annotations?: Record<string, string>;
+    },
   ): Promise<any> {
-    await this.deleteScanJob(namespace, app + '-kuberoapp-vuln');
+    const jobName = opts?.name || app + '-kuberoapp-vuln';
+    await this.deleteScanJob(namespace, jobName);
     const job = {
       apiVersion: 'batch/v1',
       kind: 'Job',
       metadata: {
-        name: app + '-kuberoapp-vuln',
+        name: jobName,
         namespace: namespace,
       },
       spec: {
@@ -965,8 +971,10 @@ export class KubernetesService {
         template: {
           metadata: {
             labels: {
-              vulnerabilityscan: app,
+              ...(opts?.name ? {} : { vulnerabilityscan: app }),
+              ...(opts?.labels || {}),
             },
+            annotations: opts?.annotations,
           },
           spec: {
             restartPolicy: 'Never',
@@ -1034,6 +1042,70 @@ export class KubernetesService {
     } catch (error) {
       this.logger.error(error);
       this.logger.error('ERROR creating Image scan job');
+    }
+  }
+
+  public async getConfigMapValue(
+    namespace: string,
+    name: string,
+    key: string,
+  ): Promise<string | undefined> {
+    try {
+      const cm = await this.coreV1Api.readNamespacedConfigMap(name, namespace);
+      return cm.body.data?.[key];
+    } catch (error: any) {
+      if (error?.statusCode !== 404 && error?.response?.statusCode !== 404) {
+        this.logger.error(error);
+      }
+      return undefined;
+    }
+  }
+
+  public async listConfigMapValues(
+    namespace: string,
+    label: string,
+    key: string,
+  ): Promise<string[]> {
+    try {
+      const list = await this.coreV1Api.listNamespacedConfigMap(
+        namespace,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        label,
+      );
+      return list.body.items
+        .map((cm) => cm.data?.[key])
+        .filter((v): v is string => typeof v === 'string');
+    } catch (error) {
+      this.logger.error(error);
+      return [];
+    }
+  }
+
+  public async setConfigMapValue(
+    namespace: string,
+    name: string,
+    key: string,
+    value: string,
+    labels?: Record<string, string>,
+  ): Promise<void> {
+    const body = {
+      apiVersion: 'v1',
+      kind: 'ConfigMap',
+      metadata: { name, namespace, labels },
+      data: { [key]: value },
+    };
+    try {
+      await this.coreV1Api.replaceNamespacedConfigMap(name, namespace, body);
+    } catch (error: any) {
+      if (error?.statusCode === 404 || error?.response?.statusCode === 404) {
+        await this.coreV1Api.createNamespacedConfigMap(namespace, body);
+      } else {
+        this.logger.error(error);
+        throw error;
+      }
     }
   }
 

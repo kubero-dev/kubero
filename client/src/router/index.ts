@@ -122,6 +122,17 @@ const routes = [
     ],
   },
   {
+    path: '/security',
+    component: () => import('@/layouts/default/Default.vue'),
+    children: [
+      {
+        path: '/security',
+        name: 'Security',
+        component: () => import('@/views/Security.vue'),
+      },
+    ],
+  },
+  {
     path: '/podsizes',
     component: () => import('@/layouts/default/Default.vue'),
     children: [

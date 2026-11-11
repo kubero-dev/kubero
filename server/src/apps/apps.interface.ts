@@ -1,3 +1,4 @@
+import { PodSecurity } from '../security/pod-security';
 import { IAddon } from '../addons/addons.interface';
 import { IPodSize, ISecurityContext } from '../config/config.interface';
 
@@ -182,6 +183,7 @@ export interface Workload {
   age: Date | undefined;
   startTime: Date | undefined;
   containers: WorkloadContainer[];
+  security?: PodSecurity;
 }
 
 export interface WorkloadContainer {

@@ -18,6 +18,7 @@ describe('SecurityService', () => {
       getVulnerabilityScanLogs: jest.fn(),
       createScanRepoJob: jest.fn(),
       createScanImageJob: jest.fn(),
+      getConfigMapValue: jest.fn().mockResolvedValue(undefined),
     } as any;
 
     pipelinesService = {
@@ -96,6 +97,24 @@ describe('SecurityService', () => {
       expect(summary.medium).toBe(1);
       expect(summary.low).toBe(1);
       expect(summary.unknown).toBe(2);
+    });
+
+    it('should count findings with and without a fix', () => {
+      const logs = {
+        Results: [
+          {
+            Vulnerabilities: [
+              { Severity: 'HIGH', FixedVersion: '1.2.3' },
+              { Severity: 'LOW', FixedVersion: '' },
+              { Severity: 'LOW' },
+            ],
+          },
+        ],
+      };
+      // @ts-ignore
+      const summary = service['getVulnSummary'](logs);
+      expect(summary.fixable).toBe(1);
+      expect(summary.nofix).toBe(2);
     });
 
     it('should return default summary if logs are missing', () => {

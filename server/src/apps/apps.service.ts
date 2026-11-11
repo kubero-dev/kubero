@@ -1,4 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { assessPod } from '../security/pod-security';
+import { ScanGate } from '../security/scan-gate';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { PipelinesService } from '../pipelines/pipelines.service';
 import { KubernetesService } from '../kubernetes/kubernetes.service';
 import { NotificationsService } from '../notifications/notifications.service';
@@ -636,6 +638,10 @@ export class AppsService {
       this.triggerImageBuild(app.pipeline, app.phase, app.name, userGroups);
     }
 
+    if (contextName && app.deploymentstrategy == 'docker') {
+      await this.enforceScanGate(app, contextName, userGroups);
+    }
+
     if (contextName) {
       await this.kubectl.updateApp(app, resourceVersion, contextName);
       // IMPORTANT TODO : Update this.appStateList !!
@@ -661,6 +667,56 @@ export class AppsService {
         },
       } as INotification;
       this.NotificationsService.send(m);
+    }
+  }
+
+  /**
+   * Refuses an image update when the app has a deploy gate and the new image has fixable
+   * findings. The first call starts the scan of the new image and answers 409 `scanning`.
+   */
+  private async enforceScanGate(
+    app: App,
+    contextName: string,
+    userGroups: string[],
+  ): Promise<void> {
+    const namespace = app.pipeline + '-' + app.phase;
+    this.kubectl.setCurrentContext(contextName);
+    const gate = new ScanGate(this.kubectl);
+    const policy = await gate.policy(namespace, app.name);
+    if (policy.gate === 'off') {
+      return;
+    }
+    const current = (await this.getApp(
+      app.pipeline,
+      app.phase,
+      app.name,
+      userGroups,
+    )) as IKubectlApp | null | undefined;
+    const image = current?.spec?.image;
+    if (
+      image &&
+      image.repository === app.image.repository &&
+      image.tag === app.image.tag
+    ) {
+      return;
+    }
+    this.kubectl.setCurrentContext(contextName);
+    const result = await gate.check(
+      namespace,
+      app.name,
+      app.image.repository,
+      app.image.tag,
+      policy,
+    );
+    if (result.status !== 'pass') {
+      throw new HttpException(
+        {
+          status: result.status,
+          message: result.message,
+          summary: result.summary,
+        },
+        HttpStatus.CONFLICT,
+      );
     }
   }
 
@@ -698,6 +754,7 @@ export class AppsService {
           age: pod.metadata?.creationTimestamp,
           startTime: pod.status?.startTime,
           containers: [] as WorkloadContainer[],
+          security: assessPod(pod),
         } as Workload;
 
         //for (const container of pod.spec?.containers || []) {

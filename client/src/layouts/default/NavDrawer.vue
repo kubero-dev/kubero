@@ -95,6 +95,13 @@
               style="transform: scale(0.9);"
               :title="$t('navigation.runpacks')">
           </v-list-item>
+          <v-list-item
+              link to="/security"
+              v-if="kubero.isAuthenticated && !kubero.adminDisabled"
+              prepend-icon="mdi-shield-bug-outline"
+              style="transform: scale(0.9);"
+              :title="$t('navigation.security')">
+          </v-list-item>
           <v-list-item 
               link to="/podsizes" 
               v-if="kubero.isAuthenticated && !kubero.adminDisabled"

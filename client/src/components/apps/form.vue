@@ -2397,8 +2397,22 @@ export default defineComponent({
           postdata
         );
         this.$router.push(`/pipeline/${this.pipeline}/apps`);
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
+        if (error?.response?.status === 409 && error.response.data?.status) {
+          const gate = error.response.data;
+          Swal.fire({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 8000,
+            timerProgressBar: true,
+            icon: gate.status === 'scanning' ? 'info' : 'warning',
+            title: gate.message || this.$t(gate.status === 'scanning' ? 'app.vulnerabilities.gate.scanning' : 'app.vulnerabilities.gate.blocked'),
+            background: "rgb(var(--v-theme-cardBackground))",
+            color: "rgba(var(--v-theme-on-background),var(--v-high-emphasis-opacity))",
+          });
+        }
       } finally {
         this.loading = false;
       }
