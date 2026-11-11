@@ -949,13 +949,19 @@ export class KubernetesService {
     image: string,
     tag: string,
     withCredentials: boolean,
+    opts?: {
+      name?: string;
+      labels?: Record<string, string>;
+      annotations?: Record<string, string>;
+    },
   ): Promise<any> {
-    await this.deleteScanJob(namespace, app + '-kuberoapp-vuln');
+    const jobName = opts?.name || app + '-kuberoapp-vuln';
+    await this.deleteScanJob(namespace, jobName);
     const job = {
       apiVersion: 'batch/v1',
       kind: 'Job',
       metadata: {
-        name: app + '-kuberoapp-vuln',
+        name: jobName,
         namespace: namespace,
       },
       spec: {
@@ -965,8 +971,10 @@ export class KubernetesService {
         template: {
           metadata: {
             labels: {
-              vulnerabilityscan: app,
+              ...(opts?.name ? {} : { vulnerabilityscan: app }),
+              ...(opts?.labels || {}),
             },
+            annotations: opts?.annotations,
           },
           spec: {
             restartPolicy: 'Never',
@@ -1053,16 +1061,40 @@ export class KubernetesService {
     }
   }
 
+  public async listConfigMapValues(
+    namespace: string,
+    label: string,
+    key: string,
+  ): Promise<string[]> {
+    try {
+      const list = await this.coreV1Api.listNamespacedConfigMap(
+        namespace,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        label,
+      );
+      return list.body.items
+        .map((cm) => cm.data?.[key])
+        .filter((v): v is string => typeof v === 'string');
+    } catch (error) {
+      this.logger.error(error);
+      return [];
+    }
+  }
+
   public async setConfigMapValue(
     namespace: string,
     name: string,
     key: string,
     value: string,
+    labels?: Record<string, string>,
   ): Promise<void> {
     const body = {
       apiVersion: 'v1',
       kind: 'ConfigMap',
-      metadata: { name, namespace },
+      metadata: { name, namespace, labels },
       data: { [key]: value },
     };
     try {
